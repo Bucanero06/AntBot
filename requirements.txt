@@ -26,3 +26,4 @@ watchgod
 websockets
 requests
 websocket
+httpx

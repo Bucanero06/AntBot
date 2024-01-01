@@ -15,7 +15,7 @@ class Client(object):
         self.flag = flag
         self.domain = base_api
         self.debug = debug
-        self.client = httpx.Client(base_url=base_api, http2=True)
+        self.client = httpx.Client(base_url=base_api, http2=False)
 
     def _request(self, method, request_path, params):
         if method == c.GET:

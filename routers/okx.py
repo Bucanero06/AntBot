@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from jose import JWTError
 
+from firebase_tools.authenticate import check_token_validity
 # from model.okx import InstrumentStatusReportModel, OrderModel, AlgoOrderModel, PositionModel
 from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm
 from routers.api_keys import check_token_against_instrument
@@ -15,7 +16,7 @@ from data.config import get_db
 
 @okx_router.post(path="/okx", status_code=status.HTTP_202_ACCEPTED)
 async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
-                       db: Session = Depends(get_db),
+                       # db: Session = Depends(get_db),
                        # current_user: CurrentUser = Depends(get_current_user)
                        ):
     credentials_exception = HTTPException(
@@ -26,14 +27,14 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
     try:
         valid = check_token_against_instrument(token=signal_input.InstIdAPIKey,
                                                reference_instID=signal_input.SignalInput.instID,
-                                               db=db)
+                                               )
         assert valid == True, "InstIdAPIKey verification failed"
     except JWTError:
         raise credentials_exception
-    except AssertionError:
-        raise credentials_exception
-    except HTTPException:
-        raise credentials_exception
+    # except AssertionError:
+    #     raise credentials_exception
+    # except HTTPException:
+    #     raise credentials_exception
     except Exception as e:
         print(f"Exception in okx_antbot_webhook: {e}")
         return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
@@ -74,6 +75,8 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
 
 # endpoint to find the highest instID from symbol
 @okx_router.get(path="/okx/highest_instID/{symbol}", status_code=status.HTTP_200_OK)
-async def okx_highest_instID(symbol: str, ):
+async def okx_highest_instID(symbol: str,
+                             current_user = Depends(check_token_validity),
+                             ):
     from pyokx.entry_way import get_ticker_with_higher_volume
     return get_ticker_with_higher_volume(symbol)

@@ -7,9 +7,10 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from data.config import get_db, pwd_context, SECRET_KEY, ALGORITHM
+from firebase_tools.authenticate import authenticate_with_firebase, check_token_validity
 from model.user import *
 from pyokx.entry_way import instrument_searcher, clean_and_verify_instID
-from schema.token import create_access_token
+from schema.token import create_access_token, get_current_user
 
 api_key_router = APIRouter(tags=["Token"], include_in_schema=True)
 
@@ -20,18 +21,42 @@ class InstIdAPIKeyCreationRequestForm(BaseModel):
     instID: str
     expire_time: Optional[int] = None
 
+class FirebaseAuthGoodResponse(BaseModel):
+    status: str
+    error_message: Optional[str]
+    token: Optional[str]
+    refresh_token: Optional[str]
+    user_id: Optional[str]
+    email: Optional[str]
+    expires_in: Optional[str]
 
 @api_key_router.post("/api_key", status_code=status.HTTP_202_ACCEPTED)
-def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = Depends(), db: Session = Depends(get_db)):
-    login_user = db.query(User).filter(request.username == User.email).first()
-    if not login_user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="{} does not exist".format(request.username)
-                            )
-    if not pwd_context.verify(request.password, login_user.password):
+def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = Depends(),
+                              current_user = Depends(check_token_validity),
+                              # current_user=Depends(check_token_validity),
+                              # db: Session = Depends(get_db)
+                              ):
+    # login_user = db.query(User).filter(request.username == User.email).first()
+
+    # if not login_user:
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+    #                         detail="{} does not exist".format(request.username)
+    #                         )
+
+    response = authenticate_with_firebase(request.username, request.password)
+    print(response)
+    if response['status'] != 'success':
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="incorrect password"
+                            detail=response['error_message']
                             )
+
+    good_response = FirebaseAuthGoodResponse(**response)
+
+    # if not pwd_context.verify(request.password, good_response.token):
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+    #                         detail="incorrect token password"
+    #                         )
+
 
     # Check whether the instID is valid
     instID = request.instID.upper()
@@ -42,10 +67,10 @@ def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = Depends
     from pyokx.data_structures import InstType
     assert instrument.instType == InstType.FUTURES, f'Instrument {instID} is not a Futures instrument'
 
-    token = create_access_token(data={"sub": login_user.email,
-                                      "id": login_user.user_id,
+    token = create_access_token(data={"sub": good_response.email,
+                                      "id": good_response.user_id,
                                       "role": 'trading_instrument',
-                                      "instID": request.instID
+                                      "instID": request.instID,
                                       },
                                 expires_delta=timedelta(minutes=request.expire_time) if request.expire_time else None
                                 )
@@ -53,7 +78,9 @@ def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = Depends
     return {"access_token": token, "token_type": "bearer"}
 
 
-def check_token_against_instrument(token: str, reference_instID: str, db: Session = Depends(get_db)):
+def check_token_against_instrument(token: str, reference_instID: str,
+                                   # db: Session = Depends(get_db)
+                                   ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="credentials invalid",
@@ -75,12 +102,12 @@ def check_token_against_instrument(token: str, reference_instID: str, db: Sessio
         raise credentials_exception
 
     # check if the user has access to the instrument
-    user = db.query(User).filter(User.user_id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                            detail="user with This id {}, does not exist!".format(
-                                user_id)
-                            )
+    # user = db.query(User).filter(User.user_id == user_id).first()
+    # if not user:
+    #     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+    #                         detail="user with This id {}, does not exist!".format(
+    #                             user_id)
+    #                         )
 
     # Todo add instIds to the user model
     # if instID not in user.instIDs:

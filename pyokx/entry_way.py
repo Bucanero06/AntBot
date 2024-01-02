@@ -958,13 +958,14 @@ def okx_signal_handler(
         """
         Maintainence
         """
-        position_side = 'buy' if float(position.pos) > 0 else 'sell' if float(
-            position.pos) < 0 else None  # we are only using net so only one position
-        if position_side is None:
-            print(f'Will Attempt to close all positions for {instID = } due to 0 net position')
-            close_all_positions(instId=instID)
-            # cancel_all_algo_orders_with_params(instId=instID)
-            # cancel_all_orders(instId=instID)
+        if position:
+            position_side = 'buy' if float(position.pos) > 0 else 'sell' if float(
+                position.pos) < 0 else None  # we are only using net so only one position
+            if position_side is None:
+                print(f'Will Attempt to close all positions for {instID = } due to 0 net position')
+                close_all_positions(instId=instID)
+                # cancel_all_algo_orders_with_params(instId=instID)
+                # cancel_all_orders(instId=instID)
 
     print('\n\nFINAL REPORT')
     return fetch_status_report_for_instrument(instID, TD_MODE)

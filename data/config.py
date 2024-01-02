@@ -5,17 +5,17 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 
 
-SQLALCHEMY_DATABASE_URL = 'sqlite:///pexon.db'
+# SQLALCHEMY_DATABASE_URL = 'sqlite:///pexon.db'
 
 SECRET_KEY = 'eyJhbGciOiJIUzI1NiJ9eyJSb2xlIjoiQWRtaW4i'
 ALGORITHM = 'HS256'
 EXPIRE_TIME = 30
 
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL,
-                       connect_args={"check_same_thread": False})
+# engine = create_engine(SQLALCHEMY_DATABASE_URL,
+#                        connect_args={"check_same_thread": False})
 
-SessionLocal = sessionmaker(bind=engine, autoflush=False)
+# SessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 Base = declarative_base()
 

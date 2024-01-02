@@ -503,7 +503,10 @@ class PremiumIndicatorSignals(BaseModel):
     Strong_Sell: Optional[Union[int, str]]
     Minimal_Strong_Sell: Optional[Union[int, str]]
 
-
+class PremiumIndicatorRequestForm(BaseModel):
+    InstIdAPIKey: str
+    PremiumIndicatorSignals: PremiumIndicatorSignals
+    OKXSignalInput: OKXSignalInput
 
 class InstIdSignalRequestForm(BaseModel):
     InstIdAPIKey: str

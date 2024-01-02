@@ -3,7 +3,7 @@ from jose import JWTError
 
 from firebase_tools.authenticate import check_token_validity
 # from model.okx import InstrumentStatusReportModel, OrderModel, AlgoOrderModel, PositionModel
-from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm
+from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, PremiumIndicatorRequestForm
 from routers.api_keys import check_token_against_instrument
 
 okx_router = APIRouter(tags=["okx"])
@@ -11,7 +11,7 @@ okx_router = APIRouter(tags=["okx"])
 from fastapi import Depends, status
 
 
-@okx_router.post(path="/okx", status_code=status.HTTP_202_ACCEPTED)
+@okx_router.post(path="/okx_antbot_signal", status_code=status.HTTP_202_ACCEPTED)
 async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
                              # db: Session = Depends(get_db),
                              # current_user: CurrentUser = Depends(get_current_user)
@@ -82,9 +82,15 @@ async def okx_highest_instID(symbol: str,
 
 @okx_router.get(path="/okx/instID/{instID}", status_code=status.HTTP_200_OK)
 async def okx_instID_status(instID: str,
-                     TD_MODE='isolated',
-                     current_user = Depends(check_token_validity),
-                     ):
+                            TD_MODE='isolated',
+                            current_user=Depends(check_token_validity),
+                            ):
     from pyokx.entry_way import fetch_status_report_for_instrument
-    return fetch_status_report_for_instrument(instID,'isolated')
+    return fetch_status_report_for_instrument(instID, 'isolated')
+
+
+@okx_router.get(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
+async def okx_premium_indicator(indicator_input: PremiumIndicatorRequestForm):
+    # TODO
+    return indicator_input.model_dump()
 

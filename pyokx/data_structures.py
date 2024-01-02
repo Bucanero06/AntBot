@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
@@ -462,6 +462,7 @@ class AccountStatusReport(BaseModel):
 class OKXSignalInput(BaseModel):
     instID: str = ''
     order_size: float = None
+    leverage: int = ''
     order_side: str = ''
     order_type: str = ''
     max_orderbook_limit_price_offset: float = None
@@ -478,26 +479,34 @@ class OKXSignalInput(BaseModel):
     trailing_stop_activation_percentage: float = None
     trailing_stop_callback_ratio: float = None
 
-    # instID: str = ''
-    # order_size: str = ''
-    # order_side: str = ''
-    # order_type: str = ''
-    # max_orderbook_limit_price_offset: str = ''
-    # flip_position_if_opposite_side: str = ''
-    # clear_prior_to_new_order: str = ''
-    # red_button: str = ''
-    # order_usd_amount: str = ''
-    #
-    # stop_loss_trigger_percentage: str = ''
-    # take_profit_trigger_percentage: str = ''
-    # tp_trigger_price_type: str = ''
-    # stop_loss_price_offset: str = ''
-    # tp_price_offset: str = ''
-    # sl_trigger_price_type: str = ''
-    # trailing_stop_activation_percentage: str = ''
-    # trailing_stop_callback_ratio: str = ''
-    #
+
+class PremiumIndicatorSignals(BaseModel):
+    #     "Signals": {
+    #         "Buy": {{plot("Buy")}},
+    #         "Minimal_Buy": {{plot("Minimal Buy")}},
+    #         "Strong_Buy": {{plot("Strong Buy")}},
+    #         "Minimal_Strong_Buy": {{plot("Minimal Strong Buy")}},
+    #         "Exit_Buy": {{plot("Exit Buy")}},
+    #         "Sell": {{plot("Sell")}},
+    #         "Minimal_Sell": {{plot("Minimal Sell")}},
+    #         "Strong_Sell": {{plot("Strong Sell")}},
+    #         "Minimal_Strong_Sell": {{plot("Minimal Strong Sell")}},
+    #         "Exit_Sell": {{plot("Exit Sell")}}
+    #     }
+    # Buy: Optional[Union[int, str]]
+    Minimal_Buy: Optional[Union[int, str]]
+    Strong_Buy: Optional[Union[int, str]]
+    Minimal_Strong_Buy: Optional[Union[int, str]]
+    Exit_Buy: Optional[Union[int, str]]
+    Sell: Optional[Union[int, str]]
+    Minimal_Sell: Optional[Union[int, str]]
+    Strong_Sell: Optional[Union[int, str]]
+    Minimal_Strong_Sell: Optional[Union[int, str]]
+
+
 
 class InstIdSignalRequestForm(BaseModel):
     InstIdAPIKey: str
+    # PremiumIndicatorSignals
     SignalInput: OKXSignalInput
+

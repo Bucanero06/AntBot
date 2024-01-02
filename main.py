@@ -27,10 +27,10 @@ app.include_router(api_key_router)
 
 
 
-@app.get(path="/")
-async def index():
-    return {"detail": "Im up, I'm uupp!"}
-
+# @app.get(path="/")
+# async def index():
+#     return {"detail": "Im up, I'm uupp!"}
+#
 
 
 

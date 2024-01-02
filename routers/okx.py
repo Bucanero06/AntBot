@@ -1,24 +1,21 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from jose import JWTError
 
 from firebase_tools.authenticate import check_token_validity
 # from model.okx import InstrumentStatusReportModel, OrderModel, AlgoOrderModel, PositionModel
 from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm
 from routers.api_keys import check_token_against_instrument
-from fastapi import APIRouter, Depends, HTTPException, status
 
 okx_router = APIRouter(tags=["okx"])
 
 from fastapi import Depends, status
-from sqlalchemy.orm import Session
-from data.config import get_db
 
 
 @okx_router.post(path="/okx", status_code=status.HTTP_202_ACCEPTED)
 async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
-                       # db: Session = Depends(get_db),
-                       # current_user: CurrentUser = Depends(get_current_user)
-                       ):
+                             # db: Session = Depends(get_db),
+                             # current_user: CurrentUser = Depends(get_current_user)
+                             ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="credentials invalid",
@@ -73,10 +70,21 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
     # Update the enxchange info on the database
     return {"detail": "okx signal received"}
 
+
 # endpoint to find the highest instID from symbol
 @okx_router.get(path="/okx/highest_instID/{symbol}", status_code=status.HTTP_200_OK)
 async def okx_highest_instID(symbol: str,
-                             current_user = Depends(check_token_validity),
+                             current_user=Depends(check_token_validity),
                              ):
     from pyokx.entry_way import get_ticker_with_higher_volume
     return get_ticker_with_higher_volume(symbol)
+
+
+@okx_router.get(path="/okx/instID/{instID}", status_code=status.HTTP_200_OK)
+async def okx_instID_status(instID: str,
+                     TD_MODE='isolated',
+                     current_user = Depends(check_token_validity),
+                     ):
+    from pyokx.entry_way import fetch_status_report_for_instrument
+    return fetch_status_report_for_instrument(instID,'isolated')
+

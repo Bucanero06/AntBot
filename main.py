@@ -1,3 +1,4 @@
+import dotenv
 import uvicorn
 from fastapi import FastAPI
 # from data.config import *
@@ -9,23 +10,8 @@ from routers.api_keys import api_key_router
 from routers.login import login_router
 from routers.okx import okx_router
 
-# Base.metadata.create_all(engine)
-def load_env_file(env_path: str = '.env'):
-    """Load environment variables from a file."""
-    import os
-    if os.path.exists(env_path):
-        with open(env_path) as f:
-            for line in f:
-                if line.startswith('#') or line == '\n':
-                    continue
-                key, value = line.strip().split('=', 1)
-                os.environ[key] = value
-    else:
-        print(f"File does not exist: {env_path}")
-        raise FileNotFoundError(f"File does not exist: {env_path}")
+dotenv.load_dotenv()
 
-
-load_env_file(".env")
 app = FastAPI(
     title="AntBot-Rest-API",
     description="",

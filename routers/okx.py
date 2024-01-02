@@ -14,7 +14,7 @@ from data.config import get_db
 
 
 @okx_router.post(path="/okx", status_code=status.HTTP_202_ACCEPTED)
-def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
+async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
                        db: Session = Depends(get_db),
                        # current_user: CurrentUser = Depends(get_current_user)
                        ):
@@ -74,6 +74,6 @@ def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
 
 # endpoint to find the highest instID from symbol
 @okx_router.get(path="/okx/highest_instID/{symbol}", status_code=status.HTTP_200_OK)
-def okx_highest_instID(symbol: str, ):
+async def okx_highest_instID(symbol: str, ):
     from pyokx.entry_way import get_ticker_with_higher_volume
     return get_ticker_with_higher_volume(symbol)

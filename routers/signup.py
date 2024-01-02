@@ -4,12 +4,13 @@ from sqlalchemy.orm import Session
 from data.config import get_db, pwd_context
 from model.user import *
 
-signup_router = APIRouter(tags=["Signup"], include_in_schema=True)
+# signup_router = APIRouter(tags=["Signup"], include_in_schema=True)
 
 
-@signup_router.post("/Register",
-                   status_code=status.HTTP_201_CREATED,
-                   response_model=ShowUser)
+# @signup_router.post("/Register",
+#                    status_code=status.HTTP_201_CREATED,
+#                    response_model=ShowUser)
+# async def create_user(request: UserScheme, db: Session = Depends(get_db)):
 async def create_user(request: UserScheme, db: Session = Depends(get_db)):
     new_user = User(name=request.name,
                     email=request.email.lower(),

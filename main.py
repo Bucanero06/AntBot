@@ -16,7 +16,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-app.include_router(signup_router)
+# app.include_router(signup_router)
 app.include_router(login_router)
 # app.include_router(user_router)
 # app.include_router(todo_router)
@@ -26,7 +26,7 @@ app.include_router(api_key_router)
 
 
 @app.get(path="/")
-def index():
+async def index():
     return {"detail": "Im up, I'm uupp!"}
 
 
@@ -35,5 +35,5 @@ def index():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app=app, host="127.0.0.0", port=8000)
+    uvicorn.run(app=app, host="127.0.0.0", port=8080)
     # uvicorn.run(app="main:app", host="127.0.0.0", port=8000, reload=True)

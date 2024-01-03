@@ -118,7 +118,6 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
     try:
         pprint(f'{indicator_input.OKXSignalInput = }')
         pprint(f'{indicator_input.PremiumIndicatorSignals = }')
-        pprint(f'{float(indicator_input.PremiumIndicatorSignals.Bullish_Exit) = }')
 
         # Interpret Signals
         premium_indicator = indicator_input.PremiumIndicatorSignals

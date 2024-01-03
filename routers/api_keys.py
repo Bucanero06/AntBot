@@ -1,18 +1,30 @@
-from datetime import timedelta
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from jose import jwt, JWTError
+from fastapi import APIRouter
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
 
-from data.config import get_db, pwd_context, SECRET_KEY, ALGORITHM
 from firebase_tools.authenticate import authenticate_with_firebase, check_token_validity
-from model.user import *
 from pyokx.entry_way import instrument_searcher, clean_and_verify_instID
-from schema.token import create_access_token, get_current_user
 
 api_key_router = APIRouter(tags=["Token"], include_in_schema=True)
+
+from fastapi import Depends, HTTPException, status
+from jose import jwt, JWTError
+from datetime import datetime, timedelta
+from data.config import SECRET_KEY, ALGORITHM, EXPIRE_TIME
+
+
+def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
+    to_encode = data.copy()
+    if isinstance(expires_delta, timedelta):
+        expire = datetime.utcnow() + timedelta(minutes=EXPIRE_TIME)
+        to_encode.update({"exp": expire})
+    elif expires_delta:
+        raise ValueError("expires_delta must be instance of timedelta")
+
+    jwt_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    return jwt_token
 
 
 class InstIdAPIKeyCreationRequestForm(BaseModel):
@@ -20,6 +32,7 @@ class InstIdAPIKeyCreationRequestForm(BaseModel):
     password: str
     instID: str
     expire_time: Optional[int] = None
+
 
 class FirebaseAuthGoodResponse(BaseModel):
     status: str
@@ -30,9 +43,10 @@ class FirebaseAuthGoodResponse(BaseModel):
     email: Optional[str]
     expires_in: Optional[str]
 
+
 @api_key_router.post("/api_key", status_code=status.HTTP_202_ACCEPTED)
 def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = Depends(),
-                              current_user = Depends(check_token_validity),
+                              current_user=Depends(check_token_validity),
                               # current_user=Depends(check_token_validity),
                               # db: Session = Depends(get_db)
                               ):
@@ -56,7 +70,6 @@ def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = Depends
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
     #                         detail="incorrect token password"
     #                         )
-
 
     # Check whether the instID is valid
     instID = request.instID.upper()

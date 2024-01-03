@@ -5,8 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from data.config import EXPIRE_TIME
 from firebase_tools.authenticate import authenticate_with_firebase
-from routers.api_keys import FirebaseAuthGoodResponse
-from schema.token import create_access_token
+from routers.api_keys import FirebaseAuthGoodResponse, create_access_token
 
 login_router = APIRouter(tags=["Token"], include_in_schema=False)
 

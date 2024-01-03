@@ -693,7 +693,6 @@ def okx_signal_handler(
     if not instID:
         return None
     # Clean Input Data
-
     instID = clean_and_verify_instID(instID)
     (order_type, order_side,
      TD_MODE,
@@ -701,6 +700,7 @@ def okx_signal_handler(
                                                       TD_MODE.lower(), tp_trigger_price_type.lower(),
                                                       sl_trigger_price_type.lower())
     order_size = int(order_size)
+    leverage = int(leverage)
 
     stop_loss_trigger_percentage = False if (
             stop_loss_trigger_percentage == '' or not stop_loss_trigger_percentage) else float(
@@ -774,7 +774,7 @@ def okx_signal_handler(
 
     (simplified_balance_details, account_config, instrument_status_report) = fetch_initial_data(TD_MODE, instId=instID)
 
-    if leverage:
+    if leverage and leverage>0:
         accountAPI.set_leverage(
             lever=leverage,
             mgnMode=TD_MODE,

@@ -441,9 +441,10 @@ class MaxAvailSizeData(BaseModel):
     availSell: str
     instId: str
 
+
 #
 class InstrumentStatusReport(BaseModel):
-    timestamp: str =  datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
     instId: str
     max_order_size: MaxOrderSizeData
     max_avail_size: MaxAvailSizeData
@@ -451,18 +452,21 @@ class InstrumentStatusReport(BaseModel):
     orders: List[Order]
     algo_orders: List[Algo_Order]
 
+
 class AccountStatusReport(BaseModel):
-    timestamp: str =  datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
     account_balance: AccountBalanceData
     account_config: AccountConfigData
     all_positions: List[Position]
     all_orders: List[Order]
     all_algo_orders: List[Algo_Order]
     simplified_balance: Simplified_Balance_Details
+
+
 class OKXSignalInput(BaseModel):
     instID: str = ''
-    order_size: float = None
-    leverage: int = ''
+    order_size: int = None
+    leverage: int = None
     order_side: str = ''
     order_type: str = ''
     max_orderbook_limit_price_offset: float = None
@@ -479,37 +483,24 @@ class OKXSignalInput(BaseModel):
     trailing_stop_activation_percentage: float = None
     trailing_stop_callback_ratio: float = None
 
-
 class PremiumIndicatorSignals(BaseModel):
-    #     "Signals": {
-    #         "Buy": {{plot("Buy")}},
-    #         "Minimal_Buy": {{plot("Minimal Buy")}},
-    #         "Strong_Buy": {{plot("Strong Buy")}},
-    #         "Minimal_Strong_Buy": {{plot("Minimal Strong Buy")}},
-    #         "Exit_Buy": {{plot("Exit Buy")}},
-    #         "Sell": {{plot("Sell")}},
-    #         "Minimal_Sell": {{plot("Minimal Sell")}},
-    #         "Strong_Sell": {{plot("Strong Sell")}},
-    #         "Minimal_Strong_Sell": {{plot("Minimal Strong Sell")}},
-    #         "Exit_Sell": {{plot("Exit Sell")}}
-    #     }
-    # Buy: Optional[Union[int, str]]
-    Minimal_Buy: Optional[Union[int, str]]
-    Strong_Buy: Optional[Union[int, str]]
-    Minimal_Strong_Buy: Optional[Union[int, str]]
-    Exit_Buy: Optional[Union[int, str]]
-    Sell: Optional[Union[int, str]]
-    Minimal_Sell: Optional[Union[int, str]]
-    Strong_Sell: Optional[Union[int, str]]
-    Minimal_Strong_Sell: Optional[Union[int, str]]
+    Bullish: Optional[Union[int, str]]
+    Bearish: Optional[Union[int, str]]
+    Bullish_plus: Optional[Union[int, str]]
+    Bearish_plus: Optional[Union[int, str]]
+    Bullish_Exit: Optional[Union[int, str]]
+    Bearish_Exit: Optional[Union[int, str]]
 
-class PremiumIndicatorRequestForm(BaseModel):
+
+
+
+# BTC-USDT-240628
+
+class PremiumIndicatorSignalRequestForm(BaseModel):
     InstIdAPIKey: str
-    PremiumIndicatorSignals: PremiumIndicatorSignals
     OKXSignalInput: OKXSignalInput
+    PremiumIndicatorSignals: PremiumIndicatorSignals
 
 class InstIdSignalRequestForm(BaseModel):
     InstIdAPIKey: str
-    # PremiumIndicatorSignals
-    SignalInput: OKXSignalInput
-
+    OKXSignalInput: OKXSignalInput

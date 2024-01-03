@@ -1,9 +1,11 @@
+from pprint import pprint
+
 from fastapi import APIRouter, HTTPException
 from jose import JWTError
 
 from firebase_tools.authenticate import check_token_validity
 # from model.okx import InstrumentStatusReportModel, OrderModel, AlgoOrderModel, PositionModel
-from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, PremiumIndicatorRequestForm
+from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, PremiumIndicatorSignalRequestForm
 from routers.api_keys import check_token_against_instrument
 
 okx_router = APIRouter(tags=["okx"])
@@ -41,7 +43,6 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
         assert signal_input.SignalInput, "SignalInput is None"
         okx_signal_input = signal_input.SignalInput
         instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
-        from pprint import pprint
         pprint(instrument_status_report)
         assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
 
@@ -89,8 +90,35 @@ async def okx_instID_status(instID: str,
     return fetch_status_report_for_instrument(instID, 'isolated')
 
 
-@okx_router.get(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
-async def okx_premium_indicator(indicator_input: PremiumIndicatorRequestForm):
+@okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
+async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm,
+                                # current_user=Depends(check_token_validity),
+                                ):
     # TODO
-    return indicator_input.model_dump()
+    # We have to go from the signals in PremiumIndicatorSignalRequestForm to the signals in InstIdSignalRequestForm
+    from pyokx.entry_way import okx_signal_handler
+    try:
+
+        print(f'{indicator_input.InstIdAPIKey = }')
+        print(f'{indicator_input.PremiumIndicatorSignals = }')
+        pprint(f'{indicator_input.OKXSignalInput = }')
+
+        # Convert from one to another based on signals
+
+
+        # assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
+        # okx_signal_input = indicator_input.OKXSignalInput
+        # instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
+        # pprint(instrument_status_report)
+        # assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
+        return {"detail": "dummy okx signal received"}
+    except Exception as e:
+        print(f"Exception in okx_antbot_webhook: {e}")
+        return {
+            "detail": "okx premium indicator signal received but not handled yet",
+            "exception": "okx premium indicator signal received but not handled yet"
+        }
+    # Update the enxchange info on the database
+    return {"detail": "unexpected end of point??."}
+
 

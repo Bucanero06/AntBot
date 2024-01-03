@@ -155,7 +155,7 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
                 if not (buy_exit or sell_exit):
                     _close_signal = None
 
-
+        print(f'{_order_side or _close_signal = }')
         if _order_side or _close_signal:
             okx_signal = indicator_input.OKXSignalInput
 

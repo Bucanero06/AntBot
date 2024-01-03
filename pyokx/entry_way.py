@@ -39,7 +39,7 @@ DATA_STRUCTURES = [
 
 
 def get_request_data(returned_data, target_data_structure):
-    print(f'{returned_data = }')
+    # print(f'{returned_data = }')
     if len(returned_data['data']) == 0:
         print(f'{returned_data["code"] = }')
         print(f'{returned_data["msg"] = }')

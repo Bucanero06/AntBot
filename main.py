@@ -2,6 +2,7 @@ import dotenv
 import uvicorn
 from fastapi import FastAPI
 
+from firebase_tools.authenticate import check_token_validity, authenticate_with_firebase
 # from data.config import *
 # from routers import *
 # from model.todo import *
@@ -33,6 +34,7 @@ app.include_router(api_key_router)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app=app, host="127.0.0.0", port=8080)
+    # uvicorn.run(app=app, host="127.0.0.0", port=8080)
     # uvicorn.run(app="main:app", host="127.0.0.0", port=8080, reload=True)
+    print(authenticate_with_firebase(email='ruben@carbonyl.org',password='sedfswfgefgwsGfaf'))
 

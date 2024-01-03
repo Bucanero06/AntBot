@@ -164,7 +164,10 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 
 
 
-            pprint(f'{okx_signal = }')
+            pprint(f'updated-{premium_indicator = }')
+            pprint(f'updated-{okx_signal= }')
+
+
             assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
             okx_signal_input = indicator_input.OKXSignalInput
             from pyokx.entry_way import okx_signal_handler

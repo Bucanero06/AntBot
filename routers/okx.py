@@ -25,7 +25,7 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
     )
     try:
         valid = check_token_against_instrument(token=signal_input.InstIdAPIKey,
-                                               reference_instID=signal_input.SignalInput.instID,
+                                               reference_instID=signal_input.OKXSignalInput.instID,
                                                )
         assert valid == True, "InstIdAPIKey verification failed"
     except JWTError:
@@ -40,8 +40,8 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
 
     from pyokx.entry_way import okx_signal_handler
     try:
-        assert signal_input.SignalInput, "SignalInput is None"
-        okx_signal_input = signal_input.SignalInput
+        assert signal_input.OKXSignalInput, "OKXSignalInput is None"
+        okx_signal_input = signal_input.OKXSignalInput
         instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
         pprint(instrument_status_report)
         assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"

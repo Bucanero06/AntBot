@@ -2,10 +2,13 @@ import json
 import os
 from pprint import pprint
 
+import dotenv
 import requests
 from fastapi import Depends
 
 from data.config import Oauth2_scheme
+
+dotenv.load_dotenv()
 
 FIREBASE_CONFIG = {
     "apiKey": os.environ.get("FIREBASE_API_KEY"),
@@ -16,11 +19,10 @@ FIREBASE_CONFIG = {
     "messagingSenderId": os.environ.get("FIREBASE_MESSAGING_SENDER_ID"),
     "appId": os.environ.get("FIREBASE_APP_ID"),
     "measurementId": os.environ.get("FIREBASE_MEASUREMENT_ID"),
-
 }
 def authenticate_with_firebase(email, password):
     """Authenticate with Firebase and return token if successful, or an error message."""
-
+    print(f'{FIREBASE_CONFIG["apiKey"] = }')
     endpoint = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_CONFIG['apiKey']}"
     data = {
         "email": email,
@@ -80,9 +82,4 @@ def check_token_validity(token: str = Depends(Oauth2_scheme)):
     data = {"idToken": token}
     response = requests.post(endpoint, data=json.dumps(data))
     return (response.status_code == 200)
-
-if __name__ == '__main__':
-    response = authenticate_with_firebase(email='ruben@carbonyl.org',
-                                          password='dBcadsnero06edfewsh')
-    pprint(response)
 

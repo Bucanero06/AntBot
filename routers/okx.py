@@ -116,8 +116,9 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 
     # TODO
     try:
-        print(f'{indicator_input.PremiumIndicatorSignals = }')
         pprint(f'{indicator_input.OKXSignalInput = }')
+        pprint(f'{indicator_input.PremiumIndicatorSignals = }')
+        pprint(f'{float(indicator_input.PremiumIndicatorSignals.Bullish_Exit) = }')
 
         # Interpret Signals
         premium_indicator = indicator_input.PremiumIndicatorSignals
@@ -126,9 +127,8 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
         premium_indicator.Bearish_plus = int(premium_indicator.Bearish_plus)
         premium_indicator.Bullish = int(premium_indicator.Bullish)
         premium_indicator.Bullish_plus = int(premium_indicator.Bullish_plus)
-        premium_indicator.Bearish_Exit = 0 if 'null' else float(premium_indicator.Bullish_plus)
-        premium_indicator.Bullish_Exit = 0 if 'null' else float(premium_indicator.Bullish_Exit)
-
+        premium_indicator.Bearish_Exit = 0 if premium_indicator.Bearish_Exit == 'null' else float(premium_indicator.Bearish_Exit)
+        premium_indicator.Bullish_Exit = 0 if premium_indicator.Bullish_Exit == 'null' else float(premium_indicator.Bullish_Exit)
 
         _order_side = None
         _close_signal = None

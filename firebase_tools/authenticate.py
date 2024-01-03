@@ -6,7 +6,7 @@ import dotenv
 import requests
 from fastapi import Depends
 
-from data.config import Oauth2_scheme
+from shared.config import Oauth2_scheme
 
 dotenv.load_dotenv()
 

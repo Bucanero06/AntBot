@@ -3,9 +3,9 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from data.config import EXPIRE_TIME
 from firebase_tools.authenticate import authenticate_with_firebase
 from routers.api_keys import FirebaseAuthGoodResponse, create_access_token
+from shared.config import EXPIRE_TIME
 
 login_router = APIRouter(tags=["Token"], include_in_schema=False)
 

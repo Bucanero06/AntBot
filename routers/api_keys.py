@@ -5,13 +5,13 @@ from pydantic import BaseModel
 
 from firebase_tools.authenticate import authenticate_with_firebase, check_token_validity
 from pyokx.entry_way import instrument_searcher, clean_and_verify_instID
+from shared.config import EXPIRE_TIME, SECRET_KEY, ALGORITHM
 
 api_key_router = APIRouter(tags=["Token"], include_in_schema=True)
 
 from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
-from data.config import SECRET_KEY, ALGORITHM, EXPIRE_TIME
 
 
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:

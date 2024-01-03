@@ -34,7 +34,7 @@ app.include_router(api_key_router)
 
 
 if __name__ == "__main__":
-    # uvicorn.run(app=app, host="127.0.0.0", port=8080)
+    uvicorn.run(app=app, host="127.0.0.0", port=8080)
     # uvicorn.run(app="main:app", host="127.0.0.0", port=8080, reload=True)
-    print(authenticate_with_firebase(email='ruben@carbonyl.org',password='sedfswfgefgwsGfaf'))
+    # print(authenticate_with_firebase(email='ruben@carbonyl.org',password='sedfswfgefgwsGfaf'))
 

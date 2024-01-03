@@ -123,15 +123,24 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
         # Interpret Signals
         premium_indicator = indicator_input.PremiumIndicatorSignals
 
+        # Convert "0" to
+        premium_indicator.Bearish = int(premium_indicator.Bearish)
+        premium_indicator.Bearish_plus = int(premium_indicator.Bearish_plus)
+        premium_indicator.Bullish = int(premium_indicator.Bullish)
+        premium_indicator.Bullish_plus = int(premium_indicator.Bullish_plus)
+        premium_indicator.Bearish_Exit = int(premium_indicator.Bullish_plus)
+        premium_indicator.Bullish_Exit = int(premium_indicator.Bullish_Exit)
+
+
         _order_side = None
         _close_signal = None
-        if premium_indicator.Bearish==1 or premium_indicator.Bearish_plus==1:
+        if premium_indicator.Bearish or premium_indicator.Bearish_plus:
             _order_side = 'buy'
-        elif premium_indicator.Bullish== 1 or premium_indicator.Bullish_plus==1:
+        elif premium_indicator.Bullish or premium_indicator.Bullish_plus:
             _order_side = 'sell'
-        if premium_indicator.Bearish_Exit == 1:
+        if premium_indicator.Bearish_Exit:
             _close_signal = 'exit_buy'
-        elif premium_indicator.Bullish_Exit == 1:
+        elif premium_indicator.Bullish_Exit:
             _close_signal = 'exit_sell'
 
         # Get current positions
@@ -149,22 +158,22 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
                     _close_signal = None
 
 
+        if _order_side:
+            okx_signal = indicator_input.OKXSignalInput
 
-        okx_signal = indicator_input.OKXSignalInput
-
-        okx_signal.order_side = _order_side if _order_side else ''
-        okx_signal.clear_prior_to_new_order = True if okx_signal.clear_prior_to_new_order or _close_signal else False
+            okx_signal.order_side = _order_side if _order_side else ''
+            okx_signal.clear_prior_to_new_order = True if okx_signal.clear_prior_to_new_order or _close_signal else False
 
 
 
-        pprint(f'{okx_signal = }')
-        assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
-        okx_signal_input = indicator_input.OKXSignalInput
-        from pyokx.entry_way import okx_signal_handler
-        instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
-        pprint(instrument_status_report)
-        assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
-        return {"detail": "dummy okx signal received"}
+            pprint(f'{okx_signal = }')
+            assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
+            okx_signal_input = indicator_input.OKXSignalInput
+            from pyokx.entry_way import okx_signal_handler
+            instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
+            pprint(instrument_status_report)
+            assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
+        return {"detail": "okx signal received"}
     except Exception as e:
         print(f"Exception in okx_premium_indicator {e}")
         return {

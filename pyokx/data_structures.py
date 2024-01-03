@@ -495,8 +495,6 @@ class PremiumIndicatorSignals(BaseModel):
 
 
 
-# BTC-USDT-240628
-
 class PremiumIndicatorSignalRequestForm(BaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
@@ -506,3 +504,69 @@ class PremiumIndicatorSignalRequestForm(BaseModel):
 class InstIdSignalRequestForm(BaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
+
+
+# {
+#   "InstIdAPIKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJydWJlbkBjYXJib255bC5vcmciLCJpZCI6InFtc2d4c0Eza0taNHMwaml1bTQwOHFvbGJWOTIiLCJyb2xlIjoidHJhZGluZ19pbnN0cnVtZW50IiwiaW5zdElEIjoiQlRDLVVTRFQtMjQwNjI4In0.WyO3oNTT5loBnQzsTcjM8Lt13F8-nNS7DI6PxSEGeSc",
+#   "OKXSignalInput": {
+#     "instID": "BTC-USDT-240628",
+#     "order_size": 1,
+#     "leverage": 0,
+#     "order_side": "",
+#     "order_type": "limit",
+#     "max_orderbook_limit_price_offset": 0,
+#     "flip_position_if_opposite_side": true,
+#     "clear_prior_to_new_order": false,
+#     "red_button": false,
+#     "order_usd_amount": 0,
+#     "stop_loss_trigger_percentage": 0,
+#     "take_profit_trigger_percentage": 0,
+#     "tp_trigger_price_type": "",
+#     "stop_loss_price_offset": 0,
+#     "tp_price_offset": 0,
+#     "sl_trigger_price_type": "",
+#     "trailing_stop_activation_percentage": 0,
+#     "trailing_stop_callback_ratio": 0
+#   },
+#   "PremiumIndicatorSignals": {
+#     "Bullish": "{{plot('Bullish')}}",
+#     "Bearish": "{{plot('Bearish')}}",
+#     "Bullish_plus": "{{plot('Bullish+')}}",
+#     "Bearish_plus": "{{plot('Bearish+')}}",
+#     "Bullish_Exit": "{{plot('Bullish Exit')}}",
+#     "Bearish_Exit": "{{plot('Bearish Exit')}}"
+#   }
+# }
+
+# {
+#   "InstIdAPIKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJydWJlbkBjYXJib255bC5vcmciLCJpZCI6InFtc2d4c0Eza0taNHMwaml1bTQwOHFvbGJWOTIiLCJyb2xlIjoidHJhZGluZ19pbnN0cnVtZW50IiwiaW5zdElEIjoiQlRDLVVTRFQtMjQwNjI4In0.WyO3oNTT5loBnQzsTcjM8Lt13F8-nNS7DI6PxSEGeSc",
+#   "OKXSignalInput": {
+#     "instID": "BTC-USDT-240628",
+#     "order_size": 1,
+#     "leverage": 0,
+#     "order_side": "",
+#     "order_type": "limit",
+#     "max_orderbook_limit_price_offset": 0,
+#     "flip_position_if_opposite_side": true,
+#     "clear_prior_to_new_order": false,
+#     "red_button": false,
+#     "order_usd_amount": 0,
+#     "stop_loss_trigger_percentage": 0,
+#     "take_profit_trigger_percentage": 0,
+#     "tp_trigger_price_type": "",
+#     "stop_loss_price_offset": 0,
+#     "tp_price_offset": 0,
+#     "sl_trigger_price_type": "",
+#     "trailing_stop_activation_percentage": 0,
+#     "trailing_stop_callback_ratio": 0
+#   },
+#   "PremiumIndicatorSignals": {
+#     "Bullish": "{{plot("Bullish")}}",
+#     "Bearish": "{{plot("Bearish")}}",
+#     "Bullish_plus": "{{plot("Bullish+")}}",
+#     "Bearish_plus": "{{plot("Bearish+")}}",
+#     "Bullish_Exit": "{{plot("Bullish Exit")}}",
+#     "Bearish_Exit": "{{plot("Bearish Exit")}}"
+#   }
+# }
+

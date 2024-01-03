@@ -717,7 +717,7 @@ def okx_signal_handler(
     trailing_stop_callback_ratio = False if trailing_stop_callback_ratio == '' or not trailing_stop_callback_ratio else float(
         trailing_stop_callback_ratio)
 
-    max_orderbook_limit_price_offset = False if max_orderbook_limit_price_offset == '' or not max_orderbook_limit_price_offset else float(
+    max_orderbook_limit_price_offset = False if max_orderbook_limit_price_offset == '' or max_orderbook_limit_price_offset == 0 or not max_orderbook_limit_price_offset else float(
         max_orderbook_limit_price_offset)
 
     flip_position_if_opposite_side = False if flip_position_if_opposite_side == '' or not flip_position_if_opposite_side else bool(

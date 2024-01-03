@@ -94,30 +94,84 @@ async def okx_instID_status(instID: str,
 async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm,
                                 # current_user=Depends(check_token_validity),
                                 ):
-    # TODO
-    # We have to go from the signals in PremiumIndicatorSignalRequestForm to the signals in InstIdSignalRequestForm
-    from pyokx.entry_way import okx_signal_handler
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="credentials invalid",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
+        valid = check_token_against_instrument(token=indicator_input.InstIdAPIKey,
+                                               reference_instID=indicator_input.OKXSignalInput.instID
+                                               )
+        assert valid == True, "InstIdAPIKey verification failed"
+    except JWTError:
+        raise credentials_exception
+    # except AssertionError:
+    #     raise credentials_exception
+    # except HTTPException:
+    #     raise credentials_exception
+    except Exception as e:
+        print(f"Exception in okx_antbot_webhook: {e}")
+        return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
 
+    # TODO
+    try:
         print(f'{indicator_input.InstIdAPIKey = }')
         print(f'{indicator_input.PremiumIndicatorSignals = }')
         pprint(f'{indicator_input.OKXSignalInput = }')
 
-        # Convert from one to another based on signals
+        # Interpret Signals
+        premium_indicator = indicator_input.PremiumIndicatorSignals
+
+        _order_side = None
+        _close_signal = None
+        if premium_indicator.Bearish==1 or premium_indicator.Bearish_plus==1:
+            _order_side = 'buy'
+        elif premium_indicator.Bullish== 1 or premium_indicator.Bullish_plus==1:
+            _order_side = 'sell'
+        if premium_indicator.Bearish_Exit == 1:
+            _close_signal = 'exit_buy'
+        elif premium_indicator.Bullish_Exit == 1:
+            _close_signal = 'exit_sell'
+
+        # Get current positions
+        from pyokx.entry_way import get_all_positions
+        instId_positions = get_all_positions(instId = indicator_input.OKXSignalInput.instID)
+        if len(instId_positions) > 0 :
+            current_position = instId_positions[0]
+            current_position_side = 'buy' if float(current_position.pos) > 0 else 'sell' if float(
+                current_position.pos) < 0 else None  # we are only using net so only one position
+
+            if _close_signal:
+                buy_exit = _close_signal == 'exit_buy' and current_position_side == 'buy'
+                sell_exit = _close_signal == 'exit_sell' and current_position_side == 'sell'
+                if not (buy_exit or sell_exit):
+                    _close_signal = None
 
 
-        # assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
-        # okx_signal_input = indicator_input.OKXSignalInput
-        # instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
-        # pprint(instrument_status_report)
-        # assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
+
+        okx_signal = indicator_input.OKXSignalInput
+
+        okx_signal.order_side = _order_side if _order_side else ''
+        okx_signal.clear_prior_to_new_order = True if okx_signal.clear_prior_to_new_order or _close_signal else False
+
+
+
+        pprint(f'{okx_signal = }')
+        assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
+        okx_signal_input = indicator_input.OKXSignalInput
+        from pyokx.entry_way import okx_signal_handler
+        instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
+        pprint(instrument_status_report)
+        assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
         return {"detail": "dummy okx signal received"}
     except Exception as e:
-        print(f"Exception in okx_antbot_webhook: {e}")
+        print(f"Exception in okx_premium_indicator {e}")
         return {
             "detail": "okx premium indicator signal received but not handled yet",
             "exception": "okx premium indicator signal received but not handled yet"
         }
+
     # Update the enxchange info on the database
     return {"detail": "unexpected end of point??."}
 

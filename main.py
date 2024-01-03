@@ -1,6 +1,7 @@
 import dotenv
 import uvicorn
 from fastapi import FastAPI
+
 # from data.config import *
 # from routers import *
 # from model.todo import *
@@ -25,15 +26,10 @@ app.include_router(login_router)
 app.include_router(okx_router)
 app.include_router(api_key_router)
 
-
-
 # @app.get(path="/")
 # async def index():
 #     return {"detail": "Im up, I'm uupp!"}
 #
-
-
-
 
 
 if __name__ == "__main__":

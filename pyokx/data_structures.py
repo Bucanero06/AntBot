@@ -483,6 +483,7 @@ class OKXSignalInput(BaseModel):
     trailing_stop_activation_percentage: float = None
     trailing_stop_callback_ratio: float = None
 
+
 class PremiumIndicatorSignals(BaseModel):
     Bullish: Optional[Union[int, str]]
     Bearish: Optional[Union[int, str]]
@@ -500,6 +501,7 @@ class PremiumIndicatorSignalRequestForm(BaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
     PremiumIndicatorSignals: PremiumIndicatorSignals
+
 
 class InstIdSignalRequestForm(BaseModel):
     InstIdAPIKey: str

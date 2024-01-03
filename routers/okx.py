@@ -116,7 +116,6 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 
     # TODO
     try:
-        print(f'{indicator_input.InstIdAPIKey = }')
         print(f'{indicator_input.PremiumIndicatorSignals = }')
         pprint(f'{indicator_input.OKXSignalInput = }')
 
@@ -157,7 +156,7 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
                     _close_signal = None
 
 
-        if _order_side:
+        if _order_side or _close_signal:
             okx_signal = indicator_input.OKXSignalInput
 
             okx_signal.order_side = _order_side if _order_side else ''

@@ -80,3 +80,19 @@ def calculate_sl_stop_prices(order_side, reference_price, sl_trigger_percentage,
         raise ValueError('order_side must be either "buy" or "sell"')
 
     return round(sl_trigger_price, 2), round(sl_execute_price, 2)
+
+class FunctionCall:
+    def __init__(self, func, *args, **kwargs):
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+
+    def execute(self):
+        return self.func(*self.args, **self.kwargs)
+
+def execute_function_calls(function_calls):
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(func_call.execute) for func_call in function_calls]
+        return [future.result() for future in futures]
+

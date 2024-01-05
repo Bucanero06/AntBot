@@ -54,6 +54,8 @@ all_futures_instruments = get_request_data(publicAPI.get_instruments(instType='F
                                            target_data_structure=Instrument)
 
 
+
+
 class InstrumentSearcher:
     def __init__(self, instruments: List[Instrument]):
         # print(f'{instrument_searcher.find_by_instId("BTC-USDT-240329") = }')
@@ -462,21 +464,6 @@ def get_max_avail_size(instId, tdMode):
 
 from concurrent.futures import ThreadPoolExecutor
 
-
-class FunctionCall:
-    def __init__(self, func, *args, **kwargs):
-        self.func = func
-        self.args = args
-        self.kwargs = kwargs
-
-    def execute(self):
-        return self.func(*self.args, **self.kwargs)
-
-
-def execute_function_calls(function_calls):
-    with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(func_call.execute) for func_call in function_calls]
-        return [future.result() for future in futures]
 
 
 def generate_random_string(length, char_type='alphanumeric'):

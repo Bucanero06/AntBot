@@ -126,8 +126,10 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
         premium_indicator.Bearish_plus = int(premium_indicator.Bearish_plus)
         premium_indicator.Bullish = int(premium_indicator.Bullish)
         premium_indicator.Bullish_plus = int(premium_indicator.Bullish_plus)
-        premium_indicator.Bearish_Exit = 0 if premium_indicator.Bearish_Exit == 'null' else float(premium_indicator.Bearish_Exit)
-        premium_indicator.Bullish_Exit = 0 if premium_indicator.Bullish_Exit == 'null' else float(premium_indicator.Bullish_Exit)
+        premium_indicator.Bearish_Exit = 0 if premium_indicator.Bearish_Exit == 'null' else float(
+            premium_indicator.Bearish_Exit)
+        premium_indicator.Bullish_Exit = 0 if premium_indicator.Bullish_Exit == 'null' else float(
+            premium_indicator.Bullish_Exit)
 
         _order_side = None
         _close_signal = None
@@ -142,8 +144,8 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 
         # Get current positions
         from pyokx.entry_way import get_all_positions
-        instId_positions = get_all_positions(instId = indicator_input.OKXSignalInput.instID)
-        if len(instId_positions) > 0 :
+        instId_positions = get_all_positions(instId=indicator_input.OKXSignalInput.instID)
+        if len(instId_positions) > 0:
             current_position = instId_positions[0]
             current_position_side = 'buy' if float(current_position.pos) > 0 else 'sell' if float(
                 current_position.pos) < 0 else None  # we are only using net so only one position
@@ -154,6 +156,8 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
                 if not (buy_exit or sell_exit):
                     _close_signal = None
 
+        # TODO - IDEA: Logic here betweeen _close_signal and entry, if just a closing then it can be handled using market or limit orders but if it is an entry and exit then we decide depening on wehther the entry is in the same or opposite directoion and if flip on opposite order is true.
+        #   lets assume that we are not flipping on opposite order  then cancel if entry in opposite direction and close_order then clear before starting, if just closing then trat them as an actual order which can be market post only or limits
         print(f'{_order_side or _close_signal = }')
         if _order_side or _close_signal:
             okx_signal = indicator_input.OKXSignalInput
@@ -161,11 +165,8 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
             okx_signal.order_side = _order_side if _order_side else ''
             okx_signal.clear_prior_to_new_order = True if okx_signal.clear_prior_to_new_order or _close_signal else False
 
-
-
             pprint(f'updated-{premium_indicator = }')
             pprint(f'updated-{okx_signal= }')
-
 
             assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
             okx_signal_input = indicator_input.OKXSignalInput
@@ -183,5 +184,3 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 
     # Update the enxchange info on the database
     return {"detail": "unexpected end of point??."}
-
-

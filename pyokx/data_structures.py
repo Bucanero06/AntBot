@@ -100,7 +100,7 @@ class Position(BaseModel):
     bizRefType: str
     cTime: str
     ccy: str
-    closeOrderAlgo: List[str]
+    closeOrderAlgo: List[dict]
     deltaBS: str
     deltaPA: str
     fee: str
@@ -493,8 +493,6 @@ class PremiumIndicatorSignals(BaseModel):
     Bearish_Exit: Optional[Union[int, str]]
 
 
-
-
 class PremiumIndicatorSignalRequestForm(BaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
@@ -504,6 +502,200 @@ class PremiumIndicatorSignalRequestForm(BaseModel):
 class InstIdSignalRequestForm(BaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
+
+
+class CandleStick(BaseModel):
+    timestamp: str
+    open: str
+    high: str
+    low: str
+    close: str
+    is_closed: str
+
+
+class PriceLimit(BaseModel):
+    instId: str
+    buyLmt: str
+    sellLmt: str
+    ts: str
+    enabled: bool
+
+
+class _PublicChannelInputArgsTypeInstID(BaseModel):
+    channel: str
+    instId: str
+
+
+class _PublicChannelInputArgsTypeInstType(BaseModel):
+    channel: str
+    instType: str
+
+
+class InstrumentsChannelInputArgs(_PublicChannelInputArgsTypeInstType):
+    ...
+
+
+class InstrumentsChannel(BaseModel):
+    args: InstrumentsChannelInputArgs
+    data: List[Instrument]
+
+
+class PriceLimitChannelInputArgs(_PublicChannelInputArgsTypeInstID):
+    ...
+
+
+class PriceLimitChannel(BaseModel):
+    args: PriceLimitChannelInputArgs
+    data: List[PriceLimit]
+
+
+class MarkPriceChannelInputArgs(_PublicChannelInputArgsTypeInstID):
+    ...
+
+
+class MarkPrice(BaseModel):
+    instType: str
+    instId: str
+    markPx: str
+    ts: str
+
+
+class MarkPriceChannel(BaseModel):
+    args: MarkPriceChannelInputArgs
+    data: List[MarkPrice]
+
+
+class MarkPriceCandleSticksChannelInputArgs(_PublicChannelInputArgsTypeInstID):
+    ...
+
+class MarkPriceCandleSticksChannel(BaseModel):
+    args: MarkPriceChannelInputArgs
+    data: List[CandleStick]
+
+    @staticmethod
+    def from_array(args:MarkPriceCandleSticksChannelInputArgs, data):
+        data: List[CandleStick] = [
+            CandleStick(
+                timestamp=item[0],
+                open=item[1],
+                high=item[2],
+                low=item[3],
+                close=item[4],
+                is_closed=item[5]
+            ) for item in data
+        ]
+        return MarkPriceCandleSticksChannel(args=args, data=data)
+
+    # B
+
+
+class IndexTickersChannelInputArgs(_PublicChannelInputArgsTypeInstID):
+    ...
+
+
+class IndexTickers(BaseModel):
+    instId: str
+    idxPx: str
+    high24h: str
+    low24h: str
+    open24h: str
+    sodUtc0: str
+    sodUtc8: str
+    ts: str
+
+
+class IndexTickersChannel(BaseModel):
+    args: IndexTickersChannelInputArgs
+    data: List[IndexTickers]
+
+
+
+class IndexCandleSticksChannelInputArgs(_PublicChannelInputArgsTypeInstID):
+    ...
+
+class IndexCandleSticksChannel(BaseModel):
+    args: IndexCandleSticksChannelInputArgs
+    data: List[CandleStick]
+
+    @staticmethod
+    def from_array(args:IndexCandleSticksChannelInputArgs, data):
+        data: List[CandleStick] = [
+            CandleStick(
+                timestamp=item[0],
+                open=item[1],
+                high=item[2],
+                low=item[3],
+                close=item[4],
+                is_closed=item[5]
+            ) for item in data
+        ]
+        return IndexCandleSticksChannel(args=args, data=data)
+
+class _TradingAccountChannelInputArgsTypeCCY(BaseModel):
+    channel: str
+    ccy: str
+
+class AccountChannelInputArgs(_TradingAccountChannelInputArgsTypeCCY):
+    ...
+
+class AccountChannelReturnArgs(_TradingAccountChannelInputArgsTypeCCY):
+    uid: str
+
+class AccountChannel(BaseModel):
+    args: AccountChannelReturnArgs
+    data: List[AccountBalanceData]
+
+
+class PositionChannelInputArgs(BaseModel):
+    channel: str
+    instType: str
+    instFamily: str
+    instId: str
+
+class PositionChannel(BaseModel):
+    args: PositionChannelInputArgs
+    data: List[Position]
+
+class BalanceAndPositionsChannelInputArgs(BaseModel):
+    channel: str
+class BalanceAndPositionsChannelReturnArgs(BaseModel):
+    channel: str
+    uid: str
+
+
+class _balData_element(BaseModel):
+    ccy: str
+    cashBal: str
+    uTime: str
+
+class _posData_element(BaseModel):
+    posId: str
+    tradeId: str
+    instId: str
+    instType: InstType
+    mgnMode: str
+    posSide: str
+    pos: str
+    ccy: str
+    posCcy: str
+    avgPx: str
+    uTIme: str
+
+class _trades_element(BaseModel):
+    instId: str
+    tradeId: str
+
+class BalanceAndPositionData(BaseModel):
+    pTime: str
+    eventType: str
+    balData: List[_balData_element]
+    posData: List[_posData_element]
+    trades: List[_trades_element]
+
+class BalanceAndPositionsChannel(BaseModel):
+    args: BalanceAndPositionsChannelReturnArgs
+    data: List[BalanceAndPositionData]
+
 
 
 # {
@@ -569,4 +761,3 @@ class InstIdSignalRequestForm(BaseModel):
 #     "Bearish_Exit": "{{plot("Bearish Exit")}}"
 #   }
 # }
-

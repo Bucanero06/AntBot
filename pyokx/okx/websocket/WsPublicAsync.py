@@ -43,14 +43,24 @@ class WsPublicAsync:
         logger.info(f"unsubscribe: {payload}")
         await self.websocket.send(payload)
 
-    async def stop(self):
-        await self.factory.close()
-        self.loop.stop()
+    # async def stop(self):
+    #     await self.factory.close()
+    #     self.loop.stop()
+    #
+    # async def start(self):
+    #     logger.info("Connecting to WebSocket...")
+    #     await self.connect()
+    #     self.loop.create_task(self.consume())
 
     async def start(self):
         logger.info("Connecting to WebSocket...")
         await self.connect()
         self.loop.create_task(self.consume())
+
+    async def stop(self):
+        if self.websocket:
+            await self.websocket.close()  # Gracefully close the connection
+            self.websocket = None
 
     def stop_sync(self):
         self.loop.run_until_complete(self.stop())

@@ -1,6 +1,6 @@
 
 import unittest
-from pyokx.okx import BlockTrading
+from pyokx.low_rest_api import BlockTrading
 class BlockTradingTest(unittest.TestCase):
     def setUp(self):
         api_key = 'your_apiKey'

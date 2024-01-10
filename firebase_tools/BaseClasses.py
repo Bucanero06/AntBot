@@ -1,124 +1,10 @@
-"""
-Pydantic provides various constraints and validation features for string, integer, float, and other types. Let's go through the most commonly used constraints:
 
-### 1. Strings (`constr`):
-
-- `min_length`: Minimum length of the string.
-- `max_length`: Maximum length of the string.
-- `regex`: Validates the string with the provided regular expression.
-- `strip_whitespace`: If `True`, leading and trailing whitespaces are stripped.
-- `curtail_length`: If a string exceeds the `max_length`, it will truncate it to this length.
-
-Example:
-
-```python
-from pydantic import constr
-
-name: constr(min_length=2, max_length=10, regex=r'^[a-zA-Z]+$')
-```
-
-### 2. Integers (`conint`):
-
-- `gt`: Greater than a specific value.
-- `ge`: Greater than or equal to a specific value.
-- `lt`: Less than a specific value.
-- `le`: Less than or equal to a specific value.
-- `multiple_of`: Must be a multiple of the specified value.
-
-Example:
-
-```python
-from pydantic import conint
-
-age: conint(gt=0, lt=120)
-```
-
-### 3. Floats (`confloat`):
-
-Similar to `conint` but for floating point numbers:
-
-- `gt`
-- `ge`
-- `lt`
-- `le`
-- `multiple_of`
-
-Example:
-
-```python
-from pydantic import confloat
-
-price: confloat(gt=0.0)
-```
-
-### 4. Lists (`conlist`):
-
-- `min_items`: Minimum number of items.
-- `max_items`: Maximum number of items.
-
-Example:
-
-```python
-from pydantic import conlist
-
-numbers: conlist(int, min_items=1, max_items=10)
-```
-
-### 5. Others:
-
-- `EmailStr`: Validate string as a valid email address.
-- `UrlStr`: Validate string as a valid URL.
-- `Hostname`: Validate string as a valid hostname.
-- `IPvAnyAddress`: Validate string as a valid IPv4 or IPv6 address.
-- `PositiveInt`: Validate as a positive integer.
-- `NegativeInt`: Validate as a negative integer.
-- `PositiveFloat`: Validate as a positive float.
-- `NegativeFloat`: Validate as a negative float.
-
-### 6. Enums:
-
-Enums can be used to limit a value to a specific set of allowed values:
-
-```python
-from enum import Enum
-from pydantic import BaseModel
-
-class ColorEnum(str, Enum):
-    RED = "red"
-    BLUE = "blue"
-    GREEN = "green"
-
-class Model(BaseModel):
-    color: ColorEnum
-```
-
-### 7. Validators:
-
-In addition to the above constraints, you can also define custom validation logic using the `@validator` decorator:
-
-```python
-from pydantic import BaseModel, validator
-
-class UserModel(BaseModel):
-    name: str
-    age: int
-
-    @validator('age')
-    def check_age(cls, v):
-        if v <= 0:
-            raise ValueError('Age must be positive')
-        return v
-```
-
-These are just some of the many constraints and validations that Pydantic offers. For more in-depth details, refer to
-    the [official Pydantic documentation](https://pydantic-docs.helpmanual.io/).
-"""
 import re
-from typing import Literal, List
+from typing import Literal, List, Optional
 
 from pydantic import Field, ValidationError, BaseModel
 
-from src.logger import setup_logger
+from shared.logging import setup_logger
 
 logger = setup_logger(__name__)
 
@@ -230,6 +116,14 @@ class FirestoreIDType(ConStrBase):
             raise ValueError("The id_str cannot match the pattern __id[0-9]+__.")
         return v
 
+class FirebaseAuthGoodResponse(BaseModel):
+    status: str
+    error_message: Optional[str]
+    token: Optional[str]
+    refresh_token: Optional[str]
+    user_id: Optional[str]
+    email: Optional[str]
+    expires_in: Optional[str]
 
 class CoreModel(BaseModel):
     """

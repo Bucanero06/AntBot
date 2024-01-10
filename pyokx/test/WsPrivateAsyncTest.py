@@ -1,6 +1,6 @@
 import asyncio
 
-from pyokx.okx.websocket.WsPprivateAsync import WsPrivateAsync
+from pyokx.ws_clients import WsPrivateAsync
 
 
 def privateCallback(message):
@@ -9,13 +9,8 @@ def privateCallback(message):
 
 async def main():
     url = "wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999"
-    ws = WsPrivateAsync(
-        apiKey="your apiKey",
-        passphrase="your passphrase",
-        secretKey="your secretKey",
-        url=url,
-        useServerTime=False
-    )
+    ws = WsPrivateAsync(apikey="your apiKey", passphrase="your passphrase", secretkey="your secretKey", url=url,
+                        use_servertime=False)
     await ws.start()
     args = []
     arg1 = {"channel": "account", "instType": "BTC"}

@@ -1,5 +1,5 @@
 import unittest
-from ..okx import Convert
+from ..low_rest_api import Convert
 class ConvertTest(unittest.TestCase):
     def setUp(self):
         api_key = 'your_apiKey'

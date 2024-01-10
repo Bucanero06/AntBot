@@ -11,8 +11,8 @@ import base64
 
 import websocket
 from typing import Optional
-from pybitget.enums import GET, REQUEST_PATH, CONTRACT_WS_URL
-from pybitget import logger
+from _ignoredtrackedcontent.pybitget.enums import GET, REQUEST_PATH, CONTRACT_WS_URL
+from _ignoredtrackedcontent.pybitget import logger
 
 WS_OP_LOGIN = 'login'
 WS_OP_SUBSCRIBE = "subscribe"

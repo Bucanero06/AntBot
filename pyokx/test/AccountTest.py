@@ -1,6 +1,6 @@
 
 import unittest
-from pyokx.okx import Account
+from pyokx.low_rest_api import Account
 
 class AccountTest(unittest.TestCase):
     def setUp(self):

@@ -14,10 +14,10 @@ from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Retur
                                    AccountConfigData, MaxOrderSizeData, MaxAvailSizeData, Cancelled_Algo_Order,
                                    Instrument, InstType, Orderbook_Snapshot, Bid, Ask,
                                    Simplified_Balance_Details, InstrumentStatusReport)
-from shared.tmp_shared import calculate_tp_stop_prices, calculate_sl_stop_prices
+from shared.tmp_shared import calculate_tp_stop_prices, calculate_sl_stop_prices, FunctionCall, execute_function_calls
 
 dotenv.load_dotenv(dotenv.find_dotenv())
-from pyokx.OKX_Futures_Exchange_Client import OKX_Futures_Exchange_Client as OKXClient
+from pyokx.Futures_Exchange_Client import OKX_Futures_Exchange_Client as OKXClient
 
 okx_client = OKXClient(api_key=os.getenv('OKX_API_KEY'), api_secret=os.getenv('OKX_SECRET_KEY'),
                        passphrase=os.getenv('OKX_PASSPHRASE'), sandbox_mode=os.getenv('OKX_SANDBOX_MODE'))
@@ -41,8 +41,9 @@ DATA_STRUCTURES = [
 def get_request_data(returned_data, target_data_structure):
     # print(f'{returned_data = }')
     if len(returned_data['data']) == 0:
-        print(f'{returned_data["code"] = }')
-        print(f'{returned_data["msg"] = }')
+        if returned_data["code"] != '0':
+            print(f'{returned_data["code"] = }')
+            print(f'{returned_data["msg"] = }')
         return []
     structured_data = []
     for data in returned_data['data']:
@@ -54,13 +55,8 @@ all_futures_instruments = get_request_data(publicAPI.get_instruments(instType='F
                                            target_data_structure=Instrument)
 
 
-
-
 class InstrumentSearcher:
     def __init__(self, instruments: List[Instrument]):
-        # print(f'{instrument_searcher.find_by_instId("BTC-USDT-240329") = }')
-        # print(f'{instrument_searcher.find_by_type(InstType.FUTURES) = }')
-        # print(f'{instrument_searcher.find_by_underlying("BTC-USDT") = }')
         """
         InstrumentSearcher is a class that allows you to search for instruments by instId, instType, or underlying
 
@@ -100,6 +96,9 @@ instrument_searcher = InstrumentSearcher(all_futures_instruments)
 
 
 def get_ticker_with_higher_volume(seed_symbol_name):
+    print(f'{seed_symbol_name = }')
+    print(f'{okx_client.derivative_type = }')
+
     # raise DeprecationWarning("This function is deprecated. Waiting to update to Structured Data Types.")
     all_positions = okx_client.accountAPI.get_positions(instType=okx_client.derivative_type)
     all_position_symbols = [position['instId'] for position in all_positions['data']]
@@ -121,7 +120,7 @@ def get_ticker_with_higher_volume(seed_symbol_name):
                 _highest_volume = vol24
                 _highest_volume_ticker = ticker_data
     ticker_data = _ticker_data or _highest_volume_ticker
-    return ticker_data
+    return Ticker(**ticker_data)
 
 
 def assert_okx_account_level(account_level: [1, 2, 3, 4]):
@@ -224,8 +223,8 @@ def cancel_all_orders(orders_list: List[Order] = None, instType: InstType = None
 def close_position(instId, mgnMode, posSide='', ccy='', autoCxl='', clOrdId='', tag=''):
     params = {'instId': instId, 'mgnMode': mgnMode, 'posSide': posSide, 'ccy': ccy, 'autoCxl': autoCxl,
               'clOrdId': clOrdId, 'tag': tag}
-    from pyokx.okx.consts import CLOSE_POSITION
-    from pyokx.okx.consts import POST
+    from pyokx.low_rest_api.consts import CLOSE_POSITION
+    from pyokx.low_rest_api.consts import POST
     closed_position_return = tradeAPI._request_with_params(POST, CLOSE_POSITION, params)
     return closed_position_return
 
@@ -465,7 +464,6 @@ def get_max_avail_size(instId, tdMode):
 from concurrent.futures import ThreadPoolExecutor
 
 
-
 def generate_random_string(length, char_type='alphanumeric'):
     if length > 32:
         raise ValueError("Maximum length allowed is 32")
@@ -522,19 +520,6 @@ def fetch_initial_data(TD_MODE, instId=None):
     ]
 
     instrument_status_report = fetch_status_report_for_instrument(instId, TD_MODE)
-
-    print()
-    # pprint(f'\n{simplified_balance_details = }')
-    # pprint(f'\n{account_config = }')
-    # pprint(f'{max_order_size = }')
-    # pprint(f'{max_avail_size = }\n')
-    # #
-    # pprint(f'{all_positions = }')
-    # pprint(f'{all_orders = }')
-    # pprint(f'{all_algo_orders = }\n')
-    # pprint(f'{len(all_algo_orders) = }')
-    # if len(all_positions) > 0:
-    #     pprint(f'{all_positions[0].pos = }')
 
     return simplified_balance_details, account_config, instrument_status_report
 
@@ -648,23 +633,23 @@ def clean_and_verify_instID(instID):
 
 def okx_signal_handler(
         instID: str = '',
-        order_size: Union[int, float] = '',
-        leverage: int = '',
-        order_usd_amount: Union[int, float] = '',
-        order_type: str = '',
+        order_size: int = None,
+        leverage: int = None,
         order_side: str = '',
-        stop_loss_trigger_percentage: float = '',
-        take_profit_trigger_percentage: float = '',
-        tp_trigger_price_type: str = '',
-        stop_loss_price_offset: Union[int, float] = '',
-        tp_price_offset: Union[int, float] = '',
-        sl_trigger_price_type: str = '',
-        trailing_stop_activation_percentage: Union[int, float] = '',
-        trailing_stop_callback_ratio: Union[int, float] = '',
-        max_orderbook_limit_price_offset: Union[int, float] = '',
-        flip_position_if_opposite_side: bool = '',
+        order_type: str = '',
+        max_orderbook_limit_price_offset: float = None,
+        flip_position_if_opposite_side: bool = False,
         clear_prior_to_new_order: bool = False,
-        red_button: bool = False
+        red_button: bool = False,
+        order_usd_amount: float = None,
+        stop_loss_trigger_percentage: float = None,
+        take_profit_trigger_percentage: float = None,
+        tp_trigger_price_type: str = '',
+        stop_loss_price_offset: float = None,
+        tp_price_offset: float = None,
+        sl_trigger_price_type: str = '',
+        trailing_stop_activation_percentage: float = None,
+        trailing_stop_callback_ratio: float = None,
 ):
     TD_MODE: str = 'isolated'
     POSSIDETYPE: str = 'net'  # net or long/short, need to cancel all orders/positions to change
@@ -681,60 +666,63 @@ def okx_signal_handler(
         return None
     # Clean Input Data
     instID = clean_and_verify_instID(instID)
-    (order_type, order_side,
-     TD_MODE,
-     tp_trigger_price_type, sl_trigger_price_type) = (order_type.lower(), order_side.lower(),
-                                                      TD_MODE.lower(), tp_trigger_price_type.lower(),
-                                                      sl_trigger_price_type.lower())
-    order_size = int(order_size)
-    leverage = int(leverage)
 
-    stop_loss_trigger_percentage = False if (
-            stop_loss_trigger_percentage == '' or not stop_loss_trigger_percentage) else float(
-        stop_loss_trigger_percentage)
-    take_profit_trigger_percentage = False if take_profit_trigger_percentage == '' or not take_profit_trigger_percentage else float(
-        take_profit_trigger_percentage)
-    stop_loss_price_offset = False if stop_loss_price_offset == '' or not stop_loss_price_offset else float(
-        stop_loss_price_offset)
-    tp_price_offset = False if tp_price_offset == '' or not tp_price_offset else float(
-        tp_price_offset)
-
-    trailing_stop_activation_percentage = False if trailing_stop_activation_percentage == '' or not trailing_stop_activation_percentage else float(
-        trailing_stop_activation_percentage)
-    trailing_stop_callback_ratio = False if trailing_stop_callback_ratio == '' or not trailing_stop_callback_ratio else float(
-        trailing_stop_callback_ratio)
-
-    max_orderbook_limit_price_offset = False if max_orderbook_limit_price_offset == '' or max_orderbook_limit_price_offset == 0 or not max_orderbook_limit_price_offset else float(
-        max_orderbook_limit_price_offset)
-
-    flip_position_if_opposite_side = False if flip_position_if_opposite_side == '' or not flip_position_if_opposite_side else bool(
-        flip_position_if_opposite_side)
-
-    take_profit_activated = None
-    stop_loss_activated = None
-    trailing_stop_loss_activated = None
-    # TODO multiple_tp and amendPxOnTriggerType are commented out because they need multiple TP's to work and is not
-    #   developed yet downstream
-    #   multiple_tp = None
-    #   amendPxOnTriggerType = None
-    if take_profit_trigger_percentage or tp_price_offset:
-        assert take_profit_trigger_percentage and tp_price_offset
-        take_profit_activated = True
-        tp_trigger_price_type = tp_trigger_price_type or 'last'
-
-    if stop_loss_trigger_percentage or stop_loss_price_offset:
-        assert stop_loss_trigger_percentage and stop_loss_price_offset
-        stop_loss_activated = True
-        sl_trigger_price_type = sl_trigger_price_type or 'last'
-
-    if trailing_stop_activation_percentage or trailing_stop_callback_ratio:
-        assert trailing_stop_callback_ratio, f'trailing_stop_callback_ratio must be provided if trailing_stop_activation_percentage is provided. {trailing_stop_callback_ratio = }'
-        trailing_stop_loss_activated = True
-
-    assert TD_MODE in ['isolated', 'crossed'], f'{TD_MODE = }'
-    assert order_side in ['buy', 'sell'] or not order_side, (f'order_side must be either "buy" or "sell" or empty. \n '
-                                                             f'for maintenance mode \n      {order_side = }')
     if order_side:
+        (order_type, order_side,
+         TD_MODE,
+         tp_trigger_price_type, sl_trigger_price_type) = (order_type.lower(), order_side.lower(),
+                                                          TD_MODE.lower(), tp_trigger_price_type.lower(),
+                                                          sl_trigger_price_type.lower())
+        order_size = int(order_size)
+        leverage = int(leverage)
+
+        stop_loss_trigger_percentage = False if (
+                stop_loss_trigger_percentage == '' or not stop_loss_trigger_percentage) else float(
+            stop_loss_trigger_percentage)
+        take_profit_trigger_percentage = False if take_profit_trigger_percentage == '' or not take_profit_trigger_percentage else float(
+            take_profit_trigger_percentage)
+        stop_loss_price_offset = False if stop_loss_price_offset == '' or not stop_loss_price_offset else float(
+            stop_loss_price_offset)
+        tp_price_offset = False if tp_price_offset == '' or not tp_price_offset else float(
+            tp_price_offset)
+
+        trailing_stop_activation_percentage = False if trailing_stop_activation_percentage == '' or not trailing_stop_activation_percentage else float(
+            trailing_stop_activation_percentage)
+        trailing_stop_callback_ratio = False if trailing_stop_callback_ratio == '' or not trailing_stop_callback_ratio else float(
+            trailing_stop_callback_ratio)
+
+        max_orderbook_limit_price_offset = False if max_orderbook_limit_price_offset == '' or max_orderbook_limit_price_offset == 0 or not max_orderbook_limit_price_offset else float(
+            max_orderbook_limit_price_offset)
+
+        flip_position_if_opposite_side = False if flip_position_if_opposite_side == '' or not flip_position_if_opposite_side else bool(
+            flip_position_if_opposite_side)
+
+        take_profit_activated = None
+        stop_loss_activated = None
+        trailing_stop_loss_activated = None
+        # TODO multiple_tp and amendPxOnTriggerType are commented out because they need multiple TP's to work and is not
+        #   developed yet downstream
+        #   multiple_tp = None
+        #   amendPxOnTriggerType = None
+        if take_profit_trigger_percentage or tp_price_offset:
+            assert take_profit_trigger_percentage and tp_price_offset
+            take_profit_activated = True
+            tp_trigger_price_type = tp_trigger_price_type or 'last'
+
+        if stop_loss_trigger_percentage or stop_loss_price_offset:
+            assert stop_loss_trigger_percentage and stop_loss_price_offset
+            stop_loss_activated = True
+            sl_trigger_price_type = sl_trigger_price_type or 'last'
+
+        if trailing_stop_activation_percentage or trailing_stop_callback_ratio:
+            assert trailing_stop_callback_ratio, f'trailing_stop_callback_ratio must be provided if trailing_stop_activation_percentage is provided. {trailing_stop_callback_ratio = }'
+            trailing_stop_loss_activated = True
+
+        assert TD_MODE in ['isolated', 'crossed'], f'{TD_MODE = }'
+        assert order_side in ['buy', 'sell'] or not order_side, (
+            f'order_side must be either "buy" or "sell" or empty. \n '
+            f'for maintenance mode \n      {order_side = }')
+
         assert not stop_loss_trigger_percentage or isinstance(stop_loss_trigger_percentage,
                                                               float), f'{stop_loss_trigger_percentage = }'
         assert not take_profit_trigger_percentage or isinstance(take_profit_trigger_percentage,
@@ -761,7 +749,7 @@ def okx_signal_handler(
 
     (simplified_balance_details, account_config, instrument_status_report) = fetch_initial_data(TD_MODE, instId=instID)
 
-    if leverage and leverage>0:
+    if leverage and leverage > 0:
         accountAPI.set_leverage(
             lever=leverage,
             mgnMode=TD_MODE,
@@ -965,21 +953,7 @@ if __name__ == '__main__':
     dotenv.load_dotenv(dotenv.find_dotenv())
 
     okx_input = OKXSignalInput(
-        instID=Ticker(**get_ticker_with_higher_volume('BTC-USDT')).instId,
-        order_size=20,  # multiple of a lot size
-        # 'order_usd_amount': 1000,  # this or order_size
-        order_type='market',  # post_only, limit, market
-        # 'order_side': 'sell',
-        # 'stop_loss_trigger_percentage': 1,
-        # 'take_profit_trigger_percentage': 1,
-        # 'tp_trigger_price_type': 'last',
-        # 'stop_loss_price_offset': 0.1,
-        # 'tp_price_offset': 0.1,
-        # 'sl_trigger_price_type': 'last',
-        # 'trailing_stop_activation_percentage': 0.05,
-        # 'trailing_stop_callback_ratio': 0.05,
-        max_orderbook_limit_price_offset=False,
-        flip_position_if_opposite_side=False,
+        instID=get_ticker_with_higher_volume('BTC-USDT').instId,
         clear_prior_to_new_order=False,
         red_button=False,
     )

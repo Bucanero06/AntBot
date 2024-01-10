@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 SECRET_KEY = 'eyJhbGciOiJIUzI1NiJ9eyJSb2xlIjoiQWRtaW4i'
 ALGORITHM = 'HS256'
-EXPIRE_TIME = 30
+DEFAULT_KEY_EXPIRE_TIME = 30
 
 
 # engine = create_engine(SQLALCHEMY_DATABASE_URL,
@@ -20,12 +20,12 @@ EXPIRE_TIME = 30
 Base = declarative_base()
 
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# def get_db():
+#     db = SessionLocal()
+#     try:
+#         yield db
+#     finally:
+#         db.close()
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

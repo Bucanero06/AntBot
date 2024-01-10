@@ -1,6 +1,6 @@
 import asyncio
 
-from pyokx.okx.websocket.WsPublicAsync import WsPublicAsync
+from pyokx.ws_clients.WsPublicAsync import WsPublicAsync
 
 
 def publicCallback(message):

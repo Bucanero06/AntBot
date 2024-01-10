@@ -1,6 +1,6 @@
 
 import unittest
-from pyokx.okx import NDBroker
+from pyokx.low_rest_api import NDBroker
 
 class BrokerTest(unittest.TestCase):
     def setUp(self):

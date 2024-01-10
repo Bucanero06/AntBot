@@ -1,6 +1,6 @@
 
 import unittest
-from pyokx.okx import Grid
+from pyokx.low_rest_api import Grid
 
 class GridTest(unittest.TestCase):
     def setUp(self):

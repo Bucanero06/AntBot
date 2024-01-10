@@ -1,9 +1,9 @@
 import requests
 import json
-from pybitget.enums import *
-from pybitget import utils
-from pybitget import exceptions
-from pybitget import logging
+from _ignoredtrackedcontent.pybitget.enums import *
+from _ignoredtrackedcontent.pybitget import utils
+from _ignoredtrackedcontent.pybitget import exceptions
+from _ignoredtrackedcontent.pybitget import logging
 
 logger = logging.setup_logger(__name__.split(".")[-1])
 

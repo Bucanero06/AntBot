@@ -89,7 +89,7 @@ def prepare_order_request(planType, symbol, productType, marginMode, marginCoin,
 def bitget_signal_handler(order_side, current_market_price, stop_loss_trigger_percentage,
                           stop_surplus_trigger_percentage,
                           stop_loss_price_offset, stop_surplus_price_offset, plan_type, order_size):
-    from pybitget.client import Client as BITGETClient
+    from _ignoredtrackedcontent.pybitget.client import Client as BITGETClient
     import os
     bitget_client = BITGETClient(
         os.environ.get("BITGET_API_KEY"),

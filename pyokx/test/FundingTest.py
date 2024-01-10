@@ -1,6 +1,6 @@
 
 import unittest
-from pyokx.okx import Funding
+from pyokx.low_rest_api import Funding
 
 class FundingTest(unittest.TestCase):
     def setUp(self):

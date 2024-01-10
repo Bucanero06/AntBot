@@ -1,5 +1,5 @@
 import unittest
-from pyokx.okx import SubAccount
+from pyokx.low_rest_api import SubAccount
 
 class SubAccountTest(unittest.TestCase):
     def setUp(self):

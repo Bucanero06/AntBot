@@ -5,24 +5,13 @@ import os
 import dotenv
 
 from pyokx.data_structures import *
-from pyokx.okx.websocket.WsPprivateAsync import WsPrivateAsync
-from pyokx.okx.websocket.WsPublicAsync import WsPublicAsync
-from shared.tmp_shared import execute_function_calls
-
-# Live
-# Public WebSocket: wss://ws.okx.com:8443/ws/v5/public
-# Private WebSocket: wss://ws.okx.com:8443/ws/v5/private
-# wss://ws.okx.com:8443/ws/v5/business
-# DEMO
-# Public WebSocket：wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999
-# Private WebSocket：wss://wspap.okx.com:8443/ws/v5/private?brokerId=999
-# wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999
-dotenv.load_dotenv(dotenv.find_dotenv())
-apiKey = os.getenv('OKX_API_KEY')
-passphrase = os.getenv('OKX_PASSPHRASE')
-secretKey = os.getenv('OKX_SECRET_KEY')
-sandbox_mode = os.getenv('OKX_SANDBOX_MODE')
-
+from pyokx.ws_clients.WsPprivateAsync import WsPrivateAsync
+from pyokx.ws_clients.WsPublicAsync import WsPublicAsync
+from pyokx.ws_data_structures import PositionChannelInputArgs, InstrumentsChannelInputArgs, PriceLimitChannelInputArgs, \
+    MarkPriceChannelInputArgs, IndexTickersChannelInputArgs, MarkPriceCandleSticksChannelInputArgs, \
+    IndexCandleSticksChannelInputArgs, BalanceAndPositionsChannelInputArgs, PriceLimitChannel, InstrumentsChannel, \
+    MarkPriceChannel, IndexTickersChannel, MarkPriceCandleSticksChannel, IndexCandleSticksChannel, AccountChannel, \
+    PositionChannel, BalanceAndPositionsChannel, AccountChannelInputArgs, WebSocketConnectionConfig
 
 # # Initialize FastAPI app
 # app = FastAPI()
@@ -30,17 +19,28 @@ sandbox_mode = os.getenv('OKX_SANDBOX_MODE')
 # # Initialize Redis client
 # redis = aioredis.from_url("redis://localhost", encoding="utf-8", decode_responses=True)
 
-class WebSocketConnectionConfig(BaseModel):
-    channels: dict = {}
-    wss_url: str
+
+OKX_WEBSOCKET_URLS = dict(
+    public="wss://ws.okx.com:8443/ws/v5/public",
+    private="wss://ws.okx.com:8443/ws/v5/private",
+    business="wss://ws.okx.com:8443/ws/v5/business",
+    public_aws="wss://wsaws.okx.com:8443/ws/v5/public",
+    private_aws="wss://wsaws.okx.com:8443/ws/v5/private",
+    business_aws="wss://wsaws.okx.com:8443/ws/v5/business",
+    public_demo="wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999",
+    private_demo="wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999",
+    business_demo="wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999",
+)
 
 
-async def websockets_main_run(input_channel_models: list):
+async def okx_websockets_main_run(input_channel_models: list,
+                                  apikey: str = None, passphrase: str = None, secretkey: str = None,
+                                  sandbox_mode: bool = True):
     if not input_channel_models:
         raise Exception("No channels provided")
-    DEMO_TRADING_WS_EXTENSION = "?brokerId=9999"
+
     public_channels_config = WebSocketConnectionConfig(
-        wss_url='wss://wspap.okx.com:8443/ws/v5/public',
+        wss_url=OKX_WEBSOCKET_URLS["public"] if not sandbox_mode else OKX_WEBSOCKET_URLS["public_demo"],
         channels={
             "price-limit": PriceLimitChannel,
             "instruments": InstrumentsChannel,
@@ -49,7 +49,7 @@ async def websockets_main_run(input_channel_models: list):
         }
     )
     business_channels_config = WebSocketConnectionConfig(
-        wss_url='wss://wspap.okx.com:8443/ws/v5/business',
+        wss_url=OKX_WEBSOCKET_URLS["business"] if not sandbox_mode else OKX_WEBSOCKET_URLS["business_demo"],
         channels={
             "mark-price-candle1m": MarkPriceCandleSticksChannel,
             "mark-price-candle3m": MarkPriceCandleSticksChannel,
@@ -110,7 +110,7 @@ async def websockets_main_run(input_channel_models: list):
     )
 
     private_channels_config = WebSocketConnectionConfig(
-        wss_url='wss://wspap.okx.com:8443/ws/v5/private',
+        wss_url=OKX_WEBSOCKET_URLS["private"] if not sandbox_mode else OKX_WEBSOCKET_URLS["private_demo"],
         channels={
             "account": AccountChannel,  # Missing coinUsdPrice
             "positions": PositionChannel,  # Missing pTime
@@ -118,32 +118,16 @@ async def websockets_main_run(input_channel_models: list):
         }
     )
 
-    if sandbox_mode:
-        public_channels_config.wss_url = f'{public_channels_config.wss_url}{DEMO_TRADING_WS_EXTENSION}'
-        business_channels_config.wss_url = f'{business_channels_config.wss_url}{DEMO_TRADING_WS_EXTENSION}'
-        private_channels_config.wss_url = f'{private_channels_config.wss_url}{DEMO_TRADING_WS_EXTENSION}'
-
-    public_client = WsPublicAsync(url=public_channels_config.wss_url)
-    business_client = WsPublicAsync(url=business_channels_config.wss_url)
-    private_client = WsPrivateAsync(
-        apiKey=apiKey,
-        passphrase=passphrase,
-        secretKey=secretKey,
-        url=private_channels_config.wss_url,
-        useServerTime=False,
-    )
-
-
     available_channel_models = public_channels_config.channels | business_channels_config.channels | private_channels_config.channels
 
-    def public_callback(message):
+    def ws_callback(message):
         message_data = json.loads(message)
         event = message_data.get("event", None)
 
         if event:
             if event == "error":
                 print(f"Error: {message_data}")
-                exit()
+                return  # TODO: Handle events, mostly subscribe and error
             print(f"Event: {message_data}")
             return  # TODO: Handle events, mostly subscribe and error
 
@@ -160,7 +144,7 @@ async def websockets_main_run(input_channel_models: list):
 
         except Exception as e:
             print(f"Exception: {e}")
-            return
+            return  # TODO: Handle exceptions
 
     public_channels = []
     business_channels = []
@@ -180,17 +164,26 @@ async def websockets_main_run(input_channel_models: list):
     private_params = [channel.model_dump() for channel in private_channels]
 
     if public_params:
+        public_client = WsPublicAsync(url=public_channels_config.wss_url)
         print(f"Subscribing to public channels: {public_params}")
         await public_client.start()
-        await public_client.subscribe(params=public_params, callback=public_callback)
+        await public_client.subscribe(params=public_params, callback=ws_callback)
     if business_params:
+        business_client = WsPublicAsync(url=business_channels_config.wss_url)
         print(f"Subscribing to business channels: {business_params}")
         await business_client.start()
-        await business_client.subscribe(params=business_params, callback=public_callback)
+        await business_client.subscribe(params=business_params, callback=ws_callback)
     if private_params:
+        assert apikey, f"API key was not provided"
+        assert secretkey, f"API secret key was not provided"
+        assert passphrase, f"Passphrase was not provided"
+
+        private_client = WsPrivateAsync(apikey=apikey, passphrase=passphrase, secretkey=secretkey,
+                                        url=private_channels_config.wss_url, use_servertime=False)
         print(f"Subscribing to private channels: {private_params}")
         await private_client.start()
-        await private_client.subscribe(params=private_params, callback=public_callback)
+        await private_client.subscribe(params=private_params, callback=ws_callback)
+
     # Keep the loop running, or perform other tasks
     try:
         while True:
@@ -204,28 +197,43 @@ async def websockets_main_run(input_channel_models: list):
         await business_client.stop()
         await private_client.stop()
 
+if __name__ =='__main__':
+    # ticker = get_ticker_with_higher_volume('BTC-USDT')
+    # instId = ticker.instId
+    # instType = ticker.instType
+    instId = "BTC-USDT-240329"
+    instType = "FUTURES"
+    #
+    instId_split = instId.split("-")
+    instFamily = "-".join(instId_split[:-1])
+    ccy = instId_split[0]
 
-# Run the main coroutine
-input_channel_models = [
-    ### Public Channels
-    InstrumentsChannelInputArgs(channel="instruments", instType="FUTURES"),
-    PriceLimitChannelInputArgs(channel="price-limit", instId="BTC-USDT-240628"),
-    MarkPriceChannelInputArgs(channel="mark-price", instId="BTC-USDT-240628"),
-    IndexTickersChannelInputArgs(
-        # Index with USD, USDT, BTC, USDC as the quote currency, e.g. BTC-USDT, e.g. not BTC-USDT-240628
-        channel="index-tickers", instId="BTC-USDT"),
+    dotenv.load_dotenv(dotenv.find_dotenv())
 
-    ### Business Channels
-    MarkPriceCandleSticksChannelInputArgs(channel="mark-price-candle1m", instId="BTC-USDT-240628"),
-    IndexCandleSticksChannelInputArgs(channel="index-candle1m", instId="BTC-USDT"),
+    # Run the main coroutine with asyncio
+    asyncio.run(okx_websockets_main_run(
+        apikey=os.getenv('OKX_API_KEY'),
+        passphrase=os.getenv('OKX_PASSPHRASE'),
+        secretkey=os.getenv('OKX_SECRET_KEY'),
+        sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
+        input_channel_models=[
+            ### Public Channels
+            InstrumentsChannelInputArgs(channel="instruments", instType=instType),
+            PriceLimitChannelInputArgs(channel="price-limit", instId=instId),
+            MarkPriceChannelInputArgs(channel="mark-price", instId=instId),
+            IndexTickersChannelInputArgs(
+                # Index with USD, USDT, BTC, USDC as the quote currency, e.g. BTC-USDT, e.g. not BTC-USDT-240628
+                channel="index-tickers", instId=instFamily),
 
-    ### Private Channels
-    AccountChannelInputArgs(channel="account", ccy="BTC"),
-    PositionChannelInputArgs(channel="positions", instType="FUTURES",
-                             instFamily="BTC-USDT",
-                             instId="BTC-USDT-240628"),
-    BalanceAndPositionsChannelInputArgs(channel="balance_and_position")
+            ### Business Channels
+            MarkPriceCandleSticksChannelInputArgs(channel="mark-price-candle1m", instId=instId),
+            IndexCandleSticksChannelInputArgs(channel="index-candle1m", instId=instFamily),
 
-]
-
-asyncio.run(websockets_main_run(input_channel_models))
+            ### Private Channels
+            AccountChannelInputArgs(channel="account", ccy=ccy),
+            PositionChannelInputArgs(channel="positions", instType=instType,
+                                     instFamily=instFamily,
+                                     instId=instId),
+            BalanceAndPositionsChannelInputArgs(channel="balance_and_position")
+        ]
+    ))

@@ -4,20 +4,16 @@ from fastapi import APIRouter, HTTPException
 from jose import JWTError
 
 from firebase_tools.authenticate import check_token_validity
-# from model.okx import InstrumentStatusReportModel, OrderModel, AlgoOrderModel, PositionModel
 from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, PremiumIndicatorSignalRequestForm
-from routers.api_keys import check_token_against_instrument
+from routers.okx_authentication import check_token_against_instrument
 
-okx_router = APIRouter(tags=["okx"])
+okx_router = APIRouter(tags=["OKX"])
 
 from fastapi import Depends, status
 
 
 @okx_router.post(path="/okx_antbot_signal", status_code=status.HTTP_202_ACCEPTED)
-async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
-                             # db: Session = Depends(get_db),
-                             # current_user: CurrentUser = Depends(get_current_user)
-                             ):
+async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="credentials invalid",
@@ -38,7 +34,7 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
         print(f"Exception in okx_antbot_webhook: {e}")
         return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
 
-    from pyokx.entry_way import okx_signal_handler
+    from pyokx.signal_handling import okx_signal_handler
     try:
         assert signal_input.OKXSignalInput, "OKXSignalInput is None"
         okx_signal_input = signal_input.OKXSignalInput
@@ -72,12 +68,11 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm,
     return {"detail": "okx signal received"}
 
 
-# endpoint to find the highest instID from symbol
-@okx_router.get(path="/okx/highest_instID/{symbol}", status_code=status.HTTP_200_OK)
-async def okx_highest_instID(symbol: str,
-                             current_user=Depends(check_token_validity),
-                             ):
-    from pyokx.entry_way import get_ticker_with_higher_volume
+@okx_router.get(path="/okx/highest_volume_ticker/{symbol}", status_code=status.HTTP_200_OK)
+async def okx_highest_volume_ticker(symbol: str,
+                                    current_user=Depends(check_token_validity),
+                                    ):
+    from pyokx.signal_handling import get_ticker_with_higher_volume
     return get_ticker_with_higher_volume(symbol)
 
 
@@ -86,14 +81,14 @@ async def okx_instID_status(instID: str,
                             TD_MODE='isolated',
                             current_user=Depends(check_token_validity),
                             ):
-    from pyokx.entry_way import fetch_status_report_for_instrument
-    return fetch_status_report_for_instrument(instID, 'isolated')
+    assert TD_MODE == 'isolated', f"TD_MODE {TD_MODE} is currently not supported by this endpoint, try \'isolated\'"
+
+    from pyokx.signal_handling import fetch_status_report_for_instrument
+    return fetch_status_report_for_instrument(instID, TD_MODE)
 
 
 @okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
-async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm,
-                                # current_user=Depends(check_token_validity),
-                                ):
+async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="credentials invalid",
@@ -114,7 +109,6 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
         print(f"Exception in okx_antbot_webhook: {e}")
         return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
 
-    # TODO
     try:
         pprint(f'{indicator_input.OKXSignalInput = }')
         pprint(f'{indicator_input.PremiumIndicatorSignals = }')
@@ -143,7 +137,7 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
             _close_signal = 'exit_sell'
 
         # Get current positions
-        from pyokx.entry_way import get_all_positions
+        from pyokx.signal_handling import get_all_positions
         instId_positions = get_all_positions(instId=indicator_input.OKXSignalInput.instID)
         if len(instId_positions) > 0:
             current_position = instId_positions[0]
@@ -170,7 +164,7 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 
             assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
             okx_signal_input = indicator_input.OKXSignalInput
-            from pyokx.entry_way import okx_signal_handler
+            from pyokx.signal_handling import okx_signal_handler
             instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
             pprint(instrument_status_report)
             assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"

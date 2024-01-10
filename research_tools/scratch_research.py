@@ -6,11 +6,11 @@ import sys
 import numpy as np
 import pandas as pd
 
-from FinLab_Algorythms import util
-from FinLab_Algorythms.labeling_algorythms import labeling
-from FinLab_Algorythms.labeling_algorythms.filters import cusum_filter
-from research.FinLab_Algorythms.labeling_algorythms.trend_scanning import trend_scanning_labels
-from research.GenieLoaderForked import GenieLoader
+from research_tools import util
+from research_tools.labeling_algorythms import labeling
+from research_tools.labeling_algorythms.filters import cusum_filter
+from research_tools.labeling_algorythms.trend_scanning import trend_scanning_labels
+from research_tools.GenieLoaderForked import GenieLoader
 
 logger = logging.getLogger(__name__)
 

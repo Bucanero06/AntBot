@@ -1,5 +1,5 @@
 import unittest
-from pyokx.okx import Trade
+from pyokx.low_rest_api import Trade
 class TradeTest(unittest.TestCase):
     def setUp(self):
         api_key = 'your_apiKey'

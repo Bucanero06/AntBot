@@ -100,7 +100,7 @@ class CampbellBacktesting:
 
         Based on the work of HLZ, the pairwise correlation of returns is used to estimate the probability (prob_zero_mean),
         total number of trials (n_simulations) and (lambd) - parameter of the exponential distribution. Levels and
-        parameters taken from the HLZ research.
+        parameters taken from the HLZ research_tools.
 
         :param rho: (float) Average correlation coefficient between strategy returns
         :return: (np.array) Array of parameters

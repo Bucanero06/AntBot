@@ -1,5 +1,5 @@
 import unittest
-from pyokx.okx import CopyTrading
+from pyokx.low_rest_api import CopyTrading
 
 class CopyTradingTest(unittest.TestCase):
     def setUp(self):

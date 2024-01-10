@@ -19,7 +19,6 @@ PyYAML
 rsa
 six
 SQLAlchemy
-starlette
 typing-extensions
 uvicorn
 watchgod

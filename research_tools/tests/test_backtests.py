@@ -1,5 +1,5 @@
 """
-Tests the backtests of Campbell research - Haircut Sharpe ratio and Profit Hurdle algorithms.
+Tests the backtests of Campbell research_tools - Haircut Sharpe ratio and Profit Hurdle algorithms.
 """
 import unittest
 import numpy as np

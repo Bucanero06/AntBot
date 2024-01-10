@@ -2,26 +2,26 @@ import asyncio
 import json
 import logging
 
-from pyokx.okx.websocket.WebSocketFactory import WebSocketFactory
+from pyokx.ws_clients.WebSocketFactory import WebSocketFactory
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("WsPublic")
-
+logger = logging.getLogger("WsPublicAsync")
 
 class WsPublicAsync:
-    def __init__(self, url):
+    def __init__(self, url: str):
         self.url = url
-        self.subscriptions = set()
-        self.callback = None
+        # self.subscriptions = set()
         self.loop = asyncio.get_event_loop()
         self.factory = WebSocketFactory(url)
+        self.callback = self.factory.callback
+
 
     async def connect(self):
         self.websocket = await self.factory.connect()
 
     async def consume(self):
         async for message in self.websocket:
-            logger.info("Received message: {%s}", message)
+            logger.debug("Received message: {%s}", message)
             if self.callback:
                 self.callback(message)
 
@@ -32,7 +32,6 @@ class WsPublicAsync:
             "args": params
         })
         await self.websocket.send(payload)
-        # await self.consume()
 
     async def unsubscribe(self, params: list, callback):
         self.callback = callback
@@ -43,24 +42,14 @@ class WsPublicAsync:
         logger.info(f"unsubscribe: {payload}")
         await self.websocket.send(payload)
 
-    # async def stop(self):
-    #     await self.factory.close()
-    #     self.loop.stop()
-    #
-    # async def start(self):
-    #     logger.info("Connecting to WebSocket...")
-    #     await self.connect()
-    #     self.loop.create_task(self.consume())
-
     async def start(self):
         logger.info("Connecting to WebSocket...")
         await self.connect()
         self.loop.create_task(self.consume())
 
     async def stop(self):
-        if self.websocket:
-            await self.websocket.close()  # Gracefully close the connection
-            self.websocket = None
+        await self.factory.close()
+        self.loop.stop()
 
     def stop_sync(self):
         self.loop.run_until_complete(self.stop())

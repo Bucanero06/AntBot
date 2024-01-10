@@ -1,5 +1,5 @@
 import unittest
-from pyokx.okx import Status
+from pyokx.low_rest_api import Status
 
 class StackingTest(unittest.TestCase):
     def setUp(self):

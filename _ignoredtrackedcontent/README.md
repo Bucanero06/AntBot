@@ -18,10 +18,10 @@ A full Rest-API for request & response a JSON file, Building a Simple WorkFlow t
 
 ```sh
 # clone the repo
-$ git clone https://github.com/yezz123/Pexon-Rest-API
+$ git clone (...)
 
 # move to the project folder
-$ cd Pexon-Rest-API
+$ cd AntBot
 ```
 
 ### Creating virtual environment
@@ -45,7 +45,7 @@ $ pipenv install -d
 
 ### Running the Application
 
-- To run the [Main](main.py) we need to use [uvicorn](https://www.uvicorn.org/) a lightning-fast ASGI server implementation, using uvloop and httptools.
+- To run the [Main](../main.py) we need to use [uvicorn](https://www.uvicorn.org/) a lightning-fast ASGI server implementation, using uvloop and httptools.
 
 ```sh
 # Running the application using uvicorn

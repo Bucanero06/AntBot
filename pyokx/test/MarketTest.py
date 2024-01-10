@@ -1,6 +1,6 @@
 
 import unittest
-from pyokx.okx import MarketData
+from pyokx.low_rest_api import MarketData
 
 '''
 ORACLE = '/api/v5/market/open-oracle' #need to update? if it is open oracle

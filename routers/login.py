@@ -3,9 +3,10 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
+from firebase_tools.BaseClasses import FirebaseAuthGoodResponse
 from firebase_tools.authenticate import authenticate_with_firebase
-from routers.api_keys import FirebaseAuthGoodResponse, create_access_token
-from shared.config import EXPIRE_TIME
+from routers.api_keys import create_access_token
+from shared.config import DEFAULT_KEY_EXPIRE_TIME
 
 login_router = APIRouter(tags=["Token"], include_in_schema=False)
 
@@ -37,7 +38,7 @@ def login(request: OAuth2PasswordRequestForm = Depends(),
                                       "id": good_response.user_id,
                                       "role": 'user'
                                       },
-                                expires_delta=timedelta(minutes=EXPIRE_TIME)
+                                expires_delta=timedelta(minutes=DEFAULT_KEY_EXPIRE_TIME)
                                 )
 
     return {"access_token": token, "token_type": "bearer"}

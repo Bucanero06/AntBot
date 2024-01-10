@@ -1,5 +1,5 @@
 import unittest
-from pyokx.okx import SpreadTrading
+from pyokx.low_rest_api import SpreadTrading
 class TradeTest(unittest.TestCase):
     def setUp(self):
         api_key = 'your_apiKey'

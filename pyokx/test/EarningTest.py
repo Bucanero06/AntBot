@@ -1,5 +1,5 @@
 import unittest
-from pyokx.okx import Earning
+from pyokx.low_rest_api import Earning
 
 class EarningTest(unittest.TestCase):
     def setUp(self):

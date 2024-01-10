@@ -6,15 +6,14 @@ import certifi
 import websockets
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("WebSocketFactory")
-
+logger = logging.getLogger("WstFactory")
 
 class WebSocketFactory:
 
     def __init__(self, url):
         self.url = url
         self.websocket = None
-        self.loop = asyncio.get_event_loop()
+        self.callback = None
 
     async def connect(self):
         ssl_context = ssl.create_default_context()
@@ -31,3 +30,4 @@ class WebSocketFactory:
         if self.websocket:
             await self.websocket.close()
             self.websocket = None
+

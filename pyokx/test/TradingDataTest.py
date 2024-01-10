@@ -1,5 +1,5 @@
 import unittest
-from ..okx import TradingData
+from ..low_rest_api import TradingData
 
 
 class TradingDataTest(unittest.TestCase):

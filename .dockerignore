@@ -129,3 +129,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+**/__pycache__
+**/.env
+**/.git
+**/.gitignore
+**/node_modules
+**/npm-debug.log
+docker-compose*.yml
+Dockerfile*

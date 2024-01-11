@@ -87,6 +87,9 @@ async def okx_instID_status(instID: str,
     return fetch_status_report_for_instrument(instID, TD_MODE)
 
 
+
+
+
 @okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
 async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
     credentials_exception = HTTPException(
@@ -159,6 +162,10 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
             okx_signal.order_side = _order_side if _order_side else ''
             okx_signal.clear_prior_to_new_order = True if okx_signal.clear_prior_to_new_order or _close_signal else False
 
+            if _close_signal: # FIXME this works for Premium indicator but might have issues if not handled in order
+                okx_signal.order_side = ''
+
+
             pprint(f'updated-{premium_indicator = }')
             pprint(f'updated-{okx_signal= }')
 
@@ -178,3 +185,4 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 
     # Update the enxchange info on the database
     return {"detail": "unexpected end of point??."}
+

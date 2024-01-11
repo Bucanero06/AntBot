@@ -163,7 +163,7 @@ class CoreModel(BaseModel):
         """Here so fields can be hidden from the OPENAPI schema if hidden=True. Value can still be used as normal."""
 
         @staticmethod
-        def schema_extra(schema: dict, _):
+        def json_schema_extra(schema: dict, _):
             props = {}
             for k, v in schema.get('properties', {}).items():
                 if not v.get("hidden", False):

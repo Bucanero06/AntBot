@@ -7,6 +7,7 @@ from pyokx.websocket_handling import okx_websockets_main_run
 
 websockets_router = APIRouter(tags=["WebsocketConnections"], include_in_schema=True)
 
+
 @websockets_router.post("/start_okx_websocket/")
 async def start_websocket(background_tasks: BackgroundTasks,
                           current_user=Depends(check_token_validity),
@@ -25,4 +26,3 @@ async def start_websocket(background_tasks: BackgroundTasks,
         return {"message": "WebSocket connection initiated"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-

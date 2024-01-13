@@ -4,7 +4,6 @@ import os
 
 import dotenv
 
-from pyokx.data_structures import *
 from pyokx.ws_clients.WsPprivateAsync import WsPrivateAsync
 from pyokx.ws_clients.WsPublicAsync import WsPublicAsync
 from pyokx.ws_data_structures import PositionChannelInputArgs, InstrumentsChannelInputArgs, PriceLimitChannelInputArgs, \
@@ -18,7 +17,7 @@ from pyokx.ws_data_structures import PositionChannelInputArgs, InstrumentsChanne
 
 # # Initialize Redis client
 # redis = aioredis.from_url("redis://localhost", encoding="utf-8", decode_responses=True)
-
+import redis
 
 OKX_WEBSOCKET_URLS = dict(
     public="wss://ws.okx.com:8443/ws/v5/public",
@@ -135,12 +134,16 @@ async def okx_websockets_main_run(input_channel_models: list,
         data = message_data.get("data")
         try:
             data_struct = available_channel_models[message_args.get("channel")]
-
+            print(f"{data = }")
             if hasattr(data_struct, "from_array"):
                 structured_data = data_struct.from_array(args=message_args, data=data)
             else:
                 structured_data = data_struct(args=message_args, data=data)
             print(f"Received Data: {structured_data}")
+
+
+
+
 
         except Exception as e:
             print(f"Exception: {e}")
@@ -197,7 +200,8 @@ async def okx_websockets_main_run(input_channel_models: list,
         await business_client.stop()
         await private_client.stop()
 
-if __name__ =='__main__':
+
+if __name__ == '__main__':
     # ticker = get_ticker_with_higher_volume('BTC-USDT')
     # instId = ticker.instId
     # instType = ticker.instType
@@ -217,20 +221,20 @@ if __name__ =='__main__':
         secretkey=os.getenv('OKX_SECRET_KEY'),
         sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
         input_channel_models=[
-            ### Public Channels
-            InstrumentsChannelInputArgs(channel="instruments", instType=instType),
-            PriceLimitChannelInputArgs(channel="price-limit", instId=instId),
-            MarkPriceChannelInputArgs(channel="mark-price", instId=instId),
-            IndexTickersChannelInputArgs(
-                # Index with USD, USDT, BTC, USDC as the quote currency, e.g. BTC-USDT, e.g. not BTC-USDT-240628
-                channel="index-tickers", instId=instFamily),
-
-            ### Business Channels
-            MarkPriceCandleSticksChannelInputArgs(channel="mark-price-candle1m", instId=instId),
-            IndexCandleSticksChannelInputArgs(channel="index-candle1m", instId=instFamily),
+            # ### Public Channels
+            # InstrumentsChannelInputArgs(channel="instruments", instType=instType),
+            # PriceLimitChannelInputArgs(channel="price-limit", instId=instId),
+            # MarkPriceChannelInputArgs(channel="mark-price", instId=instId),
+            # IndexTickersChannelInputArgs(
+            #     # Index with USD, USDT, BTC, USDC as the quote currency, e.g. BTC-USDT, e.g. not BTC-USDT-240628
+            #     channel="index-tickers", instId=instFamily),
+            #
+            # ### Business Channels
+            # MarkPriceCandleSticksChannelInputArgs(channel="mark-price-candle1m", instId=instId),
+            # IndexCandleSticksChannelInputArgs(channel="index-candle1m", instId=instFamily),
 
             ### Private Channels
-            AccountChannelInputArgs(channel="account", ccy=ccy),
+            # AccountChannelInputArgs(channel="account", ccy=ccy),
             PositionChannelInputArgs(channel="positions", instType=instType,
                                      instFamily=instFamily,
                                      instId=instId),

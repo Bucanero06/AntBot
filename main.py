@@ -1,15 +1,10 @@
-import asyncio
-
 import uvicorn
 from fastapi import FastAPI
 
-from pyokx.websocket_handling import okx_websockets_main_run
-from pyokx.ws_data_structures import MarkPriceChannelInputArgs
 from routers.api_keys import api_key_router
 from routers.login import login_router
 from routers.okx import okx_router
 from routers.okx_authentication import okx_authentication_router
-from routers.websocket import websockets_router
 
 app = FastAPI(
     title="AntBot-Rest-API",

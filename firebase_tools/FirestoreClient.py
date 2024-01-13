@@ -10,9 +10,10 @@ from typing import TypeVar, Union, Tuple, Optional, Type
 
 from firebase_admin import firestore
 
+from shared.logging import setup_logger
+
 T = TypeVar('T')  # Generic type variable for your models
 
-from src.logger import setup_logger
 
 logger = setup_logger(__name__)
 

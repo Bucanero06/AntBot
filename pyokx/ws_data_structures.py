@@ -184,7 +184,7 @@ class ws_posData_element(BaseModel):
     ccy: str
     posCcy: str
     avgPx: str
-    uTIme: str
+    uTime: str
 
 class ws_trades_element(BaseModel):
     instId: str

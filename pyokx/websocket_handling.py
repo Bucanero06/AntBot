@@ -134,7 +134,7 @@ async def okx_websockets_main_run(input_channel_models: list,
         data = message_data.get("data")
         try:
             data_struct = available_channel_models[message_args.get("channel")]
-
+            print(f"{data = }")
             if hasattr(data_struct, "from_array"):
                 structured_data = data_struct.from_array(args=message_args, data=data)
             else:

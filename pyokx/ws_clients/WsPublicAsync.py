@@ -8,12 +8,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("WsPublicAsync")
 
 class WsPublicAsync:
-    def __init__(self, url: str):
+    def __init__(self, url: str, callback):
         self.url = url
         # self.subscriptions = set()
         self.loop = asyncio.get_event_loop()
         self.factory = WebSocketFactory(url)
-        self.callback = self.factory.callback
+        self.callback = callback
 
 
     async def connect(self):
@@ -23,18 +23,16 @@ class WsPublicAsync:
         async for message in self.websocket:
             logger.debug("Received message: {%s}", message)
             if self.callback:
-                self.callback(message)
+                await self.callback(message)
 
-    async def subscribe(self, params: list, callback):
-        self.callback = callback
+    async def subscribe(self, params: list):
         payload = json.dumps({
             "op": "subscribe",
             "args": params
         })
         await self.websocket.send(payload)
 
-    async def unsubscribe(self, params: list, callback):
-        self.callback = callback
+    async def unsubscribe(self, params: list):
         payload = json.dumps({
             "op": "unsubscribe",
             "args": params

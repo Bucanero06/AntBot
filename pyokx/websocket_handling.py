@@ -1,23 +1,17 @@
 import asyncio
-import json
 import os
 
 import dotenv
 
 from pyokx.ws_clients.WsPprivateAsync import WsPrivateAsync
 from pyokx.ws_clients.WsPublicAsync import WsPublicAsync
-from pyokx.ws_data_structures import PositionChannelInputArgs, InstrumentsChannelInputArgs, PriceLimitChannelInputArgs, \
-    MarkPriceChannelInputArgs, IndexTickersChannelInputArgs, MarkPriceCandleSticksChannelInputArgs, \
-    IndexCandleSticksChannelInputArgs, BalanceAndPositionsChannelInputArgs, PriceLimitChannel, InstrumentsChannel, \
+from pyokx.ws_data_structures import PriceLimitChannel, InstrumentsChannel, \
     MarkPriceChannel, IndexTickersChannel, MarkPriceCandleSticksChannel, IndexCandleSticksChannel, AccountChannel, \
-    PositionChannel, BalanceAndPositionsChannel, AccountChannelInputArgs, WebSocketConnectionConfig
-
-# # Initialize FastAPI app
-# app = FastAPI()
-
-# # Initialize Redis client
-# redis = aioredis.from_url("redis://localhost", encoding="utf-8", decode_responses=True)
-import redis
+    PositionChannel, BalanceAndPositionsChannel, WebSocketConnectionConfig, BalanceAndPositionsChannelInputArgs, \
+    OrdersChannelInputArgs, OrdersChannel, InstrumentsChannelInputArgs, AccountChannelInputArgs, \
+    PositionChannelInputArgs
+from redis_tools.config import RedisConfig
+from redis_tools.syncio.store import Store
 
 OKX_WEBSOCKET_URLS = dict(
     public="wss://ws.okx.com:8443/ws/v5/public",
@@ -34,11 +28,12 @@ OKX_WEBSOCKET_URLS = dict(
 
 async def okx_websockets_main_run(input_channel_models: list,
                                   apikey: str = None, passphrase: str = None, secretkey: str = None,
-                                  sandbox_mode: bool = True):
+                                  sandbox_mode: bool = True, redis_store: bool = True):
     if not input_channel_models:
         raise Exception("No channels provided")
 
     public_channels_config = WebSocketConnectionConfig(
+        name='okx_public',
         wss_url=OKX_WEBSOCKET_URLS["public"] if not sandbox_mode else OKX_WEBSOCKET_URLS["public_demo"],
         channels={
             "price-limit": PriceLimitChannel,
@@ -48,6 +43,7 @@ async def okx_websockets_main_run(input_channel_models: list,
         }
     )
     business_channels_config = WebSocketConnectionConfig(
+        name='okx_business',
         wss_url=OKX_WEBSOCKET_URLS["business"] if not sandbox_mode else OKX_WEBSOCKET_URLS["business_demo"],
         channels={
             "mark-price-candle1m": MarkPriceCandleSticksChannel,
@@ -109,17 +105,68 @@ async def okx_websockets_main_run(input_channel_models: list,
     )
 
     private_channels_config = WebSocketConnectionConfig(
+        name='okx_private',
         wss_url=OKX_WEBSOCKET_URLS["private"] if not sandbox_mode else OKX_WEBSOCKET_URLS["private_demo"],
         channels={
             "account": AccountChannel,  # Missing coinUsdPrice
             "positions": PositionChannel,  # Missing pTime
             "balance_and_position": BalanceAndPositionsChannel,
+            "orders": OrdersChannel
         }
     )
 
-    available_channel_models = public_channels_config.channels | business_channels_config.channels | private_channels_config.channels
+    available_channel_models: WebSocketConnectionConfig.channels = (
+            public_channels_config.channels | business_channels_config.channels | private_channels_config.channels
+    )
 
-    def ws_callback(message):
+    if redis_store:
+
+
+
+        # redis_store.register_model(WebSocketConnectionConfig)
+        import aioredis
+        try:
+            host = 'localhost'
+            async_redis = aioredis.from_url(f"redis://{host}:6379", decode_responses=True)
+            await async_redis.ping()
+
+        except Exception as e:
+            print(f"Redis Error: {e}")
+            try:
+                host = os.getenv('REDIS_HOST', "redis")
+                async_redis = aioredis.from_url(f"redis://{host}:6379", decode_responses=True)
+                await async_redis.ping()
+            except Exception as e:
+                print(f"Redis Error: {e}")
+                async_redis = None
+                exit()
+        # await async_redis.flushall()
+
+        redis_store: Store = Store(
+            name="some_name",
+            redis_config=RedisConfig(db=0, host=host, port=6379),
+            life_span_in_seconds=99999999999,
+        )
+        from redis_tools.syncio.model import Model
+
+        import json
+
+        # WebSocketConnectionConfig.insert(
+        #     [
+        #         public_channels_config,
+        #         business_channels_config,
+        #         private_channels_config
+        #     ]
+        # )
+
+        for channel_model in available_channel_models.values():
+            if hasattr(channel_model, "register_models"):
+                channel_model.register_models(redis_store)
+            elif issubclass(channel_model, Model):
+                print(f"Registering model: {channel_model}")
+                redis_store.register_model(channel_model)
+
+    async def ws_callback(message):
         message_data = json.loads(message)
         event = message_data.get("event", None)
 
@@ -134,14 +181,28 @@ async def okx_websockets_main_run(input_channel_models: list,
         data = message_data.get("data")
         try:
             data_struct = available_channel_models[message_args.get("channel")]
-            print(f"{data = }")
             if hasattr(data_struct, "from_array"):
-                structured_data = data_struct.from_array(args=message_args, data=data)
+                structured_message = data_struct.from_array(args=message_args, data=data)
             else:
-                structured_data = data_struct(args=message_args, data=data)
-            print(f"Received Data: {structured_data}")
+                structured_message = data_struct(args=message_args, data=data)
+            if redis_store:
+                # If structured_message.model_dump() returns a complex structure, serialize it
+                message_dict = {k: (json.dumps(v) if isinstance(v, (dict, list)) else v)
+                                for k, v in structured_message.model_dump().items()}
 
-
+                # Use xadd with the properly formatted dictionary
+                await async_redis.xadd(f'okx_{message_args.get("channel")}', message_dict, maxlen=1000)
+                print(f"Storing data: {data_struct}")
+                print(f'Structured message: {structured_message}')
+                if hasattr(structured_message, "register_models") and hasattr(structured_message, "refresh_models"):
+                    structured_message.refresh_models()
+                if hasattr(structured_message, "get_models"):
+                    stored_models = structured_message.get_models()
+                    print(f"Stored models: {stored_models}")
+                else:
+                    print(f"Received Data: {structured_message}")
+            else:
+                print(f"Received Data: {structured_message}")
 
 
 
@@ -167,25 +228,25 @@ async def okx_websockets_main_run(input_channel_models: list,
     private_params = [channel.model_dump() for channel in private_channels]
 
     if public_params:
-        public_client = WsPublicAsync(url=public_channels_config.wss_url)
+        public_client = WsPublicAsync(url=public_channels_config.wss_url, callback=ws_callback)
         print(f"Subscribing to public channels: {public_params}")
         await public_client.start()
-        await public_client.subscribe(params=public_params, callback=ws_callback)
+        await public_client.subscribe(params=public_params)
     if business_params:
-        business_client = WsPublicAsync(url=business_channels_config.wss_url)
+        business_client = WsPublicAsync(url=business_channels_config.wss_url, callback=ws_callback)
         print(f"Subscribing to business channels: {business_params}")
         await business_client.start()
-        await business_client.subscribe(params=business_params, callback=ws_callback)
+        await business_client.subscribe(params=business_params)
     if private_params:
         assert apikey, f"API key was not provided"
         assert secretkey, f"API secret key was not provided"
         assert passphrase, f"Passphrase was not provided"
 
         private_client = WsPrivateAsync(apikey=apikey, passphrase=passphrase, secretkey=secretkey,
-                                        url=private_channels_config.wss_url, use_servertime=False)
+                                        url=private_channels_config.wss_url, use_servertime=False, callback=ws_callback)
         print(f"Subscribing to private channels: {private_params}")
         await private_client.start()
-        await private_client.subscribe(params=private_params, callback=ws_callback)
+        await private_client.subscribe(params=private_params)
 
     # Keep the loop running, or perform other tasks
     try:
@@ -215,29 +276,40 @@ if __name__ == '__main__':
     dotenv.load_dotenv(dotenv.find_dotenv())
 
     # Run the main coroutine with asyncio
-    asyncio.run(okx_websockets_main_run(
-        apikey=os.getenv('OKX_API_KEY'),
-        passphrase=os.getenv('OKX_PASSPHRASE'),
-        secretkey=os.getenv('OKX_SECRET_KEY'),
-        sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
-        input_channel_models=[
-            # ### Public Channels
-            # InstrumentsChannelInputArgs(channel="instruments", instType=instType),
-            # PriceLimitChannelInputArgs(channel="price-limit", instId=instId),
-            # MarkPriceChannelInputArgs(channel="mark-price", instId=instId),
-            # IndexTickersChannelInputArgs(
-            #     # Index with USD, USDT, BTC, USDC as the quote currency, e.g. BTC-USDT, e.g. not BTC-USDT-240628
-            #     channel="index-tickers", instId=instFamily),
-            #
-            # ### Business Channels
-            # MarkPriceCandleSticksChannelInputArgs(channel="mark-price-candle1m", instId=instId),
-            # IndexCandleSticksChannelInputArgs(channel="index-candle1m", instId=instFamily),
+    asyncio.run(okx_websockets_main_run(input_channel_models=[
+        # ### Public Channels
+        # InstrumentsChannelInputArgs(channel="instruments", instType=instType),
+        # PriceLimitChannelInputArgs(channel="price-limit", instId=instId),
+        # MarkPriceChannelInputArgs(channel="mark-price", instId=instId),
+        # IndexTickersChannelInputArgs(
+        #     # Index with USD, USDT, BTC, USDC as the quote currency, e.g. BTC-USDT, e.g. not BTC-USDT-240628
+        #     channel="index-tickers", instId=instFamily),
+        #
+        # ### Business Channels
+        # MarkPriceCandleSticksChannelInputArgs(channel="mark-price-candle1m", instId=instId),
+        # IndexCandleSticksChannelInputArgs(channel="index-candle1m", instId=instFamily),
+        #
+        # ### Private Channels
+        # AccountChannelInputArgs(channel="account", ccy=ccy),
+        # PositionChannelInputArgs(channel="positions", instType=instType,
+        #                          instFamily=None,
+        #                          instId=None
+        #                          ),
+        # BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
+        # OrdersChannelInputArgs(channel="orders", instType=instType, instFamily=instFamily, instId=instId)
+        ### Public Channels
+        InstrumentsChannelInputArgs(channel="instruments", instType="FUTURES"),
 
-            ### Private Channels
-            # AccountChannelInputArgs(channel="account", ccy=ccy),
-            PositionChannelInputArgs(channel="positions", instType=instType,
-                                     instFamily=instFamily,
-                                     instId=instId),
-            BalanceAndPositionsChannelInputArgs(channel="balance_and_position")
-        ]
-    ))
+        ### Private Channels
+        AccountChannelInputArgs(channel="account", ccy=None),
+        PositionChannelInputArgs(channel="positions", instType="FUTURES",
+                                 instFamily=None,
+                                 instId=None
+                                 ),
+        BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
+        OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None, instId=None)
+    ], apikey=os.getenv('OKX_API_KEY'), passphrase=os.getenv('OKX_PASSPHRASE'), secretkey=os.getenv('OKX_SECRET_KEY'),
+        sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
+        redis_store=True
+    )
+    )

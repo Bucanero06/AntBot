@@ -26,3 +26,11 @@ websockets
 requests
 websocket
 httpx
+aioredis
+certifi
+redis
+orjson
+pandas
+numpy
+h5py
+sphinx

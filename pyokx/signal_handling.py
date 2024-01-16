@@ -629,7 +629,7 @@ def clean_and_verify_instID(instID):
     assert len(splitted) == 3, f'The Futures instrument ID must be in the format of "BTC-USDT-210326". {instID = }'
     instrument = instrument_searcher.find_by_instId(instID)
     assert instrument is not None, f'Instrument {instID} not found in {all_futures_instruments = }'
-    assert instrument.instType == InstType.FUTURES, f'{instrument.instType = }'
+    # assert instrument.instType == InstType.FUTURES, f'{instrument.instType = }'
     return instID
 
 
@@ -992,6 +992,7 @@ if __name__ == '__main__':
 
             _order_side = None
             _close_signal = None
+            _red_button = indicator_input.OKXSignalInput.red_button
             if premium_indicator.Bearish or premium_indicator.Bearish_plus:
                 _order_side = 'buy'
             elif premium_indicator.Bullish or premium_indicator.Bullish_plus:
@@ -1018,7 +1019,7 @@ if __name__ == '__main__':
             # TODO - IDEA: Logic here betweeen _close_signal and entry, if just a closing then it can be handled using market or limit orders but if it is an entry and exit then we decide depening on wehther the entry is in the same or opposite directoion and if flip on opposite order is true.
             #   lets assume that we are not flipping on opposite order  then cancel if entry in opposite direction and close_order then clear before starting, if just closing then trat them as an actual order which can be market post only or limits
             print(f'{_order_side or _close_signal = }')
-            if _order_side or _close_signal:
+            if _order_side or _close_signal or _red_button:
                 okx_signal = indicator_input.OKXSignalInput
 
                 okx_signal.order_side = _order_side if _order_side else ''
@@ -1066,7 +1067,11 @@ if __name__ == '__main__':
     #
     # response = okx_signal_handler(**okx_input.model_dump())
 
-    response = okx_premium_indicator(webhook_payload)['instrument_status_report']
+    response = okx_premium_indicator(webhook_payload).get('instrument_status_report')
+
+    if response is None:
+        print("No instument status report")
+        exit()
 
     print(f'{response = }')
     pprint(f'{response.positions = }')

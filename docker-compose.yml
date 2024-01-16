@@ -1,11 +1,11 @@
-version: '3.8'
+version: '3.10'
 
 services:
   nginx:
     build:
       context: .
       dockerfile: .docker/nginx.dockerfile
-    restart: always
+    restart: unless-stopped
     ports:
       - ${NGINX_SERVICE_PORT}:${NGINX_SERVICE_PORT}
 
@@ -13,36 +13,43 @@ services:
     build:
       context: .
       dockerfile: .docker/dashboard.dockerfile
-    command: ["wave", "run", "h2o_dashboard.dashboard"]
-    restart: always
-    volumes:
-      - ./h2o_dashboard:/app
+    command: [ "wave", "run", "h2o_dashboard.dashboard" ]
+    restart: unless-stopped
 
   redis:
     image: redis/redis-stack-server:latest
     ports:
       - ${REDIS_SERVICE_PORT}:${REDIS_SERVICE_PORT}
-    restart: always
+    restart: unless-stopped
 
   okx_api:
     build:
       context: .
       dockerfile: .docker/bot.dockerfile
-    command: uvicorn main:app --host 0.0.0.0 --port 8080 --reload # Enable live reload
     ports:
       - ${OKX_API_SERVICE_PORT}:${OKX_API_SERVICE_PORT}
-    restart: always
+    restart: unless-stopped
     depends_on:
       - redis
-    volumes:
-      - firebase_tools:/app
-      - pyokx:/app
-      - routers:/app
-      - shared:/app
     environment:
-      - MODULE_NAME=${OKX_API_MODULE_PATH}
-      - VARIABLE_NAME=${OKX_API_MODULE_NAME}
+      - MODULE_PATH=${OKX_API_MODULE_PATH}
+      - MODULE_NAME=${OKX_API_MODULE_NAME}
       - PORT=${OKX_API_SERVICE_PORT}
+      - OKX_API_KEY=${OKX_API_KEY}
+      - OKX_SECRET_KEY=${OKX_SECRET_KEY}
+      - OKX_PASSPHRASE=${OKX_PASSPHRASE}
+
+  okx_websockets:
+    build:
+      context: .
+      dockerfile: .docker/bot.dockerfile
+    restart: unless-stopped
+    depends_on:
+      - redis
+    environment:
+      - MODULE_PATH=${OKX_WS_MODULE_PATH}
+      - MODULE_NAME=${OKX_WS_MODULE_NAME}
+      - PORT=${OKX_WS_SERVICE_PORT}
       - OKX_API_KEY=${OKX_API_KEY}
       - OKX_SECRET_KEY=${OKX_SECRET_KEY}
       - OKX_PASSPHRASE=${OKX_PASSPHRASE}

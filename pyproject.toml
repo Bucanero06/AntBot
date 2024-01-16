@@ -37,6 +37,13 @@ websocket = "^0.2.1"
 httpx = "^0.26.0"
 aioredis = "^2.0.1"
 redis = "^5.0.1"
+h2o-wave = "^1.0.0"
+pandas = "^2.1.4"
+h5py = "^3.10.0"
+numpy = "^1.26.3"
+Sphinx = "^7.2.6"
+sphinx-rtd-theme = "^2.0.0"
+
 
 
 [build-system]

@@ -10,12 +10,12 @@ logger = logging.getLogger("WsPrivate")
 
 
 class WsPrivateAsync:
-    def __init__(self, apikey: str, passphrase: str, secretkey: str, url: str, use_servertime: bool):
+    def __init__(self, apikey: str, passphrase: str, secretkey: str, url: str, use_servertime: bool, callback):
         self.url = url
         # self.subscriptions = set()
         self.loop = asyncio.get_event_loop()
         self.factory = WebSocketFactory(url)
-        self.callback = self.factory.callback
+        self.callback = callback
         self.apiKey = apikey
         self.passphrase = passphrase
         self.secretKey = secretkey
@@ -28,11 +28,10 @@ class WsPrivateAsync:
         async for message in self.websocket:
             logger.debug("Received message: {%s}", message)
             if self.callback:
-                self.callback(message)
+                await self.callback(message)
 
-    async def subscribe(self, params: list, callback):
+    async def subscribe(self, params: list):
 
-        self.callback = callback
 
         logRes = await self.login()
         await asyncio.sleep(5)
@@ -56,8 +55,7 @@ class WsPrivateAsync:
         await self.websocket.send(loginPayload)
         return True
 
-    async def unsubscribe(self, params: list, callback):
-        self.callback = callback
+    async def unsubscribe(self, params: list):
         payload = json.dumps({
             "op": "unsubscribe",
             "args": params

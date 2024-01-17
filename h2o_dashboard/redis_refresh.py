@@ -5,26 +5,14 @@ import os
 import aioredis
 from h2o_wave import Q, app  # noqa F401
 
+from redis_tools.utils import connect_to_aioredis
+
 
 async def start_redis():
     global async_redis
     if 'async_redis' in globals() and isinstance(async_redis, aioredis.Redis):
         return
-    try:
-        host = 'localhost'
-        async_redis = aioredis.from_url(f"redis://{host}:6379", decode_responses=True)
-        await async_redis.ping()
-
-    except Exception as e:
-        print(f"Redis Error: {e}")
-        try:
-            host = os.getenv('REDIS_HOST', "redis")
-            async_redis = aioredis.from_url(f"redis://{host}:6379", decode_responses=True)
-            await async_redis.ping()
-        except Exception as e:
-            print(f"Redis Error: {e}")
-            async_redis = None
-            exit()
+    async_redis = await connect_to_aioredis()
 
 
 async def stop_redis():

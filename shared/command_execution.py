@@ -3,7 +3,6 @@ import json
 import sys
 from subprocess import Popen, PIPE, CalledProcessError
 
-from shared.file_parsing import non_blank_l_sines
 from shared.logging import setup_logger
 
 logger = setup_logger(__name__.split('.')[-1])
@@ -56,36 +55,3 @@ def execute_command(command: str, write_stream=True, _logger=None) -> (int, list
 
 
 
-
-def print_molcas_log_errors(filein, lineend):
-    """
-    Prints the errors in a Molcas log file.
-
-    :param filein: The input log file.
-    :param lineend: The line ending marker.
-    :type filein: str
-    :type lineend: str
-    """
-    linestop = "######.                                           " \
-               "                                                  " \
-               "                                                  " \
-               "                                                  "
-    startstrings = ["_ERROR_", "not found", "Error", "input error", "Could not find",
-                    "not defined", "error", "errorcode", ]
-    with open(filein, 'r') as fin:
-        copy = False
-        flag = True
-        for line in non_blank_l_sines(fin):
-            matchstring = any(match in line for match in startstrings)
-            if matchstring and flag:
-                print("!!!!!!!!!!!!!! MOLCAS ENCOUNTERED AN ERROR !!!!!!!!!!!!!!")
-                flag = False
-                copy = True
-            elif linestop in line:
-                copy = False
-            elif lineend in line:
-                copy = False
-            elif copy:
-                print(line)
-
-    sys.exit()

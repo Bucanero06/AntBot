@@ -4,7 +4,6 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel
 
-from redis_tools.syncio.model import Model
 
 
 class InstType(Enum):
@@ -87,7 +86,7 @@ class Cancelled_Algo_Order(BaseModel):
     tag: str
 
 
-class Position(Model):
+class Position(BaseModel):
     """
     e.g. {'adl': '1', 'availPos': '', 'avgPx': '45075.3000000000000001', 'baseBal': '', 'baseBorrowed': '', 'baseInterest': '', 'bePx': '45120.39784892446', 'bizRefId': '', 'bizRefType': '', 'cTime': '1703728631744', 'ccy': 'USDT', 'closeOrderAlgo': [], 'deltaBS': '', 'deltaPA': '', 'fee': '-0.901506', 'fundingFee': '0', 'gammaBS': '', 'gammaPA': '', 'idxPx': '43474.0', 'imr': '', 'instId': 'BTC-USDT-240329', 'instType': 'FUTURES', 'interest': '', 'last': '45070.1', 'lever': '3', 'liab': '', 'liabCcy': '', 'liqPenalty': '0', 'liqPx': '30186.137167252637', 'margin': '601.004', 'markPx': '45068', 'mgnMode': 'isolated', 'mgnRatio': '74.05007741388319', 'mmr': '7.21088', 'notionalUsd': '1804.4145568', 'optVal': '', 'pendingCloseOrdLiabVal': '', 'pnl': '0', 'pos': '4', 'posCcy': '', 'posId': '660420980350771429', 'posSide': 'net', 'quoteBal': '', 'quoteBorrowed': '', 'quoteInterest': '', 'realizedPnl': '-0.901506', 'spotInUseAmt': '', 'spotInUseCcy': '', 'thetaBS': '', 'thetaPA': '', 'tradeId': '3014208', 'uTime': '1703728655219', 'upl': '-0.2920000000001164', 'uplLastPx': '-0.2080000000001746', 'uplRatio': '-0.0004858536715233', 'uplRatioLastPx': '-0.0003460875468385', 'usdPx': '', 'vegaBS': '', 'vegaPA': ''}
     """

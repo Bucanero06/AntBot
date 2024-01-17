@@ -97,34 +97,41 @@ class InstrumentSearcher:
 instrument_searcher = InstrumentSearcher(all_futures_instruments)
 
 
-def get_ticker_with_higher_volume(seed_symbol_name):
-    print(f'{seed_symbol_name = }')
-    print(f'{okx_client.derivative_type = }')
+def get_ticker_with_higher_volume(seed_symbol_name,instrument_type="FUTURES", top_n=1):
+    print(f'{seed_symbol_name = }')#tickers_data = okx_client.marketAPI.get_tickers(instType=instrument_type)
 
     # raise DeprecationWarning("This function is deprecated. Waiting to update to Structured Data Types.")
-    all_positions = okx_client.accountAPI.get_positions(instType=okx_client.derivative_type)
+    all_positions = okx_client.accountAPI.get_positions(instType=instrument_type)
     all_position_symbols = [position['instId'] for position in all_positions['data']]
-    tickers_data = okx_client.marketAPI.get_tickers(instType=okx_client.derivative_type)
+    tickers_data = okx_client.marketAPI.get_tickers(instType=instrument_type)
 
     # If any tickers data are returned, find the ticker data for the symbol we are trading
     # fixme this is a hack since okx is returning multiple instId's
     _highest_volume = 0
     _highest_volume_ticker = None
     _ticker_data = None
+    _top_n_tickers_highest_day_volume = {}
     for ticker_data in tickers_data['data']:
-        if ticker_data['instId'] in all_position_symbols:
+        if ticker_data['instId'].startswith(seed_symbol_name):
             _ticker_data = ticker_data
-            break
-        if seed_symbol_name in ticker_data['instId']:
-            print(f'{ticker_data = }')
-            vol24 = float(ticker_data['vol24h'])
-            if vol24 > _highest_volume:
-                _highest_volume = vol24
-                _highest_volume_ticker = ticker_data
-    ticker_data = _ticker_data or _highest_volume_ticker
-    return Ticker(**ticker_data)
+            _volume = float(ticker_data['volCcy24h'])
+            _top_n_tickers_highest_day_volume[_volume] = ticker_data
+
+    # sort the volumes in descending order
+    _sorted_volumes = sorted(_top_n_tickers_highest_day_volume.keys(), reverse=True)
+    _top_n_tickers = []
+    for _volume in _sorted_volumes:
+        _top_n_tickers.append(_top_n_tickers_highest_day_volume[_volume])
+
+    tickers = []
+    for _ticker_data in _top_n_tickers[:top_n]:
+        tickers.append(Ticker(**_ticker_data))
+    return tickers
 
 
+
+
+    # get the tickers for the top 5 volumes
 def assert_okx_account_level(account_level: [1, 2, 3, 4]):
     raise DeprecationWarning("This function is deprecated. Waiting to update to Structured Data Types.")
     ACCLV_MAPPING = {

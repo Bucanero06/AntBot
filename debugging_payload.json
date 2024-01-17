@@ -9,7 +9,7 @@
     "max_orderbook_limit_price_offset": 0,
     "flip_position_if_opposite_side": true,
     "clear_prior_to_new_order": false,
-    "red_button": false,
+    "red_button": true,
     "order_usd_amount": 0,
     "stop_loss_trigger_percentage": 5,
     "take_profit_trigger_percentage": 5,

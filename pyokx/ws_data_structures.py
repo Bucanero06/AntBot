@@ -2,69 +2,25 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from pyokx.data_structures import InstType, Instrument, AccountBalanceData, Position
-from redis_tools.syncio.model import Model
+from pyokx.data_structures import Instrument, AccountBalanceData, Position, Ask, Bid, Ticker
+
+class TickersChannelInputArgs(BaseModel):
+    channel: str
+    instId: str
 
 
-class RedisStoreChannelBase(BaseModel):
-
-    @staticmethod
-    def register_models(redis_store) -> None:
-        raise NotImplementedError("implement register_models first")
-
-    def refresh_models(self) -> None:
-        raise NotImplementedError("implement insert_models first")
-
-    @staticmethod
-    def get_models(self) -> dict:
-        raise NotImplementedError("implement get_models first")
-
-    @staticmethod
-    def update_models(model_inputs: tuple, life_spans_in_seconds: tuple = None, remove_non_present_ids: tuple = (True)):
-        if life_spans_in_seconds:
-            if len(life_spans_in_seconds) != len(model_inputs):
-                print(f'WARNING: the {len(life_spans_in_seconds) = } does not equal the {len(model_inputs) = }'
-                      f' thus ignoring life_spans during this request for all model_inputs and using default')
-        else:
-            life_spans_in_seconds = [None] * len(model_inputs)
-
-        if remove_non_present_ids:
-            if len(remove_non_present_ids) != len(model_inputs):
-                print(f'WARNING: the {len(remove_non_present_ids) = } does not equal the {len(model_inputs) = }'
-                      f' thus ignoring life_spans during this request for all model_inputs and using default')
-        else:
-            remove_non_present_ids = [None] * len(model_inputs)
-        for i_enumerate, models_to_store in enumerate(model_inputs):
-            if not models_to_store:
-                continue
-
-            model_store = type(models_to_store[0])
-            if not issubclass(model_store, Model):
-                print(f'WARNING: Passed in model {models_to_store} is not a redis tools Model')
-                continue
-
-            models_to_store: List[Model] = models_to_store
-            if remove_non_present_ids[i_enumerate]:
-
-                model_primary_key = model_store.get_primary_key_field()
-
-                current_ids = [getattr(model_to_store, model_primary_key) for model_to_store in models_to_store]
-                stored_models = model_store.select() or []
-
-                id_to_delete = []
-                for stored_model in stored_models:
-                    stored_model_id = getattr(stored_model, model_primary_key)
-                    if stored_model_id not in current_ids:
-                        id_to_delete.append(stored_model_id)
-                if id_to_delete:
-                    print(f'ids to delete: {id_to_delete}')
-                    model_store.delete(ids=id_to_delete)
-
-            model_store.insert(models_to_store, life_span_seconds=life_spans_in_seconds[i_enumerate])
-            model_store.update(models_to_store, life_span_seconds=life_spans_in_seconds[i_enumerate])
+class TickersChannelReturnArgs(BaseModel):
+    channel: str
+    instId: str
 
 
-class CandleStick(Model):
+class TickersChannel(BaseModel):
+    arg: TickersChannelReturnArgs
+    data: List[Ticker]
+
+
+
+class CandleStick(BaseModel):
     _primary_key_field = 'timestamp'
     timestamp: str
     open: str
@@ -74,7 +30,7 @@ class CandleStick(Model):
     is_closed: str
 
 
-class PriceLimit(Model):
+class PriceLimit(BaseModel):
     _primary_key_field = 'instId'
     instId: str
     buyLmt: str
@@ -83,35 +39,35 @@ class PriceLimit(Model):
     enabled: bool
 
 
-class InstrumentsChannelInputArgs(Model):
+class InstrumentsChannelInputArgs(BaseModel):
     _primary_key_field = 'instType'
     channel: str
     instType: str
 
 
 class InstrumentsChannel(BaseModel):
-    args: InstrumentsChannelInputArgs
+    arg: InstrumentsChannelInputArgs
     data: List[Instrument]
 
 
-class PriceLimitChannelInputArgs(Model):
+class PriceLimitChannelInputArgs(BaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
 class PriceLimitChannel(BaseModel):
-    args: PriceLimitChannelInputArgs
+    arg: PriceLimitChannelInputArgs
     data: List[PriceLimit]
 
 
-class MarkPriceChannelInputArgs(Model):
+class MarkPriceChannelInputArgs(BaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
-class MarkPrice(Model):
+class MarkPrice(BaseModel):
     _primary_key_field = 'instId'
     instType: str
     instId: str
@@ -120,22 +76,22 @@ class MarkPrice(Model):
 
 
 class MarkPriceChannel(BaseModel):
-    args: MarkPriceChannelInputArgs
+    arg: MarkPriceChannelInputArgs
     data: List[MarkPrice]
 
 
-class MarkPriceCandleSticksChannelInputArgs(Model):
+class MarkPriceCandleSticksChannelInputArgs(BaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
 class MarkPriceCandleSticksChannel(BaseModel):
-    args: MarkPriceChannelInputArgs
+    arg: MarkPriceChannelInputArgs
     data: List[CandleStick]
 
     @staticmethod
-    def from_array(args: MarkPriceCandleSticksChannelInputArgs, data):
+    def from_array(arg: MarkPriceCandleSticksChannelInputArgs, data):
         data: List[CandleStick] = [
             CandleStick(
                 timestamp=item[0],
@@ -146,12 +102,12 @@ class MarkPriceCandleSticksChannel(BaseModel):
                 is_closed=item[5]
             ) for item in data
         ]
-        return MarkPriceCandleSticksChannel(args=args, data=data)
+        return MarkPriceCandleSticksChannel(args=arg, data=data)
 
     # B
 
 
-class IndexTickersChannelInputArgs(Model):
+class IndexTickersChannelInputArgs(BaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
@@ -169,22 +125,22 @@ class IndexTickers(BaseModel):
 
 
 class IndexTickersChannel(BaseModel):
-    args: IndexTickersChannelInputArgs
+    arg: IndexTickersChannelInputArgs
     data: List[IndexTickers]
 
 
-class IndexCandleSticksChannelInputArgs(Model):
+class IndexCandleSticksChannelInputArgs(BaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
 class IndexCandleSticksChannel(BaseModel):
-    args: IndexCandleSticksChannelInputArgs
+    arg: IndexCandleSticksChannelInputArgs
     data: List[CandleStick]
 
     @staticmethod
-    def from_array(args: IndexCandleSticksChannelInputArgs, data):
+    def from_array(arg: IndexCandleSticksChannelInputArgs, data):
         data: List[CandleStick] = [
             CandleStick(
                 timestamp=item[0],
@@ -195,8 +151,7 @@ class IndexCandleSticksChannel(BaseModel):
                 is_closed=item[5]
             ) for item in data
         ]
-        return IndexCandleSticksChannel(args=args, data=data)
-
+        return IndexCandleSticksChannel(arg=arg, data=data)
 
 
 class AccountChannelInputArgs(BaseModel):
@@ -209,9 +164,8 @@ class AccountChannelReturnArgs(BaseModel):
     uid: str
 
 
-
 class AccountChannel(BaseModel):
-    args: AccountChannelReturnArgs
+    arg: AccountChannelReturnArgs
     data: List[AccountBalanceData]
 
 
@@ -229,7 +183,7 @@ class PositionChannelReturnArgs(BaseModel):
 
 
 class PositionChannel(BaseModel):
-    args: PositionChannelReturnArgs
+    arg: PositionChannelReturnArgs
     data: List[Position]
 
 
@@ -242,7 +196,7 @@ class BalanceAndPositionsChannelReturnArgs(BaseModel):
     uid: str
 
 
-class ws_balData_element(Model):
+class ws_balData_element(BaseModel):
     _primary_key_field: str = "ccy"
 
     ccy: str
@@ -250,7 +204,7 @@ class ws_balData_element(Model):
     uTime: str
 
 
-class ws_posData_element(Model):
+class ws_posData_element(BaseModel):
     _primary_key_field: str = "posId"
 
     posId: str
@@ -266,7 +220,7 @@ class ws_posData_element(Model):
     uTime: str
 
 
-class ws_trades_element(Model):
+class ws_trades_element(BaseModel):
     _primary_key_field: str = "tradeId"
 
     instId: str
@@ -281,40 +235,13 @@ class BalanceAndPositionData(BaseModel):
     trades: List[ws_trades_element]
 
 
-class BalanceAndPositionsChannel(RedisStoreChannelBase):
-    args: BalanceAndPositionsChannelReturnArgs
+class BalanceAndPositionsChannel(BaseModel):
+    arg: BalanceAndPositionsChannelReturnArgs
     data: List[BalanceAndPositionData]
 
-    @staticmethod
-    def register_models(redis_store):
-        if ws_posData_element.__name__.lower() not in redis_store.models:
-            redis_store.register_model(ws_posData_element)
-        if ws_balData_element.__name__.lower() not in redis_store.models:
-            redis_store.register_model(ws_balData_element)
-        if ws_trades_element.__name__.lower() not in redis_store.models:
-            redis_store.register_model(ws_trades_element)
-
-    def refresh_models(self):
-        positions: List[ws_posData_element] = self.data[0].posData
-        balances: List[ws_balData_element] = self.data[0].balData
-        trades: List[ws_trades_element] = self.data[0].trades
-
-        self.update_models((positions, balances), life_spans_in_seconds=None,
-                           remove_non_present_ids=(True, False))
-
-    @staticmethod
-    def get_models() -> dict:
-        posData: List[ws_posData_element] = ws_posData_element.select()
-        balData: List[ws_balData_element] = ws_balData_element.select()
-        tradeId: List[ws_trades_element] = ws_trades_element.select()
-        return {
-            'positions': posData or [],
-            'balances': balData or [],
-            'trades': tradeId or []
-        }
 
 
-class WebSocketConnectionConfig(Model):
+class WebSocketConnectionConfig(BaseModel):
     _primary_key_field: str = 'name'
     name: str
     channels: dict = {}
@@ -335,7 +262,7 @@ class OrdersChannelReturnArgs(BaseModel):
     uid: str
 
 
-class WSOrder(Model):
+class WSOrder(BaseModel):
     _primary_key_field: str = 'ordId'
     accFillSz: str
     algoClOrdId: str
@@ -405,7 +332,7 @@ class WSOrder(Model):
 
 
 class OrdersChannel(BaseModel):
-    args: OrdersChannelReturnArgs
+    arg: OrdersChannelReturnArgs
     data: List[WSOrder]
 
     @staticmethod
@@ -423,3 +350,52 @@ class OrdersChannel(BaseModel):
         return {
             'orders': orders or [],
         }
+
+
+class OrderBookInputArgs(BaseModel):
+    channel: str
+    instId: str
+
+
+class OrderBookReturnArgs(BaseModel):
+    channel: str
+    instId: str
+
+
+class OrderBookData(BaseModel):
+    asks: List[Ask]
+    bids: List[Bid]
+    ts: str
+    seqId: int
+    instId: Optional[str] = None
+    checksum: Optional[int] = None
+    prevSeqId: Optional[int] = None
+
+
+class OrderBookChannel(BaseModel):
+    arg: OrderBookReturnArgs
+    data: List[OrderBookData]
+    action: Optional[str] = None
+
+    @staticmethod
+    def from_array(arg: OrderBookReturnArgs, data, action: str = None):
+        arg = OrderBookReturnArgs(channel=arg.get('channel'), instId=arg.get('instId'))
+
+        data: List[OrderBookData] = [
+            OrderBookData(
+                asks=[Ask(price=ask[0], quantity=ask[1], deprecated_value=ask[2], number_of_orders=ask[3]) for ask in
+                      item['asks']],
+                bids=[Bid(price=bid[0], quantity=bid[1], deprecated_value=bid[2], number_of_orders=bid[3]) for bid in
+                      item['bids']],
+                ts=item['ts'],
+                seqId=item['seqId'],
+                instId=item.get('instId'),
+                checksum=item.get('checksum'),
+                prevSeqId=item.get('prevSeqId')
+            ) for item in data
+        ]
+
+        return OrderBookChannel(arg=arg, data=data, action=action)
+
+
+

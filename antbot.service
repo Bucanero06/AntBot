@@ -1,0 +1,8 @@
+[Unit]
+Description=AntBot
+
+[Service]
+ExecStart=home/AntBot/startup.sh
+
+[Install]
+WantedBy=multi-user.target

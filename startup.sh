@@ -2,10 +2,10 @@
 
 ## Set up a startup script
 ## chmod +x startup.sh
-## sudo systemctl enable startup.sh
-## sudo systemctl start startup.sh
-## sudo systemctl status startup.sh
-## docker-compose ps
+## sudo systemctl enable antbot
+## sudo systemctl start antbot
+## sudo systemctl status antbot
+## docker ps
 
 
 

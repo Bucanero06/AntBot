@@ -1,18 +1,15 @@
 import math
 from decimal import Decimal
 
-from okx.PublicData import PublicAPI
+from pyokx.low_rest_api.PublicData import PublicAPI
+from pyokx.okx_market_maker import instruments, mark_px_container
+from pyokx.okx_market_maker.market_data_service.model.Instrument import Instrument
+from pyokx.okx_market_maker.position_management_service.model.Positions import Position
+from pyokx.okx_market_maker.settings import IS_PAPER_TRADING
+from pyokx.okx_market_maker.utils.OkxEnum import InstType, InstState, OrderSide
 
-from okx_market_maker import instruments
-from okx_market_maker.position_management_service.model.Positions import Position
-from okx_market_maker.settings import IS_PAPER_TRADING
-from okx_market_maker.utils.OkxEnum import InstType, OrderSide, InstState
-from okx_market_maker.market_data_service.model.Instrument import Instrument
-from okx_market_maker import mark_px_container
-
-
-INST_ID_SUGGESTION = "valid instId examples:\n"\
-                     "SPOT: BTC-USDT, SWAP: BTC-USDT-SWAP, FUTURES: BTC_USDT-230630, "\
+INST_ID_SUGGESTION = "valid instId examples:\n" \
+                     "SPOT: BTC-USDT, SWAP: BTC-USDT-SWAP, FUTURES: BTC_USDT-230630, " \
                      f"OPTION: BTC-USDT-230630-30000-C."
 
 
@@ -49,7 +46,7 @@ class InstrumentUtil:
             raise ValueError(f"{inst_id} inst not exists in OKX: {inst_result}, {INST_ID_SUGGESTION}")
         data = inst_result["data"]
         json_response = data[0]
-        instrument = Instrument.init_from_json(json_response)
+        instrument = Instrument.init_from_ws_json_message(json_response)
 
         if str(instrument.state) != str(InstState.LIVE):
             raise ValueError(f"{inst_id} inst state error in OKX: {instrument.state}")

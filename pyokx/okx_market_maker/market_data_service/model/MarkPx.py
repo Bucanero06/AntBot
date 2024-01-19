@@ -12,7 +12,7 @@ class MarkPx:
     ts: int = 0
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         mark_px_instance = MarkPx()
         mark_px_instance.inst_type = InstType(json_response["instType"])
         mark_px_instance.inst_id = json_response.get("instId", "")
@@ -33,20 +33,14 @@ class MarkPx:
 class MarkPxCache:
     _mark_px_map: Dict[str, MarkPx] = field(default_factory=lambda: dict())
 
-    def update_from_json(self, json_response):
+    def update_from_ws_json_message(self, json_response):
         data_list = json_response["data"]
         for data in data_list:
-            mark_px = MarkPx.init_from_json(data)
+            mark_px = MarkPx.init_from_ws_json_message(data)
             self._mark_px_map[mark_px.inst_id] = mark_px
 
     def get_mark_px(self, inst_id) -> MarkPx:
         return self._mark_px_map.get(inst_id)
-
-    def get_usdt_to_usd_rate(self) -> float:
-        if self._mark_px_map.get("BTC-USD-SWAP") or self._mark_px_map.get("BTC-USDT-SWAP"):
-            return 1
-        usdt_to_usd = self._mark_px_map["BTC-USD-SWAP"].mark_px / self._mark_px_map["BTC-USDT-SWAP"].mark_px
-        return usdt_to_usd
 
     def to_dict(self):
         return {

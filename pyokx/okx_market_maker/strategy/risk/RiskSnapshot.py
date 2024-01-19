@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
-from okx_market_maker.market_data_service.model.Instrument import Instrument
+from pyokx.okx_market_maker.market_data_service.model.Instrument import Instrument
 
 
 @dataclass

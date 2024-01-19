@@ -45,7 +45,7 @@ class Order:
     u_time: int = 0
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         order = Order()
         order.acc_fill_sz = json_response.get("accFillSz", "0")
         order.amend_result = json_response.get("amendResult")
@@ -132,20 +132,20 @@ class Orders:
     _non_client_order_map: Dict[str, Order] = field(default_factory=lambda: dict())
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         orders = Orders()
         data = json_response.get("data", [])
-        orders._order_map = {single_order["ordId"]: Order.init_from_json(single_order) for single_order in data}
+        orders._order_map = {single_order["ordId"]: Order.init_from_ws_json_message(single_order) for single_order in data}
         orders._client_order_map = {order.cl_ord_id: order for ord_id, order in orders._order_map.items()
                                     if order.cl_ord_id}
         orders._non_client_order_map = {order.ord_id: order for ord_id, order in orders._order_map.items()
                                         if not order.cl_ord_id}
         return orders
 
-    def update_from_json(self, json_response):
+    def update_from_ws_json_message(self, json_response):
         data = json_response.get("data", [])
         for single_order in data:
-            new_order = Order.init_from_json(single_order)
+            new_order = Order.init_from_ws_json_message(single_order)
             # if new_order.state in [OrderState.CANCELED, OrderState.FILLED] and new_order.ord_id in self._order_map:
             #     del self._order_map[new_order.ord_id]
             #     del self._non_client_order_map[new_order.ord_id]
@@ -196,3 +196,9 @@ class Orders:
             "client_order_map": {order_id: order.to_dict() for order_id, order in self._client_order_map.items()},
             "non_client_order_map": {order_id: order.to_dict() for order_id, order in self._non_client_order_map.items()}
         }
+
+    def from_dict(self, orders_dict):
+        self._order_map = {order_id: Order(**order) for order_id, order in orders_dict["order_map"].items()}
+        self._client_order_map = {order_id: Order(**order) for order_id, order in orders_dict["client_order_map"].items()}
+        self._non_client_order_map = {order_id: Order(**order) for order_id, order in orders_dict["non_client_order_map"].items()}
+        return self

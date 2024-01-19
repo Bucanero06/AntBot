@@ -30,9 +30,9 @@ def _callback(message):
 
 def on_orders_update(message):
     if not orders_container:
-        orders_container.append(Orders.init_from_json(message))
+        orders_container.append(Orders.init_from_ws_json_message(message))
     else:
-        orders_container[0].update_from_json(message)
+        orders_container[0].update_from_ws_json_message(message)
 
     return orders_container[0]
 

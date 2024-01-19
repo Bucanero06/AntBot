@@ -2,15 +2,19 @@ import datetime
 from dataclasses import dataclass
 from decimal import Decimal
 
-from okx_market_maker import mark_px_container, tickers_container
-from okx_market_maker.market_data_service.model.Tickers import Tickers
-from okx_market_maker.strategy.risk.RiskSnapshot import RiskSnapShot, AssetValueInst
-from okx_market_maker.utils.InstrumentUtil import InstrumentUtil
-from okx_market_maker.utils.OkxEnum import InstType, CtType
+import redis
+
+from pyokx.okx_market_maker import mark_px_container, tickers_container
+from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
+from pyokx.okx_market_maker.strategy.risk.RiskSnapshot import RiskSnapShot, AssetValueInst
+from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
+from pyokx.okx_market_maker.utils.OkxEnum import InstType, CtType
+from redis_tools.utils import connect_to_redis
 
 
 @dataclass
 class StrategyMeasurement:
+
     trading_instrument: str = ""
     trading_instrument_type: InstType = None
     net_filled_qty: Decimal = 0
@@ -26,6 +30,10 @@ class StrategyMeasurement:
     trading_inst_quote_ccy: str = ""
     _current_risk_snapshot: RiskSnapShot = None
     _inception_risk_snapshot: RiskSnapShot = None
+    _redis_client:redis.Redis = connect_to_redis()
+
+
+
 
     def calc_pnl(self):
         """

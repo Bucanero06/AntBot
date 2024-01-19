@@ -1,7 +1,7 @@
-from okx.websocket.WsUtils import isNotBlankStr, getParamKey, initSubscribeSet
-from okx_market_maker.utils.OkxEnum import OrderOp
-
 import shortuuid
+
+from pyokx.okx_market_maker.utils.OkxEnum import OrderOp
+from pyokx.ws_clients.WsUtils import isNotBlankStr, getParamKey, initSubscribeSet
 
 
 def get_request_uuid(op):

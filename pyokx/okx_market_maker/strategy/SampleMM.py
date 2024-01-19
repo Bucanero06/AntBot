@@ -3,15 +3,15 @@ import time
 from decimal import Decimal
 from typing import Tuple, List
 
-from okx_market_maker.market_data_service.model.Instrument import Instrument
-from okx_market_maker.market_data_service.model.OrderBook import OrderBook
-from okx_market_maker.order_management_service.model.OrderRequest import PlaceOrderRequest, AmendOrderRequest, CancelOrderRequest
-from okx_market_maker.settings import TRADING_INSTRUMENT_ID
-from okx_market_maker.strategy.BaseStrategy import BaseStrategy
-from okx_market_maker.strategy.model.StrategyOrder import StrategyOrder
-from okx_market_maker.utils.InstrumentUtil import InstrumentUtil
-from okx_market_maker.utils.OkxEnum import OrderSide, OrderType, PosSide, InstType
-from okx_market_maker.utils.WsOrderUtil import get_request_uuid
+from pyokx.okx_market_maker.market_data_service.model.Instrument import Instrument
+from pyokx.okx_market_maker.market_data_service.model.OrderBook import OrderBook
+from pyokx.okx_market_maker.order_management_service.model.OrderRequest import PlaceOrderRequest, AmendOrderRequest, CancelOrderRequest
+from pyokx.okx_market_maker.settings import TRADING_INSTRUMENT_ID
+from pyokx.okx_market_maker.strategy.BaseStrategy import BaseStrategy
+from pyokx.okx_market_maker.strategy.model.StrategyOrder import StrategyOrder
+from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
+from pyokx.okx_market_maker.utils.OkxEnum import OrderSide, OrderType, PosSide, InstType
+from pyokx.okx_market_maker.utils.WsOrderUtil import get_request_uuid
 
 
 class SampleMM(BaseStrategy):

@@ -43,6 +43,7 @@ h5py = "^3.10.0"
 numpy = "^1.26.3"
 Sphinx = "^7.2.6"
 sphinx-rtd-theme = "^2.0.0"
+shortuuid = "^1.0.11"
 
 
 

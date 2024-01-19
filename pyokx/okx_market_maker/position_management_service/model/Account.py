@@ -29,7 +29,7 @@ class AccountDetail:
     iso_upl: float = 0
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         account_detail = AccountDetail()
         account_detail.avail_bal = float(json_response["availBal"]) if json_response.get("availBal") else 0
         account_detail.avail_eq = float(json_response["availEq"]) if json_response.get("availEq") else 0
@@ -99,7 +99,7 @@ class Account:
     details: Dict[str, AccountDetail] = field(default_factory=lambda: list())
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         """
         :param json_response:
          {
@@ -161,16 +161,16 @@ class Account:
         account.mmr = float(data["mmr"]) if data.get("mmr") else 0
         account.notional_usd = float(data["notionalUsd"]) if data.get("notionalUsd") else 0
         account.mgn_ratio = float(data["mgnRatio"]) if data.get("mgnRatio") else 0
-        account.details = {detail_data["ccy"]: AccountDetail.init_from_json(detail_data)
+        account.details = {detail_data["ccy"]: AccountDetail.init_from_ws_json_message(detail_data)
                            for detail_data in data["details"]}
         return account
 
-    def update_from_json(self, json_response):
+    def update_from_ws_json_message(self, json_response):
         """
         Data pushed in regular interval: Only currencies with non-zero balance will be pushed.
         Definition of non-zero balance: any value of eq, availEq, availBql parameters is not 0.
         When the value of eq, availEq and availBql parameters are all zero, drop the detail of that ccy from Account
-        :param json_response: same as init_from_json
+        :param json_response: same as init_from_ws_json_message
         :return:
         """
         data = json_response["data"][0]
@@ -184,7 +184,7 @@ class Account:
         self.notional_usd = float(data["notionalUsd"]) if data.get("notionalUsd") else 0
         self.mgn_ratio = float(data["mgnRatio"]) if data.get("mgnRatio") else 0
         for detail_data in data["details"]:
-            account_detail = AccountDetail.init_from_json(detail_data)
+            account_detail = AccountDetail.init_from_ws_json_message(detail_data)
             if not account_detail.eq and not account_detail.avail_eq and not account_detail.avail_bal and \
                     account_detail.ccy in self.details:
                 del self.details[account_detail.ccy]
@@ -207,3 +207,19 @@ class Account:
             "mgn_ratio": self.mgn_ratio,
             "details": {ccy: detail.to_dict() for ccy, detail in self.details.items()}
         }
+
+    def from_dict(self, account_dict):
+        self.u_time = account_dict["u_time"]
+        self.total_eq = account_dict["total_eq"]
+        self.iso_eq = account_dict["iso_eq"]
+        self.adj_eq = account_dict["adj_eq"]
+        self.ord_frozen = account_dict["ord_frozen"]
+        self.imr = account_dict["imr"]
+        self.mmr = account_dict["mmr"]
+        self.notional_usd = account_dict["notional_usd"]
+        self.mgn_ratio = account_dict["mgn_ratio"]
+
+        self.details = {ccy: AccountDetail(**detail) for ccy, detail in account_dict["details"].items()}
+
+        return self
+

@@ -16,7 +16,7 @@ assert IS_PAPER_TRADING in [True, False], "Please set OKX_SANDBOX_MODE in enviro
 
 # market-making instrument
 # TRADING_INSTRUMENT_ID = "BTC-USDT-SWAP"
-TRADING_INSTRUMENT_ID = "BTC-USDT-240329"
+TRADING_INSTRUMENT_ID = "BTC-USDT-240119"
 TRADING_MODE = "isolated"  # "cash" / "isolated" / "cross"
 
 # default latency tolerance level

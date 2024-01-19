@@ -24,7 +24,7 @@ class Ticker:
     ts: int = 0
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         """
         :param json_response:
          {
@@ -66,7 +66,7 @@ class Ticker:
         ticker.ts = int(json_response["ts"]) if json_response.get("ts") else 0
         return ticker
 
-    def update_from_json(self, json_response):
+    def update_from_ws_json_message(self, json_response):
         self.last = float(json_response["last"]) if json_response.get("last") else 0
         self.last_sz = float(json_response["lastSz"]) if json_response.get("lastSz") else 0
         self.ask_px = float(json_response["askPx"]) if json_response.get("askPx") else 0
@@ -102,18 +102,39 @@ class Ticker:
             "ts": self.ts
         }
 
+    def from_dict(self, ticker_dict):
+        self.inst_type = InstType(ticker_dict["instType"])
+        self.inst_id = ticker_dict["instId"]
+        self.last = ticker_dict["last"]
+        self.last_sz = ticker_dict["lastSz"]
+        self.ask_px = ticker_dict["askPx"]
+        self.ask_sz = ticker_dict["askSz"]
+        self.bid_px = ticker_dict["bidPx"]
+        self.bid_sz = ticker_dict["bidSz"]
+        self.open24h = ticker_dict["open24h"]
+        self.high24h = ticker_dict["high24h"]
+        self.low24h = ticker_dict["low24h"]
+        self.vol_ccy24h = ticker_dict["volCcy24h"]
+        self.vol24h = ticker_dict["vol24h"]
+        self.sod_utc0 = ticker_dict["sodUtc0"]
+        self.sod_utc8 = ticker_dict["sodUtc8"]
+        self.ts = ticker_dict["ts"]
+        return self
+
+
+
 @dataclass
 class Tickers:
     _ticker_map: Dict[str, Ticker] = field(default_factory=lambda: dict())
 
-    def update_from_json(self, json_response):
+    def update_from_ws_json_message(self, json_response):
         data = json_response["data"]
         for info in data:
             inst_id = info["instId"]
             if inst_id not in self._ticker_map:
-                self._ticker_map[inst_id] = Ticker.init_from_json(info)
+                self._ticker_map[inst_id] = Ticker.init_from_ws_json_message(info)
             else:
-                self._ticker_map[inst_id].update_from_json(info)
+                self._ticker_map[inst_id].update_from_ws_json_message(info)
 
     def get_ticker_by_inst_id(self, inst_id: str) -> Ticker:
         return self._ticker_map.get(inst_id)
@@ -139,3 +160,11 @@ class Tickers:
         return {
             "ticker_map": {k: v.to_dict() for k, v in self._ticker_map.items()}
         }
+
+    def from_dict(self, tickers_dict):
+        for inst_id, ticker_dict in tickers_dict["ticker_map"].items():
+            ticker = Ticker(inst_id=inst_id, inst_type=InstType(ticker_dict["instType"]))
+            ticker.from_dict(ticker_dict)
+            self._ticker_map[inst_id] = ticker
+
+        return self

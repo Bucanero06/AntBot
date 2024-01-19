@@ -31,7 +31,7 @@ class Instrument:
 
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         instrument = Instrument()
         instrument.inst_type = InstType(json_response["instType"])
         instrument.inst_id = json_response.get("instId")

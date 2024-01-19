@@ -73,7 +73,6 @@ def clear_cards(q: Q, ignore: Optional[List[str]] = None) -> None:
     Clear cards from the page except those listed in 'ignore'.
     """
     print("Clearing cards")
-
     if not ignore:
         ignore = []
 

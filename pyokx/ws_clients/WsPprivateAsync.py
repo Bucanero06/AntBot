@@ -1,6 +1,9 @@
 import asyncio
 import json
 import logging
+from typing import List, Set
+
+from websockets import ConnectionClosedError
 
 from pyokx.ws_clients import WsUtils
 from pyokx.ws_clients.WebSocketFactory import WebSocketFactory
@@ -10,9 +13,9 @@ logger = logging.getLogger("WsPrivate")
 
 
 class WsPrivateAsync:
-    def __init__(self, apikey: str, passphrase: str, secretkey: str, url: str, use_servertime: bool, callback):
+    def __init__(self, apikey: str, passphrase: str, secretkey: str, url: str, use_servertime: bool,
+                 callback):
         self.url = url
-        # self.subscriptions = set()
         self.loop = asyncio.get_event_loop()
         self.factory = WebSocketFactory(url)
         self.callback = callback
@@ -20,30 +23,46 @@ class WsPrivateAsync:
         self.passphrase = passphrase
         self.secretKey = secretkey
         self.useServerTime = use_servertime
+        self.max_size = 2 ** 20
+        self.websocket = None
+        self.channel_params = []
 
     async def connect(self):
-        self.websocket = await self.factory.connect()
+        self.websocket = await self.factory.connect(max_size=self.max_size)
 
     async def consume(self):
-        async for message in self.websocket:
-            logger.debug("Received message: {%s}", message)
-            if self.callback:
-                await self.callback(message)
+        try:
+            async for message in self.websocket:
+                logger.debug("Received message: {%s}", message)
+                if self.callback:
+                    await self.callback(message)
+        except ConnectionClosedError as e:
+            logger.error(f"WebSocket connection closed: {e}")
+            # Handle reconnection logic here
+            await self.restart()
+        except Exception as e:
+            logger.error(f"WebSocket unhandled error: {e}")
+            # Handle reconnection logic here
+            await self.restart()
 
-    async def subscribe(self, params: list):
 
-
+    async def subscribe(self, params: List[dict]):
         logRes = await self.login()
         await asyncio.sleep(5)
-        if logRes:
-            payload = json.dumps({
-                "op": "subscribe",
-                "args": params
-            })
-            await self.websocket.send(payload)
-        else:
-            logger.error(f"Could not login to websocket")
-            # TODO handle edge case ... exit?
+        try:
+            if logRes:
+                payload = json.dumps({
+                    "op": "subscribe",
+                    "args": params
+                })
+                await self.websocket.send(payload)
+            else:
+                logger.error(f"Could not login to websocket")
+                raise Exception("Could not login to websocket")
+            self.channel_params = self.channel_params + params
+        except Exception as e:
+            logger.error(f"Error subscribing to websocket: {e}")
+            raise Exception(f"Error subscribing to websocket: {e}")
 
     async def login(self):
         loginPayload = WsUtils.initLoginParams(
@@ -62,13 +81,38 @@ class WsPrivateAsync:
         })
         logger.info(f"unsubscribe: {payload}")
         await self.websocket.send(payload)
-        # for param in params:
-        #     self.subscriptions.discard(param)
+        self.channel_params = list(set(self.channel_params) - set(params))
 
     async def start(self):
         logger.info("Connecting to WebSocket...")
         await self.connect()
         self.loop.create_task(self.consume())
+
+    async def restart(self):
+        logger.info("Restarting WebSocket...")
+        channel_params = self.channel_params
+        for i in range(3):
+            try:
+                if self.websocket:
+                    await self.factory.close()
+                await self.start()
+                await self.subscribe(channel_params)
+                break
+            except KeyboardInterrupt:
+                logger.info("Keyboard Interrupt")
+                try:
+                    if self.websocket:
+                        await self.factory.close()
+                    self.stop_sync()
+                except Exception as e:
+                    logger.error(f"Error gracefully closing websocket: {e}")
+                finally:
+                    break
+            except Exception as e:
+                logger.error(f"Error restarting websocket: {e}")
+                await asyncio.sleep(1)
+                continue
+
 
     async def stop(self):
         await self.factory.close()

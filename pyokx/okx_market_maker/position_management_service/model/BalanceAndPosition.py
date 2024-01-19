@@ -12,12 +12,14 @@ class BalanceData:
     u_time: int = 0
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         balance_data = BalanceData()
         balance_data.ccy = json_response.get("ccy")
         balance_data.cash_bal = float(json_response.get("cashBal"))
         balance_data.u_time = int(json_response.get("uTime"))
         return balance_data
+
+
 
 
 @dataclass
@@ -35,7 +37,7 @@ class PosData:
     u_time: int = 0
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         position_data = PosData()
         position_data.position_id = int(json_response.get("posId"))
         position_data.trade_id = json_response.get("tradeId", "")
@@ -58,27 +60,27 @@ class BalanceAndPosition:
     positions: Dict[int, PosData] = field(default_factory=lambda: dict())
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         balance_and_position = BalanceAndPosition()
         balance_and_position.balances = {
-            balance_data["ccy"]: BalanceData.init_from_json(balance_data)
+            balance_data["ccy"]: BalanceData.init_from_ws_json_message(balance_data)
             for balance_data in json_response["data"][0]["balData"]}
         balance_and_position.positions = {
-            pos_data["posId"]: PosData.init_from_json(pos_data) for pos_data in json_response["data"][0]["posData"]}
+            pos_data["posId"]: PosData.init_from_ws_json_message(pos_data) for pos_data in json_response["data"][0]["posData"]}
         balance_and_position.p_time = int(json_response["data"][0]["pTime"])
         return balance_and_position
 
-    def update_from_json(self, json_response):
+    def update_from_ws_json_message(self, json_response):
         balance_data_list = json_response["data"][0]["balData"]
         pos_data_list = json_response["data"][0]["posData"]
         for balance_data in balance_data_list:
-            balance = BalanceData.init_from_json(balance_data)
+            balance = BalanceData.init_from_ws_json_message(balance_data)
             if balance.cash_bal == 0 and balance.ccy in self.balances:
                 del self.balances[balance.ccy]
             else:
                 self.balances[balance.ccy] = balance
         for pos_data in pos_data_list:
-            position = PosData.init_from_json(pos_data)
+            position = PosData.init_from_ws_json_message(pos_data)
             if position.pos == 0 and position.position_id in self.positions:
                 del self.positions[position.position_id]
             else:
@@ -90,4 +92,13 @@ class BalanceAndPosition:
             "balances": [balance_data.__dict__ for balance_data in self.balances.values()],
             "positions": [pos_data.__dict__ for pos_data in self.positions.values()]
         }
+
+    def from_dict(self, balance_and_position_dict):
+        self.p_time = balance_and_position_dict["pTime"]
+        self.balances = {
+            balance_data["ccy"]: BalanceData(**balance_data)
+            for balance_data in balance_and_position_dict["balances"]}
+        self.positions = {
+            pos_data["position_id"]: PosData(**pos_data) for pos_data in balance_and_position_dict["positions"]}
+        return self
 

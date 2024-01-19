@@ -65,7 +65,7 @@ class Position:
     ctime: int = 0
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         position = Position()
         position.inst_type = InstType[json_response["instType"]]
         position.mgn_mode = MgnMode[json_response["mgnMode"]]
@@ -186,16 +186,16 @@ class Positions:
     _position_map: Dict[str, Position] = field(default_factory=lambda: dict())
 
     @classmethod
-    def init_from_json(cls, json_response):
+    def init_from_ws_json_message(cls, json_response):
         data = json_response["data"]
         positions = Positions()
-        positions._position_map = {single_pos["posId"]: Position.init_from_json(single_pos) for single_pos in data}
+        positions._position_map = {single_pos["posId"]: Position.init_from_ws_json_message(single_pos) for single_pos in data}
         return positions
 
-    def update_from_json(self, json_response):
+    def update_from_ws_json_message(self, json_response):
         data = json_response["data"]
         for single_pos in data:
-            new_pos = Position.init_from_json(single_pos)
+            new_pos = Position.init_from_ws_json_message(single_pos)
             if new_pos.pos == 0 and new_pos.position_id in self._position_map:
                 del self._position_map[new_pos.position_id]
                 continue
@@ -208,3 +208,7 @@ class Positions:
         return {
             "positions": [pos.to_dict() for pos in self._position_map.values()]
         }
+
+    def from_dict(self, positions_dict):
+        self._position_map = {pos["position_id"]: Position(**pos) for pos in positions_dict["positions"]}
+        return self

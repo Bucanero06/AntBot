@@ -44,17 +44,17 @@ def _callback(message):
 
 def on_balance_and_position(message):
     if not balance_and_position_container:
-        balance_and_position_container.append(BalanceAndPosition.init_from_json(message))
+        balance_and_position_container.append(BalanceAndPosition.init_from_ws_json_message(message))
     else:
-        balance_and_position_container[0].update_from_json(message)
+        balance_and_position_container[0].update_from_ws_json_message(message)
     return balance_and_position_container[0]
 
 
 def on_account(message):
     if not account_container:
-        account_container.append(Account.init_from_json(message))
+        account_container.append(Account.init_from_ws_json_message(message))
     else:
-        account_container[0].update_from_json(message)
+        account_container[0].update_from_ws_json_message(message)
 
     return account_container[0]
 
@@ -63,9 +63,9 @@ def on_account(message):
 
 def on_position(message):
     if not positions_container:
-        positions_container.append(Positions.init_from_json(message))
+        positions_container.append(Positions.init_from_ws_json_message(message))
     else:
-        positions_container[0].update_from_json(message)
+        positions_container[0].update_from_ws_json_message(message)
 
     return positions_container[0]
 

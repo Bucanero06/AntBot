@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from okx_market_maker.utils.OkxEnum import OrderSide, OrderType
+from pyokx.okx_market_maker.utils.OkxEnum import OrderSide, OrderType
 
 
 class StrategyOrderStatus(Enum):

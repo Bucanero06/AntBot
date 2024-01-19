@@ -1,23 +1,21 @@
 import time
 from typing import Tuple
 
-from okx_market_maker.settings import RISK_FREE_CCY_LIST
-from okx_market_maker.strategy.risk.RiskSnapshot import RiskSnapShot, AssetValueInst
-from okx_market_maker.position_management_service.model.Positions import Positions, Position
-from okx_market_maker.position_management_service.model.Account import Account
-from okx_market_maker.market_data_service.model.Tickers import Tickers
-from okx_market_maker.market_data_service.model.MarkPx import MarkPxCache
-from okx_market_maker.utils.InstrumentUtil import InstrumentUtil
-from okx_market_maker.utils.OkxEnum import InstType, CtType
+from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
+from pyokx.okx_market_maker.position_management_service.model.Account import Account
+from pyokx.okx_market_maker.position_management_service.model.Positions import Positions, Position
+from pyokx.okx_market_maker.settings import RISK_FREE_CCY_LIST
+from pyokx.okx_market_maker.strategy.risk.RiskSnapshot import RiskSnapShot, AssetValueInst
+from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
+from pyokx.okx_market_maker.utils.OkxEnum import InstType, CtType
 
 
 class RiskCalculator:
     @classmethod
     def generate_risk_snapshot(cls, account: Account, positions: Positions, tickers: Tickers,
-                               mark_px_cache: MarkPxCache) -> RiskSnapShot:
+                               usdt_to_usd_rate: float) -> RiskSnapShot:
         risk_snapshot = RiskSnapShot()
         risk_snapshot.asset_usd_value = account.total_eq
-        usdt_to_usd_rate = mark_px_cache.get_usdt_to_usd_rate()
         account_detail = account.get_account_details()
         for ccy, detail in account_detail.items():
             usdt_price = tickers.get_usdt_price_by_ccy(ccy)
@@ -102,4 +100,3 @@ class RiskCalculator:
             ccy_exposure = position.delta_bs
             return exposure_ccy, ccy_exposure
         return "USDT", 0
-

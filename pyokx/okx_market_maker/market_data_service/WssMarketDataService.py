@@ -91,7 +91,7 @@ def on_ticker_update(message):
     if not tickers_container:
         tickers_container.append(Tickers())
 
-    tickers_container[0].update_from_json(message)
+    tickers_container[0].update_from_ws_json_message(message)
 
     return tickers_container[0]
 
@@ -100,6 +100,6 @@ def on_mark_price_update(message):
     if not mark_px_container:
         mark_px_container.append(MarkPxCache())
 
-    mark_px_container[0].update_from_json(message)
+    mark_px_container[0].update_from_ws_json_message(message)
 
     return mark_px_container[0]

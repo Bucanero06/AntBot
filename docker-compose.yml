@@ -21,15 +21,15 @@ services:
     build:
       context: .
       dockerfile: .docker/dashboard.dockerfile
-    command: [ "wave", "run", "h2o_dashboard.dashboard" ]
+    command: [ "wave", "run", "h2o_dashboard.dashboard", "--no-reload" ]
     restart: always
     networks:
       - my-network
-#    depends_on:
-#      nginx:
-#        condition: service_healthy
-#      okx_websockets:
-#        condition: service_healthy
+    #    depends_on:
+    #      nginx:
+    #        condition: service_healthy
+    #      okx_websockets:
+    #        condition: service_healthy
     environment:
       - DEVELOPMENT_GOD_MODE=${DEVELOPMENT_GOD_MODE}
       - BYPASS_SECURITY=${BYPASS_SECURITY}
@@ -67,11 +67,11 @@ services:
     restart: always
     networks:
       - my-network
-#    depends_on:
-#      nginx:
-#        condition: service_healthy
-#      redis:
-#        condition: service_healthy
+    #    depends_on:
+    #      nginx:
+    #        condition: service_healthy
+    #      redis:
+    #        condition: service_healthy
     environment:
       - MODULE_PATH=${OKX_API_MODULE_PATH}
       - MODULE_NAME=${OKX_API_MODULE_NAME}
@@ -86,7 +86,7 @@ services:
       - OKX_VERBOSE=${OKX_VERBOSE}
       - DEVELOPMENT_GOD_MODE=${DEVELOPMENT_GOD_MODE}
     healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://localhost:8080/health"]
+      test: [ "CMD", "curl", "--fail", "http://localhost:8080/health" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -99,9 +99,9 @@ services:
     restart: always
     networks:
       - my-network
-#    depends_on:
-#      redis:
-#        condition: service_healthy
+    #    depends_on:
+    #      redis:
+    #        condition: service_healthy
     environment:
       - MODULE_PATH=${OKX_WS_MODULE_PATH}
       - MODULE_NAME=${OKX_WS_MODULE_NAME}
@@ -114,7 +114,7 @@ services:
       - OKX_VERBOSE=${OKX_VERBOSE}
       - DEVELOPMENT_GOD_MODE=${DEVELOPMENT_GOD_MODE}
     healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://localhost:8081/health"]
+      test: [ "CMD", "curl", "--fail", "http://localhost:8081/health" ]
       interval: 10s
       timeout: 5s
       retries: 3

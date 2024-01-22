@@ -1,7 +1,7 @@
 #> These need to all be filled in
 
 # Master Settings
-DEVELOPMENT_GOD_MODE=True
+DEVELOPMENT_GOD_MODE=True # This is for development only, it will allow you to use the API without authentication
 
 # OKX SETTINGS
 OKX_API_KEY=
@@ -41,3 +41,4 @@ BYPASS_SECURITY=True
 # GitHub Settings
 GITHUB_TOKEN=
 GITHUB_REPO=
+

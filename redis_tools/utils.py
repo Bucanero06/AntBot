@@ -51,23 +51,32 @@ def _deserialize_from_redis(data):
         return data
 
 
+import aioredis
+import socket
+
+
 async def connect_to_aioredis():
     async_redis = None
-    try:
-        host = 'localhost'
-        async_redis = aioredis.from_url(f"redis://{host}:6379", decode_responses=True)
-        await async_redis.ping()
 
-    except Exception as e:
-        print(f"Redis Error: {e}")
+    # Define possible Redis hosts and ports
+    local_redis = ('localhost', 6379)
+    docker_redis = ('redis', 6379)
+    # Add more tuples (host, port) for other scenarios
+
+    redis_options = [local_redis, docker_redis]  # Add more options as needed
+
+    for host, port in redis_options:
         try:
-            host = os.getenv('REDIS_HOST', "redis")
-            async_redis = aioredis.from_url(f"redis://{host}:6379", decode_responses=True)
+            async_redis = aioredis.from_url(f"redis://{host}:{port}", decode_responses=True)
             await async_redis.ping()
+            print(f"Connected to Redis at {host}:{port}")
+            return async_redis  # Return as soon as a successful connection is made
         except Exception as e:
-            print(f"Redis Error: {e}")
+            print(f"Redis connection attempt to {host}:{port} failed: {e}")
 
-    return async_redis
+    print("Unable to connect to Redis using any of the configured options.")
+    return None
+
 
 
 def connect_to_redis():

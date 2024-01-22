@@ -9,8 +9,8 @@ services:
     networks:
       - my-network
     ports:
+      #    environment: variables are not being updated in the config files so out of sync with other services
       - ${NGINX_SERVICE_PORT}:${NGINX_SERVICE_PORT}
-    #    environment: variables are not being updated in the config files so out of sync with other services
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:80" ]
       interval: 10s

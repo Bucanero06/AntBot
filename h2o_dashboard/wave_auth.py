@@ -17,8 +17,7 @@ FIREBASE_CONFIG = {
     "apiKey": os.environ.get("FIREBASE_API_KEY"),
 }
 
-# ruben@carbonyl.org
-# u8hwr9y4y74w8huehewh893
+
 async def init(q: Q) -> None:
     """
     Q Page Meta (meta_card) Arguments:

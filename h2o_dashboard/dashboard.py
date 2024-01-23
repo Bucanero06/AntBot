@@ -1,12 +1,13 @@
 import asyncio
 import os
 
+import dotenv
 from h2o_wave import main, Q, app, ui, on, data, run_on  # noqa F401
 
 from h2o_dashboard.redis_refresh import refresh_redis, start_redis, stop_redis
 from h2o_dashboard.wave_auth import initialize_client, serve_security
 
-
+dotenv.load_dotenv(dotenv.find_dotenv())
 @on('global_notification_bar.dismissed')
 async def on_global_notification_bar_dismissed(q: Q):
     # Delete the notification bar

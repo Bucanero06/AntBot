@@ -31,6 +31,7 @@ services:
     #      okx_websockets:
     #        condition: service_healthy
     environment:
+      FIREBASE_API_KEY: ${FIREBASE_API_KEY}
       #      H2O_WAVE_ACCESS_KEY_ID: "your_access_key_id" # Default: "access_key_id"
       #      H2O_WAVE_ACCESS_KEY_SECRET: "your_access_key_secret" # Default: "access_key_secret"
       H2O_WAVE_ACCESS_KEYCHAIN: ".wave-keychain" # Default: ".wave-keychain"
@@ -116,11 +117,12 @@ services:
     #      redis:
     #        condition: service_healthy
     environment:
+      - FIREBASE_API_KEY=${FIREBASE_API_KEY}
       #      - H2O_WAVE_LISTEN=:10101
       #      - H2O_WAVE_ADDRESS=http://0.0.0.0:10101
       - MODULE_PATH=${OKX_API_MODULE_PATH}
       - MODULE_NAME=${OKX_API_MODULE_NAME}
-      - HOST=localhost
+      - HOST=0.0.0.0
       #      - PORT=${OKX_API_SERVICE_PORT}
       - PORT=8080
       - REDIS_STREAM_MAX_LEN=${REDIS_STREAM_MAX_LEN}
@@ -149,9 +151,10 @@ services:
     #      redis:
     #        condition: service_healthy
     environment:
+      - FIREBASE_API_KEY=${FIREBASE_API_KEY}
       - MODULE_PATH=${OKX_WS_MODULE_PATH}
       - MODULE_NAME=${OKX_WS_MODULE_NAME}
-      - HOST=localhost
+      - HOST=0.0.0.0
       - PORT=${OKX_WS_SERVICE_PORT}
       - REDIS_STREAM_MAX_LEN=${REDIS_STREAM_MAX_LEN}
       - OKX_API_KEY=${OKX_API_KEY}

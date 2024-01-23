@@ -18,6 +18,11 @@ FIREBASE_CONFIG = {
 }
 
 
+assert FIREBASE_CONFIG["apiKey"], "FIREBASE_API_KEY environment variable not set!"
+
+
+
+
 async def init(q: Q) -> None:
     """
     Q Page Meta (meta_card) Arguments:

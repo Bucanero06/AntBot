@@ -43,6 +43,7 @@ services:
       #      H2O_WAVE_INIT: "path_to_your_aof_log" # Initialize site content from AOF log
       H2O_WAVE_LISTEN: "0.0.0.0:10101" # Default: ":10101", listening on all interfaces
       H2O_WAVE_ADDRESS: http://0.0.0.0:10101
+      H2O_WAVE_APP_ADDRESS: http://0.0.0.0:8000
       H2O_WAVE_BASE_URL: "/" # Default: "/", the base URL
       H2O_WAVE_MAX_CACHE_REQUEST_SIZE: "5M" # Default: "5M"
       H2O_WAVE_MAX_PROXY_REQUEST_SIZE: "5M" # Default: "5M"

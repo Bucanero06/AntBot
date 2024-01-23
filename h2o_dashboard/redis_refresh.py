@@ -100,7 +100,7 @@ async def refresh_redis(q: Q):
 
     btc_usdt_index_ticker = await async_redis.xrevrange('okx:reports@index-tickers@BTC-USDT', count=1)
     if not btc_usdt_index_ticker:
-        raise ValueError(f"BTC-USDT or BTC-USD index ticker not ready in index-tickers cache!")
+        print(f"BTC-USDT index ticker not ready in index-tickers cache!")
     btc_usdt_index_ticker = _deserialize_from_redis(btc_usdt_index_ticker[0][1])
     from pyokx.ws_data_structures import IndexTickersChannel
     q.user.okx_index_ticker = IndexTickersChannel(**btc_usdt_index_ticker)

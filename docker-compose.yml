@@ -111,11 +111,11 @@ services:
     restart: always
     networks:
       - my-network
-    #    depends_on:
-    #      nginx:
-    #        condition: service_healthy
-    #      redis:
-    #        condition: service_healthy
+    depends_on:
+      okx_websockets:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       - FIREBASE_API_KEY=${FIREBASE_API_KEY}
       #      - H2O_WAVE_LISTEN=:10101
@@ -147,9 +147,9 @@ services:
     restart: always
     networks:
       - my-network
-    #    depends_on:
-    #      redis:
-    #        condition: service_healthy
+    depends_on:
+      redis:
+        condition: service_healthy
     environment:
       - FIREBASE_API_KEY=${FIREBASE_API_KEY}
       - MODULE_PATH=${OKX_WS_MODULE_PATH}

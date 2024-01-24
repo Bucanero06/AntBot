@@ -6,6 +6,7 @@ from h2o_wave import main, Q, app, ui, on, data, run_on  # noqa F401
 
 from h2o_dashboard.redis_refresh import refresh_redis, start_redis, stop_redis
 from h2o_dashboard.wave_auth import initialize_client, serve_security
+from redis_tools.utils import connect_to_aioredis
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 @on('global_notification_bar.dismissed')
@@ -25,6 +26,7 @@ async def on_shutdown():
 
 @app('/', on_startup=on_startup, on_shutdown=on_shutdown)
 async def serve(q: Q):
+
     """Main application handler."""
     print("Serving")
     if not q.client.initialized:

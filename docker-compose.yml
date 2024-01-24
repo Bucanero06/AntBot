@@ -41,7 +41,7 @@ services:
       H2O_WAVE_FORWARDED_HTTP_HEADERS: "*" # Default: "*", all headers allowed
       #      H2O_WAVE_HTTP_HEADERS_FILE: "path_to_your_mime_formatted_file" # Path to a MIME-formatted file containing additional HTTP headers
       #      H2O_WAVE_INIT: "path_to_your_aof_log" # Initialize site content from AOF log
-      H2O_WAVE_LISTEN: "0.0.0.0:10101" # Default: ":10101", listening on all interfaces
+      H2O_WAVE_LISTEN: http://0.0.0.0:10101
       H2O_WAVE_ADDRESS: http://0.0.0.0:10101
       H2O_WAVE_APP_ADDRESS: http://0.0.0.0:8000
       H2O_WAVE_BASE_URL: "/" # Default: "/", the base URL
@@ -119,12 +119,9 @@ services:
         condition: service_healthy
     environment:
       - FIREBASE_API_KEY=${FIREBASE_API_KEY}
-      #      - H2O_WAVE_LISTEN=:10101
-      #      - H2O_WAVE_ADDRESS=http://0.0.0.0:10101
       - MODULE_PATH=${OKX_API_MODULE_PATH}
       - MODULE_NAME=${OKX_API_MODULE_NAME}
       - HOST=0.0.0.0
-      #      - PORT=${OKX_API_SERVICE_PORT}
       - PORT=8080
       - REDIS_STREAM_MAX_LEN=${REDIS_STREAM_MAX_LEN}
       #

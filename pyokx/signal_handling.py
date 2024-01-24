@@ -16,6 +16,7 @@ from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Retur
                                    Instrument, InstType, Orderbook_Snapshot, Bid, Ask,
                                    Simplified_Balance_Details, InstrumentStatusReport,
                                    PremiumIndicatorSignalRequestForm)
+from redis_tools.utils import serialize_for_redis, connect_to_redis
 from shared.tmp_shared import calculate_tp_stop_prices, calculate_sl_stop_prices, FunctionCall, execute_function_calls
 
 dotenv.load_dotenv(dotenv.find_dotenv())
@@ -97,8 +98,8 @@ class InstrumentSearcher:
 instrument_searcher = InstrumentSearcher(all_futures_instruments)
 
 
-def get_ticker_with_higher_volume(seed_symbol_name,instrument_type="FUTURES", top_n=1):
-    print(f'{seed_symbol_name = }')#tickers_data = okx_client.marketAPI.get_tickers(instType=instrument_type)
+def get_ticker_with_higher_volume(seed_symbol_name, instrument_type="FUTURES", top_n=1):
+    print(f'{seed_symbol_name = }')  # tickers_data = okx_client.marketAPI.get_tickers(instType=instrument_type)
 
     # raise DeprecationWarning("This function is deprecated. Waiting to update to Structured Data Types.")
     all_positions = okx_client.accountAPI.get_positions(instType=instrument_type)
@@ -128,10 +129,9 @@ def get_ticker_with_higher_volume(seed_symbol_name,instrument_type="FUTURES", to
         tickers.append(Ticker(**_ticker_data))
     return tickers
 
-
-
-
     # get the tickers for the top 5 volumes
+
+
 def assert_okx_account_level(account_level: [1, 2, 3, 4]):
     raise DeprecationWarning("This function is deprecated. Waiting to update to Structured Data Types.")
     ACCLV_MAPPING = {
@@ -468,9 +468,6 @@ def get_max_order_size(instId, tdMode):
 
 def get_max_avail_size(instId, tdMode):
     return MaxAvailSizeData(**accountAPI.get_max_avail_size(instId=instId, tdMode=tdMode)['data'][0])
-
-
-from concurrent.futures import ThreadPoolExecutor
 
 
 def generate_random_string(length, char_type='alphanumeric'):
@@ -954,127 +951,133 @@ def okx_signal_handler(
     print('\n\nFINAL REPORT')
     return fetch_status_report_for_instrument(instID, TD_MODE)
 
+
+def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
+    from fastapi import HTTPException
+    from starlette import status
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="credentials invalid",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    input_to_pass = indicator_input.model_dump() if isinstance(indicator_input,
+                                                               PremiumIndicatorSignalRequestForm) else indicator_input
+    indicator_input = PremiumIndicatorSignalRequestForm(**input_to_pass)
+    from jose import JWTError
+    try:
+        from routers.okx_authentication import check_token_against_instrument
+        valid = check_token_against_instrument(token=indicator_input.InstIdAPIKey,
+                                               reference_instID=indicator_input.OKXSignalInput.instID
+                                               )
+        assert valid == True, "InstIdAPIKey verification failed"
+    except JWTError:
+        raise credentials_exception
+    # except AssertionError:
+    #     raise credentials_exception
+    # except HTTPException:
+    #     raise credentials_exception
+    except Exception as e:
+        print(f"Exception in okx_antbot_webhook: {e}")
+        return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
+
+    try:
+        pprint(f'{indicator_input.OKXSignalInput = }')
+        pprint(f'{indicator_input.PremiumIndicatorSignals = }')
+
+        # Interpret Signals
+        premium_indicator = indicator_input.PremiumIndicatorSignals
+
+        premium_indicator.Bearish = int(premium_indicator.Bearish)
+        premium_indicator.Bearish_plus = int(premium_indicator.Bearish_plus)
+        premium_indicator.Bullish = int(premium_indicator.Bullish)
+        premium_indicator.Bullish_plus = int(premium_indicator.Bullish_plus)
+        premium_indicator.Bearish_Exit = 0 if premium_indicator.Bearish_Exit == 'null' else float(
+            premium_indicator.Bearish_Exit)
+        premium_indicator.Bullish_Exit = 0 if premium_indicator.Bullish_Exit == 'null' else float(
+            premium_indicator.Bullish_Exit)
+
+        _order_side = None
+        _close_signal = None
+        _red_button = indicator_input.OKXSignalInput.red_button
+        if premium_indicator.Bearish or premium_indicator.Bearish_plus:
+            _order_side = 'buy'
+        elif premium_indicator.Bullish or premium_indicator.Bullish_plus:
+            _order_side = 'sell'
+        if premium_indicator.Bearish_Exit:
+            _close_signal = 'exit_buy'
+        elif premium_indicator.Bullish_Exit:
+            _close_signal = 'exit_sell'
+
+        # Get current positions
+        from pyokx.signal_handling import get_all_positions
+        instId_positions = get_all_positions(instId=indicator_input.OKXSignalInput.instID)
+        if len(instId_positions) > 0:
+            current_position = instId_positions[0]
+            current_position_side = 'buy' if float(current_position.pos) > 0 else 'sell' if float(
+                current_position.pos) < 0 else None  # we are only using net so only one position
+
+            if _close_signal:
+                buy_exit = _close_signal == 'exit_buy' and current_position_side == 'buy'
+                sell_exit = _close_signal == 'exit_sell' and current_position_side == 'sell'
+                if not (buy_exit or sell_exit):
+                    _close_signal = None
+
+        # TODO - IDEA: Logic here betweeen _close_signal and entry, if just a closing then it can be handled using market or limit orders but if it is an entry and exit then we decide depening on wehther the entry is in the same or opposite directoion and if flip on opposite order is true.
+        #   lets assume that we are not flipping on opposite order  then cancel if entry in opposite direction and close_order then clear before starting, if just closing then trat them as an actual order which can be market post only or limits
+        print(f'{_order_side or _close_signal = }')
+        print(f'{_red_button = }')
+        if _order_side or _close_signal or _red_button:
+            okx_signal = indicator_input.OKXSignalInput
+
+            okx_signal.order_side = _order_side if _order_side else ''
+            okx_signal.clear_prior_to_new_order = True if okx_signal.clear_prior_to_new_order or _close_signal else False
+
+            if _close_signal:  # FIXME this works for Premium indicator but might have issues if not handled in order
+                okx_signal.order_side = ''
+
+            pprint(f'updated-{premium_indicator = }')
+            pprint(f'updated-{okx_signal= }')
+
+            assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
+            okx_signal_input = indicator_input.OKXSignalInput
+            from pyokx.signal_handling import okx_signal_handler
+            instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
+            pprint(instrument_status_report)
+            assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
+            return {"detail": "okx signal received", "instrument_status_report": instrument_status_report}
+        return {"detail": "okx signal received but no action taken"}
+    except Exception as e:
+        print(f"Exception in okx_premium_indicator {e}")
+        return {
+            "detail": "okx premium indicator signal received but not handled yet",
+            "exception": "okx premium indicator signal received but not handled yet"
+        }
+
+    # Update the enxchange info on the database
+    return {"detail": "unexpected end of point??."}
+
+
 if __name__ == '__main__':
-    def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
-        from fastapi import HTTPException
-        from starlette import status
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="credentials invalid",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-        indicator_input = PremiumIndicatorSignalRequestForm(**indicator_input)
-        from jose import JWTError
-        try:
-            from routers.okx_authentication import check_token_against_instrument
-            valid = check_token_against_instrument(token=indicator_input.InstIdAPIKey,
-                                                   reference_instID=indicator_input.OKXSignalInput.instID
-                                                   )
-            assert valid == True, "InstIdAPIKey verification failed"
-        except JWTError:
-            raise credentials_exception
-        # except AssertionError:
-        #     raise credentials_exception
-        # except HTTPException:
-        #     raise credentials_exception
-        except Exception as e:
-            print(f"Exception in okx_antbot_webhook: {e}")
-            return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
-
-        try:
-            pprint(f'{indicator_input.OKXSignalInput = }')
-            pprint(f'{indicator_input.PremiumIndicatorSignals = }')
-
-            # Interpret Signals
-            premium_indicator = indicator_input.PremiumIndicatorSignals
-
-            premium_indicator.Bearish = int(premium_indicator.Bearish)
-            premium_indicator.Bearish_plus = int(premium_indicator.Bearish_plus)
-            premium_indicator.Bullish = int(premium_indicator.Bullish)
-            premium_indicator.Bullish_plus = int(premium_indicator.Bullish_plus)
-            premium_indicator.Bearish_Exit = 0 if premium_indicator.Bearish_Exit == 'null' else float(
-                premium_indicator.Bearish_Exit)
-            premium_indicator.Bullish_Exit = 0 if premium_indicator.Bullish_Exit == 'null' else float(
-                premium_indicator.Bullish_Exit)
-
-            _order_side = None
-            _close_signal = None
-            _red_button = indicator_input.OKXSignalInput.red_button
-            if premium_indicator.Bearish or premium_indicator.Bearish_plus:
-                _order_side = 'buy'
-            elif premium_indicator.Bullish or premium_indicator.Bullish_plus:
-                _order_side = 'sell'
-            if premium_indicator.Bearish_Exit:
-                _close_signal = 'exit_buy'
-            elif premium_indicator.Bullish_Exit:
-                _close_signal = 'exit_sell'
-
-            # Get current positions
-            from pyokx.signal_handling import get_all_positions
-            instId_positions = get_all_positions(instId=indicator_input.OKXSignalInput.instID)
-            if len(instId_positions) > 0:
-                current_position = instId_positions[0]
-                current_position_side = 'buy' if float(current_position.pos) > 0 else 'sell' if float(
-                    current_position.pos) < 0 else None  # we are only using net so only one position
-
-                if _close_signal:
-                    buy_exit = _close_signal == 'exit_buy' and current_position_side == 'buy'
-                    sell_exit = _close_signal == 'exit_sell' and current_position_side == 'sell'
-                    if not (buy_exit or sell_exit):
-                        _close_signal = None
-
-            # TODO - IDEA: Logic here betweeen _close_signal and entry, if just a closing then it can be handled using market or limit orders but if it is an entry and exit then we decide depening on wehther the entry is in the same or opposite directoion and if flip on opposite order is true.
-            #   lets assume that we are not flipping on opposite order  then cancel if entry in opposite direction and close_order then clear before starting, if just closing then trat them as an actual order which can be market post only or limits
-            print(f'{_order_side or _close_signal = }')
-            if _order_side or _close_signal or _red_button:
-                okx_signal = indicator_input.OKXSignalInput
-
-                okx_signal.order_side = _order_side if _order_side else ''
-                okx_signal.clear_prior_to_new_order = True if okx_signal.clear_prior_to_new_order or _close_signal else False
-
-                if _close_signal:  # FIXME this works for Premium indicator but might have issues if not handled in order
-                    okx_signal.order_side = ''
-
-                pprint(f'updated-{premium_indicator = }')
-                pprint(f'updated-{okx_signal= }')
-
-                assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
-                okx_signal_input = indicator_input.OKXSignalInput
-                from pyokx.signal_handling import okx_signal_handler
-                instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
-                pprint(instrument_status_report)
-                assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
-                return {"detail": "okx signal received", "instrument_status_report": instrument_status_report}
-            return {"detail": "okx signal received but no action taken"}
-        except Exception as e:
-            print(f"Exception in okx_premium_indicator {e}")
-            return {
-                "detail": "okx premium indicator signal received but not handled yet",
-                "exception": "okx premium indicator signal received but not handled yet"
-            }
-
-        # Update the enxchange info on the database
-        return {"detail": "unexpected end of point??."}
     import dotenv
-    from data_structures import OKXSignalInput
 
     dotenv.load_dotenv(dotenv.find_dotenv())
-
-    # webhook_payload = json.loads('')
-    # Read debugging_payload.json
     with open('../debugging_payload.json', 'r') as f:
         webhook_payload = json.load(f)
     pprint(f'{webhook_payload = }')
-    # okx_input = OKXSignalInput(
-    #     # instID=get_ticker_with_higher_volume('BTC-USDT').instId,
-    #     instID="BTC-USDT-240628",
-    #     clear_prior_to_new_order=False,
-    #     red_button=False,
-    # )
-    #
-    # response = okx_signal_handler(**okx_input.model_dump())
 
-    response = okx_premium_indicator(webhook_payload).get('instrument_status_report')
+    indicator_input = PremiumIndicatorSignalRequestForm(**webhook_payload)
+    r = connect_to_redis()
+
+    redis_ready_message = serialize_for_redis(indicator_input.model_dump())
+    r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message)
+    result = okx_premium_indicator(indicator_input)
+
+    response = okx_premium_indicator(webhook_payload)
+    if isinstance(result, dict):
+        r.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result))
+
+    instrument_report = response.get('instrument_status_report')
 
     if response is None:
         print("No instument status report")

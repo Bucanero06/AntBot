@@ -41,7 +41,7 @@ services:
       H2O_WAVE_FORWARDED_HTTP_HEADERS: "*" # Default: "*", all headers allowed
       #      H2O_WAVE_HTTP_HEADERS_FILE: "path_to_your_mime_formatted_file" # Path to a MIME-formatted file containing additional HTTP headers
       #      H2O_WAVE_INIT: "path_to_your_aof_log" # Initialize site content from AOF log
-      H2O_WAVE_LISTEN: http://0.0.0.0:10101
+      H2O_WAVE_LISTEN: 0.0.0.0:10101
       H2O_WAVE_ADDRESS: http://0.0.0.0:10101
       H2O_WAVE_APP_ADDRESS: http://0.0.0.0:8000
       H2O_WAVE_BASE_URL: "/" # Default: "/", the base URL

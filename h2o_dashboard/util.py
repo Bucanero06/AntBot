@@ -38,7 +38,8 @@ async def push_notification_bar(q: Q, text: str, type: str = 'info', timeout: in
         name=name,
     )
 
-async def stream_message(q:Q, page_name:str, message:str, delay:float = 0.3):
+
+async def stream_message(q: Q, page_name: str, message: str, delay: float = 0.3):
     stream = ''
     q.page[page_name].data += [stream, False]
     # Show the "Stop generating" button
@@ -53,7 +54,7 @@ async def stream_message(q:Q, page_name:str, message:str, delay:float = 0.3):
     await q.page.save()
 
 
-def remove_card(q: Q, name: str) -> None:
+async def remove_card(q: Q, name: str) -> None:
     """
     Remove a specific card from the page based on its name.
     """
@@ -62,13 +63,12 @@ def remove_card(q: Q, name: str) -> None:
         q.client.cards.remove(name)
 
 
-def add_card(q: Q, name, card) -> None:
-
+async def add_card(q: Q, name, card) -> None:
     q.client.cards.add(name)
     q.page[name] = card
 
 
-def clear_cards(q: Q, ignore: Optional[List[str]] = None) -> None:
+async def clear_cards(q: Q, ignore: Optional[List[str]] = None) -> None:
     """
     Clear cards from the page except those listed in 'ignore'.
     """
@@ -86,8 +86,7 @@ def clear_cards(q: Q, ignore: Optional[List[str]] = None) -> None:
         if card_name not in ignore:
             # del q.page[card_name]
             # q.client.cards.remove(card_name)
-            remove_card(q, card_name)
-
+            await remove_card(q, card_name)
 
 
 def load_env_file(env_path: str = '.env'):

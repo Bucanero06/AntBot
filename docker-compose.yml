@@ -1,83 +1,49 @@
 version: '3.10'
 
 services:
-  nginx:
-    build:
-      context: .
-      dockerfile: .docker/nginx.dockerfile
-    restart: always
-    networks:
-      - my-network
-    ports:
-      #    environment: variables are not being updated in the config files so out of sync with other services
-      - ${NGINX_SERVICE_PORT}:${NGINX_SERVICE_PORT}
-    healthcheck:
-      test: [ "CMD", "curl", "--fail", "http://localhost:80" ]
-      interval: 10s
-      timeout: 3s
-      retries: 5
+#  nginx:
+#    build:
+#      context: .
+#      dockerfile: .docker/nginx.dockerfile
+#    restart: unless-stopped
+#    networks:
+#      - my-network
+#    ports:
+#      - ${NGINX_SERVICE_PORT}:${NGINX_SERVICE_PORT}
+#    healthcheck:
+#      test: [ "CMD", "curl", "--fail", "http://localhost:80" ]
+#      interval: 10s
+#      timeout: 3s
+#      retries: 5
 
   dashboard:
     build:
       context: .
       dockerfile: .docker/dashboard.dockerfile
     command: [ "wave", "run", "h2o_dashboard.dashboard", "--no-reload" ]
-    restart: always
+    restart: unless-stopped
     networks:
       - my-network
-    #    depends_on:
-    #      nginx:
-    #        condition: service_healthy
-    #      okx_websockets:
-    #        condition: service_healthy
     environment:
       FIREBASE_API_KEY: ${FIREBASE_API_KEY}
-      #      H2O_WAVE_ACCESS_KEY_ID: "your_access_key_id" # Default: "access_key_id"
-      #      H2O_WAVE_ACCESS_KEY_SECRET: "your_access_key_secret" # Default: "access_key_secret"
-      H2O_WAVE_ACCESS_KEYCHAIN: ".wave-keychain" # Default: ".wave-keychain"
-      H2O_WAVE_DATA_DIR: "./data" # Default: "./data"
-      H2O_WAVE_DEBUG: "1" # Enable debug mode
-      #      H2O_WAVE_EDITABLE: "1" # Allow users to edit web pages
-      H2O_WAVE_FORWARDED_HTTP_HEADERS: "*" # Default: "*", all headers allowed
-      #      H2O_WAVE_HTTP_HEADERS_FILE: "path_to_your_mime_formatted_file" # Path to a MIME-formatted file containing additional HTTP headers
-      #      H2O_WAVE_INIT: "path_to_your_aof_log" # Initialize site content from AOF log
+      H2O_WAVE_ACCESS_KEYCHAIN: ".wave-keychain"
+      H2O_WAVE_DATA_DIR: "./data"
+      H2O_WAVE_DEBUG: "1"
+      H2O_WAVE_FORWARDED_HTTP_HEADERS: "*"
       H2O_WAVE_LISTEN: 0.0.0.0:10101
       H2O_WAVE_ADDRESS: http://0.0.0.0:10101
       H2O_WAVE_APP_ADDRESS: http://0.0.0.0:8000
-      H2O_WAVE_BASE_URL: "/" # Default: "/", the base URL
-      H2O_WAVE_MAX_CACHE_REQUEST_SIZE: "5M" # Default: "5M"
-      H2O_WAVE_MAX_PROXY_REQUEST_SIZE: "5M" # Default: "5M"
-      H2O_WAVE_MAX_PROXY_RESPONSE_SIZE: "5M" # Default: "5M"
-      H2O_WAVE_MAX_REQUEST_SIZE: "5M" # Default: "5M"
-      H2O_WAVE_NO_STORE: "1" # Disable storage
-      H2O_WAVE_NO_LOG: "1" # Disable AOF logging
-
-      # OIDC specific environment variables:
-      # Set these if you are using OIDC for authentication
-      #      H2O_WAVE_OIDC_CLIENT_ID: "your_oidc_client_id"
-      #      H2O_WAVE_OIDC_CLIENT_SECRET: "your_oidc_client_secret"
-
-      # If using TLS (https)
-      #      H2O_WAVE_TLS_CERT_FILE: "path_to_your_cert_file"
-      #      H2O_WAVE_TLS_KEY_FILE: "path_to_your_key_file"
-      #      H2O_WAVE_NO_TLS_VERIFY: "1" # For development only, DO NOT USE IN PRODUCTION
-
-      # For session management
-      #      H2O_WAVE_SESSION_EXPIRY: "720h" # Default: "720h"
-      #      H2O_WAVE_SESSION_INACTIVITY_TIMEOUT: "30m" # Default: "30m"
-
-      # File serving directories (relative paths need to be relative to the Wave server binary location)
-      #      H2O_WAVE_PRIVATE_DIR: "/private/files/@/path_to_your_private_files" # e.g. "/private/files/@/some/local/path"
-      #      H2O_WAVE_PUBLIC_DIR: "/public/files/@/path_to_your_public_files" # e.g. "/public/files/@/some/local/path"
-
-      # Web assets directory
-      #      H2O_WAVE_WEB_DIR: "./www" # Default: "./www"
-
-      # Ping interval
-      H2O_WAVE_PING_INTERVAL: "50s" # Default: "50s"
+      H2O_WAVE_BASE_URL: "/"
+      H2O_WAVE_MAX_CACHE_REQUEST_SIZE: "5M"
+      H2O_WAVE_MAX_PROXY_REQUEST_SIZE: "5M"
+      H2O_WAVE_MAX_PROXY_RESPONSE_SIZE: "5M"
+      H2O_WAVE_MAX_REQUEST_SIZE: "5M"
+      H2O_WAVE_NO_STORE: "1"
+      H2O_WAVE_NO_LOG: "1"
+      H2O_WAVE_PING_INTERVAL: "50s"
 
     ports:
-      - "10101:10101" # Map the port to the host
+      - "10101:10101"
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:10101" ]
       interval: 10s
@@ -109,7 +75,7 @@ services:
     ports:
       #      - ${OKX_API_SERVICE_PORT}:${OKX_API_SERVICE_PORT}
       - 8080:8080
-    restart: always
+    restart: unless-stopped
     networks:
       - my-network
     depends_on:
@@ -130,7 +96,6 @@ services:
       - OKX_PASSPHRASE=${OKX_PASSPHRASE}
       - OKX_SANDBOX_MODE=${OKX_SANDBOX_MODE}
       - OKX_VERBOSE=${OKX_VERBOSE}
-      - DEVELOPMENT_GOD_MODE=${DEVELOPMENT_GOD_MODE}
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8080/health" ]
       interval: 10s
@@ -142,7 +107,7 @@ services:
     build:
       context: .
       dockerfile: .docker/bot.dockerfile
-    restart: always
+    restart: unless-stopped
     networks:
       - my-network
     depends_on:
@@ -160,7 +125,6 @@ services:
       - OKX_PASSPHRASE=${OKX_PASSPHRASE}
       - OKX_SANDBOX_MODE=${OKX_SANDBOX_MODE}
       - OKX_VERBOSE=${OKX_VERBOSE}
-      - DEVELOPMENT_GOD_MODE=${DEVELOPMENT_GOD_MODE}
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8081/health" ]
       interval: 10s

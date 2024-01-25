@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Dict
 
+from pydantic import BaseModel
+
 
 @dataclass
 class AccountDetail:
@@ -85,8 +87,8 @@ class AccountDetail:
         }
 
 
-@dataclass
-class Account:
+# @dataclass
+class Account(BaseModel):
     u_time: int = 0
     total_eq: float = 0
     iso_eq: float = 0

@@ -9,13 +9,27 @@ from redis_tools.utils import _deserialize_from_redis, connect_to_aioredis
 
 async def start_redis():
     global async_redis
+
     if 'async_redis' in globals() and isinstance(async_redis, aioredis.Redis):
         return
     async_redis = await connect_to_aioredis()
 
+    if not async_redis:
+        raise Exception("Redis connection failed")
+
+    import h2o_dashboard
+    h2o_dashboard.async_redis = async_redis
+
+    return async_redis
+
+
+
 
 async def stop_redis():
     await async_redis.close()
+
+
+
 
 
 async def get_index_values(index_name):
@@ -23,7 +37,6 @@ async def get_index_values(index_name):
     values = [await async_redis.hgetall(index_name) for index_name in indexes_values]
 
     return values
-
 
 
 async def refresh_redis(q: Q):
@@ -46,7 +59,7 @@ async def refresh_redis(q: Q):
     q.user.okx_index_ticker = IndexTickersChannel(**btc_usdt_index_ticker)
 
 
-async def load_page_recipe_with_refresh(q: Q, page_callback_function):
+async def call_with_refresh_recipe(q: Q, page_callback_function, *args, **kwargs):
     """
     Loads a page after updating the application models.
 
@@ -56,6 +69,6 @@ async def load_page_recipe_with_refresh(q: Q, page_callback_function):
 
     """
 
-    return await asyncio.gather(page_callback_function(q), refresh_redis(q))
+    return await asyncio.gather(page_callback_function(q, *args, **kwargs), refresh_redis(q))
 
 # listen to websocket

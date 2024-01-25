@@ -24,6 +24,7 @@ async def on_shutdown():
     await stop_redis()
 
 
+
 @app('/', on_startup=on_startup, on_shutdown=on_shutdown)
 async def serve(q: Q):
 
@@ -32,12 +33,12 @@ async def serve(q: Q):
     if not q.client.initialized:
         print("Initializing")
         await initialize_client(q)
-        if not q.app.initialized:
+        if not q.app.initialized: # TODO this could be instantiated each client? and shut down after each use?
             await start_redis()
-            (q.user.okx_account, q.user.okx_positions,
-             q.user.okx_tickers, q.user.okx_orders, q.user.okx_balances_and_positions) = None, None, None, None, None
-            q.user.okx_index_ticker = None
             await refresh_redis(q)
+
+        from h2o_dashboard import async_redis
+        q.client.async_redis = async_redis
 
     if not (os.getenv('BYPASS_SECURITY') == 'True' and os.getenv('DEVELOPMENT_GOD_MODE') == 'True'):
         bypass_security = False

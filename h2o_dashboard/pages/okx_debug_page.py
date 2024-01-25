@@ -4,175 +4,195 @@ from typing import List
 
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
-from h2o_dashboard.redis_refresh import load_page_recipe_with_refresh, refresh_redis
+from h2o_dashboard.redis_refresh import refresh_redis
 from h2o_dashboard.util import clear_cards, add_card
-from pyokx.data_structures import AccountBalanceData, AccountBalanceDetails
+from pyokx.okx_market_maker.position_management_service.model.Account import Account
+from pyokx.redis_handling import get_stream_account
 
 app = AsyncSite()
 
 
 async def okx_debug_page(q: Q):
-    # Clear all cards except the ones needed for this page
-    await q.run(clear_cards, q, ignore=['Application_Sidebar',
-                                        # 'OKXDEBUG_Header',
-                                        # 'OKXDEBUG_Positions_Table',
-                                        # 'OKXDEBUG_Balances_Table',
-                                        # 'OKXDEBUG_Orders_Table',
-                                        # 'OKXDEBUG_Account_Table',
-                                        # 'OKXDEBUG_Tickers_Table',
-                                        # 'OKXDEBUG_BTCUSDT_Index_Ticker_Table',
-                                        ])
+    await add_card(q, 'OKXDEBUG_Diagram', ui.markdown_card(box='grid_6', title='Diagram',
+                                                           content='<div style="width: 640px; height: 480px; margin: 10px; position: relative;"><iframe allowfullscreen frameborder="0" style="width:640px; height:480px" src="https://lucid.app/documents/embedded/e5260455-d74f-4d36-af21-5e018177e9f0" id="ygM8fjvwnLkk"></iframe></div>'
+                                                           ))
 
-    await add_page_cards(q)
+    account_stream_widget = AccountWidget(q=q, card_name='OKXDEBUG_Account_Stream', count=1000)
+    await asyncio.gather(add_page_cards(q, account_stream_widget), refresh_redis(q))
 
-
-
-    # Update the page with new updated q.user.* data every 5 seconds, when page is changed please go to that page and
-    #  do not keep writing to the page that is not being viewed.
-
+    q.client.okx_debug_page_running_event.set()
     while True:
-        print("Refreshing")
         await q.page.save()
-        await asyncio.sleep(1.5)
-        await load_page_recipe_with_refresh(q,okx_debug_page)
+        if q.client.okx_debug_page_running_event.is_set():
+            await asyncio.sleep(1)
+        else:
+            await clear_cards(q)
+            break
+
+        print("Refreshing")
+        await asyncio.gather(add_page_cards(q, account_stream_widget), refresh_redis(q))
+        await q.page.save()
+
+    await q.page.save()
+
+class AccountWidget:
+
+    def __init__(self, q: Q, card_name: str, count: int = 10):
+        super().__init__()
+        self.q = q
+        self.count = count
+        self.account_stream: List[Account] = []
+        self.card_name = card_name
+
+    async def _update_account_stream(self):
+        self.account_stream = await get_stream_account(async_redis=self.q.client.async_redis, count=self.count)
+        return self.account_stream
+
+    async def _as_table(self):
+        return ui.form_card(box='grid_4',
+                            items=[
+                                ui.text_xl('Account Stream'),
+                                ui.table(
+                                    name='OKXDEBUG_Account_Stream_Table_card',
+                                    # groupable=True,
+                                    downloadable=True,
+                                    resettable=False,
+                                    columns=[
+                                        ui.table_column(name='u_time', label='u_time', filterable=True,
+                                                        searchable=True),
+                                        ui.table_column(name='total_eq', label='total_eq', filterable=True,
+                                                        searchable=True),
+                                        ui.table_column(name='details', label='details', filterable=True,
+                                                        searchable=True,
+                                                        cell_overflow='wrap'),
+                                    ],
+                                    rows=[
+                                        ui.table_row(name=str(account.u_time),
+                                                     cells=[str(account.u_time), str(account.total_eq),
+                                                            str(account.details)])
+                                        for account in self.account_stream
+                                    ]
+                                )
+                            ]
+                            )
+
+    async def _is_present(self) -> bool:
+        return self.card_name in self.q.client.cards
+
+    async def _is_populated(self) -> bool:
+        return await self._is_present() and self.q.page[
+            self.card_name].OKXDEBUG_Account_Stream_Table_card.rows
+
+    def get_ui_total_equity_box_as_small_stat(self, box: str):
+        return ui.small_series_stat_card(
+            box=box,
+            title='Total Equity',
+            value='=${{intl total_eq minimum_fraction_digits=2 maximum_fraction_digits=2}}',
+            data=dict(u_time=self.account_stream[0].u_time, total_eq=self.account_stream[0].total_eq),
+            plot_type='area',
+            plot_value='total_eq',
+            plot_color='$green',
+            plot_data=data('u_time total_eq', self.count,
+                           rows=[[account.u_time, account.total_eq] for account in self.account_stream]),
+            plot_zero_value=min([account.total_eq for account in self.account_stream]) * 0.9999,
+            plot_curve='linear',
+        )
+
+    async def add_cards(self):
+        await self._update_account_stream()
+        await add_card(self.q, self.card_name + '_total_equity',
+                       self.get_ui_total_equity_box_as_small_stat(box='first_context_1'))
+        await add_card(self.q, self.card_name, ui.form_card(box='first_context_1', items=[
+            ui.text_xl('Account Stream'),
+            ui.stats(items=[
+                ui.stat(
+                    # label: str,
+                #          value: str | None = None,
+                #          caption: str | None = None,
+                #          icon: str | None = None,
+                #          icon_color: str | None = None) -> Sta
+                label='Total Equity',
+                value=str(self.account_stream[0].total_eq),
+                caption='USD',
+                icon='Money',
+                icon_color='$green',
+                ),
+                ui.stat(
+                    label='u_time',
+                    value=str(self.account_stream[0].u_time),
+                    caption='UNIX Timestamp',
+                    icon='Clock',
+                    icon_color='$red',
+                ),
+                ui.stat(
+                    label='details',
+                    # Get only the eq_usd of each detail in details dict
+                    value=str({k: v.eq_usd for k, v in self.account_stream[0].details.items()}),
+                    caption='Details',
+                    icon='Info',
+                    icon_color='$blue',
+                ),
+            ])
+        ]))
+
+    async def update_cards(self):
+        await self.add_cards()
+
+        # await self._update_account_stream()
+
+        # card_info = self.card_name_and_type_set.get(card_name, None)
+        # if not card_info:
+        #     raise Exception(f"Card {card_name} not found in card_name_and_type_set")
+        # elif card_info['as_type'] == 'table':
+        #     await add_card(self.q, card_name, await self._as_table())
+        # elif card_info['as_type'] == 'small_stat':
+        #     await add_card(self.q, card_name, await self._as_small_stat())
 
 
+async def add_page_cards(q: Q, account_stream_widget: AccountWidget):
 
-async def add_page_cards(q: Q):
-    '''Static Cards'''
-    # Add header
-    add_card(q, 'OKXDEBUG_Header', ui.header_card(box='header', title='OKX Debug Page', subtitle='DevPage',
-                                                  # Color
-                                                  color='transparent',
-                                                  icon='DeveloperTools',
-                                                  icon_color=None,
-                                                  ))
+    '''Header'''
+    await add_card(q, 'OKXDEBUG_Header', ui.header_card(box='header', title='OKX Debug Page', subtitle='DevPage',
+                                                        # Color
+                                                        color='transparent',
+                                                        icon='DeveloperTools',
+                                                        icon_color=None,
+                                                        ))
 
-    add_card(q, 'OKXDEBUG_Positions_Table', ui.form_card(box='first_context_2', items=[
+    '''Account Stream Metrics'''
+    if await account_stream_widget._is_populated():
+        print("Updating card")
+        await account_stream_widget.update_cards()
+    else:
+        print("Adding card")
+        await account_stream_widget.add_cards()
+
+    await add_card(q, 'OKXDEBUG_Positions_Table', ui.form_card(box='first_context_2', items=[
         ui.text_xl('Positions'),
         ui.text_xl(pprint.pformat(q.user.okx_positions))
     ]))
-    add_card(q, 'OKXDEBUG_Balances_Table', ui.form_card(box='first_context_1', items=[
+
+    await add_card(q, 'OKXDEBUG_Balances_Table', ui.form_card(box='first_context_1', items=[
         ui.text_xl('Balances and Positions'),
         ui.text_xl(pprint.pformat(q.user.okx_balances_and_positions))
     ]))
-    add_card(q, 'OKXDEBUG_Orders_Table', ui.form_card(box='first_context_1', items=[
+
+    await add_card(q, 'OKXDEBUG_Orders_Table', ui.form_card(box='first_context_1', items=[
         ui.text_xl('Orders'),
         ui.text_xl(pprint.pformat(q.user.okx_orders))
     ]))
-    add_card(q, 'OKXDEBUG_Account_Table', ui.form_card(box='grid_1', items=[
+
+    await add_card(q, 'OKXDEBUG_Account_Table', ui.form_card(box='grid_1', items=[
         ui.text_xl('Account'),
         ui.text_xl(pprint.pformat(q.user.okx_account))
     ]))
-    add_card(q, 'OKXDEBUG_Tickers_Table', ui.form_card(box='grid_2', items=[
+
+    await add_card(q, 'OKXDEBUG_Tickers_Table', ui.form_card(box='grid_2', items=[
         ui.text_xl('Tickers'),
         ui.text_xl(pprint.pformat(q.user.okx_tickers))
     ]))
 
-    add_card(q, 'OKXDEBUG_BTCUSDT_Index_Ticker_Table', ui.form_card(box='grid_3', items=[
+    await add_card(q, 'OKXDEBUG_BTCUSDT_Index_Ticker_Table', ui.form_card(box='grid_3', items=[
         ui.text_xl('BTC-USDT Index Ticker'),
         ui.text_xl(pprint.pformat(q.user.okx_index_ticker))
     ]))
-
-# u83r8ufnfg783fsd;df
-def difsnmsf():
-    from pyokx.ws_data_structures import ws_posData_element
-    positions: List[ws_posData_element] = q.user.okx_positions
-
-    positions_cell_names = ws_posData_element.__annotations__.keys()
-
-    sort_list = ['posId', 'instId', 'pos', 'avgPx', 'uTime', 'posSide', 'instType']
-    positions_cell_names = sort_list + list(
-        positions_cell_names - sort_list)
-    if '_primary_key_field' in positions_cell_names:
-        positions_cell_names.remove('_primary_key_field')
-
-    positions_rows = []
-    for position in positions:
-        name = positions_cell_names[0]
-        cells = [position[cell] for cell in positions_cell_names]
-        positions_rows.append(ui.table_row(name=name, cells=cells))
-
-    positions_columns = []
-    for position_cell_name in positions_cell_names:
-        # (name: str,
-        # label: str,
-        # min_width: str | None = None,
-        # max_width: str | None = None,
-        # sortable: bool | None = None,
-        # searchable: bool | None = None,
-        # filterable: bool | None = None,
-        # link: bool | None = None,
-        # data_type: str | None = None,
-        # cell_type: TableCellType | None = None,
-        # cell_overflow: str | None = None,
-        # filters: list[str] | None = None,
-        # align: str | None = None)
-        column = ui.table_column(name=position_cell_name, label=position_cell_name, filterable=True)
-        positions_columns.append(column)
-    add_card(q, 'OKXDEBUG_Positions_Table',
-             ui.form_card(box='grid_1', items=[
-                 ui.text_xl('Positions'),
-                 ui.table(
-                     name='OKXDEBUG_Positions_Table_card',
-                     columns=positions_columns,
-                     rows=positions_rows,
-                     # groupable=True,
-                     downloadable=True,
-                     resettable=False,
-                 )
-             ])
-             )
-
-    balances: List[AccountBalanceData] = q.user.okx_balances
-    balances_details: List[AccountBalanceDetails] = balances[0].details
-
-    # todo left here
-    balances_cell_names = AccountBalanceDetails.__annotations__.keys()
-
-    sort_list = ['ccy', 'eqUsd', 'availBal', 'availEq', 'disEq', 'uTime']
-    balances_cell_names = sort_list + list(balances_cell_names - sort_list)
-    if '_primary_key_field' in balances_cell_names:
-        balances_cell_names = balances_cell_names.remove('_primary_key_field')
-
-    balances_rows = []
-    for balance_detail in balances_details:
-        name = balances_cell_names[0]
-        balance_details: AccountBalanceDetails = balance_detail
-        cells = [getattr(balance_details, cell) for cell in balances_cell_names]
-        print(f'{cells = }')
-        balances_rows.append(ui.table_row(name=name, cells=cells))
-
-    balances_columns = []
-    for balance_cell_name in balances_cell_names:
-        # (name: str,
-        # label: str,
-        # min_width: str | None = None,
-        # max_width: str | None = None,
-        # sortable: bool | None = None,
-        # searchable: bool | None = None,
-        # filterable: bool | None = None,
-        # link: bool | None = None,
-        # data_type: str | None = None,
-        # cell_type: TableCellType | None = None,
-        # cell_overflow: str | None = None,
-        # filters: list[str] | None = None,
-        # align: str | None = None)
-
-        column = ui.table_column(name=balance_cell_name, label=balance_cell_name,
-                                 filterable=True, searchable=True)
-        balances_columns.append(column)
-    add_card(q, 'OKXDEBUG_Balances_Table',
-             ui.form_card(box='grid_2', items=[
-                 ui.text_xl('Balances'),
-                 ui.table(
-                     name='OKXDEBUG_Balances_card',
-                     columns=balances_columns,
-                     rows=balances_rows,
-                     # groupable=True,
-                     downloadable=True,
-                     resettable=False,
-
-                 )
-             ])
-             )

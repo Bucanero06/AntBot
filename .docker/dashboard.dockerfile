@@ -9,4 +9,4 @@ RUN pip install --upgrade h2o-wave
 
 
 EXPOSE 10101
-CMD ["wave", "run", "dashboard", "--no-reload"]
+CMD ["wave", "run", "h2o_dashboard.dashboard", "--no-reload"]

@@ -33,9 +33,13 @@ async def serve(q: Q):
     if not q.client.initialized:
         print("Initializing")
         await initialize_client(q)
+        q.client.homepage_running_event = asyncio.Event()
+        q.client.okx_debug_page_running_event = asyncio.Event()
+        q.client.ready_to_load_new_page_event = asyncio.Event()
         if not q.app.initialized: # TODO this could be instantiated each client? and shut down after each use?
             await start_redis()
             await refresh_redis(q)
+
 
         from h2o_dashboard import async_redis
         q.client.async_redis = async_redis
@@ -50,5 +54,6 @@ async def serve(q: Q):
         q.run(refresh_redis, q))
 
     await q.page.save()
+    await run_on(q)
 
     print("Served")

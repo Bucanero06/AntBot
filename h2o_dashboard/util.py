@@ -59,8 +59,8 @@ async def remove_card(q: Q, name: str) -> None:
     Remove a specific card from the page based on its name.
     """
     if hasattr(q.client, 'cards') and name in q.client.cards:
-        del q.page[name]
         q.client.cards.remove(name)
+        del q.page[name]
 
 
 async def add_card(q: Q, name, card) -> None:

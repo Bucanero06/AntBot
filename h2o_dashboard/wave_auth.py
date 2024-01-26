@@ -1,15 +1,16 @@
 import asyncio
 import json
 import os
+import pprint
 
 import dotenv
 import requests
 from h2o_wave import Q, app, ui, on, data, run_on, AsyncSite  # noqa F401
 
 from h2o_dashboard.pages.home_page import homepage
-from h2o_dashboard.pages.okx_debug_page import okx_debug_page
-from h2o_dashboard.redis_refresh import call_with_refresh_recipe
-from h2o_dashboard.util import add_card, clear_cards
+from h2o_dashboard.pages.okx_debug_page import okx_debug_page, AccountWidget
+from h2o_dashboard.redis_refresh import call_with_refresh_recipe, refresh_redis
+from h2o_dashboard.util import add_card, clear_cards, remove_card
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 
@@ -207,7 +208,7 @@ async def render_login_page(q: Q, error_message=None):
     """Render the login page."""
 
     await clear_cards(q)
-    await init(q)
+    # await init(q)
     items = [
         ui.text_xl('Login'),
         ui.textbox(name='email', label='Email', required=True),
@@ -232,7 +233,7 @@ async def add_application_sidebar(q):
         image=image_address,
         items=[
             ui.nav_group('', items=[
-                # ui.nav_item(name='#homepage', label='Home', icon='Home'),
+                ui.nav_item(name='#homepage', label='Home', icon='Home'),
                 ui.nav_item(name='#okx_debug_page', label='OKX Debug Page', icon='DeveloperTools'),
             ]),
             # ui.nav_group('Docs', items=[
@@ -249,46 +250,38 @@ async def add_application_sidebar(q):
     ))
 
 
+
+
 async def render_hidden_content(q: Q):
     """
     Render pages content e.g. homepage or other pages get added here
     """
     await clear_cards(q)
-    await init(q)
+    # await init(q)
     await add_application_sidebar(q)
-
-    if isinstance(q.client.homepage_while_event, asyncio.Event):
-        q.client.homepage_running_event.clear()
-    if isinstance(q.client.debug_page_while_event, asyncio.Event):
-        q.client.okx_debug_page_running_event.clear()
+    await q.page.save()
+    q.client.okx_debug_page_running_event.clear()
+    q.client.homepage_running_event.clear()
 
     if q.args['#'] == 'homepage':
-        q.client.homepage_running_event = asyncio.Event()
-        await call_with_refresh_recipe(q, prepare_homepage)
-    elif q.args["#"] == 'okx_debug_page':
-        q.client.okx_debug_page_running_event = asyncio.Event()
-        await call_with_refresh_recipe(q, prepare_okx_debug_page)
+        print("Route to Homepage")
+        q.client.homepage_running_event.set()
+        await homepage(q)
+        await q.page.save()
+    elif q.args['#'] == 'okx_debug_page':
+        print("Route to OKX Debug Page")
+        q.client.okx_debug_page_running_event.set()
+        await okx_debug_page(q)
+        await q.page.save()
+    else:
+        print("Else Rouse")
 
     await q.page.save()
-    await run_on(q)
 
 
 
 
 
-async def prepare_homepage(q: Q):
-    await clear_cards(q)
-    await add_application_sidebar(q)
-    await call_with_refresh_recipe(q, homepage)
-    await q.page.save()
-
-
-# @on('#debug_page')
-async def prepare_okx_debug_page(q: Q):
-    await clear_cards(q)
-    await add_application_sidebar(q)
-    await call_with_refresh_recipe(q, okx_debug_page)
-    await q.page.save()
 
 
 async def serve_security(q: Q, bypass_security=False):

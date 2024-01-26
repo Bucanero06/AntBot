@@ -5,7 +5,7 @@ from typing import List
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
 from h2o_dashboard.redis_refresh import refresh_redis
-from h2o_dashboard.util import clear_cards, add_card
+from h2o_dashboard.util import clear_cards, add_card, remove_card
 from pyokx.okx_market_maker.position_management_service.model.Account import Account
 from pyokx.redis_handling import get_stream_account
 
@@ -13,25 +13,40 @@ app = AsyncSite()
 
 
 async def okx_debug_page(q: Q):
-    await add_card(q, 'OKXDEBUG_Diagram', ui.markdown_card(box='grid_6', title='Diagram',
-                                                           content='<div style="width: 640px; height: 480px; margin: 10px; position: relative;"><iframe allowfullscreen frameborder="0" style="width:640px; height:480px" src="https://lucid.app/documents/embedded/e5260455-d74f-4d36-af21-5e018177e9f0" id="ygM8fjvwnLkk"></iframe></div>'
-                                                           ))
+
 
     account_stream_widget = AccountWidget(q=q, card_name='OKXDEBUG_Account_Stream', count=1000)
     await asyncio.gather(add_page_cards(q, account_stream_widget), refresh_redis(q))
 
+    list_of_cards_on_this_page = ["OKXDEBUG_Header",
+                                    "OKXDEBUG_Account_Stream",
+                                    "OKXDEBUG_Account_Stream_total_equity",
+                                    "OKXDEBUG_Positions_Table",
+                                    "OKXDEBUG_Balances_Table",
+                                    "OKXDEBUG_Orders_Table",
+                                    "OKXDEBUG_Account_Table",
+                                    "OKXDEBUG_Tickers_Table",
+                                    "OKXDEBUG_BTCUSDT_Index_Ticker_Table",
+                                    ]
+
     q.client.okx_debug_page_running_event.set()
     while True:
-        await q.page.save()
-        if q.client.okx_debug_page_running_event.is_set():
-            await asyncio.sleep(1)
-        else:
-            await clear_cards(q)
+        if not q.client.okx_debug_page_running_event.is_set():
+            print("Breaking")
+            # list_of_cards_on_this_page = list(q.client.cards.keys())
+            # ignore the Application_Sidebar
+            # list_of_cards_on_this_page.remove("Application_Sidebar")
+
+            for card_name in list_of_cards_on_this_page:
+                await remove_card(q, card_name)
+            await q.page.save()
             break
 
-        print("Refreshing")
+        await asyncio.sleep(1)
+        await refresh_redis(q)
         await asyncio.gather(add_page_cards(q, account_stream_widget), refresh_redis(q))
         await q.page.save()
+
 
     await q.page.save()
 

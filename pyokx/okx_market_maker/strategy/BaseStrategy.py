@@ -55,6 +55,8 @@ class BaseStrategy(ABC):
         self.logger = logging.getLogger(__name__)
         self.trading_instrument_id = TRADING_INSTRUMENT_ID
 
+        if self.redis_client is None:
+            raise ValueError("Redis client is not initialized or connection failed!, check logs for details")
         # subscribe to the websockets so that redis is updated
 
     @abstractmethod

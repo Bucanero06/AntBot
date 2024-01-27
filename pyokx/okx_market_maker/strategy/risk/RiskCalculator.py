@@ -30,8 +30,12 @@ class RiskCalculator:
         for pos_id, position in position_map.items():
             inst_value_ccy, inst_value = cls.calc_instrument_asset_value(position)
             inst_expo_ccy, inst_expo_value = cls.calc_instrument_delta(position)
+            print(f'inst_value_ccy: {inst_value_ccy}, inst_value: {inst_value}, inst_expo_ccy: {inst_expo_ccy}, inst_expo_value: {inst_expo_value}'
+                  f'position: {position}')
+
+
             risk_snapshot.asset_instrument_value_snapshot[
-                f"{position.inst_id}|{position.mgn_mode.value}|{position.pos_side.value}:{inst_value_ccy}"] = inst_value
+                f"{position.inst_id}|{position.mgn_mode}|{position.pos_side}:{inst_value_ccy}"] = inst_value
             risk_snapshot.mark_px_instrument_snapshot[inst_value.instrument.inst_id] = inst_value.mark_px
             if inst_value_ccy not in risk_snapshot.price_to_usd_snapshot:
                 risk_snapshot.price_to_usd_snapshot[inst_value_ccy] = tickers.get_usdt_price_by_ccy(inst_value_ccy)
@@ -42,7 +46,7 @@ class RiskCalculator:
                 usd_price = risk_snapshot.price_to_usd_snapshot[inst_expo_ccy]
             risk_snapshot.delta_usd_value += inst_expo_value * usd_price
             risk_snapshot.delta_instrument_snapshot[
-                f"{position.inst_id}|{position.mgn_mode.value}|{position.pos_side.value}:{inst_expo_ccy}"] = \
+                f"{position.inst_id}|{position.mgn_mode}|{position.pos_side}:{inst_expo_ccy}"] = \
                 inst_expo_value
             quote_ccy = position.inst_id.split("-")[1]
             if quote_ccy not in risk_snapshot.price_to_usd_snapshot:

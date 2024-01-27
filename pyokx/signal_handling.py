@@ -641,8 +641,8 @@ def okx_signal_handler(
         instID: str = '',
         order_size: int = None,
         leverage: int = None,
-        order_side: str = '',
-        order_type: str = '',
+        order_side: str = None,
+        order_type: str = None,
         max_orderbook_limit_price_offset: float = None,
         flip_position_if_opposite_side: bool = False,
         clear_prior_to_new_order: bool = False,
@@ -650,10 +650,10 @@ def okx_signal_handler(
         order_usd_amount: float = None,
         stop_loss_trigger_percentage: float = None,
         take_profit_trigger_percentage: float = None,
-        tp_trigger_price_type: str = '',
+        tp_trigger_price_type: str = None,
         stop_loss_price_offset: float = None,
         tp_price_offset: float = None,
-        sl_trigger_price_type: str = '',
+        sl_trigger_price_type: str = None,
         trailing_stop_activation_percentage: float = None,
         trailing_stop_callback_ratio: float = None,
 ):
@@ -672,6 +672,37 @@ def okx_signal_handler(
         return None
     # Clean Input Data
     instID = clean_and_verify_instID(instID)
+
+    if not tp_trigger_price_type:
+        tp_trigger_price_type = 'last'
+    if not sl_trigger_price_type:
+        sl_trigger_price_type = 'last'
+    if not order_type:
+        order_type = 'limit'
+    if not order_side:
+        order_side = ''
+    if not order_size:
+        order_size = 0
+    if not leverage:
+        leverage = 0
+    if not max_orderbook_limit_price_offset:
+        max_orderbook_limit_price_offset = False
+    if not stop_loss_trigger_percentage:
+        stop_loss_trigger_percentage = False
+    if not take_profit_trigger_percentage:
+        take_profit_trigger_percentage = False
+    if not stop_loss_price_offset:
+        stop_loss_price_offset = False
+    if not tp_price_offset:
+        tp_price_offset = False
+    if not trailing_stop_activation_percentage:
+        trailing_stop_activation_percentage = False
+    if not trailing_stop_callback_ratio:
+        trailing_stop_callback_ratio = False
+    if not flip_position_if_opposite_side:
+        flip_position_if_opposite_side = False
+    if not clear_prior_to_new_order:
+        clear_prior_to_new_order = False
 
     if order_side:
         (order_type, order_side,
@@ -1061,31 +1092,72 @@ def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
 if __name__ == '__main__':
     import dotenv
 
+    TEST_FUNCTION = 'okx_signal_handler'
+    okx_signal_handler(red_button=True)  # todo we should only handle the relevant orders/positions
+
     dotenv.load_dotenv(dotenv.find_dotenv())
-    with open('../debugging_payload.json', 'r') as f:
-        webhook_payload = json.load(f)
-    pprint(f'{webhook_payload = }')
 
-    indicator_input = PremiumIndicatorSignalRequestForm(**webhook_payload)
-    r = connect_to_redis()
+    if TEST_FUNCTION == 'okx_signal_handler':
+        response = okx_signal_handler(
+            instID="BTC-USDT-240628",
+            order_size=1,
+            leverage=5,
+            order_side="",
+            order_type="MARKET",
+            max_orderbook_limit_price_offset=None,
+            flip_position_if_opposite_side=True,
+            clear_prior_to_new_order=False,
+            red_button=False,
+            # order_usd_amount=100,
+            stop_loss_price_offset=None,
+            tp_price_offset=None,
+            trailing_stop_activation_percentage=None,
+            trailing_stop_callback_ratio=None,
+            stop_loss_trigger_percentage=None,
+            take_profit_trigger_percentage=None,
+            tp_trigger_price_type=None,
+            sl_trigger_price_type=None,
+        )
+    elif TEST_FUNCTION == 'okx_premium_indicator':
+        with open('../debugging_payload.json', 'r') as f:
+            webhook_payload = json.load(f)
+        pprint(f'{webhook_payload = }')
 
-    redis_ready_message = serialize_for_redis(indicator_input.model_dump())
-    r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message)
-    result = okx_premium_indicator(indicator_input)
+        indicator_input = PremiumIndicatorSignalRequestForm(**webhook_payload)
+        r = connect_to_redis()
 
-    response = okx_premium_indicator(webhook_payload)
-    if isinstance(result, dict):
-        r.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result))
+        redis_ready_message = serialize_for_redis(indicator_input.model_dump())
+        r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message)
+        result = okx_premium_indicator(indicator_input)
 
-    instrument_report = response.get('instrument_status_report')
+        response = okx_premium_indicator(webhook_payload)
+        if isinstance(result, dict):
+            r.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result))
 
+    else:
+        raise ValueError(f'Invalid test function {TEST_FUNCTION = }')
+
+    # okx_signal_handler(red_button=True)  # todo we should only handle the relevant orders/positions
+
+    print(f'{response = }')
     if response is None:
+        print("No response")
+        exit()
+
+    if isinstance(response, InstrumentStatusReport):
+        instrument_report = response
+    elif isinstance(response, dict):
+        instrument_report = response.get('instrument_status_report')
+        if instrument_report is None:
+            print("No instument status report")
+            exit()
+    else:
         print("No instument status report")
         exit()
 
-    print(f'{response = }')
-    pprint(f'{response.positions = }')
-    pprint(f'{len(response.positions) = }')
-    pprint(f'{response.positions[0].pos = }')
-    pprint(f'{response.orders = }')
-    pprint(f'{response.algo_orders = }')
+    print(f'{instrument_report = }')
+    pprint(f'{instrument_report.positions = }')
+    pprint(f'{len(instrument_report.positions) = }')
+    pprint(f'{instrument_report.positions[0].pos = }')
+    pprint(f'{instrument_report.orders = }')
+    pprint(f'{instrument_report.algo_orders = }')

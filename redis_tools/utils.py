@@ -1,8 +1,6 @@
 import json
-import os
 from enum import Enum
 
-import aioredis
 import redis
 
 
@@ -52,7 +50,6 @@ def _deserialize_from_redis(data):
 
 
 import aioredis
-import socket
 
 
 async def connect_to_aioredis():
@@ -78,21 +75,23 @@ async def connect_to_aioredis():
     return None
 
 
-
 def connect_to_redis():
     sync_redis = None
-    try:
-        host = 'localhost'
-        sync_redis = redis.from_url(f"redis://{host}:6379", decode_responses=True)
-        sync_redis.ping()
+    # Define possible Redis hosts and ports
+    local_redis = ('localhost', 6379)
+    docker_redis = ('redis', 6379)
+    # Add more tuples (host, port) for other scenarios
 
-    except Exception as e:
-        print(f"Redis Error: {e}")
+    redis_options = [local_redis, docker_redis]  # Add more options as needed
+
+    for host, port in redis_options:
         try:
-            host = os.getenv('REDIS_HOST', "redis")
-            sync_redis = redis.from_url(f"redis://{host}:6379", decode_responses=True)
+            sync_redis = redis.from_url(f"redis://{host}:{port}", decode_responses=True)
             sync_redis.ping()
+            print(f"Connected to Redis at {host}:{port}")
+            return sync_redis  # Return as soon as a successful connection is made
         except Exception as e:
-            print(f"Redis Error: {e}")
+            print(f"Redis connection attempt to {host}:{port} failed: {e}")
 
-    return sync_redis
+    print("Unable to connect to Redis using any of the configured options.")
+    return None

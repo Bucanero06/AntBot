@@ -50,6 +50,7 @@ async def okx_debug_page(q: Q):
 
     await q.page.save()
 
+
 class AccountWidget:
 
     def __init__(self, q: Q, card_name: str, count: int = 10):
@@ -211,3 +212,28 @@ async def add_page_cards(q: Q, account_stream_widget: AccountWidget):
         ui.text_xl('BTC-USDT Index Ticker'),
         ui.text_xl(pprint.pformat(q.user.okx_index_ticker))
     ]))
+
+# signal_response = okx_signal_handler(
+#                 red_button=True,
+#             )
+# signal_response = okx_signal_handler(
+#     instID="BTC-USDT-240628",
+#     order_size=1,
+#     leverage=5,
+#     order_side="BUY",
+#     order_type="POST_ONLY",
+#     max_orderbook_limit_price_offset=0.1,
+#     flip_position_if_opposite_side=True,
+#     clear_prior_to_new_order=False,
+#     red_button=False,
+#     # order_usd_amount=100,
+#     stop_loss_price_offset=None,
+#     tp_price_offset=None,
+#     trailing_stop_activation_percentage=None,
+#     trailing_stop_callback_ratio=None,
+#     stop_loss_trigger_percentage=None,
+#     take_profit_trigger_percentage=None,
+#     tp_trigger_price_type=None,
+#     sl_trigger_price_type=None,
+# )
+# print(f"{signal_response = }")

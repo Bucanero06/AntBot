@@ -270,12 +270,15 @@ async def render_hidden_content(q: Q):
     if q.args['#'] == 'homepage':
         print("Route to Homepage")
         q.client.homepage_running_event.set()
-        await homepage(q)
+        task = asyncio.create_task(homepage(q))
+        task.done()
         await q.page.save()
     elif q.args['#'] == 'okx_debug_page':
         print("Route to OKX Debug Page")
         q.client.okx_debug_page_running_event.set()
-        await okx_debug_page(q)
+        task = asyncio.create_task(okx_debug_page(q))
+        task.done()
+
         await q.page.save()
     else:
         print("Else Rouse")

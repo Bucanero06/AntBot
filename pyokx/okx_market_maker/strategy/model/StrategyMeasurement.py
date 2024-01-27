@@ -112,7 +112,6 @@ class StrategyMeasurement:
         return pnl
 
     def get_tickers(self) -> Tickers:
-        # channel = f'okx:reports@tickers@{self.trading_instrument_id}'
         channel = f'okx:reports@tickers'
         print(f'Tickers channel: {channel}')
         tickers_report_serialized = self._redis_client.xrevrange(channel,

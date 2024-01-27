@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from pyokx.data_structures import Instrument, AccountBalanceData, Position, Ask, Bid, Ticker
 
+
 class TickersChannelInputArgs(BaseModel):
     channel: str
     instId: str
@@ -17,7 +18,6 @@ class TickersChannelReturnArgs(BaseModel):
 class TickersChannel(BaseModel):
     arg: TickersChannelReturnArgs
     data: List[Ticker]
-
 
 
 class CandleStick(BaseModel):
@@ -156,7 +156,7 @@ class IndexCandleSticksChannel(BaseModel):
 
 class AccountChannelInputArgs(BaseModel):
     channel: str
-    ccy: Optional[str]
+    ccy: Optional[str] = None
 
 
 class AccountChannelReturnArgs(BaseModel):
@@ -172,14 +172,16 @@ class AccountChannel(BaseModel):
 class PositionChannelInputArgs(BaseModel):
     channel: str
     instType: str
-    instFamily: Optional[str]
-    instId: Optional[str]
+    instFamily: Optional[str] = None
+    instId: Optional[str] = None
 
 
 class PositionChannelReturnArgs(BaseModel):
     channel: str
     uid: str
     instType: str
+    instFamily: Optional[str] = None
+    instId: Optional[str] = None
 
 
 class PositionChannel(BaseModel):
@@ -240,7 +242,6 @@ class BalanceAndPositionsChannel(BaseModel):
     data: List[BalanceAndPositionData]
 
 
-
 class WebSocketConnectionConfig(BaseModel):
     _primary_key_field: str = 'name'
     name: str
@@ -251,48 +252,51 @@ class WebSocketConnectionConfig(BaseModel):
 class OrdersChannelInputArgs(BaseModel):
     channel: str
     instType: str
-    instFamily: Optional[str]
-    instId: Optional[str]
+    instFamily: Optional[str] = None
+    instId: Optional[str] = None
 
 
 class OrdersChannelReturnArgs(BaseModel):
     channel: str
     instType: str
-    instId: str
     uid: str
+    instFamily: Optional[str] = None
+    instId: Optional[str] = None
 
 
 class WSOrder(BaseModel):
-    _primary_key_field: str = 'ordId'
     accFillSz: str
     algoClOrdId: str
     algoId: str
     amendResult: str
     amendSource: str
+    attachAlgoClOrdId: str
+    attachAlgoOrds: List[str]
     avgPx: str
+    cTime: str
     cancelSource: str
     category: str
     ccy: str
     clOrdId: str
     code: str
-    cTime: str
     execType: str
     fee: str
     feeCcy: str
     fillFee: str
     fillFeeCcy: str
-    fillNotionalUsd: str
-    fillPx: str
-    fillSz: str
-    fillPnl: str
-    fillTime: str
-    fillPxVol: str
-    fillPxUsd: str
-    fillMarkVol: str
     fillFwdPx: str
     fillMarkPx: str
+    fillMarkVol: str
+    fillNotionalUsd: str
+    fillPnl: str
+    fillPx: str
+    fillPxUsd: str
+    fillPxVol: str
+    fillSz: str
+    fillTime: str
     instId: str
     instType: str
+    lastPx: str
     lever: str
     msg: str
     notionalUsd: str
@@ -301,16 +305,15 @@ class WSOrder(BaseModel):
     pnl: str
     posSide: str
     px: str
+    pxType: str
     pxUsd: str
     pxVol: str
-    pxType: str
     quickMgnType: str
     rebate: str
     rebateCcy: str
     reduceOnly: str
     reqId: str
     side: str
-    attachAlgoClOrdId: str
     slOrdPx: str
     slTriggerPx: str
     slTriggerPxType: str
@@ -325,9 +328,7 @@ class WSOrder(BaseModel):
     tpOrdPx: str
     tpTriggerPx: str
     tpTriggerPxType: str
-    attachAlgoOrds: str
     tradeId: str
-    lastPx: str
     uTime: str
 
 
@@ -396,6 +397,3 @@ class OrderBookChannel(BaseModel):
         ]
 
         return OrderBookChannel(arg=arg, data=data, action=action)
-
-
-

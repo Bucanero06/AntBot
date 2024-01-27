@@ -1,18 +1,20 @@
 import asyncio
 import json
 import os
+from pprint import pprint
 
 import dotenv
 
 from pyokx.okx_market_maker.market_data_service.WssMarketDataService import on_orderbook_snapshot_or_update
 from pyokx.okx_market_maker.market_data_service.model.OrderBook import OrderBook
-from pyokx.signal_handling import get_ticker_with_higher_volume
+from pyokx.signal_handling import get_ticker_with_higher_volume, okx_signal_handler
 from pyokx.ws_clients.WsPprivateAsync import WsPrivateAsync
 from pyokx.ws_clients.WsPublicAsync import WsPublicAsync
 from pyokx.ws_data_structures import PriceLimitChannel, InstrumentsChannel, \
     MarkPriceChannel, IndexTickersChannel, MarkPriceCandleSticksChannel, IndexCandleSticksChannel, AccountChannel, \
     PositionChannel, BalanceAndPositionsChannel, WebSocketConnectionConfig, OrdersChannel, OrderBookChannel, \
-    TickersChannel, IndexTickersChannelInputArgs, OrderBookInputArgs, MarkPriceChannelInputArgs, TickersChannelInputArgs
+    TickersChannel, IndexTickersChannelInputArgs, OrderBookInputArgs, MarkPriceChannelInputArgs, \
+    TickersChannelInputArgs, OrdersChannelInputArgs
 from redis_tools.utils import serialize_for_redis, connect_to_aioredis, connect_to_redis, _deserialize_from_redis
 
 OKX_WEBSOCKET_URLS = dict(
@@ -135,7 +137,7 @@ async def okx_websockets_main_run(input_channel_models: list,
     async def ws_callback(message):
         message_json = json.loads(message)
         event = message_json.get("event", None)
-
+        print(f"Incoming Raw WS Message: {message_json}")
         if event:
             if event == "error":
                 print(f"Error: {message_json}")
@@ -158,7 +160,7 @@ async def okx_websockets_main_run(input_channel_models: list,
                 structured_message = data_struct.from_array(**message_json)
             else:
                 structured_message = data_struct(**message_json)
-            print(f"Received Data: {structured_message}")
+            print(f"Received Structured-Data: {structured_message}")
 
             if redis_store and async_redis:
                 redis_ready_message = serialize_for_redis(structured_message.model_dump())
@@ -218,6 +220,7 @@ async def okx_websockets_main_run(input_channel_models: list,
                     await async_redis.xadd(f'okx:reports@{message_channel}',
                                            redis_ready_message,
                                            maxlen=REDIS_STREAM_MAX_LEN)
+
 
                 # Market Data Service
                 if message_channel in ["books5", "books", "bbo-tbt", "books50-l2-tbt", "books-l2-tbt"]:
@@ -301,8 +304,17 @@ async def okx_websockets_main_run(input_channel_models: list,
     # Keep the loop running, or perform other tasks
     try:
         while True:  # This could be the main loop of the trading strategy or at least for the health checks
-            await asyncio.sleep(60)
-            print("Heartbeat")
+            await asyncio.sleep(1)
+            print("Heartbeat \n ___________")
+            # Print stats for redis
+            if redis_store and async_redis:
+                print(f"Redis Stats: ")
+                # print only the relevant stats that have human in them
+                redis_stats = await async_redis.info()
+                stats_to_print = {k: v for k, v in redis_stats.items() if "human" in k}
+                pprint(stats_to_print)
+            print("___________ \n Heartbeat")
+
 
     except KeyboardInterrupt:
         pass
@@ -442,10 +454,9 @@ async def test_restart(public_client, business_client, private_client):
 if __name__ == '__main__':
     dotenv.load_dotenv(dotenv.find_dotenv())
     instrument_specific_channels = []
-
-    # testout()
+    btc_usdt_usd_index_channels = []
     # instrument_specific_channels = get_channel_inputs_to_listen_to()
-    btc_usdt_usd_index_channels = get_btc_usdt_usd_index_channel_inputs_to_listen_to()
+    # btc_usdt_usd_index_channels = get_btc_usdt_usd_index_channel_inputs_to_listen_to()
     input_channel_models = (
             [
                 ### Business Channels
@@ -467,8 +478,8 @@ if __name__ == '__main__':
                 # PositionChannelInputArgs(channel="positions", instType="ANY", instFamily=None,
                 #                          instId=None),
                 # BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
-                # OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None,
-                #                        instId=None)
+                OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None,
+                                       instId=None)
             ] + instrument_specific_channels + btc_usdt_usd_index_channels)
 
     asyncio.run(okx_websockets_main_run(input_channel_models=input_channel_models,

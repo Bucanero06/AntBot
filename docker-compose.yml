@@ -41,7 +41,6 @@ services:
       H2O_WAVE_NO_STORE: "1"
       H2O_WAVE_NO_LOG: "1"
       H2O_WAVE_PING_INTERVAL: "50s"
-
     ports:
       - "10101:10101"
     healthcheck:
@@ -49,6 +48,13 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+    logging:
+        driver: "json-file"
+        options:
+            max-size: "10m"
+            max-file: "3"
+
+
 
 
 
@@ -66,6 +72,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 
   okx_api:
@@ -101,6 +112,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 
   okx_websockets:
@@ -130,6 +146,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 
 networks:

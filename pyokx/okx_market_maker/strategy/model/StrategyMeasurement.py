@@ -4,17 +4,15 @@ from decimal import Decimal
 
 import redis
 
-from pyokx.okx_market_maker import mark_px_container, tickers_container
 from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
 from pyokx.okx_market_maker.strategy.risk.RiskSnapshot import RiskSnapShot, AssetValueInst
 from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
 from pyokx.okx_market_maker.utils.OkxEnum import InstType, CtType
-from redis_tools.utils import connect_to_redis
+from redis_tools.utils import connect_to_redis, _deserialize_from_redis
 
 
 @dataclass
 class StrategyMeasurement:
-
     trading_instrument: str = ""
     trading_instrument_type: InstType = None
     net_filled_qty: Decimal = 0
@@ -30,10 +28,22 @@ class StrategyMeasurement:
     trading_inst_quote_ccy: str = ""
     _current_risk_snapshot: RiskSnapShot = None
     _inception_risk_snapshot: RiskSnapShot = None
-    _redis_client:redis.Redis = connect_to_redis()
+    _redis_client: redis.Redis = connect_to_redis()
 
-
-
+    def get_usdt_to_usd_rate(self):
+        # Get last BTC-USDT and BTC-USD index price from okx:messages@index-tickers@{inst_id}
+        btc_usdt_index_ticker = self._redis_client.xrevrange('okx:reports@index-tickers@BTC-USDT', count=1)
+        btc_usd_index_ticker = self._redis_client.xrevrange('okx:reports@index-tickers@BTC-USD', count=1)
+        if not btc_usdt_index_ticker or not btc_usd_index_ticker:
+            raise ValueError(f"BTC-USDT or BTC-USD index ticker not ready in index-tickers cache!")
+        btc_usdt_index_ticker = btc_usdt_index_ticker[0][1]
+        btc_usd_index_ticker = btc_usd_index_ticker[0][1]
+        btc_usdt_index_ticker = _deserialize_from_redis(btc_usdt_index_ticker)
+        btc_usd_index_ticker = _deserialize_from_redis(btc_usd_index_ticker)
+        btc_usdt_index_ticker = _deserialize_from_redis(btc_usdt_index_ticker["data"][0]["idxPx"])
+        btc_usd_index_ticker = _deserialize_from_redis(btc_usd_index_ticker["data"][0]["idxPx"])
+        usdt_to_usd_rate = btc_usd_index_ticker / btc_usdt_index_ticker
+        return usdt_to_usd_rate
 
     def calc_pnl(self):
         """
@@ -61,8 +71,6 @@ class StrategyMeasurement:
         """
         pnl = 0
         delta_map = {}
-        mark_px_cache = mark_px_container[0]
-        usdt_to_usd_rate = mark_px_cache.get_usdt_to_usd_rate()
         for ccy in self._current_risk_snapshot.asset_cash_snapshot:
             if ccy not in delta_map:
                 delta_map[ccy] = 0
@@ -98,10 +106,23 @@ class StrategyMeasurement:
         for ccy in delta_map:
             price = self._current_risk_snapshot.price_to_usd_snapshot.get(ccy)
             if not price:
-                tickers: Tickers = tickers_container[0]
-                price = tickers.get_usdt_price_by_ccy(ccy) * usdt_to_usd_rate
+                tickers: Tickers = self.get_tickers()
+                price = tickers.get_usdt_price_by_ccy(ccy) * self.get_usdt_to_usd_rate()
             pnl += price * delta_map[ccy]
         return pnl
+
+    def get_tickers(self) -> Tickers:
+        # channel = f'okx:reports@tickers@{self.trading_instrument_id}'
+        channel = f'okx:reports@tickers'
+        print(f'Tickers channel: {channel}')
+        tickers_report_serialized = self._redis_client.xrevrange(channel,
+                                                                 count=1)
+        if not tickers_report_serialized:
+            raise ValueError(f"tickers information not ready in tickers cache!")
+        tickers_report_serialized = tickers_report_serialized[0][1]
+        tickers_report_deserialized = _deserialize_from_redis(tickers_report_serialized)
+        tickers: Tickers = Tickers().from_dict(tickers_dict=tickers_report_deserialized)
+        return tickers
 
     @staticmethod
     def calc_assumed_asset_value(asset_value_inst: AssetValueInst, current_mark_px: float) -> float:
@@ -122,13 +143,13 @@ class StrategyMeasurement:
         if instrument.inst_type in [InstType.SWAP, InstType.FUTURES]:
             if instrument.ct_type == CtType.LINEAR:
                 return asset_value_inst.pos * instrument.ct_mul * instrument.ct_val \
-                       * (current_mark_px - asset_value_inst.avg_px) + asset_value_inst.margin
+                    * (current_mark_px - asset_value_inst.avg_px) + asset_value_inst.margin
             if instrument.ct_type == CtType.INVERSE:
                 return asset_value_inst.pos * instrument.ct_mul * instrument.ct_val \
-                       * (1 / asset_value_inst.avg_px - 1 / current_mark_px) + asset_value_inst.margin
+                    * (1 / asset_value_inst.avg_px - 1 / current_mark_px) + asset_value_inst.margin
         if instrument.inst_type in [InstType.OPTION]:
             return asset_value_inst.pos * instrument.ct_mul * instrument.ct_val \
-                   * current_mark_px + asset_value_inst.margin
+                * current_mark_px + asset_value_inst.margin
         return 0.0
 
     def consume_risk_snapshot(self, risk_snapshot: RiskSnapShot):
@@ -138,6 +159,7 @@ class StrategyMeasurement:
         self._current_risk_snapshot = risk_snapshot
         self.asset_value_change_in_usd_since_running = \
             self._current_risk_snapshot.asset_usd_value - self._inception_risk_snapshot.asset_usd_value
+
         self.pnl_in_usd_since_running = self.calc_pnl()
         instrument = InstrumentUtil.get_instrument(self.trading_instrument, self.trading_instrument_type)
         exposure_ccy = InstrumentUtil.get_asset_exposure_ccy(instrument)

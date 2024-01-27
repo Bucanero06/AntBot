@@ -86,6 +86,9 @@ class SampleMM(BaseStrategy):
         to_place: List[PlaceOrderRequest] = []
         to_amend: List[AmendOrderRequest] = []
         to_cancel: List[CancelOrderRequest] = []
+        print(f'propose_orders: {propose_orders}')
+        print(f'current_orders: {current_orders}')
+
         for strategy_order in current_orders.copy():
             price = strategy_order.price
             remaining_size = float(strategy_order.size) - float(strategy_order.filled_size)

@@ -37,6 +37,8 @@ class OrderBookLevel:
             "order_count_string": self.order_count_string,
         }
 
+
+
 @dataclass
 class OrderBook:
     inst_id: str
@@ -157,3 +159,12 @@ class OrderBook:
             "timestamp": self.timestamp,
             "exch_check_sum": self.exch_check_sum,
         }
+
+    def from_dict(self, order_book_dict):
+        self.inst_id = order_book_dict["inst_id"]
+        self._bids = [OrderBookLevel(**bid) for bid in order_book_dict["bids"]]
+        self._asks = [OrderBookLevel(**ask) for ask in order_book_dict["asks"]]
+        self.timestamp = order_book_dict["timestamp"]
+        self.exch_check_sum = order_book_dict["exch_check_sum"]
+        return self
+

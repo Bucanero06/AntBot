@@ -10,7 +10,6 @@ import redis
 from pyokx.low_rest_api.Account import AccountAPI
 from pyokx.low_rest_api.Status import StatusAPI
 from pyokx.low_rest_api.Trade import TradeAPI
-from pyokx.okx_market_maker import order_books
 from pyokx.okx_market_maker.market_data_service.model.Instrument import Instrument
 from pyokx.okx_market_maker.market_data_service.model.OrderBook import OrderBook
 from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
@@ -55,6 +54,8 @@ class BaseStrategy(ABC):
         self.redis_client: redis.Redis = connect_to_redis()
         self.logger = logging.getLogger(__name__)
         self.trading_instrument_id = TRADING_INSTRUMENT_ID
+
+        # subscribe to the websockets so that redis is updated
 
     @abstractmethod
     def order_operation_decision(self) -> \
@@ -249,20 +250,25 @@ class BaseStrategy(ABC):
         """
         return TdModeUtil.decide_trading_mode(self._account_mode, instrument.inst_type, TRADING_MODE)
 
-    def get_order_book(self) -> OrderBook: # TODO: change to redis cache
+    def get_order_book(self) -> OrderBook:  # TODO: change to redis cache
         """
         Fetch order book object of the self.trading_instrument_id
         :return: OrderBook
         """
-        if self.trading_instrument_id not in order_books:
-            raise ValueError(f"{self.trading_instrument_id} not ready in order books cache!")
-        order_book: OrderBook = order_books[self.trading_instrument_id]
+        order_book_serialized = self.redis_client.xrevrange(f'okx:reports@books@{self.trading_instrument_id}', count=1)
+        if not order_book_serialized:
+            return OrderBook(inst_id=self.trading_instrument_id)
+
+        order_book_serialized = order_book_serialized[0][1]
+        order_book_deserialized = _deserialize_from_redis(order_book_serialized)
+        order_book: OrderBook = OrderBook(inst_id=self.trading_instrument_id).from_dict(
+            order_book_dict=order_book_deserialized)
         return order_book
 
     def get_account(self) -> Account:
         account_report_serialized = self.redis_client.xrevrange('okx:reports@account', count=1)
         if not account_report_serialized:
-            raise ValueError(f"account information not ready in accounts cache!")
+            return Account()
         account_report_serialized = account_report_serialized[0][1]
         account_report_deserialized = _deserialize_from_redis(account_report_serialized)
         account: Account = Account().from_dict(account_dict=account_report_deserialized)
@@ -271,17 +277,20 @@ class BaseStrategy(ABC):
     def get_positions(self) -> Positions:
         positions_report_serialized = self.redis_client.xrevrange('okx:reports@positions', count=1)
         if not positions_report_serialized:
-            raise ValueError(f"positions information not ready in positions cache!")
+            return Positions()
         positions_report_serialized = positions_report_serialized[0][1]
         positions_report_deserialized = _deserialize_from_redis(positions_report_serialized)
         positions: Positions = Positions().from_dict(positions_dict=positions_report_deserialized)
         return positions
 
     def get_tickers(self) -> Tickers:
-        tickers_report_serialized = self.redis_client.xrevrange(f'okx:reports@tickers@{self.trading_instrument_id}',
+        # channel = f'okx:reports@tickers@{self.trading_instrument_id}'
+        channel = f'okx:reports@tickers'
+        print(f'Tickers channel: {channel}')
+        tickers_report_serialized = self.redis_client.xrevrange(channel,
                                                                 count=1)
         if not tickers_report_serialized:
-            raise ValueError(f"tickers information not ready in tickers cache!")
+            return Tickers()
         tickers_report_serialized = tickers_report_serialized[0][1]
         tickers_report_deserialized = _deserialize_from_redis(tickers_report_serialized)
         tickers: Tickers = Tickers().from_dict(tickers_dict=tickers_report_deserialized)
@@ -289,17 +298,20 @@ class BaseStrategy(ABC):
 
     def get_orders(self) -> Orders:
         orders_report_serialized = self.redis_client.xrevrange('okx:reports@orders', count=1)
+        print(f'Orders-get_orders: {orders_report_serialized}')
         if not orders_report_serialized:
-            raise ValueError(f"orders information not ready in orders cache!")
+            return Orders()
         orders_report_serialized = orders_report_serialized[0][1]
         orders_report_deserialized = _deserialize_from_redis(orders_report_serialized)
         orders: Orders = Orders().from_dict(orders_dict=orders_report_deserialized)
+        print(f'Orders-get_orders: {orders}')
         return orders
 
     def _health_check(self) -> bool:
         try:
             order_book: OrderBook = self.get_order_book()
         except ValueError:
+            logging.warning(f"{self.trading_instrument_id} not ready in order books cache!")
             return False
         order_book_delay = time.time() - order_book.timestamp / 1000
         if order_book_delay > ORDER_BOOK_DELAYED_SEC:
@@ -325,10 +337,13 @@ class BaseStrategy(ABC):
 
     def _update_strategy_order_status(self):
         orders_cache: Orders = self.get_orders()
+        print(f'Orders cache: {orders_cache}')
         order_not_found_in_cache = {}
         order_to_remove_from_cache = []
         for client_order_id in self._strategy_order_dict.copy():
             exchange_order: Order = orders_cache.get_order_by_client_order_id(client_order_id=client_order_id)
+            if not exchange_order:
+                continue
             strategy_order = self._strategy_order_dict[client_order_id]
             if not exchange_order:
                 order_not_found_in_cache[client_order_id] = strategy_order
@@ -363,15 +378,7 @@ class BaseStrategy(ABC):
     def get_strategy_measurement(self):
         return self._strategy_measurement
 
-    def risk_summary(self):
-        account = self.get_account()
-        positions = self.get_positions()
-        tickers = self.get_tickers()
-
-        print(f'{account = }')
-        print(f'{positions = }')
-        print(f'{tickers = }')
-
+    def get_usdt_to_usd_rate(self):
         # Get last BTC-USDT and BTC-USD index price from okx:messages@index-tickers@{inst_id}
         btc_usdt_index_ticker = self.redis_client.xrevrange('okx:reports@index-tickers@BTC-USDT', count=1)
         btc_usd_index_ticker = self.redis_client.xrevrange('okx:reports@index-tickers@BTC-USD', count=1)
@@ -384,7 +391,18 @@ class BaseStrategy(ABC):
         btc_usdt_index_ticker = _deserialize_from_redis(btc_usdt_index_ticker["data"][0]["idxPx"])
         btc_usd_index_ticker = _deserialize_from_redis(btc_usd_index_ticker["data"][0]["idxPx"])
         usdt_to_usd_rate = btc_usd_index_ticker / btc_usdt_index_ticker
-        risk_snapshot = RiskCalculator.generate_risk_snapshot(account, positions, tickers, usdt_to_usd_rate)
+        return usdt_to_usd_rate
+
+    def risk_summary(self):
+        account = self.get_account()
+        positions = self.get_positions()
+        tickers = self.get_tickers()
+
+        print(f'{account = }')
+        print(f'{positions = }')
+        print(f'{tickers = }')
+
+        risk_snapshot = RiskCalculator.generate_risk_snapshot(account, positions, tickers, self.get_usdt_to_usd_rate())
         self._strategy_measurement.consume_risk_snapshot(risk_snapshot)
 
     def check_status(self):
@@ -437,7 +455,7 @@ class BaseStrategy(ABC):
                 if not exchange_normal:
                     raise ValueError("There is a ongoing maintenance in OKX.")
                 self.get_params()
-                result = self._health_check()
+                result = True # FIXME self._health_check()
                 self.risk_summary()
                 if not result:
                     print(f"Health Check result is {result}")

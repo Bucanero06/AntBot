@@ -2,6 +2,9 @@ import os
 
 import dotenv
 
+from pyokx.data_structures import Ticker
+from pyokx.signal_handling import get_ticker_with_higher_volume
+
 dotenv.load_dotenv(dotenv.find_dotenv())
 # api key credential
 API_KEY = os.environ.get("OKX_API_KEY")
@@ -16,7 +19,11 @@ assert IS_PAPER_TRADING in [True, False], "Please set OKX_SANDBOX_MODE in enviro
 
 # market-making instrument
 # TRADING_INSTRUMENT_ID = "BTC-USDT-SWAP"
-TRADING_INSTRUMENT_ID = "BTC-USDT-240119"
+btc_:Ticker = get_ticker_with_higher_volume("BTC-USDT",
+                                     instrument_type="FUTURES",
+                                     top_n=1)[0]
+
+TRADING_INSTRUMENT_ID = btc_.instId
 TRADING_MODE = "isolated"  # "cash" / "isolated" / "cross"
 
 # default latency tolerance level

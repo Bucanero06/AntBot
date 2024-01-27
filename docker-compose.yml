@@ -22,8 +22,8 @@ services:
       dockerfile: .docker/dashboard.dockerfile
     command: [ "wave", "run", "h2o_dashboard.dashboard", "--no-reload" ]
     restart: unless-stopped
-#    networks:
-#      - my-network
+    networks:
+      - my-network
     environment:
       FIREBASE_API_KEY: ${FIREBASE_API_KEY}
       H2O_WAVE_ACCESS_KEYCHAIN: ".wave-keychain"
@@ -65,8 +65,8 @@ services:
     ports:
       - ${REDIS_SERVICE_PORT}:${REDIS_SERVICE_PORT}
     restart: unless-stopped
-#    networks:
-#      - my-network
+    networks:
+      - my-network
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
@@ -87,8 +87,8 @@ services:
       #      - ${OKX_API_SERVICE_PORT}:${OKX_API_SERVICE_PORT}
       - 8080:8080
     restart: unless-stopped
-#    networks:
-#      - my-network
+    networks:
+      - my-network
     depends_on:
       okx_websockets:
         condition: service_healthy
@@ -124,8 +124,8 @@ services:
       context: .
       dockerfile: .docker/bot.dockerfile
     restart: unless-stopped
-#    networks:
-#      - my-network
+    networks:
+      - my-network
     depends_on:
       redis:
         condition: service_healthy
@@ -152,11 +152,11 @@ services:
         max-size: "10m"
         max-file: "3"
 
-#
-#networks:
-#  my-network:
-#    driver: bridge
-#    ipam:
-#      config:
-#        - subnet: 10.128.0.0/20
+
+networks:
+  my-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.166.0.0/20
 

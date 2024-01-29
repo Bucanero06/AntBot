@@ -113,7 +113,6 @@ def update_conf_py(documentation_dir, source_dir):
                 "    'sphinx.ext.autosectionlabel',\n"
                 "    'sphinx.ext.autodoc.typehints',\n"
                 "    'sphinx.ext.inheritance_diagram',\n"
-                "    'sphinx.ext.githubpages',\n"
                 # "    'sphinx_click',\n"
                 "]\n")
         f.write("\ntodo_include_todos = True\n")

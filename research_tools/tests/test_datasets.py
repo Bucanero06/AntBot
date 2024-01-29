@@ -4,7 +4,7 @@ Test various functions regarding datasets load.
 
 import unittest
 
-from Modules.FinLab_Algorythms.datasets_for_algo_tests.load_datasets import load_tick_sample, load_stock_prices, load_dollar_bar_sample
+from research_tools.datasets_for_algo_tests.load_datasets import load_tick_sample, load_stock_prices, load_dollar_bar_sample
 
 
 class TestDatasets(unittest.TestCase):

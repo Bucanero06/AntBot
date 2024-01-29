@@ -80,7 +80,7 @@ inclination to 0 with rho values being on the lower end from 0 to 0.4.
 CORN Implementation
 -------------------
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.corn
+.. automodule:: Modules.online_portfolio_selection.corn
 
     .. autoclass:: CORN
         :members:
@@ -129,7 +129,7 @@ Window ranges are trickier as they tend to be either just 1 or a much larger val
 CORN-U Implementation
 ---------------------
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.cornu
+.. automodule:: Modules.online_portfolio_selection.cornu
 
     .. autoclass:: CORNU
         :members:
@@ -176,7 +176,7 @@ guess would be on the lower range of 1 or higher value of 7.
 CORN-K Implementation
 ---------------------
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.cornk
+.. automodule:: Modules.online_portfolio_selection.cornk
 
     .. autoclass:: CORNK
         :members:
@@ -190,7 +190,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -312,7 +312,7 @@ Although, there are cases where a window of 21 had the highest returns.
 SCORN Implementation
 --------------------
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.scorn
+.. automodule:: Modules.online_portfolio_selection.scorn
 
     .. autoclass:: SCORN
         :members:
@@ -352,7 +352,7 @@ on each data, but in most cases, value of 2 was sufficient.
 SCORN-K Implementation
 ----------------------
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.scornk
+.. automodule:: Modules.online_portfolio_selection.scornk
 
     .. autoclass:: SCORNK
         :members:
@@ -366,7 +366,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -480,7 +480,7 @@ SP500 has the highest returns with window of 5.
 FCORN Implementation
 --------------------
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.fcorn
+.. automodule:: Modules.online_portfolio_selection.fcorn
 
     .. autoclass:: FCORN
         :members:
@@ -510,7 +510,7 @@ had the highest returns.
 FCORN-K Implementation
 ----------------------
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.fcornk
+.. automodule:: Modules.online_portfolio_selection.fcornk
 
     .. autoclass:: FCORNK
         :members:
@@ -525,7 +525,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')

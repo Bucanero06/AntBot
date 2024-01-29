@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring
 import numpy as np
-from Modules.FinLab_Algorythms.online_portfolio_selection.cornk import CORNK
-from Modules.FinLab_Algorythms.online_portfolio_selection.scorn import SCORN
+from research_tools.online_portfolio_selection.cornk import CORNK
+from research_tools.online_portfolio_selection.scorn import SCORN
 
 
 class SCORNK(CORNK):

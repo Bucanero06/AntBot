@@ -5,12 +5,12 @@ These methods allows the user to easily deploy graph visualisations given an inp
 import warnings
 import networkx as nx
 
-from Modules.networks.dash_graph import DashGraph, PMFGDash
-from Modules.networks.dual_dash_graph import DualDashGraph
-from Modules.networks.mst import MST
-from Modules.networks.almst import ALMST
-from Modules.networks.pmfg import PMFG
-from Modules.codependence import get_distance_matrix
+from research_tools.networks.dash_graph import DashGraph, PMFGDash
+from research_tools.networks.dual_dash_graph import DualDashGraph
+from research_tools.networks.mst import MST
+from research_tools.networks.almst import ALMST
+from research_tools.networks.pmfg import PMFG
+from research_tools.codependence import get_distance_matrix
 
 
 def generate_mst_server(log_returns_df, mst_algorithm='kruskal', distance_matrix_type='angular',

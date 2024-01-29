@@ -3,8 +3,8 @@ Test various methods of generating feature clusters
 """
 import unittest
 
-from Modules.FinLab_Algorythms.util.generate_dataset import get_classification_data
-from Modules.FinLab_Algorythms.clustering_algorythms.feature_clusters import get_feature_clusters
+from research_tools.util.generate_dataset import get_classification_data
+from research_tools.clustering_algorythms.feature_clusters import get_feature_clusters
 
 # pylint: disable=invalid-name
 class TestFeatureClusters(unittest.TestCase):

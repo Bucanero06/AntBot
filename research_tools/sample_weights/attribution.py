@@ -5,8 +5,8 @@ Logic regarding return and time decay attribution for sample weights from chapte
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.sampling.concurrent import num_concurrent_events, get_av_uniqueness_from_triple_barrier
-from Modules.FinLab_Algorythms.util.multiprocess import mp_pandas_obj
+from research_tools.sampling.concurrent import num_concurrent_events, get_av_uniqueness_from_triple_barrier
+from research_tools.util.multiprocess import mp_pandas_obj
 
 
 def _apply_weight_by_return(label_endtime, num_conc_events, close_series, molecule):

@@ -50,7 +50,7 @@ An example showing how Annualized Sharpe Ratio function is used with monthly cum
 
 .. code-block::
 
-   from Modules.backtest_statistics import sharpe_ratio
+   from research_tools.backtest_statistics import sharpe_ratio
 
    sr = sharpe_ratio(returns, entries_per_year=12)
 
@@ -95,7 +95,7 @@ An example showing how Probabilistic Sharpe Ratio function is used with an examp
 
 .. code-block::
 
-   from Modules.backtest_statistics import probabilistic_sharpe_ratio
+   from research_tools.backtest_statistics import probabilistic_sharpe_ratio
 
    psr = probabilistic_sharpe_ratio(1.2, 1.0, 200)
 
@@ -143,7 +143,7 @@ and benchmark output:
 
 .. code-block::
 
-    from Modules.backtest_statistics import deflated_sharpe_ratio
+    from research_tools.backtest_statistics import deflated_sharpe_ratio
 
     dsr = deflated_sharpe_ratio(1.2, [1.0, 1.1, 1.0], 200)
     dsr = deflated_sharpe_ratio(1.2, [0.7, 50], 200, estimates_param=True, benchmark_out=True)
@@ -175,7 +175,7 @@ An example showing how Annualized Information Ratio function is used with monthl
 
 .. code-block::
 
-   from Modules.backtest_statistics import information_ratio
+   from research_tools.backtest_statistics import information_ratio
 
    information_r = information_ratio(returns, benchmark=0.005, entries_per_year=12)
 
@@ -217,7 +217,7 @@ An example showing how Minimum Track Record Length function is used with an exam
 
 .. code-block::
 
-    from Modules.backtest_statistics import minimum_track_record_length
+    from research_tools.backtest_statistics import minimum_track_record_length
 
     min_record_length = minimum_track_record_length(1.2, 1.0)
 
@@ -250,7 +250,7 @@ An example showing how Bets Concentration function is used can be seen below:
 
 .. code-block::
 
-   from Modules.backtest_statistics import bets_concentration
+   from research_tools.backtest_statistics import bets_concentration
 
    concentration = bets_concentration(returns)
 
@@ -291,7 +291,7 @@ An example showing how All Bets Concentration function is used with weekly group
 
 .. code-block::
 
-   from Modules.backtest_statistics import all_bets_concentration
+   from research_tools.backtest_statistics import all_bets_concentration
 
    pos_concentr, neg_concentr, week_concentr = all_bets_concentration(returns, frequency='W')
 
@@ -320,7 +320,7 @@ An example showing how Drawdown and Time Under Water function is used with accou
 
 .. code-block::
 
-   from Modules.backtest_statistics import drawdown_and_time_under_water
+   from research_tools.backtest_statistics import drawdown_and_time_under_water
 
    drawdown, tuw = drawdown_and_time_under_water(returns, dollars=True)
 
@@ -358,7 +358,7 @@ Example
 
 .. code-block::
 
-   from Modules.backtest_statistics import average_holding_period
+   from research_tools.backtest_statistics import average_holding_period
 
    avg_holding_period = average_holding_period(target_positions)
 
@@ -379,7 +379,7 @@ An example showing how Flattening and Flips function is used can be seen below:
 
 .. code-block::
 
-   from Modules.backtest_statistics import timing_of_flattening_and_flips
+   from research_tools.backtest_statistics import timing_of_flattening_and_flips
 
    flattening_and_flips_timestamps = timing_of_flattening_and_flips(target_positions)
 

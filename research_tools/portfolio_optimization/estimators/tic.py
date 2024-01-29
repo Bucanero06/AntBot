@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import scipy.spatial.distance as ssd
 import scipy.cluster.hierarchy as sch
-from Modules.FinLab_Algorythms.portfolio_optimization.estimators.risk_estimators import RiskEstimators
+from research_tools.portfolio_optimization.estimators.risk_estimators import RiskEstimators
 
 
 class TheoryImpliedCorrelation:

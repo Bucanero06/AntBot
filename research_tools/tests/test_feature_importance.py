@@ -9,12 +9,12 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier, BaggingClassifier
 from sklearn.model_selection import cross_val_score, KFold
 from sklearn.metrics import f1_score, log_loss
-from Modules.FinLab_Algorythms.feature_importance_algorythms.importance import (mean_decrease_impurity,
+from research_tools.feature_importance_algorythms.importance import (mean_decrease_impurity,
                                                               mean_decrease_accuracy, single_feature_importance,
                                                               plot_feature_importance)
-from Modules.FinLab_Algorythms.feature_importance_algorythms.orthogonal import feature_pca_analysis, get_orthogonal_features
-from Modules.FinLab_Algorythms.clustering_algorythms.feature_clusters import get_feature_clusters
-from Modules.FinLab_Algorythms.util.generate_dataset import get_classification_data
+from research_tools.feature_importance_algorythms.orthogonal import feature_pca_analysis, get_orthogonal_features
+from research_tools.clustering_algorythms.feature_clusters import get_feature_clusters
+from research_tools.util.generate_dataset import get_classification_data
 
 
 # pylint: disable=invalid-name

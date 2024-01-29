@@ -396,7 +396,7 @@ Bringing it all together, the code looks like this:
 Implementation
 ##############
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.mean_variance
+.. automodule:: Modules.portfolio_optimization.mean_variance
 
     .. autoclass:: MeanVarianceOptimisation
         :members:

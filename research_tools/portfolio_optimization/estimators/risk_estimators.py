@@ -5,7 +5,7 @@ from scipy.optimize import minimize
 from sklearn.covariance import MinCovDet, EmpiricalCovariance, ShrunkCovariance, LedoitWolf, OAS
 from sklearn.neighbors import KernelDensity
 
-from Modules.FinLab_Algorythms.portfolio_optimization.estimators.returns_estimators import ReturnsEstimators
+from research_tools.portfolio_optimization.estimators.returns_estimators import ReturnsEstimators
 
 
 class RiskEstimators:

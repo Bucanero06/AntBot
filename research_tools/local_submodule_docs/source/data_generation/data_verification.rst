@@ -53,8 +53,8 @@ Example
 .. code-block::
 
     import yfinance as yf
-    from Modules.data_generation.corrgan import sample_from_corrgan
-    from Modules.data_generation.data_verification import plot_stylized_facts
+    from research_tools.data_generation.corrgan import sample_from_corrgan
+    from research_tools.data_generation.data_verification import plot_stylized_facts
 
     # Download stock data from yahoo finance.
     dimensions = 3
@@ -112,8 +112,8 @@ Example
 .. code::
 
     import matplotlib.pyplot as plt
-    from Modules.data_generation.correlated_random_walks import generate_cluster_time_series
-    from Modules.data_generation.data_verification import plot_time_series_dependencies
+    from research_tools.data_generation.correlated_random_walks import generate_cluster_time_series
+    from research_tools.data_generation.data_verification import plot_time_series_dependencies
 
     # Initialize the example parameters for the time series.
     n_series = 200
@@ -158,8 +158,8 @@ Example
 
 .. code-block::
 
-    from Modules.data_generation.data_verification import plot_optimal_hierarchical_cluster
-    from Modules.data_generation.hcbm import generate_hcmb_mat
+    from research_tools.data_generation.data_verification import plot_optimal_hierarchical_cluster
+    from research_tools.data_generation.hcbm import generate_hcmb_mat
     import matplotlib.pyplot as plt
 
     # Initialize parameters.

@@ -78,7 +78,7 @@ Below is an example on how to use the Fixed Horizon labeling technique on real d
     import pandas as pd
     import numpy as np
 
-    from Modules.labeling import fixed_time_horizon
+    from research_tools.labeling import fixed_time_horizon
 
     # Import price data.
     data = pd.read_csv('../Sample-Data/stock_prices.csv', index_col='Date', parse_dates=True)

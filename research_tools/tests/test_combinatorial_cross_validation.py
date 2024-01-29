@@ -3,7 +3,7 @@ Tests the cross validation technique described in Ch.7 of the book.
 """
 import unittest
 import pandas as pd
-from Modules.FinLab_Algorythms.cross_validation_algorythms import CombinatorialPurgedKFold
+from research_tools.cross_validation_algorythms import CombinatorialPurgedKFold
 
 
 class TestCombinatorialPurgedCV(unittest.TestCase):

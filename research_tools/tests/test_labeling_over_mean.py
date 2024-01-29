@@ -5,7 +5,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.labeling_algorythms.excess_over_mean import excess_over_mean
+from research_tools.labeling_algorythms.excess_over_mean import excess_over_mean
 
 
 class TestLabelingOverMean(unittest.TestCase):

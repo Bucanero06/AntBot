@@ -57,7 +57,7 @@ The example will generate 4 clusters by Hierarchical Clustering for given specif
 .. code-block::
 
     import pandas as pd
-    from Modules.clustering.feature_clusters import get_feature_clusters
+    from research_tools.clustering.feature_clusters import get_feature_clusters
 
     # Read the a csv file containing only features
     X = pd.read_csv('X_FILE_PATH.csv', index_col=0, parse_dates = [0])

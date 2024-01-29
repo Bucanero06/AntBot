@@ -21,7 +21,7 @@ from typing import Union, Iterable, Optional
 import numpy as np
 import pandas as pd
 
-from Modules.data_structures_algorythms.base_bars import BaseBars
+from research_tools.data_structures_algorythms.base_bars import BaseBars
 
 
 class StandardBars(BaseBars):

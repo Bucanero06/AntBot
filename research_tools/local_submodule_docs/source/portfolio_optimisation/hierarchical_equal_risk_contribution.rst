@@ -128,7 +128,7 @@ weight of the  :math:`i^{th}` cluster calculated in Step-3.
 Implementation
 ##############
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.herc
+.. automodule:: Modules.portfolio_optimization.herc
 
     .. autoclass:: HierarchicalEqualRiskContribution
         :members:

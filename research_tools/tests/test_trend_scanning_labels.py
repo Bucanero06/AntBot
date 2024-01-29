@@ -6,7 +6,7 @@ import os
 import unittest
 import pandas as pd
 
-from Modules.FinLab_Algorythms.labeling_algorythms import trend_scanning_labels
+from research_tools.labeling_algorythms import trend_scanning_labels
 
 
 class TestTrendScanningLabels(unittest.TestCase):

@@ -8,7 +8,7 @@ import math
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.labeling_algorythms.fractionally_differenciated import FractionalDifferentiation, plot_min_ffd
+from research_tools.labeling_algorythms.fractionally_differenciated import FractionalDifferentiation, plot_min_ffd
 
 
 

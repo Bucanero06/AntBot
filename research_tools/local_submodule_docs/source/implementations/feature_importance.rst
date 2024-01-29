@@ -40,9 +40,9 @@ An example showing how to use various feature importance functions:
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.metrics import accuracy_score, log_loss
 
-    from Modules.ensemble import SequentiallyBootstrappedBaggingClassifier
-    from Modules.feature_importance import (mean_decrease_impurity, mean_decrease_accuracy, single_feature_importance, plot_feature_importance)
-    from Modules.cross_validation import PurgedKFold, ml_cross_val_score
+    from research_tools.ensemble import SequentiallyBootstrappedBaggingClassifier
+    from research_tools.feature_importance import (mean_decrease_impurity, mean_decrease_accuracy, single_feature_importance, plot_feature_importance)
+    from research_tools.cross_validation import PurgedKFold, ml_cross_val_score
 
     X_train = pd.read_csv('X_FILE_PATH.csv', index_col=0, parse_dates=[0])
     y_train = pd.read_csv('y_FILE_PATH.csv', index_col=0, parse_dates=[0])
@@ -141,11 +141,11 @@ Example
     from sklearn.metrics import accuracy_score, log_loss
     from sklearn.model_selection._split import KFold
 
-    from Modules.util.generate_dataset import get_classification_data
-    from Modules.feature_importance import (mean_decrease_impurity, mean_decrease_accuracy,
+    from research_tools.util.generate_dataset import get_classification_data
+    from research_tools.feature_importance import (mean_decrease_impurity, mean_decrease_accuracy,
                                              plot_feature_importance)
-    from Modules.cross_validation import  ml_cross_val_score
-    from Modules.clustering.feature_clusters import get_feature_clusters
+    from research_tools.cross_validation import  ml_cross_val_score
+    from research_tools.clustering.feature_clusters import get_feature_clusters
 
     # Create Clusters
     X, y = get_classification_data(n_features=40, n_informative=5, n_redundant=30,
@@ -246,7 +246,7 @@ Example
     import pandas as pd
     from sklearn.datasets import load_boston
     from sklearn.ensemble import RandomForestRegressor
-    from Modules.feature_importance import RegressionModelFingerprint
+    from research_tools.feature_importance import RegressionModelFingerprint
 
     data = load_boston() # Get a dataset
     X = pd.DataFrame(columns=data['feature_names'], data=data['data'])
@@ -311,7 +311,7 @@ Let's see how PCA feature extraction is analysis are done using genieml_src func
 .. code-block::
 
     import pandas as pd
-    from Modules.feature_importance.orthogonal import (get_orthogonal_features,
+    from research_tools.feature_importance.orthogonal import (get_orthogonal_features,
                                                         feature_pca_analysis)
 
     X_train = pd.read_csv('X_FILE_PATH.csv', index_col=0, parse_dates = [0])

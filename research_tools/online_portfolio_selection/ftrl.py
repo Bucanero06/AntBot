@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring
 import numpy as np
 import scipy.optimize as opt
-from Modules.FinLab_Algorythms.online_portfolio_selection.ftl import FTL
+from research_tools.online_portfolio_selection.ftl import FTL
 
 
 class FTRL(FTL):

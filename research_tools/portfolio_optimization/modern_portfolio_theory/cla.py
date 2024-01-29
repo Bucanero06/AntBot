@@ -4,7 +4,7 @@ from math import log, ceil
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.portfolio_optimization.estimators.returns_estimators import ReturnsEstimators
+from research_tools.portfolio_optimization.estimators.returns_estimators import ReturnsEstimators
 
 
 class CriticalLineAlgorithm:

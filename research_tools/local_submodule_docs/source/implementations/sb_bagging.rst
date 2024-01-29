@@ -27,7 +27,7 @@ An example of using SequentiallyBootstrappedBaggingClassifier
 
     import pandas as pd
     from sklearn.ensemble import RandomForestClassifier
-    from Modules.ensemble import SequentiallyBootstrappedBaggingClassifier
+    from research_tools.ensemble import SequentiallyBootstrappedBaggingClassifier
 
     X = pd.read_csv('X_FILE_PATH', index_col=0, parse_dates = [0])
     y = pd.read_csv('y_FILE_PATH', index_col=0, parse_dates = [0])

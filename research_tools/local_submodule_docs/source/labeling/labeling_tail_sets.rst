@@ -110,7 +110,7 @@ Below is an example on how to create the positive, negative, and full matrix Tai
 .. code-block::
 
     import pandas as pd
-    from Modules.labeling import TailSetLabels
+    from research_tools.labeling import TailSetLabels
 
     # Import price data
     data = pd.read_csv('../Sample-Data/stock_prices.csv', index_col='Date', parse_dates=True)

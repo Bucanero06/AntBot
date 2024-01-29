@@ -45,7 +45,7 @@ Example
     import numpy as np
     import pandas as pd
 
-    from Modules.labeling import trend_scanning_labels
+    from research_tools.labeling import trend_scanning_labels
 
     self.eem_close = pd.read_csv('./test_data/stock_prices.csv', index_col=0, parse_dates=[0])
     # In 2008, EEM had some clear trends

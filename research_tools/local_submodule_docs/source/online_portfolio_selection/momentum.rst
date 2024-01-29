@@ -114,7 +114,7 @@ of a momentum strategy.
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.eg
+.. automodule:: Modules.online_portfolio_selection.eg
 
     .. autoclass:: EG
         :members:
@@ -128,7 +128,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -178,7 +178,7 @@ looks at the whole history of the data and calculates the portfolio weights that
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.ftl
+.. automodule:: Modules.online_portfolio_selection.ftl
 
     .. autoclass:: FTL
         :members:
@@ -190,7 +190,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -262,7 +262,7 @@ The highest returns are results with :math:`\beta` of 0.2. Lower values of beta 
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.ftrl
+.. automodule:: Modules.online_portfolio_selection.ftrl
 
     .. autoclass:: FTRL
         :members:
@@ -276,7 +276,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')

@@ -4,7 +4,7 @@ import unittest
 import os
 import numpy as np
 import pandas as pd
-from Modules.FinLab_Algorythms.labeling_algorythms.return_vs_benchmark import return_over_benchmark
+from research_tools.labeling_algorythms.return_vs_benchmark import return_over_benchmark
 
 
 class TestReturnOverBenchmark(unittest.TestCase):

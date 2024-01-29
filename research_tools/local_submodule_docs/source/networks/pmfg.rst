@@ -139,7 +139,7 @@ You can create the PMFG visualisation using `generate_pmfg_server`. This require
    import pandas as pd
 
    # Import generate_pmfg_server method
-   from Modules.networks.visualisations import generate_pmfg_server
+   from research_tools.networks.visualisations import generate_pmfg_server
 
    # Import log return csv
    log_return_dataframe = pd.read_csv('path_to_file.csv', index_col=False)
@@ -201,10 +201,10 @@ respectively.
    import pandas as pd
 
    # Import PMFG class
-   from Modules.networks.pmfg import PMFG
+   from research_tools.networks.pmfg import PMFG
 
    # Import PMFG Dash Graph class
-   from Modules.networks.dash_graph import PMFGDash
+   from research_tools.networks.dash_graph import PMFGDash
 
    # Import file containing stock log returns
    log_return_dataframe = pd.read_csv('path_to_file', index_col=False)

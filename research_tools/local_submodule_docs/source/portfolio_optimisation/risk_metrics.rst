@@ -135,7 +135,7 @@ the average drawdown is :math:`0.15` units in which the portfolio price is measu
 Implementation
 ##############
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.risk_metrics
+.. automodule:: Modules.portfolio_optimization.risk_metrics
 
     .. autoclass:: RiskMetrics
         :members:
@@ -149,7 +149,7 @@ Below is an example of how to use the package functions to calculate risk metric
 .. code-block::
 
     import pandas as pd
-    from Modules.portfolio_optimization import RiskMetrics
+    from research_tools.portfolio_optimization import RiskMetrics
 
     # Import dataframe of returns for assets in a portfolio
     assets_returns = pd.read_csv(DATA_PATH, index_col='Date', parse_dates=True)

@@ -125,7 +125,7 @@ Note that the turning points found by ``cla_turning_points`` constitute a small 
 Implementation
 ##############
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.cla
+.. automodule:: Modules.portfolio_optimization.cla
 
     .. autoclass:: CriticalLineAlgorithm
         :members:
@@ -167,7 +167,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.portfolio_optimization.cla import CriticalLineAlgorithm
+    from research_tools.portfolio_optimization.cla import CriticalLineAlgorithm
 
     # Read in data
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')

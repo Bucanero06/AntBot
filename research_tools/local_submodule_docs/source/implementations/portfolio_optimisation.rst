@@ -37,7 +37,7 @@ in the covariances of the asset returns.
 Implementation
 ~~~~~~~~~~~~~~
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.hrp
+.. automodule:: Modules.portfolio_optimization.hrp
 
     .. autoclass:: HierarchicalRiskParity
         :members:
@@ -68,7 +68,7 @@ the following metrics:
 Implementation
 ~~~~~~~~~~~~~~
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.hcaa
+.. automodule:: Modules.portfolio_optimization.hcaa
 
     .. autoclass:: HierarchicalClusteringAssetAllocation
         :members:
@@ -130,7 +130,7 @@ The current CLA implementation in the package supports the following solution st
 Implementation
 ~~~~~~~~~~~~~~
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.cla
+.. automodule:: Modules.portfolio_optimization.cla
 
     .. autoclass:: CLA
         :members:
@@ -163,7 +163,7 @@ Currently, the following solution strings are supported by MVO class:
 Implementation
 ~~~~~~~~~~~~~~
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.mean_variance
+.. automodule:: Modules.portfolio_optimization.mean_variance
 
     .. autoclass:: MeanVarianceOptimisation
         :members:
@@ -187,7 +187,7 @@ will keep adding new metrics. For now, it supports the following risk calculatio
 Implementation
 ~~~~~~~~~~~~~~
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.risk_metrics
+.. automodule:: Modules.portfolio_optimization.risk_metrics
 
     .. autoclass:: RiskMetrics
         :members:
@@ -211,7 +211,7 @@ will keep adding new methods to it.
 Implementation
 ~~~~~~~~~~~~~~
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.returns_estimators
+.. automodule:: Modules.portfolio_optimization.returns_estimators
 
     .. autoclass:: ReturnsEstimation
         :members:
@@ -231,9 +231,9 @@ Importing the Classes
 
 ::
 
-	from Modules.FinLab_Algorythms.portfolio_optimization.cla import CLA
-	from Modules.FinLab_Algorythms.portfolio_optimization.hrp import HierarchicalRiskParity
-	from Modules.FinLab_Algorythms.portfolio_optimization.mean_variance import MeanVarianceOptimisation
+	from research_tools.portfolio_optimization.cla import CLA
+	from research_tools.portfolio_optimization.hrp import HierarchicalRiskParity
+	from research_tools.portfolio_optimization.mean_variance import MeanVarianceOptimisation
 	import numpy as np
 	import pandas as pd
 

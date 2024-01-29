@@ -12,8 +12,8 @@ from scipy.spatial.distance import squareform
 from scipy.cluster.hierarchy import linkage, fcluster
 from statsmodels.regression.linear_model import OLS
 
-from Modules.FinLab_Algorythms.clustering_algorythms.onc import get_onc_clusters
-from Modules.FinLab_Algorythms.codependence_algorythms.codependence_matrix import get_dependence_matrix, get_distance_matrix
+from research_tools.clustering_algorythms.onc import get_onc_clusters
+from research_tools.codependence_algorythms.codependence_matrix import get_dependence_matrix, get_distance_matrix
 
 
 # pylint: disable=invalid-name

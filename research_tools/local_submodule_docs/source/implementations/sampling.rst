@@ -47,7 +47,7 @@ An example of calculating average uniqueness given that we have already have our
 
    import pandas as pd
    import numpy as np
-   from Modules.sampling.concurrent import get_av_uniqueness_from_triple_barrier
+   from research_tools.sampling.concurrent import get_av_uniqueness_from_triple_barrier
 
    barrier_events = pd.read_csv('FILE_PATH', index_col=0, parse_dates=[0,2])
    close_prices = pd.read_csv('FILE_PATH', index_col=0, parse_dates=[0,2])
@@ -114,7 +114,7 @@ One can use get_ind_matrix method from genieml_src to build indicator matrix fro
 
    triple_barrier_ind_mat = get_ind_matrix(barrier_events)
 
-We can get average label uniqueness on indicator matrix using get_ind_mat_average_uniqueness function from Modules.
+We can get average label uniqueness on indicator matrix using get_ind_mat_average_uniqueness function from research_tools.
 
 .. code-block::
 
@@ -314,7 +314,7 @@ This function can be utilized as shown below assuming we have already found our 
 
     import pandas as pd
     import numpy as np
-    from Modules.sample_weights.attribution import get_weights_by_return
+    from research_tools.sample_weights.attribution import get_weights_by_return
 
     barrier_events = pd.read_csv('FILE_PATH', index_col=0, parse_dates=[0,2])
     close_prices = pd.read_csv('FILE_PATH', index_col=0, parse_dates=[0,2])
@@ -336,7 +336,7 @@ This function can be utilized as shown below assuming we have already found our 
 
     import pandas as pd
     import numpy as np
-    from Modules.sample_weights.attribution import get_weights_by_time_decay
+    from research_tools.sample_weights.attribution import get_weights_by_time_decay
 
 
     barrier_events = pd.read_csv('FILE_PATH', index_col=0, parse_dates=[0,2])

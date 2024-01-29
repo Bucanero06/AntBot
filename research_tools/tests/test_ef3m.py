@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from scipy.special import comb
 
-from Modules.FinLab_Algorythms.bet_sizing_algorythms.ef3m import (M2N, centered_moment, raw_moment, most_likely_parameters, iter_4_jit, iter_5_jit)
+from research_tools.bet_sizing_algorythms.ef3m import (M2N, centered_moment, raw_moment, most_likely_parameters, iter_4_jit, iter_5_jit)
 
 
 class TestM2NConstructor(unittest.TestCase):

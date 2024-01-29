@@ -4,14 +4,14 @@ Inter-bar feature generator which uses trades data and bars index to calculate i
 
 import pandas as pd
 import numpy as np
-from Modules.microstructural_features.entropy import get_shannon_entropy, get_plug_in_entropy, get_lempel_ziv_entropy, \
+from research_tools.microstructural_features.entropy import get_shannon_entropy, get_plug_in_entropy, get_lempel_ziv_entropy, \
     get_konto_entropy
-from Modules.microstructural_features.encoding import encode_array
-from Modules.microstructural_features.second_generation import get_trades_based_kyle_lambda, \
+from research_tools.microstructural_features.encoding import encode_array
+from research_tools.microstructural_features.second_generation import get_trades_based_kyle_lambda, \
     get_trades_based_amihud_lambda, get_trades_based_hasbrouck_lambda
-from Modules.microstructural_features.misc import get_avg_tick_size, vwap
-from Modules.microstructural_features.encoding import encode_tick_rule_array
-from Modules.util.misc import crop_data_frame_in_batches
+from research_tools.microstructural_features.misc import get_avg_tick_size, vwap
+from research_tools.microstructural_features.encoding import encode_tick_rule_array
+from research_tools.util.misc import crop_data_frame_in_batches
 
 
 # pylint: disable=too-many-instance-attributes

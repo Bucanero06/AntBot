@@ -4,7 +4,7 @@ import unittest
 import os
 import numpy as np
 import pandas as pd
-from Modules.FinLab_Algorythms.labeling_algorythms.fixed_time_horizon import fixed_time_horizon
+from research_tools.labeling_algorythms.fixed_time_horizon import fixed_time_horizon
 
 
 class TestLabelingFixedTime(unittest.TestCase):

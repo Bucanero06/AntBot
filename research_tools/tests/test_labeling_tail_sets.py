@@ -5,7 +5,7 @@ import unittest
 import os
 import numpy as np
 import pandas as pd
-from Modules.FinLab_Algorythms.labeling_algorythms.tail_sets import TailSetLabels
+from research_tools.labeling_algorythms.tail_sets import TailSetLabels
 
 
 class TestTailSets(unittest.TestCase):

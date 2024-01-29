@@ -10,10 +10,10 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm, moment
 
-from Modules.FinLab_Algorythms.bet_sizing_algorythms import raw_moment, M2N, most_likely_parameters
-from Modules.FinLab_Algorythms.bet_sizing_algorythms.bet_sizing import confirm_and_cast_to_df, get_concurrent_sides, \
+from research_tools.bet_sizing_algorythms import raw_moment, M2N, most_likely_parameters
+from research_tools.bet_sizing_algorythms.bet_sizing import confirm_and_cast_to_df, get_concurrent_sides, \
     bet_size_budget, bet_size_dynamic, single_bet_size_mixed, bet_size_reserve, cdf_mixture, calculate_bet_size
-from Modules.FinLab_Algorythms.bet_sizing_algorythms.ch10_snippets import get_signal, avg_active_signals, \
+from research_tools.bet_sizing_algorythms.ch10_snippets import get_signal, avg_active_signals, \
     discrete_signal, get_w, get_target_pos, limit_price, bet_size
 
 
@@ -180,7 +180,7 @@ class TestBetSizeReserve(unittest.TestCase):
     Tests the 'bet_size_reserve' function.
     """
 
-    @patch('Modules.FinLab_Algorythms.bet_sizing_algorythms.bet_sizing.most_likely_parameters')
+    @patch('Modules.bet_sizing_algorythms.bet_sizing.most_likely_parameters')
     def test_bet_size_reserve_default(self, mock_likely_parameters):
         """
         Tests for successful execution of 'bet_size_reserve' using default arguments, return_parameters=False.
@@ -216,7 +216,7 @@ class TestBetSizeReserve(unittest.TestCase):
         df_bet = bet_size_reserve(df_events['t1'], df_events['side'], fit_runs=10)
         self.assertTrue(events_active.equals(df_bet))
 
-    @patch('Modules.FinLab_Algorythms.bet_sizing_algorythms.bet_sizing.most_likely_parameters')
+    @patch('Modules.bet_sizing_algorythms.bet_sizing.most_likely_parameters')
     def test_bet_size_reserve_return_params(self, mock_likely_parameters):
         """
         Tests for successful execution of 'bet_size_reserve' using return_parameters=True.

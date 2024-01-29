@@ -7,9 +7,9 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.sampling.bootstrapping import seq_bootstrap, get_ind_matrix, get_ind_mat_average_uniqueness, \
+from research_tools.sampling.bootstrapping import seq_bootstrap, get_ind_matrix, get_ind_mat_average_uniqueness, \
     _bootstrap_loop_run, get_ind_mat_label_uniqueness  # pylint: disable=protected-access
-from Modules.FinLab_Algorythms.sampling.concurrent import get_av_uniqueness_from_triple_barrier, num_concurrent_events
+from research_tools.sampling.concurrent import get_av_uniqueness_from_triple_barrier, num_concurrent_events
 
 
 def book_ind_mat_implementation(bar_index, label_endtime):

@@ -71,7 +71,7 @@ Below is an example on how to create labels of excess over median from real data
 
     import pandas as pd
     import yfinance as yf
-    from Modules.labeling import excess_over_median
+    from research_tools.labeling import excess_over_median
 
     # Import price data
     tickers = "AAPL MSFT AMZN GOOG"

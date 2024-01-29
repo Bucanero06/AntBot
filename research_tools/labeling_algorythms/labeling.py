@@ -5,7 +5,7 @@ Logic regarding labeling from chapter 3. In particular the Triple Barrier Method
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.util import mp_pandas_obj
+from research_tools.util import mp_pandas_obj
 
 
 # Snippet 3.1, page 44, Daily Volatility Estimates

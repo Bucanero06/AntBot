@@ -173,7 +173,7 @@ Here we show the correlation matrix generated for each method.
 
 .. code-block::
 
-    from Modules.data_generation.vines import (sample_from_cvine,
+    from research_tools.data_generation.vines import (sample_from_cvine,
                                                 sample_from_dvine, sample_from_ext_onion)
     import matplotlib.pyplot as plt
 
@@ -215,7 +215,7 @@ matrix has stronger positive correlations. If :math:`\alpha \ll \beta`, the resu
 
 .. code-block::
 
-    from Modules.data_generation.vines import (sample_from_cvine,
+    from research_tools.data_generation.vines import (sample_from_cvine,
                                                 sample_from_dvine, sample_from_ext_onion)
     import matplotlib.pyplot as plt
 

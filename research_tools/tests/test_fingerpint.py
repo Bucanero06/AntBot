@@ -9,7 +9,7 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 from sklearn.linear_model import LinearRegression
 
-from Modules.FinLab_Algorythms.feature_importance_algorythms import RegressionModelFingerprint, \
+from research_tools.feature_importance_algorythms import RegressionModelFingerprint, \
     ClassificationModelFingerprint
 
 

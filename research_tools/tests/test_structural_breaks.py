@@ -7,12 +7,12 @@ import os
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.structural_breaks import (get_chow_type_stat, get_sadf, get_chu_stinchcombe_white_statistics)
+from research_tools.structural_breaks import (get_chow_type_stat, get_sadf, get_chu_stinchcombe_white_statistics)
 
 
 # pylint: disable=unsubscriptable-object
-from Modules.FinLab_Algorythms.structural_breaks.cusum import _get_values_diff
-from Modules.FinLab_Algorythms.structural_breaks.sadf import get_betas
+from research_tools.structural_breaks.cusum import _get_values_diff
+from research_tools.structural_breaks.sadf import get_betas
 
 
 class TesStructuralBreaks(unittest.TestCase):

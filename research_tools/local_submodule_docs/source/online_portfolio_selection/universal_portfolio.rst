@@ -41,7 +41,7 @@ on each experts’ performance. In this case, each expert is defined as an indep
 with predetermined parameters. The next period’s total weights are based on the previous period’s k
 best-performing experts. Through this method, we can reduce our overfitting and make our models more robust.
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.up
+.. automodule:: Modules.online_portfolio_selection.up
 
     .. autoclass:: UP
         :members:
@@ -78,7 +78,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')

@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 from scipy.cluster import hierarchy
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import minimum_spanning_tree
-from Modules.codependence_algorythms import get_dependence_matrix
-from Modules.clustering_algorythms.hierarchical_clustering import optimal_hierarchical_cluster
+from research_tools.codependence_algorythms import get_dependence_matrix
+from research_tools.clustering_algorythms.hierarchical_clustering import optimal_hierarchical_cluster
 
 import seaborn as sns
 

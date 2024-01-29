@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.portfolio_optimization.clustering.nco import NestedClusteredOptimization
+from research_tools.portfolio_optimization.clustering.nco import NestedClusteredOptimization
 
 
 class TestNestedClusteredOptimization(unittest.TestCase):

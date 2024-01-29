@@ -141,7 +141,7 @@ a hyperparameter.
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.pamr
+.. automodule:: Modules.online_portfolio_selection.pamr
 
     .. autoclass:: PAMR
         :members:
@@ -155,7 +155,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -280,7 +280,7 @@ seems to indicate a congregation at 0.5.
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.cwmr
+.. automodule:: Modules.online_portfolio_selection.cwmr
 
     .. autoclass:: CWMR
         :members:
@@ -294,7 +294,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -421,7 +421,7 @@ TSE's window was similar to that of NYSE, but the optimal alpha was much higher,
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.olmar
+.. automodule:: Modules.online_portfolio_selection.olmar
 
     .. autoclass:: OLMAR
         :members:
@@ -435,7 +435,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -525,7 +525,7 @@ the period of mean reversion was the most influential parameter to affect the po
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.rmr
+.. automodule:: Modules.online_portfolio_selection.rmr
 
     .. autoclass:: RMR
         :members:
@@ -539,7 +539,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')

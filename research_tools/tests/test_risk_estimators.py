@@ -8,7 +8,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.portfolio_optimization import ReturnsEstimators, RiskEstimators
+from research_tools.portfolio_optimization import ReturnsEstimators, RiskEstimators
 
 
 class TestRiskEstimators(unittest.TestCase):

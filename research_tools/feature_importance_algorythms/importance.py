@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.metrics import log_loss
 import matplotlib.pyplot as plt
 
-from Modules.FinLab_Algorythms.cross_validation_algorythms.cross_validation import ml_cross_val_score
+from research_tools.cross_validation_algorythms.cross_validation import ml_cross_val_score
 
 
 # pylint: disable=invalid-name

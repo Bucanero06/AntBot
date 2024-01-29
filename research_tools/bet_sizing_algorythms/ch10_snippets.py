@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import norm
 
-from Modules.FinLab_Algorythms.util.multiprocess import mp_pandas_obj
+from research_tools.util.multiprocess import mp_pandas_obj
 
 
 def get_signal(prob, num_classes, pred=None):

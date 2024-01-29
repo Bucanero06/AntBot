@@ -80,7 +80,7 @@ Below is an example on how to create labels of excess over mean.
 .. code-block::
 
     import yfinance as yf
-    from Modules.labeling import excess_over_mean
+    from research_tools.labeling import excess_over_mean
 
     # Import price data.
     tickers = "AAPL MSFT AMZN GOOG"

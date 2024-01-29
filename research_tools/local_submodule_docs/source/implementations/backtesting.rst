@@ -80,7 +80,7 @@ An example showing how Haircut Sharpe Ratios method is used can be seen below:
 
 .. code-block::
 
-   from Modules.backtests import CampbellBacktesting
+   from research_tools.backtests import CampbellBacktesting
 
    # Specify the desired number of simulations
    backtesting = CampbellBacktesting(4000)
@@ -152,7 +152,7 @@ An example showing how Profit Hurdle method is used can be seen below:
 
 .. code-block::
 
-   from Modules.backtests import CampbellBacktesting
+   from research_tools.backtests import CampbellBacktesting
 
    # Specify the desired number of simulations
    backtesting = CampbellBacktesting(4000)

@@ -3,7 +3,7 @@ This file contains Graph classes, which create NetworkX's Graph objects from mat
 """
 
 import networkx as nx
-from Modules.networks.graph import Graph
+from research_tools.networks.graph import Graph
 
 
 class MST(Graph):

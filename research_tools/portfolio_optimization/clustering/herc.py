@@ -6,9 +6,9 @@ from sklearn.metrics.pairwise import pairwise_distances
 from scipy.cluster.hierarchy import fcluster
 from scipy.cluster.hierarchy import linkage as scipy_linkage, dendrogram
 from scipy.spatial.distance import squareform
-from Modules.FinLab_Algorythms.portfolio_optimization.estimators.returns_estimators import ReturnsEstimators
-from Modules.FinLab_Algorythms.portfolio_optimization.utils.risk_metrics import RiskMetrics
-from Modules.FinLab_Algorythms.portfolio_optimization.estimators.risk_estimators import RiskEstimators
+from research_tools.portfolio_optimization.estimators.returns_estimators import ReturnsEstimators
+from research_tools.portfolio_optimization.utils.risk_metrics import RiskMetrics
+from research_tools.portfolio_optimization.estimators.risk_estimators import RiskEstimators
 
 
 class HierarchicalEqualRiskContribution:

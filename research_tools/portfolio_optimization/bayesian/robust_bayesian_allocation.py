@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 from scipy.stats.distributions import chi2
-from Modules.FinLab_Algorythms.portfolio_optimization.modern_portfolio_theory import MeanVarianceOptimisation
+from research_tools.portfolio_optimization.modern_portfolio_theory import MeanVarianceOptimisation
 
 
 class RobustBayesianAllocation:

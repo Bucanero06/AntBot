@@ -7,7 +7,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.multi_product.etf_trick import ETFTrick
+from research_tools.multi_product.etf_trick import ETFTrick
 
 
 class TestETFTrick(unittest.TestCase):

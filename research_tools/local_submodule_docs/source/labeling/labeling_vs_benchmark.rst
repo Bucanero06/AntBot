@@ -81,7 +81,7 @@ Below is an example on how to use the return over benchmark labeling technique o
 .. code-block::
 
     import pandas as pd
-    from Modules.labeling import return_vs_benchmark
+    from research_tools.labeling import return_vs_benchmark
 
     # Import price data.
     data = pd.read_csv('../Sample-Data/stock_prices.csv', index_col='Date', parse_dates=True)

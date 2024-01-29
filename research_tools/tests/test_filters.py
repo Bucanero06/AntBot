@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.labeling_algorythms.filters import cusum_filter, z_score_filter
+from research_tools.labeling_algorythms.filters import cusum_filter, z_score_filter
 
 
 class TestCUSUMFilter(unittest.TestCase):

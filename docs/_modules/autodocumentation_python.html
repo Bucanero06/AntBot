@@ -204,7 +204,8 @@
 <span class="k">def</span> <span class="nf">initialize_sphinx</span><span class="p">(</span><span class="n">source_dir</span><span class="p">,</span> <span class="n">project_name</span><span class="p">,</span> <span class="n">author_name</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.1&#39;</span><span class="p">):</span>
     <span class="c1"># Run sphinx-quickstart automatically</span>
     <span class="k">with</span> <span class="n">change_directory_manager</span><span class="p">(</span><span class="n">source_dir</span><span class="p">):</span>
-        <span class="n">execute_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sphinx-quickstart --quiet &quot;</span>
+        <span class="n">execute_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sphinx-quickstart&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; --quiet &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;--project &#39;</span><span class="si">{</span><span class="n">project_name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;--author &#39;</span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;--language en &quot;</span>
@@ -311,7 +312,6 @@
                 <span class="s2">&quot;    &#39;sphinx.ext.autosectionlabel&#39;,</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;    &#39;sphinx.ext.autodoc.typehints&#39;,</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;    &#39;sphinx.ext.inheritance_diagram&#39;,</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;    &#39;sphinx.ext.githubpages&#39;,</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="c1"># &quot;    &#39;sphinx_click&#39;,\n&quot;</span>
                 <span class="s2">&quot;]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">todo_include_todos = True</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -434,6 +434,9 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to clean up </span><span class="si">{</span><span class="n">documentation_dir</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">delete_files_or_directories</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">documentation_dir</span><span class="si">}</span><span class="s1">_original&#39;</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Create an empty .nojekyll file to prevent GitHub Pages from ignoring files that begin with an underscore</span>
+        <span class="n">execute_command</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;touch </span><span class="si">{</span><span class="n">documentation_dir</span><span class="si">}</span><span class="s2">/.nojekyll&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Finished creating documentation in </span><span class="si">{</span><span class="n">documentation_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">()</span></div>
 
 

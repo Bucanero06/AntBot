@@ -1,5 +1,5 @@
 # pylint: disable=missing-module-docstring
-from Modules.FinLab_Algorythms.online_portfolio_selection.base import OLPS
+from research_tools.online_portfolio_selection.base import OLPS
 
 
 class CRP(OLPS):

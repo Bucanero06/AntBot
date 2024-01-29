@@ -168,7 +168,7 @@ The following examples show how the described above correlation-based metrics ca
 .. code-block::
 
     import pandas as pd
-    from Modules.codependence import distance_correlation, angular_distance,
+    from research_tools.codependence import distance_correlation, angular_distance,
                                       absolute_angular_distance, squared_angular_distance
 
     # Import dataframe of returns for assets in a portfolio

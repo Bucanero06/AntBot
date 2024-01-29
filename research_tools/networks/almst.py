@@ -9,7 +9,7 @@ from itertools import count
 import networkx as nx
 import numpy as np
 import pandas as pd
-from Modules.networks.graph import Graph
+from research_tools.networks.graph import Graph
 
 
 class ALMST(Graph):

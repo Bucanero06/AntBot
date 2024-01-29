@@ -35,8 +35,8 @@ Example
 
 .. code-block::
 
-    from Modules.data_generation.data_verification import plot_optimal_hierarchical_cluster
-    from Modules.data_generation.hcbm import generate_hcmb_mat
+    from research_tools.data_generation.data_verification import plot_optimal_hierarchical_cluster
+    from research_tools.data_generation.hcbm import generate_hcmb_mat
     import matplotlib.pyplot as plt
 
     # Initialize parameters.

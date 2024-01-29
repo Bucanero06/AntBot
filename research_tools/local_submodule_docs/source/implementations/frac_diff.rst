@@ -179,7 +179,7 @@ minimum d value that passes the ADF test can be derived as follows:
    import numpy as np
    import pandas as pd
 
-   from Modules.features.fracdiff import frac_diff_ffd, plot_min_ffd
+   from research_tools.features.fracdiff import frac_diff_ffd, plot_min_ffd
 
    # Import price data
    data = pd.read_csv('FILE_PATH')

@@ -36,7 +36,7 @@ Example Code
     import pandas as pd
 
     # Import generate_mst_server method
-    from Modules.networks.visualisations import generate_mst_server
+    from research_tools.networks.visualisations import generate_mst_server
 
     # Import log return csv
     log_return_dataframe = pd.read_csv('path_to_file.csv', index_col=False)
@@ -81,7 +81,7 @@ However, the input parameters and the output server are the same for the `ALMST`
     import pandas as pd
 
     # Import generate_almst_server method
-    from Modules.networks.visualisations import generate_almst_server
+    from research_tools.networks.visualisations import generate_almst_server
 
     # Import log return csv
     log_return_dataframe = pd.read_csv('path_to_file.csv', index_col=False)
@@ -108,7 +108,7 @@ In order to create a dual interface to compare both the ALMST and MST, we can us
     import pandas as pd
 
     # Import generate_mst_almst_comparison method
-    from Modules.networks.visualisations import generate_mst_almst_comparison
+    from research_tools.networks.visualisations import generate_mst_almst_comparison
 
     # Import log return csv
     log_return_dataframe = pd.read_csv('path_to_file.csv', index_col=False)
@@ -218,7 +218,7 @@ An example for ranking of PMFG is shown below.
 
 .. code-block::
 
-   from Modules.networks.visualisations import generate_central_peripheral_ranking
+   from research_tools.networks.visualisations import generate_central_peripheral_ranking
 
    pmfg = PMFG(matrix, matrix_type='distance')
 

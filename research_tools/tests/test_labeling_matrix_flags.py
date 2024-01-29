@@ -5,7 +5,7 @@ import unittest
 import os
 import numpy as np
 import pandas as pd
-from Modules.FinLab_Algorythms.labeling_algorythms.matrix_flags import MatrixFlagLabels
+from research_tools.labeling_algorythms.matrix_flags import MatrixFlagLabels
 
 
 class TestMatrixFlagLabels(unittest.TestCase):

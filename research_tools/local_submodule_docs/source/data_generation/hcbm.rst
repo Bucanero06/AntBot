@@ -61,7 +61,7 @@ Example
 .. code-block::
 
     import matplotlib.pyplot as plt
-    from Modules.data_generation.hcbm import generate_hcmb_mat
+    from research_tools.data_generation.hcbm import generate_hcmb_mat
 
     # Initialize parameters.
     samples = 4
@@ -120,7 +120,7 @@ Example
 .. code-block::
 
     import matplotlib.pyplot as plt
-    from Modules.data_generation.hcbm import generate_hcmb_mat, time_series_from_dist
+    from research_tools.data_generation.hcbm import generate_hcmb_mat, time_series_from_dist
 
     # Initialize parameters.
     samples = 1

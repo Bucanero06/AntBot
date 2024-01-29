@@ -79,7 +79,7 @@ tree and get assigned to the portfolio assets.
 Implementation
 ##############
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.hrp
+.. automodule:: Modules.portfolio_optimization.hrp
 
     .. autoclass:: HierarchicalRiskParity
         :members:
@@ -129,7 +129,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.portfolio_optimization.hrp import HierarchicalRiskParity
+    from research_tools.portfolio_optimization.hrp import HierarchicalRiskParity
 
     # Read in data
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')

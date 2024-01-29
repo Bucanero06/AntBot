@@ -445,7 +445,7 @@ stop-loss level in this example.
 
 .. code-block::
 
-    from Modules.optimal_mean_reversion import OrnsteinUhlenbeck
+    from research_tools.optimal_mean_reversion import OrnsteinUhlenbeck
 
     # Create the class object
     example = OrnsteinUhlenbeck()
@@ -475,7 +475,7 @@ based on provided time interval.
 
 .. code-block::
 
-    from Modules.optimal_mean_reversion import OrnsteinUhlenbeck
+    from research_tools.optimal_mean_reversion import OrnsteinUhlenbeck
 
     # Create the class object
     example = OrnsteinUhlenbeck()
@@ -513,7 +513,7 @@ stop-loss level in this example. In the end we chose to retrain our data on an o
 
 .. code-block::
 
-    from Modules.optimal_mean_reversion import OrnsteinUhlenbeck
+    from research_tools.optimal_mean_reversion import OrnsteinUhlenbeck
 
     # Create the class object
     example = OrnsteinUhlenbeck()
@@ -566,7 +566,7 @@ isn't included. We also calculate an additional OU-model parameter - half-life.
 
 .. code-block::
 
-    from Modules.optimal_mean_reversion import OrnsteinUhlenbeck
+    from research_tools.optimal_mean_reversion import OrnsteinUhlenbeck
 
     # Create the class object
     example = OrnsteinUhlenbeck()

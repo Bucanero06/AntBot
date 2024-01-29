@@ -6,7 +6,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.online_portfolio_selection.bah import BAH
+from research_tools.online_portfolio_selection.bah import BAH
 
 
 class TestBuyAndHold(TestCase):

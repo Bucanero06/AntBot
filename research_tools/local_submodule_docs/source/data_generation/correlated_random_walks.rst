@@ -117,8 +117,8 @@ The *Mix* example generates a time series that has a global normal distribution,
 .. code::
 
     import matplotlib.pyplot as plt
-    from Modules.data_generation.correlated_random_walks import generate_cluster_time_series
-    from Modules.data_generation.data_verification import plot_time_series_dependencies
+    from research_tools.data_generation.correlated_random_walks import generate_cluster_time_series
+    from research_tools.data_generation.data_verification import plot_time_series_dependencies
 
     # Initialize the example parameters for the time series.
     n_series = 200

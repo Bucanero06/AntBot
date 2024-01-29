@@ -8,7 +8,7 @@ import datetime as dt
 import pandas as pd
 import numpy as np
 
-from Modules.FinLab_Algorythms.validation_algorythms._Statistics import timing_of_flattening_and_flips, \
+from research_tools.validation_algorythms._Statistics import timing_of_flattening_and_flips, \
     average_holding_period, bets_concentration, all_bets_concentration, drawdown_and_time_under_water, sharpe_ratio, \
     information_ratio, probabilistic_sharpe_ratio, deflated_sharpe_ratio, minimum_track_record_length
 

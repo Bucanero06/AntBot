@@ -5,7 +5,7 @@ from sklearn.covariance import LedoitWolf
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_samples
 from scipy.linalg import block_diag
-from Modules.FinLab_Algorythms.portfolio_optimization.estimators.risk_estimators import RiskEstimators
+from research_tools.portfolio_optimization.estimators.risk_estimators import RiskEstimators
 
 class NestedClusteredOptimization:
     """

@@ -10,7 +10,7 @@ from sklearn.metrics import log_loss, accuracy_score
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.tree import DecisionTreeClassifier
 
-from Modules.FinLab_Algorythms.cross_validation_algorythms.cross_validation import (
+from research_tools.cross_validation_algorythms.cross_validation import (
     ml_get_train_times,
     ml_cross_val_score,
     PurgedKFold

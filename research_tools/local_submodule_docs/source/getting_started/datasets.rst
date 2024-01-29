@@ -54,7 +54,7 @@ Example
 
 .. code-block::
 
-   from Modules.datasets import (load_tick_sample, load_stock_prices, load_dollar_bar_sample)
+   from research_tools.datasets import (load_tick_sample, load_stock_prices, load_dollar_bar_sample)
 
    tick_df = load_tick_sample()
    dollar_bars_df = load_dollar_bar_sample()

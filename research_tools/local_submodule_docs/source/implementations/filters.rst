@@ -22,7 +22,7 @@ An example showing how the CUSUM filter can be used to downsample a time series 
 
 .. code-block::
 
-   from Modules.filters import cusum_filter
+   from research_tools.filters import cusum_filter
 
    cusum_events = cusum_filter(data['close'], threshold=0.05)
 

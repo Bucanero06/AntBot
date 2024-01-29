@@ -6,7 +6,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 
-from Modules.structural_breaks.sadf import get_betas
+from research_tools.structural_breaks.sadf import get_betas
 
 # pylint: disable=invalid-name
 def get_bar_based_kyle_lambda(close: pd.Series, volume: pd.Series, window: int = 20) -> pd.Series:

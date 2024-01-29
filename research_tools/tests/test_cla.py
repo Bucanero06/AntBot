@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.portfolio_optimization import CriticalLineAlgorithm, ReturnsEstimators
+from research_tools.portfolio_optimization import CriticalLineAlgorithm, ReturnsEstimators
 
 
 class TestCLA(unittest.TestCase):

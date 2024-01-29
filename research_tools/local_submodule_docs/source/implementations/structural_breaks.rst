@@ -313,7 +313,7 @@ Examples
 
     import pandas as pd
     import numpy as np
-    from Modules.structural_breaks import (get_chu_stinchcombe_white_statistics,
+    from research_tools.structural_breaks import (get_chu_stinchcombe_white_statistics,
                                             get_chow_type_stat, get_sadf)
 
     # Importing price data

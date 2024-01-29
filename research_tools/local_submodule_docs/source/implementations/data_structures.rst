@@ -87,7 +87,7 @@ Tick Bars
 
 .. code-block::
 
-	from Modules.data_structures import standard_data_structures
+	from research_tools.data_structures import standard_data_structures
 
 	# Tick Bars
 	tick = standard_data_structures.get_tick_bars('FILE_PATH', threshold=5500,
@@ -103,7 +103,7 @@ Volume Bars
 
 .. code-block::
 
-	from Modules.data_structures import standard_data_structures
+	from research_tools.data_structures import standard_data_structures
 
 	# Volume Bars
 	volume = standard_data_structures.get_volume_bars('FILE_PATH', threshold=28000,
@@ -118,7 +118,7 @@ Dollar Bars
 
 .. code-block::
 
-	from Modules.data_structures import standard_data_structures
+	from research_tools.data_structures import standard_data_structures
 
 	# Dollar Bars
 	dollar = standard_data_structures.get_dollar_bars('FILE_PATH', threshold=70000000,
@@ -281,7 +281,7 @@ Example
 
 .. code-block::
 
-   from Modules.data_structures import get_ema_dollar_imbalance_bars, get_const_dollar_imbalance_bars
+   from research_tools.data_structures import get_ema_dollar_imbalance_bars, get_const_dollar_imbalance_bars
 
    # EMA, Const Dollar Imbalance Bars
    dollar_imbalance_ema = get_ema_dollar_imbalance_bars('FILE_PATH', num_prev_bars=3, exp_num_ticks_init=100000,
@@ -323,7 +323,7 @@ Example
 
 .. code-block::
 
-   from Modules.data_structures import get_ema_dollar_run_bars, get_const_dollar_run_bars
+   from research_tools.data_structures import get_ema_dollar_run_bars, get_const_dollar_run_bars
 
    # EMA, Const Dollar Imbalance Bars
    dollar_imbalance_ema = get_ema_dollar_run_bars('FILE_PATH', num_prev_bars=3, exp_num_ticks_init=100000,

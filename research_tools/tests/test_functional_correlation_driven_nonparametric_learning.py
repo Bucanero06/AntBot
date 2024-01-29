@@ -5,7 +5,7 @@ from unittest import TestCase
 import os
 import numpy as np
 import pandas as pd
-from Modules.FinLab_Algorythms.online_portfolio_selection.fcorn \
+from research_tools.online_portfolio_selection.fcorn \
     import FCORN
 
 

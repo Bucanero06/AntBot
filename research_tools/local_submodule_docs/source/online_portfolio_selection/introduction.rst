@@ -71,25 +71,25 @@ Strategies can be imported by using variations of the following lines.
 .. code-block::
 
     # Import all strategies.
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Import all benchmark strategies.
-    from Modules.FinLab_Algorythms.online_portfolio_selection.benchmarks import *
+    from research_tools.online_portfolio_selection.benchmarks import *
 
     # Import all momentum strategies.
-    from Modules.FinLab_Algorythms.online_portfolio_selection.momentum import *
+    from research_tools.online_portfolio_selection.momentum import *
 
     # Import all mean reversion strategies.
-    from Modules.FinLab_Algorythms.online_portfolio_selection.mean_reversion import *
+    from research_tools.online_portfolio_selection.mean_reversion import *
 
     # Import all pattern matching strategies.
-    from Modules.FinLab_Algorythms.online_portfolio_selection.pattern_matching import *
+    from research_tools.online_portfolio_selection.pattern_matching import *
 
     # Import a specific buy and hold strategy.
-    from Modules.FinLab_Algorythms.online_portfolio_selection import BAH
+    from research_tools.online_portfolio_selection import BAH
 
     # Import buy and hold and universal portfolio.
-    from Modules.FinLab_Algorythms.online_portfolio_selection import BAH, UP
+    from research_tools.online_portfolio_selection import BAH, UP
 
 Initialize
 ##########
@@ -135,7 +135,7 @@ Three additional options are available for the ``allocate`` method.
     # Allocate with printed progress bar.
     bah.allocate(price_data, verbose=True)
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.base
+.. automodule:: Modules.online_portfolio_selection.base
 
     .. automethod:: OLPS.allocate
 

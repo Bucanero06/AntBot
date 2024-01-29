@@ -70,7 +70,7 @@ Below is an example on how to create the positive, negative, and full matrix tai
     import numpy as np
     import pandas as pd
 
-    from Modules.labeling import TailSetLabels
+    from research_tools.labeling import TailSetLabels
 
     data = pd.read_csv('../Sample-Data/stock_prices.csv', index_col='Date', parse_dates=True)
     labels = TailSetLabels(data, window=180, mean_abs_dev=True)

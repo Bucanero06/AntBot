@@ -7,9 +7,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm, moment
 
-from Modules.FinLab_Algorythms.bet_sizing_algorythms.ch10_snippets import get_signal, avg_active_signals, discrete_signal, get_w, \
+from research_tools.bet_sizing_algorythms.ch10_snippets import get_signal, avg_active_signals, discrete_signal, get_w, \
     get_target_pos, limit_price, bet_size
-from Modules.FinLab_Algorythms.bet_sizing_algorythms.ef3m import most_likely_parameters, raw_moment, M2N
+from research_tools.bet_sizing_algorythms.ef3m import most_likely_parameters, raw_moment, M2N
 
 
 def calculate_bet_size(events, predicted_probability, num_classes, predicted_side=None, discretization_step=0.0,
@@ -112,9 +112,9 @@ def bet_size_reserve(events_t1, sides, fit_runs=100, epsilon=1e-5, factor=5, var
     strategy results in a sigmoid-shaped bet sizing response aligned to the expected number of concurrent long
     and short bets in the dataset.
 
-    Note that this function creates a <Modules.FinLab_Algorythms.bet_sizing_algorythms.ef3m.M2N> object and makes use of the parallel fitting
+    Note that this function creates a <Modules.bet_sizing_algorythms.ef3m.M2N> object and makes use of the parallel fitting
     functionality. As such, this function accepts and passes fitting parameters to the
-    Modules.FinLab_Algorythms.bet_sizing_algorythms.ef3m.M2N.mp_fit() method.
+    Modules.bet_sizing_algorythms.ef3m.M2N.mp_fit() method.
 
     :param events_t1: (pandas.Series) The end datetime of the position with the start datetime as the index.
     :param sides: (pandas.Series) The side of the bet with the start datetime as index. Index must match the

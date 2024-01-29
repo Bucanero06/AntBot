@@ -42,7 +42,7 @@ Returns for Buy and Hold can be calculated by multiplying the initial weight and
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.bah
+.. automodule:: Modules.online_portfolio_selection.bah
 
     .. autoclass:: BAH
         :members:
@@ -55,7 +55,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -108,7 +108,7 @@ Once the initial portfolio has been determined, the final weights can be represe
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.best_stock
+.. automodule:: Modules.online_portfolio_selection.best_stock
 
     .. autoclass:: BestStock
         :members:
@@ -121,7 +121,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -173,7 +173,7 @@ Once the initial portfolio has been determined, the final weights can be represe
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.crp
+.. automodule:: Modules.online_portfolio_selection.crp
 
     .. autoclass:: CRP
         :members:
@@ -188,7 +188,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')
@@ -250,7 +250,7 @@ Once the optimal weight has been determined, the final returns can be calculated
 Implementation
 **************
 
-.. automodule:: Modules.FinLab_Algorythms.online_portfolio_selection.bcrp
+.. automodule:: Modules.online_portfolio_selection.bcrp
 
     .. autoclass:: BCRP
         :members:
@@ -262,7 +262,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.online_portfolio_selection import *
+    from research_tools.online_portfolio_selection import *
 
     # Read in data.
     stock_prices = pd.read_csv('FILE_PATH', parse_dates=True, index_col='Date')

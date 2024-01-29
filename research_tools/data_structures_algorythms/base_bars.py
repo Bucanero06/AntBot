@@ -9,7 +9,7 @@ from typing import Tuple, Union, Generator, Iterable, Optional
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.util.fast_ewma import ewma
+from research_tools.util.fast_ewma import ewma
 
 
 def _prepare_columns_for_algo(

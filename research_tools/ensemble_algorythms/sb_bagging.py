@@ -20,7 +20,7 @@ from sklearn.utils.validation import has_fit_parameter
 from sklearn.utils import check_random_state, check_array, check_consistent_length, check_X_y
 from sklearn.utils._joblib import Parallel, delayed
 
-from Modules.sampling.bootstrapping import seq_bootstrap, get_ind_matrix
+from research_tools.sampling.bootstrapping import seq_bootstrap, get_ind_matrix
 
 MAX_INT = np.iinfo(np.int32).max
 

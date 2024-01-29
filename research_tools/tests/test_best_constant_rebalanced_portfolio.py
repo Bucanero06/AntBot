@@ -6,8 +6,8 @@ import os
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.online_portfolio_selection import CRP
-from Modules.FinLab_Algorythms.online_portfolio_selection.bcrp import BCRP
+from research_tools.online_portfolio_selection import CRP
+from research_tools.online_portfolio_selection.bcrp import BCRP
 
 
 class TestBestConstantRebalancedPortfolio(TestCase):

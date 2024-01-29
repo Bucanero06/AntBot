@@ -156,7 +156,7 @@ From the work **Estimation of Theory-Implied Correlation Matrices**:
 Implementation
 ##############
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.tic
+.. automodule:: Modules.portfolio_optimization.tic
 
     .. autoclass:: TIC
         :members:
@@ -169,7 +169,7 @@ Example Code
 .. code-block::
 
     import pandas as pd
-    from Modules.FinLab_Algorythms.portfolio_optimization.tic import TIC
+    from research_tools.portfolio_optimization.tic import TIC
 
     # Reading data
     tree_classification = pd.read_csv('TREE_FILE_PATH')

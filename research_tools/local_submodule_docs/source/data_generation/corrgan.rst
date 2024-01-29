@@ -64,7 +64,7 @@ Example
 
 .. code-block::
 
-    from Modules.data_generation.corrgan import sample_from_corrgan
+    from research_tools.data_generation.corrgan import sample_from_corrgan
     import matplotlib.pyplot as plt
 
     # Sample from CorrGAN has shape (n_samples, dim, dim).

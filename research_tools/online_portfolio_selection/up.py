@@ -2,8 +2,8 @@
 # pylint: disable=too-many-instance-attributes
 import sys
 import numpy as np
-from Modules.FinLab_Algorythms.online_portfolio_selection.base import OLPS
-from Modules.FinLab_Algorythms.online_portfolio_selection.crp import CRP
+from research_tools.online_portfolio_selection.base import OLPS
+from research_tools.online_portfolio_selection.crp import CRP
 
 
 class UP(OLPS):

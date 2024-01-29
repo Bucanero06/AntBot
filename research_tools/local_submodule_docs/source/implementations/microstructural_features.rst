@@ -52,7 +52,7 @@ Example
 
 .. code-block::
 
-   from Modules.entropy import get_shannon_entropy, get_lempel_ziv_entropy, get_plug_in_entropy
+   from research_tools.entropy import get_shannon_entropy, get_lempel_ziv_entropy, get_plug_in_entropy
 
    message = 'abbnaacdeaas'
    shannon = get_shannon_entropy(message)
@@ -97,7 +97,7 @@ Example
 
    import numpy as np
    import pandas as pd
-   from Modules.microstructural_features import quantile_mapping, MicrostructuralFeaturesGenerator
+   from research_tools.microstructural_features import quantile_mapping, MicrostructuralFeaturesGenerator
 
    df_trades = pd.read_csv('TRADES_PATH', parse_dates=[0])
    df_trades = df_trades.iloc[:10000] # Take subsample to avoid look-ahead bias

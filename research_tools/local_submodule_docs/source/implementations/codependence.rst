@@ -78,7 +78,7 @@ Let's see how various metrics work for different variable dependencies:
     import numpy as np
     import matplotlib.pyplot as plt
     from ace import model # ace package is used for max correlation estimation
-    from Modules.codependece import distance_correlation, get_mutual_info, variation_of_information_score
+    from research_tools.codependece import distance_correlation, get_mutual_info, variation_of_information_score
 
     def max_correlation(x: np.array, y: np.array) -> float:
         """

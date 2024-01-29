@@ -4,7 +4,7 @@ Tests the backtests of Campbell research_tools - Haircut Sharpe ratio and Profit
 import unittest
 import numpy as np
 
-from Modules.FinLab_Algorythms.validation_algorythms._Backtests import CampbellBacktesting
+from research_tools.validation_algorythms._Backtests import CampbellBacktesting
 
 
 class TestCampbellBacktesting(unittest.TestCase):

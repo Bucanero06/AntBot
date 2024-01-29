@@ -7,10 +7,10 @@ https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3512994&download=yes
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.codependence_algorythms.information import variation_of_information_score, get_mutual_info
-from Modules.FinLab_Algorythms.codependence_algorythms.correlation import distance_correlation
-from Modules.FinLab_Algorythms.codependence_algorythms.gnpr_distance import spearmans_rho, gpr_distance, gnpr_distance
-from Modules.FinLab_Algorythms.codependence_algorythms.optimal_transport import optimal_transport_dependence
+from research_tools.codependence_algorythms.information import variation_of_information_score, get_mutual_info
+from research_tools.codependence_algorythms.correlation import distance_correlation
+from research_tools.codependence_algorythms.gnpr_distance import spearmans_rho, gpr_distance, gnpr_distance
+from research_tools.codependence_algorythms.optimal_transport import optimal_transport_dependence
 
 
 

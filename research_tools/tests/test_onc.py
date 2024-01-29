@@ -6,8 +6,8 @@ import unittest
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
 
-from Modules.FinLab_Algorythms.clustering_algorythms import get_onc_clusters
-from Modules.FinLab_Algorythms.clustering_algorythms.onc import _check_improve_clusters
+from research_tools.clustering_algorythms import get_onc_clusters
+from research_tools.clustering_algorythms.onc import _check_improve_clusters
 
 
 class TestOptimalNumberOfClusters(unittest.TestCase):

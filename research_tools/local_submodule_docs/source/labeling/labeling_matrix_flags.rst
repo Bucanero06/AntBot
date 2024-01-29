@@ -124,7 +124,7 @@ Below is an example on how to use the matrix flags labeling method.
     import numpy as np
     import pandas as pd
     import yfinance as yf
-    from Modules.labeling.matrix_flags import MatrixFlagLabels
+    from research_tools.labeling.matrix_flags import MatrixFlagLabels
 
     # Import price data
     msft = yf.Ticker("MSFT")

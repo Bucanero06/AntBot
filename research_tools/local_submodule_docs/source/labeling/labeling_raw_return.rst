@@ -62,7 +62,7 @@ Below is an example on how to use the raw returns labeling method.
 .. code-block::
 
     import pandas as pd
-    from Modules.labeling import raw_return
+    from research_tools.labeling import raw_return
 
     # Import price data
     data = pd.read_csv('../Sample-Data/stock_prices.csv', index_col='Date', parse_dates=True)

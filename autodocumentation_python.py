@@ -12,7 +12,8 @@ logger = setup_logger('autodocumentation_python')
 def initialize_sphinx(source_dir, project_name, author_name, version='0.0.1'):
     # Run sphinx-quickstart automatically
     with change_directory_manager(source_dir):
-        execute_command(f"sphinx-quickstart --quiet "
+        execute_command(f"sphinx-quickstart"
+                        f" --quiet "
                         f"--project '{project_name}' "
                         f"--author '{author_name}' "
                         f"--language en "
@@ -220,6 +221,9 @@ def clean_up_and_exit(documentation_dir):
         logger.warning(f'Failed to clean up {documentation_dir}: {e}')
     finally:
         delete_files_or_directories(f'{documentation_dir}_original', ignore_errors=True)
+        # Create an empty .nojekyll file to prevent GitHub Pages from ignoring files that begin with an underscore
+        execute_command(f"touch {documentation_dir}/.nojekyll")
+        logger.info(f'Finished creating documentation in {documentation_dir}')
         exit()
 
 

@@ -160,7 +160,7 @@ strategy will inevitably lose money. This notebook contains the worked exercises
 of "Advances in Financial Machine Learning" by Marcos López de Prado. The questions are restated here in
 this notebook, with the accompanying code solutions following directly below each question. All code
 in this notebook can be run as is and requires no external data, with the exception of the EF3M
-algorithm used in exercise 10.4 which can be found in Modules.FinLab_Algorythms.bet_sizing_algorythms.ef3m.py.
+algorithm used in exercise 10.4 which can be found in Modules.bet_sizing_algorythms.ef3m.py.
 
 Chapter10_Exercises (genieml_src).ipynb
 ====================================

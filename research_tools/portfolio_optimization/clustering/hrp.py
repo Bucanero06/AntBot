@@ -4,8 +4,8 @@ import pandas as pd
 from scipy.cluster.hierarchy import linkage as scipy_linkage, dendrogram
 from scipy.spatial.distance import squareform
 
-from Modules.FinLab_Algorythms.portfolio_optimization import RiskMetrics, RiskEstimators
-from Modules.FinLab_Algorythms.portfolio_optimization.estimators import ReturnsEstimators
+from research_tools.portfolio_optimization import RiskMetrics, RiskEstimators
+from research_tools.portfolio_optimization.estimators import ReturnsEstimators
 
 
 class HierarchicalRiskParity:

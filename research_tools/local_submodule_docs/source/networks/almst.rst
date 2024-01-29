@@ -136,10 +136,10 @@ Example Code
     import pandas as pd
 
     # Import ALMST class
-    from Modules.networks.almst import ALMST
+    from research_tools.networks.almst import ALMST
 
     # Import Dash Graph class
-    from Modules.networks.dash_graph import DashGraph
+    from research_tools.networks.dash_graph import DashGraph
 
     # Import file containing stock log returns
     log_return_dataframe = pd.read_csv('path_to_file', index_col=False)

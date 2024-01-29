@@ -7,7 +7,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from Modules.FinLab_Algorythms.util.fast_ewma import ewma
+from research_tools.util.fast_ewma import ewma
 
 
 class TestDataStructures(unittest.TestCase):

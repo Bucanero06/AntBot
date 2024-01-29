@@ -6,7 +6,7 @@ import unittest
 import os
 import pandas as pd
 
-from Modules.FinLab_Algorythms.util import get_parksinson_vol, get_yang_zhang_vol, get_garman_class_vol
+from research_tools.util import get_parksinson_vol, get_yang_zhang_vol, get_garman_class_vol
 
 
 class TestVolatilityEstimators(unittest.TestCase):

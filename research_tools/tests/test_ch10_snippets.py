@@ -10,8 +10,8 @@ import pandas as pd
 
 from scipy.stats import norm
 
-from Modules.FinLab_Algorythms.bet_sizing_algorythms.ch10_snippets import get_signal, avg_active_signals, mp_avg_active_signals, discrete_signal
-from Modules.FinLab_Algorythms.bet_sizing_algorythms.ch10_snippets import (bet_size_sigmoid, bet_size_power, bet_size, get_target_pos_sigmoid, get_target_pos_power, get_target_pos,
+from research_tools.bet_sizing_algorythms.ch10_snippets import get_signal, avg_active_signals, mp_avg_active_signals, discrete_signal
+from research_tools.bet_sizing_algorythms.ch10_snippets import (bet_size_sigmoid, bet_size_power, bet_size, get_target_pos_sigmoid, get_target_pos_power, get_target_pos,
                                                inv_price_sigmoid, inv_price_power, inv_price, limit_price_sigmoid, limit_price_power, limit_price,
                                                get_w_sigmoid, get_w_power, get_w)
 

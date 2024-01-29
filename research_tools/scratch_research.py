@@ -7,10 +7,9 @@ import numpy as np
 import pandas as pd
 
 from research_tools import util
-from research_tools.labeling_algorythms import labeling
-from research_tools.labeling_algorythms.filters import cusum_filter
-from research_tools.labeling_algorythms.trend_scanning import trend_scanning_labels
 from research_tools.GenieLoaderForked import GenieLoader
+from research_tools.labeling_algorythms import labeling, trend_scanning_labels
+from research_tools.labeling_algorythms.filters import cusum_filter
 
 logger = logging.getLogger(__name__)
 

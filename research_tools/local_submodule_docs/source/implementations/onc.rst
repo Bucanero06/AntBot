@@ -108,7 +108,7 @@ An example showing how the ONC algorithm is used can be seen below:
 .. code-block::
 
     import pandas as pd
-    from Modules.clustering import onc
+    from research_tools.clustering import onc
 
     # Import dataframe of returns for assets
     asset_returns = pd.read_csv(DATA_PATH, index_col='Date', parse_dates=True)

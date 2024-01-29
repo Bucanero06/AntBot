@@ -181,10 +181,10 @@ Example Code
     import pandas as pd
 
     # Import MST class
-    from Modules.networks.mst import MST
+    from research_tools.networks.mst import MST
 
     # Import Dash Graph class
-    from Modules.networks.dash_graph import DashGraph
+    from research_tools.networks.dash_graph import DashGraph
 
     # Import file containing stock log returns
     log_return_dataframe = pd.read_csv('path_to_file', index_col=False)

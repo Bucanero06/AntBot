@@ -46,7 +46,7 @@ Examples
 
 .. code-block::
 
-    from Modules.data_generation.bootstrap import row_bootstrap
+    from research_tools.data_generation.bootstrap import row_bootstrap
     import seaborn as sns
     import numpy as np
     import matplotlib.pyplot as plt
@@ -94,7 +94,7 @@ Examples
 
 .. code-block::
 
-    from Modules.data_generation.bootstrap import pair_bootstrap
+    from research_tools.data_generation.bootstrap import pair_bootstrap
     import seaborn as sns
     import numpy as np
     import matplotlib.pyplot as plt
@@ -141,7 +141,7 @@ Examples
 
 .. code-block::
 
-    from Modules.data_generation.bootstrap import block_bootstrap
+    from research_tools.data_generation.bootstrap import block_bootstrap
     import seaborn as sns
     import numpy as np
     import matplotlib.pyplot as plt

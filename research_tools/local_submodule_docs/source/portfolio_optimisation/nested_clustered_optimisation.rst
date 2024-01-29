@@ -119,7 +119,7 @@ This method allows creating a random vector of means and a random covariance mat
 Implementation
 ##############
 
-.. automodule:: Modules.FinLab_Algorythms.portfolio_optimization.nco
+.. automodule:: Modules.portfolio_optimization.nco
 
     .. autoclass:: NCO
         :members:
@@ -133,7 +133,7 @@ Below is an example of how to use the package functions to calculate risk metric
 .. code-block::
 
     import pandas as pd
-    from Modules.portfolio_optimization import NCO
+    from research_tools.portfolio_optimization import NCO
 
     # Import dataframe of returns for assets in a portfolio
     assets_returns = pd.read_csv(DATA_PATH, index_col='Date', parse_dates=True)

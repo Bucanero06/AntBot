@@ -794,36 +794,15 @@ def okx_signal_handler(
             posSide=POSSIDETYPE
         )
 
-    ticker = get_ticker(instId=instID)
-    ask_price = float(ticker.askPx)
-    bid_price = float(ticker.bidPx)
-    reference_price = ask_price if order_side == 'buy' else bid_price
-    # position = all_positions[0] if len(all_positions) > 0 else None  # we are only using net so only one position
     position = instrument_status_report.positions[0] if len(
         instrument_status_report.positions) > 0 else None  # we are only using net so only one position
-    # # find the set of algo orders that are the oldest
-    # # if there are any algo orders that are not in the set of oldest algo orders, cancel them
-    # oldest_algo_order = None
-    # for algo_order in all_algo_orders:
-    #     if oldest_algo_order is None:
-    #         oldest_algo_order: Algo_Order = algo_order
-    #     elif algo_order.cTime < oldest_algo_order.cTime:
-    #         oldest_algo_order: Algo_Order = algo_order
-    #
-    # oldest_algoClOrdId = oldest_algo_order.algoClOrdId.strip('TPORSL').strip('TrailS')
-    # print(f'{oldest_algoClOrdId = }')
-    #
-    # algo_orders_to_cancel = []
-    # for algo_order in all_algo_orders:
-    #     if oldest_algoClOrdId not in algo_order.algoClOrdId:
-    #         algo_orders_to_cancel.append(algo_order)
-    # if algo_orders_to_cancel:
-    #     print(f'Cancelling all but the oldest set of algo orders \n   {algo_orders_to_cancel = }')
-    #     # cancelled_algo_orders = cancel_all_algo_orders_with_params(algo_orders_list=algo_orders_to_cancel)
-    # print(f'{all_algo_orders = }')
-    #
-    # exit()
+
     if order_side:
+        ticker = get_ticker(instId=instID)
+        print(f'{ticker = }')
+        ask_price = float(ticker.askPx) if ticker.askPx else ticker.bidPx # fixme sometimes okx returns '' for askPx
+        bid_price = float(ticker.bidPx)
+        reference_price = ask_price if order_side == 'buy' else bid_price
         if position:
             position_side = 'buy' if float(position.pos) > 0 else 'sell' if float(
                 position.pos) < 0 else None  # we are only using net so only one position

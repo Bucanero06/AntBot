@@ -27,9 +27,9 @@
 <area shape="rect" id="node26" href="#pyokx.ws_data_structures.OrdersChannel" target="_top" title="OrdersChannel" alt="" coords="133,682,201,696"/>
 <area shape="rect" id="node27" href="#pyokx.ws_data_structures.OrdersChannelInputArgs" target="_top" title="OrdersChannelInputArgs" alt="" coords="115,710,219,725"/>
 <area shape="rect" id="node28" href="#pyokx.ws_data_structures.OrdersChannelReturnArgs" target="_top" title="OrdersChannelReturnArgs" alt="" coords="112,738,222,753"/>
-<area shape="rect" id="node29" href="#pyokx.ws_data_structures.PositionChannel" target="_top" title="PositionChannel" alt="" coords="131,767,203,781"/>
-<area shape="rect" id="node30" href="#pyokx.ws_data_structures.PositionChannelInputArgs" target="_top" title="PositionChannelInputArgs" alt="" coords="113,795,221,810"/>
-<area shape="rect" id="node31" href="#pyokx.ws_data_structures.PositionChannelReturnArgs" target="_top" title="PositionChannelReturnArgs" alt="" coords="110,823,224,838"/>
+<area shape="rect" id="node29" href="#pyokx.ws_data_structures.PositionsChannel" target="_top" title="PositionsChannel" alt="" coords="131,767,203,781"/>
+<area shape="rect" id="node30" href="#pyokx.ws_data_structures.PositionsChannelInputArgs" target="_top" title="PositionsChannelInputArgs" alt="" coords="113,795,221,810"/>
+<area shape="rect" id="node31" href="#pyokx.ws_data_structures.PositionsChannelReturnArgs" target="_top" title="PositionsChannelReturnArgs" alt="" coords="110,823,224,838"/>
 <area shape="rect" id="node32" href="#pyokx.ws_data_structures.PriceLimit" target="_top" title="PriceLimit" alt="" coords="142,852,192,866"/>
 <area shape="rect" id="node33" href="#pyokx.ws_data_structures.PriceLimitChannel" target="_top" title="PriceLimitChannel" alt="" coords="127,880,207,894"/>
 <area shape="rect" id="node34" href="#pyokx.ws_data_structures.PriceLimitChannelInputArgs" target="_top" title="PriceLimitChannelInputArgs" alt="" coords="109,908,225,923"/>

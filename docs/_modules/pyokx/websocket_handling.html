@@ -202,7 +202,7 @@
 <span class="kn">from</span> <span class="nn">pyokx.ws_clients.WsPublicAsync</span> <span class="kn">import</span> <span class="n">WsPublicAsync</span>
 <span class="kn">from</span> <span class="nn">pyokx.ws_data_structures</span> <span class="kn">import</span> <span class="n">PriceLimitChannel</span><span class="p">,</span> <span class="n">InstrumentsChannel</span><span class="p">,</span> \
     <span class="n">MarkPriceChannel</span><span class="p">,</span> <span class="n">IndexTickersChannel</span><span class="p">,</span> <span class="n">MarkPriceCandleSticksChannel</span><span class="p">,</span> <span class="n">IndexCandleSticksChannel</span><span class="p">,</span> <span class="n">AccountChannel</span><span class="p">,</span> \
-    <span class="n">PositionChannel</span><span class="p">,</span> <span class="n">BalanceAndPositionsChannel</span><span class="p">,</span> <span class="n">WebSocketConnectionConfig</span><span class="p">,</span> <span class="n">OrdersChannel</span><span class="p">,</span> <span class="n">OrderBookChannel</span><span class="p">,</span> \
+    <span class="n">PositionsChannel</span><span class="p">,</span> <span class="n">BalanceAndPositionsChannel</span><span class="p">,</span> <span class="n">WebSocketConnectionConfig</span><span class="p">,</span> <span class="n">OrdersChannel</span><span class="p">,</span> <span class="n">OrderBookChannel</span><span class="p">,</span> \
     <span class="n">TickersChannel</span><span class="p">,</span> <span class="n">IndexTickersChannelInputArgs</span><span class="p">,</span> <span class="n">OrderBookInputArgs</span><span class="p">,</span> <span class="n">MarkPriceChannelInputArgs</span><span class="p">,</span> \
     <span class="n">TickersChannelInputArgs</span><span class="p">,</span> <span class="n">OrdersChannelInputArgs</span><span class="p">,</span> <span class="n">OKX_WEBSOCKET_URLS</span><span class="p">,</span> <span class="n">public_channels_available</span><span class="p">,</span> \
     <span class="n">business_channels_available</span><span class="p">,</span> <span class="n">private_channels_available</span><span class="p">,</span> <span class="n">available_channel_models</span>
@@ -598,7 +598,7 @@
 
                 <span class="c1">### Private Channels</span>
                 <span class="c1"># AccountChannelInputArgs(channel=&quot;account&quot;, ccy=None),</span>
-                <span class="c1"># PositionChannelInputArgs(channel=&quot;positions&quot;, instType=&quot;ANY&quot;, instFamily=None,</span>
+                <span class="c1"># PositionsChannelInputArgs(channel=&quot;positions&quot;, instType=&quot;ANY&quot;, instFamily=None,</span>
                 <span class="c1">#                          instId=None),</span>
                 <span class="c1"># BalanceAndPositionsChannelInputArgs(channel=&quot;balance_and_position&quot;),</span>
                 <span class="n">OrdersChannelInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;orders&quot;</span><span class="p">,</span> <span class="n">instType</span><span class="o">=</span><span class="s2">&quot;FUTURES&quot;</span><span class="p">,</span> <span class="n">instFamily</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>

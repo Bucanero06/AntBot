@@ -1,0 +1,11 @@
+websocket_app
+=============
+
+.. automodule:: websocket_app
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: websocket_app
+    :parts: 1
+

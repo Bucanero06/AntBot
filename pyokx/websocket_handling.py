@@ -12,7 +12,7 @@ from pyokx.ws_clients.WsPprivateAsync import WsPrivateAsync
 from pyokx.ws_clients.WsPublicAsync import WsPublicAsync
 from pyokx.ws_data_structures import PriceLimitChannel, InstrumentsChannel, \
     MarkPriceChannel, IndexTickersChannel, MarkPriceCandleSticksChannel, IndexCandleSticksChannel, AccountChannel, \
-    PositionChannel, BalanceAndPositionsChannel, WebSocketConnectionConfig, OrdersChannel, OrderBookChannel, \
+    PositionsChannel, BalanceAndPositionsChannel, WebSocketConnectionConfig, OrdersChannel, OrderBookChannel, \
     TickersChannel, IndexTickersChannelInputArgs, OrderBookInputArgs, MarkPriceChannelInputArgs, \
     TickersChannelInputArgs, OrdersChannelInputArgs, OKX_WEBSOCKET_URLS, public_channels_available, \
     business_channels_available, private_channels_available, available_channel_models
@@ -94,7 +94,13 @@ async def okx_websockets_main_run(input_channel_models: list,
                     r.xadd(f'okx:reports@{message.get("arg").get("channel")}', redis_ready_message, maxlen=1000)
                 ----------------------------------------------------
                 '''
-                # await handle_reports(message_json, async_redis) # todo re-enable reports
+
+                if message_channel == "index-tickers":
+                    await async_redis.xadd(f'okx:messages@{message_channel}@{message_args.get("instId")}',
+                                           serialize_for_redis(structured_message.model_dump()),
+                                           maxlen=REDIS_STREAM_MAX_LEN)
+
+                await handle_reports(message_json, async_redis)
 
 
         except Exception as e:
@@ -258,10 +264,7 @@ async def handle_reports(message_json, async_redis, structured_message=None):
                                redis_ready_message,
                                maxlen=REDIS_STREAM_MAX_LEN)
 
-    if message_channel == "index-tickers":
-        await async_redis.xadd(f'okx:reports@{message_channel}@{message_args.get("instId")}',
-                               serialize_for_redis(structured_message.model_dump()),
-                               maxlen=REDIS_STREAM_MAX_LEN)
+
 
 
 def get_instrument_specific_channel_inputs_to_listen_to():
@@ -390,7 +393,7 @@ if __name__ == '__main__':
 
                 ### Private Channels
                 # AccountChannelInputArgs(channel="account", ccy=None),
-                # PositionChannelInputArgs(channel="positions", instType="ANY", instFamily=None,
+                # PositionsChannelInputArgs(channel="positions", instType="ANY", instFamily=None,
                 #                          instId=None),
                 # BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
                 OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None,

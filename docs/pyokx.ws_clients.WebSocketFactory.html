@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyokx.redis_structured_streams &mdash; AntBot 0.0.1 documentation</title>
+  <title>pyokx.ws_clients.WebSocketFactory &mdash; AntBot 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
@@ -22,8 +22,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pyokx.signal_handling" href="pyokx.signal_handling.html" />
-    <link rel="prev" title="pyokx.redis_structured_reports" href="pyokx.redis_structured_reports.html" /> 
+    <link rel="next" title="pyokx.ws_clients.WsPprivateAsync" href="pyokx.ws_clients.WsPprivateAsync.html" />
+    <link rel="prev" title="pyokx.websocket_handling" href="pyokx.websocket_handling.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -110,12 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.utils.TdModeUtil.html">pyokx.okx_market_maker.utils.TdModeUtil</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.utils.WsOrderUtil.html">pyokx.okx_market_maker.utils.WsOrderUtil</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">pyokx.redis_structured_streams</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_account_messages"><code class="docutils literal notranslate"><span class="pre">get_stream_account_messages()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_all_messages"><code class="docutils literal notranslate"><span class="pre">get_stream_all_messages()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_position_messages"><code class="docutils literal notranslate"><span class="pre">get_stream_position_messages()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.signal_handling.html">pyokx.signal_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.strategy_handling.html">pyokx.strategy_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.test.AccountTest.html">pyokx.test.AccountTest</a></li>
@@ -136,7 +131,14 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.test.WsPrivateAsyncTest.html">pyokx.test.WsPrivateAsyncTest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.test.WsPublicAsyncTest.html">pyokx.test.WsPublicAsyncTest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.websocket_handling.html">pyokx.websocket_handling</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WebSocketFactory.html">pyokx.ws_clients.WebSocketFactory</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pyokx.ws_clients.WebSocketFactory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.ws_clients.WebSocketFactory.WebSocketFactory"><code class="docutils literal notranslate"><span class="pre">WebSocketFactory</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.ws_clients.WebSocketFactory.WebSocketFactory.close"><code class="docutils literal notranslate"><span class="pre">WebSocketFactory.close()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.ws_clients.WebSocketFactory.WebSocketFactory.connect"><code class="docutils literal notranslate"><span class="pre">WebSocketFactory.connect()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WsPprivateAsync.html">pyokx.ws_clients.WsPprivateAsync</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
@@ -185,9 +187,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">pyokx.redis_structured_streams</li>
+      <li class="breadcrumb-item active">pyokx.ws_clients.WebSocketFactory</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/pyokx.redis_structured_streams.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/pyokx.ws_clients.WebSocketFactory.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -195,33 +197,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-pyokx.redis_structured_streams">
-<span id="pyokx-redis-structured-streams"></span><h1>pyokx.redis_structured_streams<a class="headerlink" href="#module-pyokx.redis_structured_streams" title="Link to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="pyokx.redis_structured_streams.get_stream_account_messages">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.redis_structured_streams.</span></span><span class="sig-name descname"><span class="pre">get_stream_account_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.AccountChannel" title="pyokx.ws_data_structures.AccountChannel"><span class="pre">AccountChannel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/redis_structured_streams.html#get_stream_account_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.redis_structured_streams.get_stream_account_messages" title="Link to this definition"></a></dt>
-<dd><p>Uses xrange to get the latest COUNT account messages from redis and return all COUNT messages</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pyokx.redis_structured_streams.get_stream_all_messages">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.redis_structured_streams.</span></span><span class="sig-name descname"><span class="pre">get_stream_all_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/redis_structured_streams.html#get_stream_all_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.redis_structured_streams.get_stream_all_messages" title="Link to this definition"></a></dt>
+  <section id="module-pyokx.ws_clients.WebSocketFactory">
+<span id="pyokx-ws-clients-websocketfactory"></span><h1>pyokx.ws_clients.WebSocketFactory<a class="headerlink" href="#module-pyokx.ws_clients.WebSocketFactory" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyokx.ws_clients.WebSocketFactory.WebSocketFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.ws_clients.WebSocketFactory.</span></span><span class="sig-name descname"><span class="pre">WebSocketFactory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/ws_clients/WebSocketFactory.html#WebSocketFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.ws_clients.WebSocketFactory.WebSocketFactory" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.ws_clients.WebSocketFactory.WebSocketFactory.close">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/ws_clients/WebSocketFactory.html#WebSocketFactory.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.ws_clients.WebSocketFactory.WebSocketFactory.close" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="pyokx.redis_structured_streams.get_stream_position_messages">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.redis_structured_streams.</span></span><span class="sig-name descname"><span class="pre">get_stream_position_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionsChannel" title="pyokx.ws_data_structures.PositionsChannel"><span class="pre">PositionsChannel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/redis_structured_streams.html#get_stream_position_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.redis_structured_streams.get_stream_position_messages" title="Link to this definition"></a></dt>
-<dd><p>Uses xrange to get the latest COUNT position messages from redis and return all COUNT messages</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.ws_clients.WebSocketFactory.WebSocketFactory.connect">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/ws_clients/WebSocketFactory.html#WebSocketFactory.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.ws_clients.WebSocketFactory.WebSocketFactory.connect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
-</section>
+<div class="graphviz"><img src="_images/inheritance-5fd78dd6d8d61c6819c108bd507caeb2f4074376.png" alt="Inheritance diagram of pyokx.ws_clients.WebSocketFactory" usemap="#inheritance613a67433b" class="inheritance graphviz" /></div>
+<map id="inheritance613a67433b" name="inheritance613a67433b">
+<area shape="rect" id="node1" href="#pyokx.ws_clients.WebSocketFactory.WebSocketFactory" target="_top" title="WebSocketFactory" alt="" coords="5,5,145,31"/>
+</map></section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pyokx.redis_structured_reports.html" class="btn btn-neutral float-left" title="pyokx.redis_structured_reports" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pyokx.signal_handling.html" class="btn btn-neutral float-right" title="pyokx.signal_handling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pyokx.websocket_handling.html" class="btn btn-neutral float-left" title="pyokx.websocket_handling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyokx.ws_clients.WsPprivateAsync.html" class="btn btn-neutral float-right" title="pyokx.ws_clients.WsPprivateAsync" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

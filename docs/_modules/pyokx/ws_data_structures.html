@@ -431,9 +431,9 @@
 
 
 
-<div class="viewcode-block" id="PositionChannelInputArgs">
-<a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">PositionChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="PositionsChannelInputArgs">
+<a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionsChannelInputArgs">[docs]</a>
+<span class="k">class</span> <span class="nc">PositionsChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instFamily</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -441,9 +441,9 @@
 
 
 
-<div class="viewcode-block" id="PositionChannelReturnArgs">
-<a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionChannelReturnArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">PositionChannelReturnArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<div class="viewcode-block" id="PositionsChannelReturnArgs">
+<a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionsChannelReturnArgs">[docs]</a>
+<span class="k">class</span> <span class="nc">PositionsChannelReturnArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">uid</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span>
@@ -452,10 +452,10 @@
 
 
 
-<div class="viewcode-block" id="PositionChannel">
-<a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">PositionChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">arg</span><span class="p">:</span> <span class="n">PositionChannelReturnArgs</span>
+<div class="viewcode-block" id="PositionsChannel">
+<a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionsChannel">[docs]</a>
+<span class="k">class</span> <span class="nc">PositionsChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">arg</span><span class="p">:</span> <span class="n">PositionsChannelReturnArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Position</span><span class="p">]</span></div>
 
 
@@ -815,7 +815,7 @@
 <span class="p">}</span>
 <span class="n">private_channels_available</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;account&quot;</span><span class="p">:</span> <span class="n">AccountChannel</span><span class="p">,</span>  <span class="c1"># Missing coinUsdPrice</span>
-    <span class="s2">&quot;positions&quot;</span><span class="p">:</span> <span class="n">PositionChannel</span><span class="p">,</span>  <span class="c1"># Missing pTime</span>
+    <span class="s2">&quot;positions&quot;</span><span class="p">:</span> <span class="n">PositionsChannel</span><span class="p">,</span>  <span class="c1"># Missing pTime</span>
     <span class="s2">&quot;balance_and_position&quot;</span><span class="p">:</span> <span class="n">BalanceAndPositionsChannel</span><span class="p">,</span>
     <span class="s2">&quot;orders&quot;</span><span class="p">:</span> <span class="n">OrdersChannel</span>
 <span class="p">}</span>

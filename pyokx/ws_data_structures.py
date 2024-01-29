@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from pyokx.data_structures import Instrument, AccountBalanceData, Position, Ask, Bid, Ticker
+from pyokx.data_structures import Instrument, AccountBalanceData, Ask, Bid, Ticker
 
 
 class TickersChannelInputArgs(BaseModel):
@@ -157,6 +157,7 @@ class IndexCandleSticksChannel(BaseModel):
 class AccountChannelInputArgs(BaseModel):
     channel: str
     ccy: Optional[str] = None
+    extraParams: Optional[str] = None
 
 
 class AccountChannelReturnArgs(BaseModel):
@@ -169,14 +170,85 @@ class AccountChannel(BaseModel):
     data: List[AccountBalanceData]
 
 
-class PositionChannelInputArgs(BaseModel):
+class WSPosition(BaseModel):
+    instType: str
+    mgnMode: str
+    posId: str
+    posSide: str
+    pos: str
+    baseBal: str
+    quoteBal: str
+    baseBorrowed: str
+    baseInterest: str
+    quoteBorrowed: str
+    quoteInterest: str
+    posCcy: str
+    availPos: str
+    avgPx: str
+    upl: str
+    uplRatio: str
+    uplLastPx: str
+    uplRatioLastPx: str
+    instId: str
+    lever: str
+    liqPx: str
+    markPx: str
+    imr: str
+    margin: str
+    mgnRatio: str
+    mmr: str
+    liab: str
+    liabCcy: str
+    interest: str
+    tradeId: str
+    notionalUsd: str
+    optVal: str
+    adl: str
+    bizRefId: str
+    bizRefType: str
+    ccy: str
+    last: str
+    idxPx: str
+    usdPx: str
+    bePx: str
+    deltaBS: str
+    deltaPA: str
+    gammaBS: str
+    gammaPA: str
+    thetaBS: str
+    thetaPA: str
+    vegaBS: str
+    vegaPA: str
+    spotInUseAmt: str
+    spotInUseCcy: str
+    realizedPnl: str
+    pnl: str
+    fee: str
+    fundingFee: str
+    liqPenalty: str
+    closeOrderAlgo: List[dict]
+    cTime: str
+    uTime: str
+    pTime: str
+
+
+class PositionsChannelInputArgs(BaseModel):
+    # {
+    #       "channel": "positions",
+    #       "instType": "ANY",
+    #       "extraParams": "
+    #         {
+    #           \"updateInterval\": \"0\"
+    #         }
+    #       "
+    #     }
     channel: str
     instType: str
     instFamily: Optional[str] = None
     instId: Optional[str] = None
+    extraParams: Optional[str] = None
 
-
-class PositionChannelReturnArgs(BaseModel):
+class PositionsChannelReturnArgs(BaseModel):
     channel: str
     uid: str
     instType: str
@@ -184,9 +256,9 @@ class PositionChannelReturnArgs(BaseModel):
     instId: Optional[str] = None
 
 
-class PositionChannel(BaseModel):
-    arg: PositionChannelReturnArgs
-    data: List[Position]
+class PositionsChannel(BaseModel):
+    arg: PositionsChannelReturnArgs
+    data: List[WSPosition]
 
 
 class BalanceAndPositionsChannelInputArgs(BaseModel):
@@ -399,8 +471,6 @@ class OrderBookChannel(BaseModel):
         return OrderBookChannel(arg=arg, data=data, action=action)
 
 
-
-
 OKX_WEBSOCKET_URLS = dict(
     public="wss://ws.okx.com:8443/ws/v5/public",
     private="wss://ws.okx.com:8443/ws/v5/private",
@@ -484,7 +554,7 @@ business_channels_available = {
 }
 private_channels_available = {
     "account": AccountChannel,  # Missing coinUsdPrice
-    "positions": PositionChannel,  # Missing pTime
+    "positions": PositionsChannel,  # Missing pTime
     "balance_and_position": BalanceAndPositionsChannel,
     "orders": OrdersChannel
 }
@@ -492,4 +562,3 @@ private_channels_available = {
 available_channel_models = (
         public_channels_available | business_channels_available | private_channels_available
 )
-

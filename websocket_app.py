@@ -4,8 +4,7 @@ import dotenv
 import uvicorn
 from fastapi import FastAPI, APIRouter
 
-from pyokx.websocket_handling import okx_websockets_main_run, get_instrument_specific_channel_inputs_to_listen_to, \
-    get_btc_usdt_usd_index_channel_inputs_to_listen_to
+from pyokx.websocket_handling import okx_websockets_main_run
 from pyokx.ws_data_structures import *
 
 app = FastAPI(
@@ -41,11 +40,11 @@ async def startup_event():
 
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus
     #  instruments change
-    websocket_instrument_task = asyncio.create_task(start_instrument_websocket(
-        input_channel_models=
-        # get_instrument_specific_channel_inputs_to_listen_to() +
-                             get_btc_usdt_usd_index_channel_inputs_to_listen_to()
-    ))
+    # websocket_instrument_task = asyncio.create_task(start_instrument_websocket(
+    #     input_channel_models=
+    #     get_instrument_specific_channel_inputs_to_listen_to() +
+    #                          get_btc_usdt_usd_index_channel_inputs_to_listen_to()
+    # ))
 
 
 @app.on_event("shutdown")
@@ -72,8 +71,14 @@ async def start_websocket():
         import os
         await okx_websockets_main_run(input_channel_models=[
             ### Private Channels
-            AccountChannelInputArgs(channel="account", ccy=None),
-            PositionChannelInputArgs(channel="positions", instType="ANY", instFamily=None, instId=None),
+            AccountChannelInputArgs(channel="account", ccy=None,
+                                    extraParams="{"
+                                                "\"updateInterval\": \"1\""
+                                                "}"),
+            PositionsChannelInputArgs(channel="positions", instType="ANY", instFamily=None, instId=None,
+                                      extraParams="{"
+                                                  "\"updateInterval\": \"1\""
+                                                  "}"),
             BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
             OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None, instId=None)
         ], apikey=os.getenv('OKX_API_KEY'), passphrase=os.getenv('OKX_PASSPHRASE'),
@@ -123,11 +128,11 @@ async def restart_instrument_websocket():  # Todo adds security for now dont exp
     # turn up the websocket
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus
     #  instruments change
-    websocket_instrument_task = asyncio.create_task(start_instrument_websocket(
-        input_channel_models=
-        # get_instrument_specific_channel_inputs_to_listen_to() +
-                             get_btc_usdt_usd_index_channel_inputs_to_listen_to()
-    ))
+    # websocket_instrument_task = asyncio.create_task(start_instrument_websocket(
+    #     input_channel_models=
+    #     get_instrument_specific_channel_inputs_to_listen_to() +
+    #                          get_btc_usdt_usd_index_channel_inputs_to_listen_to()
+    # ))
     return {"status": "success", "message": "Restarted instrument websocket"}
 
 

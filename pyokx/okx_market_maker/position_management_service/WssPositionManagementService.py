@@ -1,6 +1,4 @@
-import time
 from typing import List, Dict
-import copy
 
 from pyokx.okx_market_maker import balance_and_position_container, account_container, positions_container
 from pyokx.okx_market_maker.position_management_service.model.Account import Account
@@ -11,7 +9,7 @@ from pyokx.okx_market_maker.position_management_service.model.Positions import P
 def _prepare_position_management_args() -> List[Dict]:
     args = []
     account_sub = {
-            "channel": "account"
+        "channel": "account"
     }
     args.append(account_sub)
     positions_sub = {
@@ -40,8 +38,6 @@ def _callback(message):
         on_position(message)
 
 
-
-
 def on_balance_and_position(message):
     if not balance_and_position_container:
         balance_and_position_container.append(BalanceAndPosition.init_from_ws_json_message(message))
@@ -59,8 +55,6 @@ def on_account(message):
     return account_container[0]
 
 
-
-
 def on_position(message):
     if not positions_container:
         positions_container.append(Positions.init_from_ws_json_message(message))
@@ -68,4 +62,3 @@ def on_position(message):
         positions_container[0].update_from_ws_json_message(message)
 
     return positions_container[0]
-

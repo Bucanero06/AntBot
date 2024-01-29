@@ -397,3 +397,99 @@ class OrderBookChannel(BaseModel):
         ]
 
         return OrderBookChannel(arg=arg, data=data, action=action)
+
+
+
+
+OKX_WEBSOCKET_URLS = dict(
+    public="wss://ws.okx.com:8443/ws/v5/public",
+    private="wss://ws.okx.com:8443/ws/v5/private",
+    business="wss://ws.okx.com:8443/ws/v5/business",
+    public_aws="wss://wsaws.okx.com:8443/ws/v5/public",
+    private_aws="wss://wsaws.okx.com:8443/ws/v5/private",
+    business_aws="wss://wsaws.okx.com:8443/ws/v5/business",
+    public_demo="wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999",
+    private_demo="wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999",
+    business_demo="wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999",
+)
+
+public_channels_available = {
+    "price-limit": PriceLimitChannel,
+    "instruments": InstrumentsChannel,
+    "mark-price": MarkPriceChannel,
+    "index-tickers": IndexTickersChannel,
+    "tickers": TickersChannel,
+    "books5": OrderBookChannel,
+    "books": OrderBookChannel,
+    "bbo-tbt": OrderBookChannel,
+    "books50-l2-tbt": OrderBookChannel,
+    "books-l2-tbt": OrderBookChannel,
+}
+business_channels_available = {
+    "mark-price-candle1m": MarkPriceCandleSticksChannel,
+    "mark-price-candle3m": MarkPriceCandleSticksChannel,
+    "mark-price-candle5m": MarkPriceCandleSticksChannel,
+    "mark-price-candle15m": MarkPriceCandleSticksChannel,
+    "mark-price-candle30m": MarkPriceCandleSticksChannel,
+    "mark-price-candle1H": MarkPriceCandleSticksChannel,
+    "mark-price-candle2H": MarkPriceCandleSticksChannel,
+    "mark-price-candle4H": MarkPriceCandleSticksChannel,
+    "mark-price-candle6H": MarkPriceCandleSticksChannel,
+    "mark-price-candle12H": MarkPriceCandleSticksChannel,
+    "mark-price-candle5D": MarkPriceCandleSticksChannel,
+    "mark-price-candle3D": MarkPriceCandleSticksChannel,
+    "mark-price-candle2D": MarkPriceCandleSticksChannel,
+    "mark-price-candle1D": MarkPriceCandleSticksChannel,
+    "mark-price-candle1W": MarkPriceCandleSticksChannel,
+    "mark-price-candle1M": MarkPriceCandleSticksChannel,
+    "mark-price-candle3M": MarkPriceCandleSticksChannel,
+    "mark-price-candle1Yutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle3Mutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle1Mutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle1Wutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle1Dutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle2Dutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle3Dutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle5Dutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle12Hutc": MarkPriceCandleSticksChannel,
+    "mark-price-candle6Hutc": MarkPriceCandleSticksChannel,
+    #
+    "index-candle1m": IndexCandleSticksChannel,
+    "index-candle3m": IndexCandleSticksChannel,
+    "index-candle5m": IndexCandleSticksChannel,
+    "index-candle15m": IndexCandleSticksChannel,
+    "index-candle30m": IndexCandleSticksChannel,
+    "index-candle1H": IndexCandleSticksChannel,
+    "index-candle2H": IndexCandleSticksChannel,
+    "index-candle4H": IndexCandleSticksChannel,
+    "index-candle6H": IndexCandleSticksChannel,
+    "index-candle12H": IndexCandleSticksChannel,
+    "index-candle5D": IndexCandleSticksChannel,
+    "index-candle3D": IndexCandleSticksChannel,
+    "index-candle2D": IndexCandleSticksChannel,
+    "index-candle1D": IndexCandleSticksChannel,
+    "index-candle1W": IndexCandleSticksChannel,
+    "index-candle1M": IndexCandleSticksChannel,
+    "index-candle3M": IndexCandleSticksChannel,
+    "index-candle1Yutc": IndexCandleSticksChannel,
+    "index-candle3Mutc": IndexCandleSticksChannel,
+    "index-candle1Mutc": IndexCandleSticksChannel,
+    "index-candle1Wutc": IndexCandleSticksChannel,
+    "index-candle1Dutc": IndexCandleSticksChannel,
+    "index-candle2Dutc": IndexCandleSticksChannel,
+    "index-candle3Dutc": IndexCandleSticksChannel,
+    "index-candle5Dutc": IndexCandleSticksChannel,
+    "index-candle12Hutc": IndexCandleSticksChannel,
+    "index-candle6Hutc": IndexCandleSticksChannel,
+}
+private_channels_available = {
+    "account": AccountChannel,  # Missing coinUsdPrice
+    "positions": PositionChannel,  # Missing pTime
+    "balance_and_position": BalanceAndPositionsChannel,
+    "orders": OrdersChannel
+}
+
+available_channel_models = (
+        public_channels_available | business_channels_available | private_channels_available
+)
+

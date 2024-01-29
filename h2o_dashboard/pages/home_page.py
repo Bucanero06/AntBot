@@ -3,7 +3,6 @@ import asyncio
 from h2o_wave import main, Q, app, ui, on,run_on, data # noqa F401
 
 from h2o_dashboard.pages.okx_debug_page import okx_debug_page
-from h2o_dashboard.redis_refresh import call_with_refresh_recipe
 from h2o_dashboard.util import clear_cards, add_card, stream_message
 
 

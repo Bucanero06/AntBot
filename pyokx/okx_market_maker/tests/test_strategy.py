@@ -28,7 +28,7 @@ class TestStrategy(TestCase):
         account.u_time = 1234
         self.account = account
         self.strategy.get_order_book = MagicMock(return_value=order_book)
-        self.strategy.get_account = MagicMock(return_value=account)
+        self.strategy.get_account_report = MagicMock(return_value=account)
         self.strategy.mds.stop_service = MagicMock(return_value=None)
         self.strategy.mds.run_service = MagicMock(return_value=None)
 
@@ -86,7 +86,7 @@ class TestStrategy(TestCase):
             _order_map={'1': order1, "2": order2, "3": order3, "4": order4},
             _client_order_map={"order1": order1, "order2": order2, "order3": order3, "order4": order4,}
         )
-        self.strategy.get_orders = MagicMock(side_effect=lambda: orders)
+        self.strategy.get_orders_report = MagicMock(side_effect=lambda: orders)
         self.strategy._strategy_order_dict = {
             "order1": StrategyOrder(inst_id=TRADING_INSTRUMENT_ID, side=OrderSide.BUY, ord_type=OrderType.LIMIT,
                                     size="1", price="1", strategy_order_status=StrategyOrderStatus.SENT),

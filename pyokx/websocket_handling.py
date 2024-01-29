@@ -7,28 +7,18 @@ import dotenv
 
 from pyokx.okx_market_maker.market_data_service.WssMarketDataService import on_orderbook_snapshot_or_update
 from pyokx.okx_market_maker.market_data_service.model.OrderBook import OrderBook
-from pyokx.signal_handling import get_ticker_with_higher_volume, okx_signal_handler
+from pyokx.signal_handling import get_ticker_with_higher_volume
 from pyokx.ws_clients.WsPprivateAsync import WsPrivateAsync
 from pyokx.ws_clients.WsPublicAsync import WsPublicAsync
 from pyokx.ws_data_structures import PriceLimitChannel, InstrumentsChannel, \
     MarkPriceChannel, IndexTickersChannel, MarkPriceCandleSticksChannel, IndexCandleSticksChannel, AccountChannel, \
     PositionChannel, BalanceAndPositionsChannel, WebSocketConnectionConfig, OrdersChannel, OrderBookChannel, \
     TickersChannel, IndexTickersChannelInputArgs, OrderBookInputArgs, MarkPriceChannelInputArgs, \
-    TickersChannelInputArgs, OrdersChannelInputArgs
+    TickersChannelInputArgs, OrdersChannelInputArgs, OKX_WEBSOCKET_URLS, public_channels_available, \
+    business_channels_available, private_channels_available, available_channel_models
 from redis_tools.utils import serialize_for_redis, connect_to_aioredis, connect_to_redis, _deserialize_from_redis
 
-OKX_WEBSOCKET_URLS = dict(
-    public="wss://ws.okx.com:8443/ws/v5/public",
-    private="wss://ws.okx.com:8443/ws/v5/private",
-    business="wss://ws.okx.com:8443/ws/v5/business",
-    public_aws="wss://wsaws.okx.com:8443/ws/v5/public",
-    private_aws="wss://wsaws.okx.com:8443/ws/v5/private",
-    business_aws="wss://wsaws.okx.com:8443/ws/v5/business",
-    public_demo="wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999",
-    private_demo="wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999",
-    business_demo="wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999",
-)
-
+REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
 async def okx_websockets_main_run(input_channel_models: list,
                                   apikey: str = None, passphrase: str = None, secretkey: str = None,
@@ -39,98 +29,22 @@ async def okx_websockets_main_run(input_channel_models: list,
     public_channels_config = WebSocketConnectionConfig(
         name='okx_public',
         wss_url=OKX_WEBSOCKET_URLS["public"] if not sandbox_mode else OKX_WEBSOCKET_URLS["public_demo"],
-        channels={
-            "price-limit": PriceLimitChannel,
-            "instruments": InstrumentsChannel,
-            "mark-price": MarkPriceChannel,
-            "index-tickers": IndexTickersChannel,
-            "tickers": TickersChannel,
-            "books5": OrderBookChannel,
-            "books": OrderBookChannel,
-            "bbo-tbt": OrderBookChannel,
-            "books50-l2-tbt": OrderBookChannel,
-            "books-l2-tbt": OrderBookChannel,
-        }
+        channels=public_channels_available
     )
     business_channels_config = WebSocketConnectionConfig(
         name='okx_business',
         wss_url=OKX_WEBSOCKET_URLS["business"] if not sandbox_mode else OKX_WEBSOCKET_URLS["business_demo"],
-        channels={
-            "mark-price-candle1m": MarkPriceCandleSticksChannel,
-            "mark-price-candle3m": MarkPriceCandleSticksChannel,
-            "mark-price-candle5m": MarkPriceCandleSticksChannel,
-            "mark-price-candle15m": MarkPriceCandleSticksChannel,
-            "mark-price-candle30m": MarkPriceCandleSticksChannel,
-            "mark-price-candle1H": MarkPriceCandleSticksChannel,
-            "mark-price-candle2H": MarkPriceCandleSticksChannel,
-            "mark-price-candle4H": MarkPriceCandleSticksChannel,
-            "mark-price-candle6H": MarkPriceCandleSticksChannel,
-            "mark-price-candle12H": MarkPriceCandleSticksChannel,
-            "mark-price-candle5D": MarkPriceCandleSticksChannel,
-            "mark-price-candle3D": MarkPriceCandleSticksChannel,
-            "mark-price-candle2D": MarkPriceCandleSticksChannel,
-            "mark-price-candle1D": MarkPriceCandleSticksChannel,
-            "mark-price-candle1W": MarkPriceCandleSticksChannel,
-            "mark-price-candle1M": MarkPriceCandleSticksChannel,
-            "mark-price-candle3M": MarkPriceCandleSticksChannel,
-            "mark-price-candle1Yutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle3Mutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle1Mutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle1Wutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle1Dutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle2Dutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle3Dutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle5Dutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle12Hutc": MarkPriceCandleSticksChannel,
-            "mark-price-candle6Hutc": MarkPriceCandleSticksChannel,
-            #
-            "index-candle1m": IndexCandleSticksChannel,
-            "index-candle3m": IndexCandleSticksChannel,
-            "index-candle5m": IndexCandleSticksChannel,
-            "index-candle15m": IndexCandleSticksChannel,
-            "index-candle30m": IndexCandleSticksChannel,
-            "index-candle1H": IndexCandleSticksChannel,
-            "index-candle2H": IndexCandleSticksChannel,
-            "index-candle4H": IndexCandleSticksChannel,
-            "index-candle6H": IndexCandleSticksChannel,
-            "index-candle12H": IndexCandleSticksChannel,
-            "index-candle5D": IndexCandleSticksChannel,
-            "index-candle3D": IndexCandleSticksChannel,
-            "index-candle2D": IndexCandleSticksChannel,
-            "index-candle1D": IndexCandleSticksChannel,
-            "index-candle1W": IndexCandleSticksChannel,
-            "index-candle1M": IndexCandleSticksChannel,
-            "index-candle3M": IndexCandleSticksChannel,
-            "index-candle1Yutc": IndexCandleSticksChannel,
-            "index-candle3Mutc": IndexCandleSticksChannel,
-            "index-candle1Mutc": IndexCandleSticksChannel,
-            "index-candle1Wutc": IndexCandleSticksChannel,
-            "index-candle1Dutc": IndexCandleSticksChannel,
-            "index-candle2Dutc": IndexCandleSticksChannel,
-            "index-candle3Dutc": IndexCandleSticksChannel,
-            "index-candle5Dutc": IndexCandleSticksChannel,
-            "index-candle12Hutc": IndexCandleSticksChannel,
-            "index-candle6Hutc": IndexCandleSticksChannel,
-        }
+        channels=business_channels_available
     )
 
     private_channels_config = WebSocketConnectionConfig(
         name='okx_private',
         wss_url=OKX_WEBSOCKET_URLS["private"] if not sandbox_mode else OKX_WEBSOCKET_URLS["private_demo"],
-        channels={
-            "account": AccountChannel,  # Missing coinUsdPrice
-            "positions": PositionChannel,  # Missing pTime
-            "balance_and_position": BalanceAndPositionsChannel,
-            "orders": OrdersChannel
-        }
+        channels=private_channels_available
     )
 
-    available_channel_models: WebSocketConnectionConfig.channels = (
-            public_channels_config.channels | business_channels_config.channels | private_channels_config.channels
-    )
     if redis_store:
         async_redis = await connect_to_aioredis()
-        REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
     else:
         async_redis = None
 
@@ -169,7 +83,7 @@ async def okx_websockets_main_run(input_channel_models: list,
                 await async_redis.xadd(f'okx:messages@all', redis_ready_message,
                                        maxlen=REDIS_STREAM_MAX_LEN)
 
-                '''
+                ''' (ALPHA)
                 ----------------------------------------------------
                 Handle supported channels data 
                 (can be moved to listen to the redistributed redis channel -from-above-)
@@ -180,80 +94,7 @@ async def okx_websockets_main_run(input_channel_models: list,
                     r.xadd(f'okx:reports@{message.get("arg").get("channel")}', redis_ready_message, maxlen=1000)
                 ----------------------------------------------------
                 '''
-
-                # Position Management Service
-                if message_channel == "balance_and_position":
-                    from pyokx.okx_market_maker.position_management_service.WssPositionManagementService import \
-                        on_balance_and_position
-                    from pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition import \
-                        BalanceAndPosition
-                    balance_and_position: BalanceAndPosition = on_balance_and_position(message_json)
-                    redis_ready_message = serialize_for_redis(balance_and_position.to_dict())
-                    await async_redis.xadd(f'okx:reports@{message_channel}', redis_ready_message,
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-                if message_channel == "account":
-                    from pyokx.okx_market_maker.position_management_service.WssPositionManagementService import \
-                        on_account
-                    from pyokx.okx_market_maker.position_management_service.model.Account import Account
-                    account: Account = on_account(message_json)
-                    redis_ready_message = serialize_for_redis(account.to_dict())
-                    await async_redis.xadd(f'okx:reports@{message_channel}', redis_ready_message,
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-
-                if message_channel == "positions":
-                    from pyokx.okx_market_maker.position_management_service.WssPositionManagementService import \
-                        on_position
-                    from pyokx.okx_market_maker.position_management_service.model.Positions import Positions
-                    positions: Positions = on_position(message_json)
-                    redis_ready_message = serialize_for_redis(positions.to_dict())
-                    await async_redis.xadd(f'okx:reports@{message_channel}',
-                                           redis_ready_message,
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-
-                # Order Management Service
-                if message_channel == "orders":
-                    from pyokx.okx_market_maker.order_management_service.WssOrderManagementService import \
-                        on_orders_update
-                    from pyokx.okx_market_maker.order_management_service.model.Order import Orders
-                    orders: Orders = on_orders_update(message_json)
-                    redis_ready_message = serialize_for_redis(orders.to_dict())
-                    await async_redis.xadd(f'okx:reports@{message_channel}',
-                                           redis_ready_message,
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-
-
-                # Market Data Service
-                if message_channel in ["books5", "books", "bbo-tbt", "books50-l2-tbt", "books-l2-tbt"]:
-                    books: OrderBook = on_orderbook_snapshot_or_update(message_json)
-                    redis_ready_message = serialize_for_redis(books.to_dict())
-                    await async_redis.xadd(f'okx:reports@{message_channel}@{message_args.get("instId")}',
-                                           redis_ready_message,
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-
-                if message_channel == "mark-price":
-                    from pyokx.okx_market_maker.market_data_service.WssMarketDataService import on_mark_price_update
-                    from pyokx.okx_market_maker.market_data_service.model.MarkPx import MarkPxCache
-                    mark_px: MarkPxCache = on_mark_price_update(message_json)
-                    redis_ready_message = serialize_for_redis(mark_px.to_dict())
-                    await async_redis.xadd(f'okx:reports@{message_channel}@{message_args.get("instId")}',
-                                           redis_ready_message,
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-
-                if message_channel == "tickers":
-                    from pyokx.okx_market_maker.market_data_service.WssMarketDataService import on_ticker_update
-                    from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
-                    tickers: Tickers = on_ticker_update(message_json)
-                    redis_ready_message = serialize_for_redis(tickers.to_dict())
-                    await async_redis.xadd(f'okx:reports@{message_channel}',
-                                           redis_ready_message,
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-
-                if message_channel == "index-tickers":
-                    await async_redis.xadd(f'okx:reports@{message_channel}@{message_args.get("instId")}',
-                                           serialize_for_redis(structured_message.model_dump()),
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-
-
+                # await handle_reports(message_json, async_redis) # todo re-enable reports
 
 
         except Exception as e:
@@ -348,6 +189,79 @@ async def okx_websockets_main_run(input_channel_models: list,
             except Exception as e:
                 print(f"Exception: {e}")
         print("Exiting")
+
+
+async def handle_reports(message_json, async_redis, structured_message=None):
+    message_args = message_json.get("arg")
+    message_channel = message_args.get("channel")
+    # Position Management Service
+    if message_channel == "balance_and_position":
+        from pyokx.okx_market_maker.position_management_service.WssPositionManagementService import \
+            on_balance_and_position
+        from pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition import \
+            BalanceAndPosition
+        balance_and_position: BalanceAndPosition = on_balance_and_position(message_json)
+        redis_ready_message = serialize_for_redis(balance_and_position.to_dict())
+        await async_redis.xadd(f'okx:reports@{message_channel}', redis_ready_message,
+                               maxlen=REDIS_STREAM_MAX_LEN)
+    if message_channel == "account":
+        from pyokx.okx_market_maker.position_management_service.WssPositionManagementService import \
+            on_account
+        from pyokx.okx_market_maker.position_management_service.model.Account import Account
+        account: Account = on_account(message_json)
+        redis_ready_message = serialize_for_redis(account.to_dict())
+        await async_redis.xadd(f'okx:reports@{message_channel}', redis_ready_message,
+                               maxlen=REDIS_STREAM_MAX_LEN)
+
+    if message_channel == "positions":
+        from pyokx.okx_market_maker.position_management_service.WssPositionManagementService import \
+            on_position
+        from pyokx.okx_market_maker.position_management_service.model.Positions import Positions
+        positions: Positions = on_position(message_json)
+        redis_ready_message = serialize_for_redis(positions.to_dict())
+        await async_redis.xadd(f'okx:reports@positions', redis_ready_message, maxlen=REDIS_STREAM_MAX_LEN)
+
+    # Order Management Service
+    if message_channel == "orders":
+        from pyokx.okx_market_maker.order_management_service.WssOrderManagementService import \
+            on_orders_update
+        from pyokx.okx_market_maker.order_management_service.model.Order import Orders
+        orders: Orders = on_orders_update(message_json)
+        redis_ready_message = serialize_for_redis(orders.to_dict())
+        await async_redis.xadd(f'okx:reports@{message_channel}',
+                               redis_ready_message,
+                               maxlen=REDIS_STREAM_MAX_LEN)
+
+    # Market Data Service
+    if message_channel in ["books5", "books", "bbo-tbt", "books50-l2-tbt", "books-l2-tbt"]:
+        books: OrderBook = on_orderbook_snapshot_or_update(message_json)
+        redis_ready_message = serialize_for_redis(books.to_dict())
+        await async_redis.xadd(f'okx:reports@{message_channel}@{message_args.get("instId")}',
+                               redis_ready_message,
+                               maxlen=REDIS_STREAM_MAX_LEN)
+
+    if message_channel == "mark-price":
+        from pyokx.okx_market_maker.market_data_service.WssMarketDataService import on_mark_price_update
+        from pyokx.okx_market_maker.market_data_service.model.MarkPx import MarkPxCache
+        mark_px: MarkPxCache = on_mark_price_update(message_json)
+        redis_ready_message = serialize_for_redis(mark_px.to_dict())
+        await async_redis.xadd(f'okx:reports@{message_channel}@{message_args.get("instId")}',
+                               redis_ready_message,
+                               maxlen=REDIS_STREAM_MAX_LEN)
+
+    if message_channel == "tickers":
+        from pyokx.okx_market_maker.market_data_service.WssMarketDataService import on_ticker_update
+        from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
+        tickers: Tickers = on_ticker_update(message_json)
+        redis_ready_message = serialize_for_redis(tickers.to_dict())
+        await async_redis.xadd(f'okx:reports@{message_channel}',
+                               redis_ready_message,
+                               maxlen=REDIS_STREAM_MAX_LEN)
+
+    if message_channel == "index-tickers":
+        await async_redis.xadd(f'okx:reports@{message_channel}@{message_args.get("instId")}',
+                               serialize_for_redis(structured_message.model_dump()),
+                               maxlen=REDIS_STREAM_MAX_LEN)
 
 
 def get_instrument_specific_channel_inputs_to_listen_to():
@@ -450,6 +364,7 @@ async def test_restart(public_client, business_client, private_client):
     clients = [client for client in [public_client, business_client, private_client] if
                hasattr(client, "restart")]
     await asyncio.gather(*[client.restart() for client in clients if client])
+
 
 if __name__ == '__main__':
     dotenv.load_dotenv(dotenv.find_dotenv())

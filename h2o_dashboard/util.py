@@ -53,19 +53,37 @@ async def stream_message(q: Q, page_name: str, message: str, delay: float = 0.3)
     q.page[page_name].generating = False
     await q.page.save()
 
+async def init_page_card_set(q: Q, page_name: str) -> None:
+    """
+    Initialize the page with a set of cards.
+    """
+    setattr(q.client, f'{page_name}_cards', set())
 
-async def remove_card(q: Q, name: str) -> None:
+async def remove_card(q: Q, name: str, page_name:str = None) -> None:
     """
     Remove a specific card from the page based on its name.
     """
     if hasattr(q.client, 'cards') and name in q.client.cards:
         q.client.cards.remove(name)
         del q.page[name]
+        await q.page.save()
 
+    if page_name:
+        if hasattr(q.client, f'{page_name}_cards') and name in getattr(q.client, f'{page_name}_cards'):
+            getattr(q.client, f'{page_name}_cards').remove(name)
+            del q.page[name]
+            await q.page.save()
 
-async def add_card(q: Q, name, card) -> None:
+async def add_card(q: Q, name, card, page_name:str = None) -> None:
     q.client.cards.add(name)
     q.page[name] = card
+    await q.page.save()
+
+    if page_name:
+        getattr(q.client, f'{page_name}_cards').add(name)
+        q.page[name] = card
+        await q.page.save()
+
 
 
 async def clear_cards(q: Q, ignore: Optional[List[str]] = None) -> None:
@@ -84,8 +102,6 @@ async def clear_cards(q: Q, ignore: Optional[List[str]] = None) -> None:
     # Remove cards not in the ignore list
     for card_name in q.client.cards.copy():
         if card_name not in ignore:
-            # del q.page[card_name]
-            # q.client.cards.remove(card_name)
             await remove_card(q, card_name)
 
 
@@ -102,19 +118,3 @@ def load_env_file(env_path: str = '.env'):
         print(f"File does not exist: {env_path}")
         raise FileNotFoundError(f"File does not exist: {env_path}")
 
-
-def dynamic_tall_series_stat_card(box, title, main_stat, aux_stat, chart_data, additional_params=None):
-    card = ui.tall_series_stat_card(
-        box=box,
-        title=title,
-        value='=${{intl main_val minimum_fraction_digits=2 maximum_fraction_digits=2}}',
-        aux_value='={{intl aux_val style="percent" minimum_fraction_digits=1 maximum_fraction_digits=1}}',
-        data={
-            'main_val': main_stat,
-            'aux_val': aux_stat,
-        },
-
-        plot_data=chart_data,
-        **additional_params  # For any additional customizations
-    )
-    return card

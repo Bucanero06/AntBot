@@ -8,8 +8,7 @@ import requests
 from h2o_wave import Q, app, ui, on, data, run_on, AsyncSite  # noqa F401
 
 from h2o_dashboard.pages.home_page import homepage
-from h2o_dashboard.pages.okx_debug_page import okx_debug_page, AccountWidget
-from h2o_dashboard.redis_refresh import call_with_refresh_recipe, refresh_redis
+from h2o_dashboard.pages.okx_debug_page import okx_debug_page, Account_StreamWidget
 from h2o_dashboard.util import add_card, clear_cards, remove_card
 
 dotenv.load_dotenv(dotenv.find_dotenv())
@@ -208,8 +207,8 @@ async def render_login_page(q: Q, error_message=None):
     """Render the login page."""
 
     await clear_cards(q)
-    # await init(q)
     items = [
+        ui.message_bar(type='info', text='Please login to continue.', ),
         ui.text_xl('Login'),
         ui.textbox(name='email', label='Email', required=True),
         ui.textbox(name='password', label='Password', required=True, password=True),
@@ -219,6 +218,9 @@ async def render_login_page(q: Q, error_message=None):
         items.insert(0, ui.message_bar(type='error', text=error_message, ))
 
     await add_card(q, 'login', ui.form_card(box='centered', items=items, ), )
+
+    # Lets add decorations to the login page
+
 
 
 async def add_application_sidebar(q):
@@ -261,7 +263,6 @@ async def render_hidden_content(q: Q):
     Render pages content e.g. homepage or other pages get added here
     """
     await clear_cards(q)
-    # await init(q)
     await add_application_sidebar(q)
     await q.page.save()
     q.client.okx_debug_page_running_event.clear()

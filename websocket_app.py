@@ -42,7 +42,8 @@ async def startup_event():
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus
     #  instruments change
     websocket_instrument_task = asyncio.create_task(start_instrument_websocket(
-        input_channel_models=get_instrument_specific_channel_inputs_to_listen_to() +
+        input_channel_models=
+        # get_instrument_specific_channel_inputs_to_listen_to() +
                              get_btc_usdt_usd_index_channel_inputs_to_listen_to()
     ))
 
@@ -123,7 +124,8 @@ async def restart_instrument_websocket():  # Todo adds security for now dont exp
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus
     #  instruments change
     websocket_instrument_task = asyncio.create_task(start_instrument_websocket(
-        input_channel_models=get_instrument_specific_channel_inputs_to_listen_to() +
+        input_channel_models=
+        # get_instrument_specific_channel_inputs_to_listen_to() +
                              get_btc_usdt_usd_index_channel_inputs_to_listen_to()
     ))
     return {"status": "success", "message": "Restarted instrument websocket"}

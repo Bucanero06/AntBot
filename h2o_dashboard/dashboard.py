@@ -4,7 +4,7 @@ import os
 import dotenv
 from h2o_wave import main, Q, app, ui, on, data, run_on  # noqa F401
 
-from h2o_dashboard.redis_refresh import refresh_redis, start_redis, stop_redis
+from h2o_dashboard.redis_connection import  start_redis, stop_redis
 from h2o_dashboard.wave_auth import initialize_client, serve_security
 
 dotenv.load_dotenv(dotenv.find_dotenv())
@@ -34,10 +34,8 @@ async def serve(q: Q):
         await initialize_client(q)
         q.client.homepage_running_event = asyncio.Event()
         q.client.okx_debug_page_running_event = asyncio.Event()
-        q.client.ready_to_load_new_page_event = asyncio.Event()
         if not q.app.initialized:  # TODO this could be instantiated each client? and shut down after each use?
             await start_redis()
-            await refresh_redis(q)
 
         from h2o_dashboard import async_redis
         q.client.async_redis = async_redis
@@ -47,9 +45,7 @@ async def serve(q: Q):
     else:
         bypass_security = True
 
-    await asyncio.gather(
-        serve_security(q, bypass_security=bypass_security),
-        q.run(refresh_redis, q))
+    await serve_security(q, bypass_security=bypass_security),
 
     await q.page.save()
     await run_on(q)

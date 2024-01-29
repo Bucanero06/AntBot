@@ -21,7 +21,7 @@ COPY . /app
 # Set the entrypoint to run the app with Gunicorn
 ENTRYPOINT /usr/local/bin/gunicorn \
     -b $HOST:$PORT \
-    -w 4 \
+    -w $N_WORKERS \
     -k uvicorn.workers.UvicornWorker $MODULE_PATH:$MODULE_NAME \
     --chdir /app
 

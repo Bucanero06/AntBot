@@ -104,6 +104,7 @@ services:
       - OKX_PASSPHRASE=${OKX_PASSPHRASE}
       - OKX_SANDBOX_MODE=${OKX_SANDBOX_MODE}
       - OKX_VERBOSE=${OKX_VERBOSE}
+      - N_WORKERS=2
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8080/health" ]
       interval: 10s
@@ -138,6 +139,7 @@ services:
       - OKX_PASSPHRASE=${OKX_PASSPHRASE}
       - OKX_SANDBOX_MODE=${OKX_SANDBOX_MODE}
       - OKX_VERBOSE=${OKX_VERBOSE}
+      - N_WORKERS=2
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8081/health" ]
       interval: 10s

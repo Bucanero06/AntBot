@@ -10,19 +10,11 @@ from pyokx.okx_market_maker.position_management_service.model.Positions import P
 from redis_tools.utils import _deserialize_from_redis
 
 
-async def get_account(async_redis: aioredis.Redis) -> Account:
-    account_report_serialized = await async_redis.xrevrange('okx:reports@account', count=1)
-    if not account_report_serialized:
-        print(f"account information not ready in account cache!")
-        return Account()
-    account_report_serialized = account_report_serialized[0][1]
-    account_report_deserialized = _deserialize_from_redis(account_report_serialized)
-    account: Account = Account().from_dict(account_dict=account_report_deserialized)
-    return account
 
-
-async def get_stream_account(async_redis: aioredis.Redis, count=1) -> List[Account]:
-    account_report_serialized = await async_redis.xrevrange('okx:reports@account', count=count)
+'''Reports Stream'''
+async def get_stream_account_report(async_redis: aioredis.Redis, count=1) -> List[Account]:
+    """Uses xrange to get the latest COUNT account reports from redis and return all COUNT reports"""
+    account_report_serialized = await async_redis.xrange('okx:reports@account', count=count)
     if not account_report_serialized:
         print(f"account information not ready in account cache!")
         return [Account()]
@@ -36,7 +28,37 @@ async def get_stream_account(async_redis: aioredis.Redis, count=1) -> List[Accou
     return accounts
 
 
-async def get_positions(async_redis: aioredis.Redis) -> Positions:
+async def get_stream_positions_report(async_redis: aioredis.Redis, count=1) -> List[Positions]:
+    """Uses xrange to get the latest COUNT position reports from redis and return all COUNT reports"""
+    positions_reports_serialized = await async_redis.xrange('okx:reports@positions', count=count)
+    if not positions_reports_serialized:
+        print(f"positions information not ready in positions cache!")
+        return [Positions()]
+
+    positions = []
+    for positions_report in positions_reports_serialized:
+        positions_report_serialized = positions_report[1]
+        positions_report_deserialized = _deserialize_from_redis(positions_report_serialized)
+        positions_report: Positions = Positions().from_dict(positions_dict=positions_report_deserialized)
+        positions.append(positions_report)
+    return positions
+
+
+
+'''Single Reports'''
+async def get_account_report(async_redis: aioredis.Redis) -> Account:
+    """Uses xrevrange to get the latest account report from redis and return only this last report"""
+    account_report_serialized = await async_redis.xrevrange('okx:reports@account', count=1)
+    if not account_report_serialized:
+        print(f"account information not ready in account cache!")
+        return Account()
+    account_report_serialized = account_report_serialized[0][1]
+    account_report_deserialized = _deserialize_from_redis(account_report_serialized)
+    account: Account = Account().from_dict(account_dict=account_report_deserialized)
+    return account
+
+async def get_positions_report(async_redis: aioredis.Redis) -> Positions:
+    """Uses xrevrange to get the latest positions report from redis and return only this last report"""
     positions_report_serialized = await async_redis.xrevrange('okx:reports@positions', count=1)
     if not positions_report_serialized:
         print(f"positions information not ready in positions cache!")
@@ -47,7 +69,8 @@ async def get_positions(async_redis: aioredis.Redis) -> Positions:
     return positions
 
 
-async def get_tickers(async_redis: aioredis.Redis) -> Tickers:
+async def get_tickers_report(async_redis: aioredis.Redis) -> Tickers:
+    """Uses xrevrange to get the latest tickers report from redis and return only this last report"""
     tickers_report_serialized = await async_redis.xrevrange(f'okx:reports@tickers',
                                                             count=1)
     if not tickers_report_serialized:
@@ -59,7 +82,8 @@ async def get_tickers(async_redis: aioredis.Redis) -> Tickers:
     return tickers
 
 
-async def get_orders(async_redis: aioredis.Redis) -> Orders:
+async def get_orders_report(async_redis: aioredis.Redis) -> Orders:
+    """Uses xrevrange to get the latest orders report from redis and return only this last report"""
     orders_report_serialized = await async_redis.xrevrange('okx:reports@orders', count=1)
     if not orders_report_serialized:
         print(f"orders information not ready in orders cache!")
@@ -70,7 +94,8 @@ async def get_orders(async_redis: aioredis.Redis) -> Orders:
     return orders
 
 
-async def get_balances_and_positions(async_redis: aioredis.Redis) -> BalanceAndPosition:
+async def get_balances_and_positions_report(async_redis: aioredis.Redis) -> BalanceAndPosition:
+    """Uses xrevrange to get the latest balance and position report from redis and return only this last report"""
     # BalanceAndPosition
     balance_report_serialized = await async_redis.xrevrange('okx:reports@balance_and_position', count=1)
     if not balance_report_serialized:

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyokx.okx_market_maker.market_data_service.model.OrderBook &mdash; AntBot 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            AntBot
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../autodocumentation_python.html">autodocumentation_python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../docs.source.conf.html">docs.source.conf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../firebase_tools.BaseClasses.html">firebase_tools.BaseClasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../firebase_tools.FirestoreClient.html">firebase_tools.FirestoreClient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../h2o_dashboard.pages.home_page.html">h2o_dashboard.pages.home_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../h2o_dashboard.pages.okx_debug_page.html">h2o_dashboard.pages.okx_debug_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../h2o_dashboard.redis_connection.html">h2o_dashboard.redis_connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.data_structures.html">pyokx.data_structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.Convert.html">pyokx.low_rest_api.Convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.CopyTrading.html">pyokx.low_rest_api.CopyTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.Earning.html">pyokx.low_rest_api.Earning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.FDBroker.html">pyokx.low_rest_api.FDBroker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.Funding.html">pyokx.low_rest_api.Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.Grid.html">pyokx.low_rest_api.Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.MarketData.html">pyokx.low_rest_api.MarketData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.NDBroker.html">pyokx.low_rest_api.NDBroker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.PublicData.html">pyokx.low_rest_api.PublicData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.SpreadTrading.html">pyokx.low_rest_api.SpreadTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.Status.html">pyokx.low_rest_api.Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.SubAccount.html">pyokx.low_rest_api.SubAccount</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.Trade.html">pyokx.low_rest_api.Trade</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.TradingData.html">pyokx.low_rest_api.TradingData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.client.html">pyokx.low_rest_api.client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.market_data_service.WssMarketDataService.html">pyokx.okx_market_maker.market_data_service.WssMarketDataService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.market_data_service.model.Instrument.html">pyokx.okx_market_maker.market_data_service.model.Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.market_data_service.model.MarkPx.html">pyokx.okx_market_maker.market_data_service.model.MarkPx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html">pyokx.okx_market_maker.market_data_service.model.OrderBook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.market_data_service.model.Tickers.html">pyokx.okx_market_maker.market_data_service.model.Tickers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.order_management_service.WssOrderManagementService.html">pyokx.okx_market_maker.order_management_service.WssOrderManagementService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.order_management_service.model.Order.html">pyokx.okx_market_maker.order_management_service.model.Order</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.order_management_service.model.OrderRequest.html">pyokx.okx_market_maker.order_management_service.model.OrderRequest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.position_management_service.WssPositionManagementService.html">pyokx.okx_market_maker.position_management_service.WssPositionManagementService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.position_management_service.model.Account.html">pyokx.okx_market_maker.position_management_service.model.Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition.html">pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.position_management_service.model.Positions.html">pyokx.okx_market_maker.position_management_service.model.Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.run_sample_market_maker.html">pyokx.okx_market_maker.run_sample_market_maker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.settings.html">pyokx.okx_market_maker.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.strategy.BaseStrateg.html">pyokx.okx_market_maker.strategy.BaseStrateg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.strategy.SampleMM.html">pyokx.okx_market_maker.strategy.SampleMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.strategy.model.StrategyMeasurement.html">pyokx.okx_market_maker.strategy.model.StrategyMeasurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.strategy.model.StrategyOrder.html">pyokx.okx_market_maker.strategy.model.StrategyOrder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.strategy.params.ParamsLoader.html">pyokx.okx_market_maker.strategy.params.ParamsLoader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.strategy.risk.RiskCalculator.html">pyokx.okx_market_maker.strategy.risk.RiskCalculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.strategy.risk.RiskSnapshot.html">pyokx.okx_market_maker.strategy.risk.RiskSnapshot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.tests.test_strateg.html">pyokx.okx_market_maker.tests.test_strateg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.utils.InstrumentUtil.html">pyokx.okx_market_maker.utils.InstrumentUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.utils.OkxEnum.html">pyokx.okx_market_maker.utils.OkxEnum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.utils.TdModeUtil.html">pyokx.okx_market_maker.utils.TdModeUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.okx_market_maker.utils.WsOrderUtil.html">pyokx.okx_market_maker.utils.WsOrderUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.signal_handling.html">pyokx.signal_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.strategy_handling.html">pyokx.strategy_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.AccountTest.html">pyokx.test.AccountTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.BlockTradingTest.html">pyokx.test.BlockTradingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.BrokerTest.html">pyokx.test.BrokerTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.ConvertTest.html">pyokx.test.ConvertTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.CopyTradingTest.html">pyokx.test.CopyTradingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.EarningTest.html">pyokx.test.EarningTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.FundingTest.html">pyokx.test.FundingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.GridTest.html">pyokx.test.GridTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.MarketTest.html">pyokx.test.MarketTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.PublicDataTest.html">pyokx.test.PublicDataTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.SpreadTest.html">pyokx.test.SpreadTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.StackingTest.html">pyokx.test.StackingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.SubAccountTest.html">pyokx.test.SubAccountTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.TradeTest.html">pyokx.test.TradeTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.TradingDataTest.html">pyokx.test.TradingDataTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.WsPrivateAsyncTest.html">pyokx.test.WsPrivateAsyncTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.test.WsPublicAsyncTest.html">pyokx.test.WsPublicAsyncTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.websocket_handling.html">pyokx.websocket_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.ws_clients.WebSocketFactor.html">pyokx.ws_clients.WebSocketFactor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.ws_clients.WsPprivateAsync.html">pyokx.ws_clients.WsPprivateAsync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools._shared.store.html">redis_tools._shared.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../routers.api_keys.html">routers.api_keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../routers.login.html">routers.login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../routers.okx.html">routers.okx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../routers.okx_authentication.html">routers.okx_authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../routers.signu.html">routers.signu</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../shared.command_execution.html">shared.command_execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../shared.config.html">shared.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../shared.configuration_parser.html">shared.configuration_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../shared.data_processing_utils.html">shared.data_processing_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../shared.file_directory_ops.html">shared.file_directory_ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../shared.logging.html">shared.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../shared.string_dict_utils.html">shared.string_dict_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../websocket_a.html">websocket_a</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">AntBot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyokx.okx_market_maker.market_data_service.model.OrderBook</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyokx.okx_market_maker.market_data_service.model.OrderBook</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">field</span><span class="p">,</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">binascii</span>
+
+
+<div class="viewcode-block" id="OrderBookLevel">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBookLevel">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">OrderBookLevel</span><span class="p">:</span>
+    <span class="n">price</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">quantity</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">order_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">price_string</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">quantity_string</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">order_count_string</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_is_valid_operand</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;price&quot;</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;quantity&quot;</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_operand</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">price</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_operand</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">price</span>
+
+<div class="viewcode-block" id="OrderBookLevel.to_dict">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBookLevel.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span><span class="p">,</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantity</span><span class="p">,</span>
+            <span class="s2">&quot;order_count&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_count</span><span class="p">,</span>
+            <span class="s2">&quot;price_string&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">price_string</span><span class="p">,</span>
+            <span class="s2">&quot;quantity_string&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">quantity_string</span><span class="p">,</span>
+            <span class="s2">&quot;order_count_string&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_count_string</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+
+
+
+<div class="viewcode-block" id="OrderBook">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">OrderBook</span><span class="p">:</span>
+    <span class="n">inst_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">_bids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OrderBookLevel</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">list</span><span class="p">())</span>
+    <span class="n">_asks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OrderBookLevel</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">list</span><span class="p">())</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">exch_check_sum</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="OrderBook.set_bids_on_snapshot">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.set_bids_on_snapshot">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_bids_on_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_book_level_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OrderBookLevel</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">order_book_level_list</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.set_asks_on_snapshot">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.set_asks_on_snapshot">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_asks_on_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_book_level_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OrderBookLevel</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">order_book_level_list</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.set_bids_on_update">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.set_bids_on_update">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_bids_on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_book_level</span><span class="p">:</span> <span class="n">OrderBookLevel</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">order_book_level</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">order_book_level</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">order_book_level</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">order_book_level</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">order_book_level</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">order_book_level</span><span class="o">.</span><span class="n">quantity</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_book_level</span>
+                    <span class="k">break</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.set_asks_on_update">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.set_asks_on_update">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_asks_on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_book_level</span><span class="p">:</span> <span class="n">OrderBookLevel</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">order_book_level</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">order_book_level</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">order_book_level</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">order_book_level</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">order_book_level</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">order_book_level</span><span class="o">.</span><span class="n">quantity</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_book_level</span>
+                    <span class="k">break</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.set_timestamp">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.set_timestamp">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.set_exch_check_sum">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.set_exch_check_sum">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_exch_check_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checksum</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exch_check_sum</span> <span class="o">=</span> <span class="n">checksum</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_current_check_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bid_ask_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">))):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">bid_ask_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">price_string</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">quantity_string</span><span class="si">}</span><span class="s2">:&quot;</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">bid_ask_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">price_string</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">quantity_string</span><span class="si">}</span><span class="s2">:&quot;</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">25</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">bid_ask_string</span><span class="p">:</span>
+            <span class="n">bid_ask_string</span> <span class="o">=</span> <span class="n">bid_ask_string</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">crc</span> <span class="o">=</span> <span class="n">binascii</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">bid_ask_string</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span>  <span class="c1"># Calculate CRC32 as unsigned integer</span>
+        <span class="n">crc_signed</span> <span class="o">=</span> <span class="n">crc</span> <span class="k">if</span> <span class="n">crc</span> <span class="o">&lt;</span> <span class="mh">0x80000000</span> <span class="k">else</span> <span class="n">crc</span> <span class="o">-</span> <span class="mh">0x100000000</span>  <span class="c1"># Convert to signed integer</span>
+        <span class="k">return</span> <span class="n">crc_signed</span>
+
+<div class="viewcode-block" id="OrderBook.do_check_sum">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.do_check_sum">[docs]</a>
+    <span class="k">def</span> <span class="nf">do_check_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">exch_check_sum</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># ignore check sum</span>
+        <span class="n">current_crc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_check_sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">current_crc</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">exch_check_sum</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_book_array</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">order_book_array</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Orderbook for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inst_id</span><span class="si">}</span><span class="s2">: either bids or asks array not initiated.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="OrderBook.best_bid">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.best_bid">[docs]</a>
+    <span class="k">def</span> <span class="nf">best_bid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderBookLevel</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.best_ask">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.best_ask">[docs]</a>
+    <span class="k">def</span> <span class="nf">best_ask</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderBookLevel</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.best_bid_price">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.best_bid_price">[docs]</a>
+    <span class="k">def</span> <span class="nf">best_bid_price</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">price</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.best_ask_price">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.best_ask_price">[docs]</a>
+    <span class="k">def</span> <span class="nf">best_ask_price</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">price</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.bid_by_level">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.bid_by_level">[docs]</a>
+    <span class="k">def</span> <span class="nf">bid_by_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderBookLevel</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">):</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="n">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.ask_by_level">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.ask_by_level">[docs]</a>
+    <span class="k">def</span> <span class="nf">ask_by_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderBookLevel</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">):</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="n">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.middle_price">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.middle_price">[docs]</a>
+    <span class="k">def</span> <span class="nf">middle_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_empty_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">price</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">price</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.to_dict">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.to_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;inst_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inst_id</span><span class="p">,</span>
+            <span class="s2">&quot;bids&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">bid</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">bid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span><span class="p">],</span>
+            <span class="s2">&quot;asks&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ask</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">ask</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span><span class="p">],</span>
+            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+            <span class="s2">&quot;exch_check_sum&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">exch_check_sum</span><span class="p">,</span>
+        <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="OrderBook.from_dict">
+<a class="viewcode-back" href="../../../../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook.from_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_book_dict</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inst_id</span> <span class="o">=</span> <span class="n">order_book_dict</span><span class="p">[</span><span class="s2">&quot;inst_id&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bids</span> <span class="o">=</span> <span class="p">[</span><span class="n">OrderBookLevel</span><span class="p">(</span><span class="o">**</span><span class="n">bid</span><span class="p">)</span> <span class="k">for</span> <span class="n">bid</span> <span class="ow">in</span> <span class="n">order_book_dict</span><span class="p">[</span><span class="s2">&quot;bids&quot;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_asks</span> <span class="o">=</span> <span class="p">[</span><span class="n">OrderBookLevel</span><span class="p">(</span><span class="o">**</span><span class="n">ask</span><span class="p">)</span> <span class="k">for</span> <span class="n">ask</span> <span class="ow">in</span> <span class="n">order_book_dict</span><span class="p">[</span><span class="s2">&quot;asks&quot;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">order_book_dict</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exch_check_sum</span> <span class="o">=</span> <span class="n">order_book_dict</span><span class="p">[</span><span class="s2">&quot;exch_check_sum&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ruben Fernandez Carbon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

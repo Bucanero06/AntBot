@@ -1,0 +1,15 @@
+pyokx.redis_structured_reports
+==============================
+
+.. automodule:: pyokx.redis_structured_reports
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. click:: pyokx.redis_structured_reports:cli_run
+    :prog: CLI for DensityPy
+    :nested: full
+
+.. inheritance-diagram:: pyokx.redis_structured_reports
+    :parts: 1
+

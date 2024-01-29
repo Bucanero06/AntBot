@@ -1,0 +1,15 @@
+pyokx.strategy_handling
+=======================
+
+.. automodule:: pyokx.strategy_handling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. click:: pyokx.strategy_handling:cli_run
+    :prog: CLI for DensityPy
+    :nested: full
+
+.. inheritance-diagram:: pyokx.strategy_handling
+    :parts: 1
+

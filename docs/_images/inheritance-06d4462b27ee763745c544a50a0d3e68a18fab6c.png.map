@@ -1,0 +1,5 @@
+<map id="inheritance57ec858fb6" name="inheritance57ec858fb6">
+<area shape="rect" id="node1" href="redis_tools._shared.store.html#redis_tools._shared.store.AbstractStore" target="_top" title="An abstract class of a store." alt="" coords="148,5,259,31"/>
+<area shape="rect" id="node3" href="#redis_tools.syncio.store.Store" target="_top" title="Manages a collection of Model&#39;s, connecting them to a redis database" alt="" coords="307,5,379,31"/>
+<area shape="rect" id="node2" title="Usage docs: https://docs.pydantic.dev/2.5/concepts/models/" alt="" coords="5,5,100,31"/>
+</map>

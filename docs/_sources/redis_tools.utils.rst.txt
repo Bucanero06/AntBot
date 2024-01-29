@@ -1,0 +1,15 @@
+redis_tools.utils
+=================
+
+.. automodule:: redis_tools.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. click:: redis_tools.utils:cli_run
+    :prog: CLI for DensityPy
+    :nested: full
+
+.. inheritance-diagram:: redis_tools.utils
+    :parts: 1
+

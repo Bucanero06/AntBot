@@ -1,0 +1,136 @@
+.. AntBot documentation master file, created by
+   sphinx-quickstart on Sun Jan 28 19:46:58 2024.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to AntBot's documentation!
+==================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   autodocumentation_python
+   docs.source.conf
+   firebase_tools.BaseClasses
+   firebase_tools.FirestoreClient
+   firebase_tools.authenticate
+   h2o_dashboard.dashboard
+   h2o_dashboard.pages.home_page
+   h2o_dashboard.pages.okx_debug_page
+   h2o_dashboard.redis_connection
+   h2o_dashboard.util
+   h2o_dashboard.wave_auth
+   main
+   pyokx.Futures_Exchange_Client
+   pyokx.data_structures
+   pyokx.low_rest_api.Account
+   pyokx.low_rest_api.BlockTrading
+   pyokx.low_rest_api.Convert
+   pyokx.low_rest_api.CopyTrading
+   pyokx.low_rest_api.Earning
+   pyokx.low_rest_api.FDBroker
+   pyokx.low_rest_api.Funding
+   pyokx.low_rest_api.Grid
+   pyokx.low_rest_api.MarketData
+   pyokx.low_rest_api.NDBroker
+   pyokx.low_rest_api.PublicData
+   pyokx.low_rest_api.SpreadTrading
+   pyokx.low_rest_api.Status
+   pyokx.low_rest_api.SubAccount
+   pyokx.low_rest_api.Trade
+   pyokx.low_rest_api.TradingData
+   pyokx.low_rest_api.client
+   pyokx.low_rest_api.consts
+   pyokx.low_rest_api.exceptions
+   pyokx.low_rest_api.utils
+   pyokx.okx_market_maker.market_data_service.WssMarketDataService
+   pyokx.okx_market_maker.market_data_service.model.Instrument
+   pyokx.okx_market_maker.market_data_service.model.MarkPx
+   pyokx.okx_market_maker.market_data_service.model.OrderBook
+   pyokx.okx_market_maker.market_data_service.model.Tickers
+   pyokx.okx_market_maker.order_management_service.WssOrderManagementService
+   pyokx.okx_market_maker.order_management_service.model.Order
+   pyokx.okx_market_maker.order_management_service.model.OrderRequest
+   pyokx.okx_market_maker.position_management_service.WssPositionManagementService
+   pyokx.okx_market_maker.position_management_service.model.Account
+   pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition
+   pyokx.okx_market_maker.position_management_service.model.Positions
+   pyokx.okx_market_maker.run_sample_market_maker
+   pyokx.okx_market_maker.settings
+   pyokx.okx_market_maker.strategy.BaseStrateg
+   pyokx.okx_market_maker.strategy.SampleMM
+   pyokx.okx_market_maker.strategy.model.StrategyMeasurement
+   pyokx.okx_market_maker.strategy.model.StrategyOrder
+   pyokx.okx_market_maker.strategy.params.ParamsLoader
+   pyokx.okx_market_maker.strategy.risk.RiskCalculator
+   pyokx.okx_market_maker.strategy.risk.RiskSnapshot
+   pyokx.okx_market_maker.tests.test_strateg
+   pyokx.okx_market_maker.utils.InstrumentUtil
+   pyokx.okx_market_maker.utils.OkxEnum
+   pyokx.okx_market_maker.utils.TdModeUtil
+   pyokx.okx_market_maker.utils.WsOrderUtil
+   pyokx.redis_structured_reports
+   pyokx.redis_structured_streams
+   pyokx.signal_handling
+   pyokx.strategy_handling
+   pyokx.test.AccountTest
+   pyokx.test.BlockTradingTest
+   pyokx.test.BrokerTest
+   pyokx.test.ConvertTest
+   pyokx.test.CopyTradingTest
+   pyokx.test.EarningTest
+   pyokx.test.FundingTest
+   pyokx.test.GridTest
+   pyokx.test.MarketTest
+   pyokx.test.PublicDataTest
+   pyokx.test.SpreadTest
+   pyokx.test.StackingTest
+   pyokx.test.SubAccountTest
+   pyokx.test.TradeTest
+   pyokx.test.TradingDataTest
+   pyokx.test.WsPrivateAsyncTest
+   pyokx.test.WsPublicAsyncTest
+   pyokx.websocket_handling
+   pyokx.ws_clients.WebSocketFactor
+   pyokx.ws_clients.WsPprivateAsync
+   pyokx.ws_clients.WsPublicAsync
+   pyokx.ws_clients.WsUtils
+   pyokx.ws_data_structures
+   redis_tools._shared.lua_scripts
+   redis_tools._shared.model.base
+   redis_tools._shared.model.delete_utils
+   redis_tools._shared.model.insert_utils
+   redis_tools._shared.model.prop_utils
+   redis_tools._shared.model.select_utils
+   redis_tools._shared.store
+   redis_tools._shared.utils
+   redis_tools.asyncio.model
+   redis_tools.asyncio.store
+   redis_tools.config
+   redis_tools.syncio.model
+   redis_tools.syncio.store
+   redis_tools.utils
+   routers.api_keys
+   routers.login
+   routers.okx
+   routers.okx_authentication
+   routers.signu
+   shared.command_execution
+   shared.config
+   shared.configuration_parser
+   shared.data_processing_utils
+   shared.file_directory_ops
+   shared.logging
+   shared.string_dict_utils
+   shared.tmp_shared
+   websocket_a
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

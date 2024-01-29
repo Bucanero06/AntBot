@@ -1,0 +1,4 @@
+<map id="inheritanceebf7587cf8" name="inheritanceebf7587cf8">
+<area shape="rect" id="node1" href="#pyokx.okx_market_maker.market_data_service.model.Tickers.Ticker" target="_top" title="Ticker(inst_type: pyokx.okx_market_maker.utils.OkxEnum.InstType, inst_id: str, last: float = 0, last_sz: float = 0, ask_px: float = 0, ask_sz: float = 0, bid_px: float = 0, bid_sz: float = 0, open24h: float = 0, high24h: float = 0, low24h: float = 0, vol_ccy24h: float = 0, vol24h: float = 0, sod_utc0: float = 0, sod_utc8: float = 0, ts: int = 0)" alt="" coords="5,55,77,80"/>
+<area shape="rect" id="node2" href="#pyokx.okx_market_maker.market_data_service.model.Tickers.Tickers" target="_top" title="Tickers(_ticker_map: Dict[str, pyokx.okx_market_maker.market_data_service.model.Tickers.Ticker] = &lt;factory&gt;)" alt="" coords="5,5,77,31"/>
+</map>

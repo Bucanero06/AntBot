@@ -18,12 +18,12 @@ assert API_PASSPHRASE, "Please set OKX_PASSPHRASE in environment variable"
 assert IS_PAPER_TRADING in [True, False], "Please set OKX_SANDBOX_MODE in environment variable"
 
 # market-making instrument
-# TRADING_INSTRUMENT_ID = "BTC-USDT-SWAP"
-btc_:Ticker = get_ticker_with_higher_volume("BTC-USDT",
-                                     instrument_type="FUTURES",
-                                     top_n=1)[0]
-
-TRADING_INSTRUMENT_ID = btc_.instId
+TRADING_INSTRUMENT_ID = "BTC-USDT-SWAP"
+# btc_:Ticker = get_ticker_with_higher_volume("BTC-USDT",
+#                                      instrument_type="FUTURES",
+#                                      top_n=1)[0]
+#
+# TRADING_INSTRUMENT_ID = btc_.instId
 TRADING_MODE = "isolated"  # "cash" / "isolated" / "cross"
 
 # default latency tolerance level

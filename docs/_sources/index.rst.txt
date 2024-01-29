@@ -1,5 +1,5 @@
 .. AntBot documentation master file, created by
-   sphinx-quickstart on Sun Jan 28 19:46:58 2024.
+   sphinx-quickstart on Sun Jan 28 22:06:19 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -11,7 +11,6 @@ Welcome to AntBot's documentation!
    :caption: Contents:
 
    autodocumentation_python
-   docs.source.conf
    firebase_tools.BaseClasses
    firebase_tools.FirestoreClient
    firebase_tools.authenticate
@@ -58,14 +57,14 @@ Welcome to AntBot's documentation!
    pyokx.okx_market_maker.position_management_service.model.Positions
    pyokx.okx_market_maker.run_sample_market_maker
    pyokx.okx_market_maker.settings
-   pyokx.okx_market_maker.strategy.BaseStrateg
+   pyokx.okx_market_maker.strategy.BaseStrategy
    pyokx.okx_market_maker.strategy.SampleMM
    pyokx.okx_market_maker.strategy.model.StrategyMeasurement
    pyokx.okx_market_maker.strategy.model.StrategyOrder
    pyokx.okx_market_maker.strategy.params.ParamsLoader
    pyokx.okx_market_maker.strategy.risk.RiskCalculator
    pyokx.okx_market_maker.strategy.risk.RiskSnapshot
-   pyokx.okx_market_maker.tests.test_strateg
+   pyokx.okx_market_maker.tests.test_strategy
    pyokx.okx_market_maker.utils.InstrumentUtil
    pyokx.okx_market_maker.utils.OkxEnum
    pyokx.okx_market_maker.utils.TdModeUtil
@@ -92,7 +91,7 @@ Welcome to AntBot's documentation!
    pyokx.test.WsPrivateAsyncTest
    pyokx.test.WsPublicAsyncTest
    pyokx.websocket_handling
-   pyokx.ws_clients.WebSocketFactor
+   pyokx.ws_clients.WebSocketFactory
    pyokx.ws_clients.WsPprivateAsync
    pyokx.ws_clients.WsPublicAsync
    pyokx.ws_clients.WsUtils
@@ -115,7 +114,7 @@ Welcome to AntBot's documentation!
    routers.login
    routers.okx
    routers.okx_authentication
-   routers.signu
+   routers.signup
    shared.command_execution
    shared.config
    shared.configuration_parser
@@ -124,7 +123,7 @@ Welcome to AntBot's documentation!
    shared.logging
    shared.string_dict_utils
    shared.tmp_shared
-   websocket_a
+   websocket_app
 
 
 

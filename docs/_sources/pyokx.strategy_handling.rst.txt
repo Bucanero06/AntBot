@@ -6,10 +6,6 @@ pyokx.strategy_handling
     :undoc-members:
     :show-inheritance:
 
-.. click:: pyokx.strategy_handling:cli_run
-    :prog: CLI for DensityPy
-    :nested: full
-
 .. inheritance-diagram:: pyokx.strategy_handling
     :parts: 1
 

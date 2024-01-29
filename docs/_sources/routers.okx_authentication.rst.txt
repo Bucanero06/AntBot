@@ -6,10 +6,6 @@ routers.okx_authentication
     :undoc-members:
     :show-inheritance:
 
-.. click:: routers.okx_authentication:cli_run
-    :prog: CLI for DensityPy
-    :nested: full
-
 .. inheritance-diagram:: routers.okx_authentication
     :parts: 1
 

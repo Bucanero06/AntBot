@@ -6,10 +6,6 @@ pyokx.redis_structured_streams
     :undoc-members:
     :show-inheritance:
 
-.. click:: pyokx.redis_structured_streams:cli_run
-    :prog: CLI for DensityPy
-    :nested: full
-
 .. inheritance-diagram:: pyokx.redis_structured_streams
     :parts: 1
 

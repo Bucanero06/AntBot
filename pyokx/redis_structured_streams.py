@@ -2,9 +2,8 @@ from typing import List
 
 import aioredis
 
-from pyokx.rest_messages_service import FillHistoricalMetrics
-from pyokx.websocket_handling import available_channel_models
-from pyokx.ws_data_structures import AccountChannel, PositionsChannel, OrdersChannel
+from pyokx.data_structures import FillHistoricalMetrics
+from pyokx.ws_data_structures import AccountChannel, PositionsChannel, OrdersChannel, available_channel_models
 from redis_tools.utils import _deserialize_from_redis
 
 '''Structured Websocket Streams'''

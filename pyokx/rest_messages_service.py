@@ -18,17 +18,6 @@ logger = logging.setup_logger("okx_rest_messages_service")
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
 
-class FillHistoricalMetricsEntry(BaseModel):
-    avg_fill_pnl: float
-    total_fill_pnl: float
-    total_fill_fee: float
-
-
-class FillHistoricalMetrics(BaseModel):
-    ONE_DAY: FillHistoricalMetricsEntry
-    ONE_WEEK: FillHistoricalMetricsEntry
-    ONE_MONTH: FillHistoricalMetricsEntry
-    THREE_MONTHS: FillHistoricalMetricsEntry
 
 
 async def analyze_transaction_history(instType: InstType = 'FUTURES'):

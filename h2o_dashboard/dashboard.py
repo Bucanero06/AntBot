@@ -26,6 +26,22 @@ async def on_shutdown():
     print("Shutdown event triggered")
     await stop_async_redis()
 
+
+@on('@system.client_disconnect')
+async def on_client_disconnect(q: Q):
+    print('Client disconnected')
+    q.client.overview_page_running_event.clear()
+    q.client.okx_dashboard_page_running_event.clear()
+    q.client.documentation_page_running_event.clear()
+    q.client.overview_page_task.cancel()
+    q.client.okx_dashboard_page_task.cancel()
+    q.client.documentation_page_task.cancel()
+
+
+    await asyncio.sleep(1)
+    print('Client disconnected')
+
+
 @app('/', on_startup=on_startup, on_shutdown=on_shutdown)
 async def serve(q: Q):
     """Main application handler."""
@@ -33,13 +49,28 @@ async def serve(q: Q):
     if not q.client.initialized:
         print("Initializing")
         await initialize_client(q)
-        q.client.overview_page_running_event = asyncio.Event()
-        q.client.okx_dashboard_page_running_event = asyncio.Event()
-        q.client.documentation_page_running_event = asyncio.Event()
+        # First check if
+        # are already initialized that way we either clear them or not initialize them again
+        if not isinstance(getattr(q.client, 'overview_page_running_event'), asyncio.Event):
+            q.client.overview_page_running_event = asyncio.Event()
+        if not isinstance(getattr(q.client, 'okx_dashboard_page_running_event'), asyncio.Event):
+            q.client.okx_dashboard_page_running_event = asyncio.Event()
+        if not isinstance(getattr(q.client, 'documentation_page_running_event'), asyncio.Event):
+            q.client.documentation_page_running_event = asyncio.Event()
+        if not isinstance(getattr(q.client, 'page_loop_event_entry'), asyncio.Event):
+            q.client.page_loop_event_entry = asyncio.Event()
+        if not isinstance(getattr(q.client, 'page_loop_event_exit'), asyncio.Event):
+            q.client.page_loop_event_exit = asyncio.Event()
+
+        q.client.overview_page_running_event.clear()
+        q.client.okx_dashboard_page_running_event.clear()
+        q.client.documentation_page_running_event.clear()
+
         if not q.app.initialized:  # TODO this could be instantiated each client? and shut down after each use?
             await init_async_redis()
+            q.app.initialized = True
 
-        q.client.async_redis = await init_async_redis() # When already initializd it returns the connection
+        q.client.async_redis = await init_async_redis()  # When already initializd it returns the connection
 
     if not (os.getenv('BYPASS_SECURITY') == 'True' and os.getenv('DEVELOPMENT_GOD_MODE') == 'True'):
         bypass_security = False

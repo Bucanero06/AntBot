@@ -4,10 +4,9 @@ from typing import List
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
 from h2o_dashboard.util import add_card
-from pyokx.data_structures import AccountBalanceData
+from pyokx.data_structures import AccountBalanceData, FillHistoricalMetrics, FillHistoricalMetricsEntry
 from pyokx.redis_structured_streams import get_stream_okx_account_messages, get_stream_okx_position_messages, \
     get_stream_okx_fill_metrics_report
-from pyokx.rest_messages_service import FillHistoricalMetrics, FillHistoricalMetricsEntry
 from pyokx.ws_data_structures import AccountChannel, PositionsChannel, WSPosition
 
 

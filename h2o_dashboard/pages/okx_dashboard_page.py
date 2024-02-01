@@ -43,9 +43,7 @@ async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
 
 
 async def okx_dashboard_page(q: Q):
-    '''Define the page space'''
-    await init_page_card_set(q, 'okx_dashboard_page')
-
+    ''''''
     '''Header'''
     await add_card(q, 'OKXDEBUG_Header', ui.header_card(box='header', title='OKX Dashboard', subtitle='DevPage',
                                                         # Color
@@ -66,7 +64,7 @@ async def okx_dashboard_page(q: Q):
     await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget)
     await q.page.save()
 
-    q.client.okx_dashboard_page_running_event.set()
+    # q.client.okx_dashboard_page_running_event.set()
     try:
         while True:
             if not q.client.okx_dashboard_page_running_event.is_set():

@@ -11,7 +11,6 @@ from h2o_dashboard.widgets.okx_streams import Overview_StreamWidget
 
 async def overview_page(q: Q):
     print("Loading Overview Page")
-
     '''Header'''
     await add_card(q, 'Overview_Page_Header',
                    ui.header_card(box='header', title='Overview Home', subtitle='Welcome to the AntBot Dashboard',
@@ -27,8 +26,8 @@ async def overview_page(q: Q):
     '''Init RealTime Page Cards'''
     await overview_widget.add_cards()
     await q.page.save()
+    # q.client.overview_page_running_event.set()
 
-    q.client.overview_page_running_event.set()
     try:
         while True:
             if not q.client.overview_page_running_event.is_set():

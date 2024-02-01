@@ -25,6 +25,7 @@ async def documentation_page(q: Q):
     await add_card(q, 'Documentation_Page_Diagram', ui.markdown_card(box='first_context_1', title='Diagram',
                                                                      content='<div style="width: 640px; height: 480px; margin: 10px; position: relative;"><iframe allowfullscreen frameborder="0" style="width:640px; height:480px" src="https://lucid.app/documents/embedded/e5260455-d74f-4d36-af21-5e018177e9f0" id="ygM8fjvwnLkk"></iframe></div>'
                                                                      ))
+    # q.client.documentation_page_running_event.set()
 
 
     try:

@@ -557,6 +557,17 @@ class InstIdSignalRequestForm(BaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
 
+class FillHistoricalMetricsEntry(BaseModel):
+    avg_fill_pnl: float
+    total_fill_pnl: float
+    total_fill_fee: float
+
+
+class FillHistoricalMetrics(BaseModel):
+    ONE_DAY: FillHistoricalMetricsEntry
+    ONE_WEEK: FillHistoricalMetricsEntry
+    ONE_MONTH: FillHistoricalMetricsEntry
+    THREE_MONTHS: FillHistoricalMetricsEntry
 
 # {
 #   "InstIdAPIKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJydWJlbkBjYXJib255bC5vcmciLCJpZCI6InFtc2d4c0Eza0taNHMwaml1bTQwOHFvbGJWOTIiLCJyb2xlIjoidHJhZGluZ19pbnN0cnVtZW50IiwiaW5zdElEIjoiQlRDLVVTRFQtMjQwNjI4In0.WyO3oNTT5loBnQzsTcjM8Lt13F8-nNS7DI6PxSEGeSc",

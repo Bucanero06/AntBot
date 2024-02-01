@@ -269,20 +269,25 @@ async def render_hidden_content(q: Q):
     if q.args['#'] == 'overview_page':
         print("Route to Overview Page")
         q.client.overview_page_running_event.set()
-        task = asyncio.create_task(overview_page(q))
-        task.done()
+        q.client.overview_page_task = asyncio.create_task(overview_page(q))
+        # q.client.overview_page_task.cancel()
+        # await overview_page(q)
         await q.page.save()
     elif q.args['#'] == 'okx_dashboard_page':
         print("Route to OKX Dashboard Page")
         q.client.okx_dashboard_page_running_event.set()
-        task = asyncio.create_task(okx_dashboard_page(q))
-        task.done()
+        q.client.okx_dashboard_page_task = asyncio.create_task(okx_dashboard_page(q))
+
+        # q.client.okx_dashboard_page_task.cancel()
+        # await okx_dashboard_page(q)
         await q.page.save()
     elif q.args['#'] == 'documentation_page':
         print("Route to Documentation Page")
         q.client.documentation_page_running_event.set()
-        task = asyncio.create_task(documentation_page(q))
-        task.done()
+        q.client.documentation_page_task = asyncio.create_task(documentation_page(q))
+        # q.client.documentation_page_task.cancel()
+        await q.client.documentation_page_task
+        # await documentation_page(q)
         await q.page.save()
     else:
         print("Error: No route found")

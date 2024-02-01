@@ -11,7 +11,9 @@ state-of-the-art technological integration.
 
 - **Document Title:** AntBot Project Comprehensive Documentation
 - **Copyright:** © 2024 Carbonyl LLC & Carbonyl R&D
-- **Visual Reference:** [Screencast from 01-25-2024 10:41:13 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/5c0a9a4f-78b1-4b5b-ab3b-13c439bb8d8b)
+- **Visual Reference:**
+
+[Screencast from 02-01-2024 12:19:23 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/781bc1eb-7af1-4959-985e-7fc026ee177b)
 
 ### Deployment Guidelines
 

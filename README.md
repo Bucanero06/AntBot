@@ -3,13 +3,12 @@
 ### Overview
 
 This refined document presents a comprehensive and professional guide for the AntBot project, developed by Carbonyl
-LLC & Carbonyl R&D. The AntBot is a sophisticated, high-performance trading application, meticulously engineered for
-seamless interaction with the OKX exchange. It emphasizes real-time data processing, efficient resource management, and
-state-of-the-art technological integration.
+LLC & Carbonyl R&D. The AntBot is a sophisticated, high-performance trading application, meticulously engineered for interaction with the OKX exchange. It emphasizes real-time data processing, efficient resource management, and
+robust technological stack.
 
 #### Document Details
 
-- **Document Title:** AntBot Project Comprehensive Documentation
+- **Document Title:** AntBot Project Synopsis Documentation
 - **Copyright:** © 2024 Carbonyl LLC & Carbonyl R&D
 - **Visual Reference:**
 
@@ -67,7 +66,7 @@ performance and versatility:
     - Employs Pydantic for robust data structuring and Redis for fast, scalable data processing.
 
 3. **Supplementary Technologies:**
-    - Nginx, Asyncio, Wave, VectorBT(PRO), Nautilus Trader, and TradingView enrich the stack with capabilities ranging
+    - Nginx, Asyncio, Wave, Poetry, VectorBT(PRO), Nautilus Trader, and TradingView enrich the stack with capabilities ranging
       from request management to advanced backtesting and market analysis (under development) 
 
 4. **Additional Components:**

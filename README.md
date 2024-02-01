@@ -66,7 +66,7 @@ performance and versatility:
 
 3. **Supplementary Technologies:**
     - Nginx, Asyncio, Wave, VectorBT(PRO), Nautilus Trader, and TradingView enrich the stack with capabilities ranging
-      from request management to advanced backtesting and market analysis. 
+      from request management to advanced backtesting and market analysis (under development) 
 
 4. **Additional Components:**
     - Incorporates Websockets, Requests, Docker, GCP Logging & Monitoring, Firebase (GCP), and OAuth2 to fortify the

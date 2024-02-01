@@ -1,0 +1,11 @@
+firebase_tools.authenticate
+===========================
+
+.. automodule:: firebase_tools.authenticate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: firebase_tools.authenticate
+    :parts: 1
+

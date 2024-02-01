@@ -1,0 +1,5 @@
+<map id="inheritance53126f065c" name="inheritance53126f065c">
+<area shape="rect" id="node1" title="Generic enumeration." alt="" coords="26,55,98,80"/>
+<area shape="rect" id="node3" href="#pyokx.okx_market_maker.strategy.model.StrategyOrder.StrategyOrderStatus" target="_top" title="An enumeration." alt="" coords="167,55,321,80"/>
+<area shape="rect" id="node2" href="#pyokx.okx_market_maker.strategy.model.StrategyOrder.StrategyOrder" target="_top" title="StrategyOrder(inst_id: str, side: pyokx.okx_market_maker.utils.OkxEnum.OrderSide, ord_type: pyokx.okx_market_maker.utils.OkxEnum.OrderType, size: str, price: str = &#39;&#39;, client_order_id: str = &#39;&#39;, order_id: str = &#39;&#39;, strategy_order_status: pyokx.okx_market_maker.strategy.model.StrategyOrder.StrategyOrderStatus = &lt;StrategyOrderStatus.SENT: &#39;sent&#39;&gt;, tgt_ccy: str = &#39;&#39;, amend_req_id: str = &#39;&#39;, filled_size: str = &#39;0&#39;, avg_fill_price: float = 0)" alt="" coords="5,5,119,31"/>
+</map>

@@ -1,0 +1,11 @@
+pyokx.test.FundingTest
+======================
+
+.. automodule:: pyokx.test.FundingTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.FundingTest
+    :parts: 1
+

@@ -1,0 +1,11 @@
+pyokx.test.TradeTest
+====================
+
+.. automodule:: pyokx.test.TradeTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.TradeTest
+    :parts: 1
+

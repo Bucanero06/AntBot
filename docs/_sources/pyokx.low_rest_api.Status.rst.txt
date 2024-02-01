@@ -1,0 +1,11 @@
+pyokx.low_rest_api.Status
+=========================
+
+.. automodule:: pyokx.low_rest_api.Status
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.low_rest_api.Status
+    :parts: 1
+

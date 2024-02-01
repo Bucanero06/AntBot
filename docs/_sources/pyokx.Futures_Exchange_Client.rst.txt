@@ -1,0 +1,11 @@
+pyokx.Futures_Exchange_Client
+=============================
+
+.. automodule:: pyokx.Futures_Exchange_Client
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.Futures_Exchange_Client
+    :parts: 1
+

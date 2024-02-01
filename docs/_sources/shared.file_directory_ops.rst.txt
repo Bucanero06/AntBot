@@ -1,0 +1,11 @@
+shared.file_directory_ops
+=========================
+
+.. automodule:: shared.file_directory_ops
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: shared.file_directory_ops
+    :parts: 1
+

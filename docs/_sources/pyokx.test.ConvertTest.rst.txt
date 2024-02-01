@@ -1,0 +1,11 @@
+pyokx.test.ConvertTest
+======================
+
+.. automodule:: pyokx.test.ConvertTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.ConvertTest
+    :parts: 1
+

@@ -1,0 +1,11 @@
+pyokx.okx_market_maker.position_management_service.WssPositionManagementService
+===============================================================================
+
+.. automodule:: pyokx.okx_market_maker.position_management_service.WssPositionManagementService
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.okx_market_maker.position_management_service.WssPositionManagementService
+    :parts: 1
+

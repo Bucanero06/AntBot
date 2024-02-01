@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>h2o_dashboard.wave_auth &mdash; AntBot 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AntBot
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autodocumentation_python.html">autodocumentation_python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.BaseClasses.html">firebase_tools.BaseClasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.FirestoreClient.html">firebase_tools.FirestoreClient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Convert.html">pyokx.low_rest_api.Convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.CopyTrading.html">pyokx.low_rest_api.CopyTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Earning.html">pyokx.low_rest_api.Earning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.FDBroker.html">pyokx.low_rest_api.FDBroker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Funding.html">pyokx.low_rest_api.Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Grid.html">pyokx.low_rest_api.Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.MarketData.html">pyokx.low_rest_api.MarketData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.NDBroker.html">pyokx.low_rest_api.NDBroker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.PublicData.html">pyokx.low_rest_api.PublicData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.SpreadTrading.html">pyokx.low_rest_api.SpreadTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Status.html">pyokx.low_rest_api.Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.SubAccount.html">pyokx.low_rest_api.SubAccount</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Trade.html">pyokx.low_rest_api.Trade</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.TradingData.html">pyokx.low_rest_api.TradingData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.client.html">pyokx.low_rest_api.client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.WssMarketDataService.html">pyokx.okx_market_maker.market_data_service.WssMarketDataService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.model.Instrument.html">pyokx.okx_market_maker.market_data_service.model.Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.model.MarkPx.html">pyokx.okx_market_maker.market_data_service.model.MarkPx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html">pyokx.okx_market_maker.market_data_service.model.OrderBook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.model.Tickers.html">pyokx.okx_market_maker.market_data_service.model.Tickers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.order_management_service.WssOrderManagementService.html">pyokx.okx_market_maker.order_management_service.WssOrderManagementService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.order_management_service.model.Order.html">pyokx.okx_market_maker.order_management_service.model.Order</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.order_management_service.model.OrderRequest.html">pyokx.okx_market_maker.order_management_service.model.OrderRequest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.position_management_service.WssPositionManagementService.html">pyokx.okx_market_maker.position_management_service.WssPositionManagementService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.position_management_service.model.Account.html">pyokx.okx_market_maker.position_management_service.model.Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition.html">pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.position_management_service.model.Positions.html">pyokx.okx_market_maker.position_management_service.model.Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.run_sample_market_maker.html">pyokx.okx_market_maker.run_sample_market_maker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.settings.html">pyokx.okx_market_maker.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.BaseStrategy.html">pyokx.okx_market_maker.strategy.BaseStrategy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.SampleMM.html">pyokx.okx_market_maker.strategy.SampleMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.model.StrategyMeasurement.html">pyokx.okx_market_maker.strategy.model.StrategyMeasurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.model.StrategyOrder.html">pyokx.okx_market_maker.strategy.model.StrategyOrder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.params.ParamsLoader.html">pyokx.okx_market_maker.strategy.params.ParamsLoader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.risk.RiskCalculator.html">pyokx.okx_market_maker.strategy.risk.RiskCalculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.risk.RiskSnapshot.html">pyokx.okx_market_maker.strategy.risk.RiskSnapshot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.tests.test_strategy.html">pyokx.okx_market_maker.tests.test_strategy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.utils.InstrumentUtil.html">pyokx.okx_market_maker.utils.InstrumentUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.utils.OkxEnum.html">pyokx.okx_market_maker.utils.OkxEnum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.utils.TdModeUtil.html">pyokx.okx_market_maker.utils.TdModeUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.utils.WsOrderUtil.html">pyokx.okx_market_maker.utils.WsOrderUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.strategy_handling.html">pyokx.strategy_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.AccountTest.html">pyokx.test.AccountTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.BlockTradingTest.html">pyokx.test.BlockTradingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.BrokerTest.html">pyokx.test.BrokerTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.ConvertTest.html">pyokx.test.ConvertTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.CopyTradingTest.html">pyokx.test.CopyTradingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.EarningTest.html">pyokx.test.EarningTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.FundingTest.html">pyokx.test.FundingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.GridTest.html">pyokx.test.GridTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.MarketTest.html">pyokx.test.MarketTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.PublicDataTest.html">pyokx.test.PublicDataTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.SpreadTest.html">pyokx.test.SpreadTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.StackingTest.html">pyokx.test.StackingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.SubAccountTest.html">pyokx.test.SubAccountTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.TradeTest.html">pyokx.test.TradeTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.TradingDataTest.html">pyokx.test.TradingDataTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.WsPrivateAsyncTest.html">pyokx.test.WsPrivateAsyncTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.WsPublicAsyncTest.html">pyokx.test.WsPublicAsyncTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.websocket_handling.html">pyokx.websocket_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WebSocketFactory.html">pyokx.ws_clients.WebSocketFactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsPprivateAsync.html">pyokx.ws_clients.WsPprivateAsync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.store.html">redis_tools._shared.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.login.html">routers.login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.okx.html">routers.okx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.okx_authentication.html">routers.okx_authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.signup.html">routers.signup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.command_execution.html">shared.command_execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.config.html">shared.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.configuration_parser.html">shared.configuration_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.data_processing_utils.html">shared.data_processing_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.file_directory_ops.html">shared.file_directory_ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.logging.html">shared.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.string_dict_utils.html">shared.string_dict_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../websocket_app.html">websocket_app</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AntBot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">h2o_dashboard.wave_auth</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for h2o_dashboard.wave_auth</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">dotenv</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">h2o_wave</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">run_on</span><span class="p">,</span> <span class="n">AsyncSite</span>  <span class="c1"># noqa F401</span>
+
+<span class="kn">from</span> <span class="nn">h2o_dashboard.pages.documentation_page</span> <span class="kn">import</span> <span class="n">documentation_page</span>
+<span class="kn">from</span> <span class="nn">h2o_dashboard.pages.overview_page</span> <span class="kn">import</span> <span class="n">overview_page</span>
+<span class="kn">from</span> <span class="nn">h2o_dashboard.pages.okx_dashboard_page</span> <span class="kn">import</span> <span class="n">okx_dashboard_page</span>
+<span class="kn">from</span> <span class="nn">h2o_dashboard.util</span> <span class="kn">import</span> <span class="n">add_card</span><span class="p">,</span> <span class="n">clear_cards</span>
+
+<span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
+
+<span class="n">FIREBASE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;apiKey&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FIREBASE_API_KEY&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">assert</span> <span class="n">FIREBASE_CONFIG</span><span class="p">[</span><span class="s2">&quot;apiKey&quot;</span><span class="p">],</span> <span class="s2">&quot;FIREBASE_API_KEY environment variable not set!&quot;</span>
+
+
+<div class="viewcode-block" id="init">
+<a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.init">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Q Page Meta (meta_card) Arguments:</span>
+<span class="sd">        box</span>
+<span class="sd">            A string indicating how to place this component on the page.</span>
+<span class="sd">        title</span>
+<span class="sd">            The title of the page.</span>
+<span class="sd">        refresh</span>
+<span class="sd">            Refresh rate in seconds. A value of 0 turns off live-updates. Values != 0 are currently ignored (reserved for future use).</span>
+<span class="sd">        notification</span>
+<span class="sd">            Display a desktop notification.</span>
+<span class="sd">        notification_bar</span>
+<span class="sd">            Display an in-app notification bar.</span>
+<span class="sd">        redirect</span>
+<span class="sd">            Redirect the page to a new URL.</span>
+<span class="sd">        icon</span>
+<span class="sd">            Shortcut icon path. Preferably a .png file (.ico files may not work in mobile browsers). Not supported in Safari.</span>
+<span class="sd">        layouts</span>
+<span class="sd">            The layouts supported by this page.</span>
+<span class="sd">        dialog</span>
+<span class="sd">            Display a dialog on the page.</span>
+<span class="sd">        side_panel</span>
+<span class="sd">            Display a side panel on the page.</span>
+<span class="sd">        theme</span>
+<span class="sd">            Specify the name of the theme (color scheme) to use on this page. One of &#39;light&#39;, &#39;neon&#39; or &#39;h2o-dark&#39;.</span>
+<span class="sd">        themes</span>
+<span class="sd">            Themes (color schemes) that define color used in the app.</span>
+<span class="sd">        tracker</span>
+<span class="sd">            Configure a tracker for the page (for web analytics).</span>
+<span class="sd">        scripts</span>
+<span class="sd">            External Javascript files to load into the page.</span>
+<span class="sd">        script</span>
+<span class="sd">            Javascript code to execute on this page.</span>
+<span class="sd">        stylesheet</span>
+<span class="sd">            CSS stylesheet to be applied to this page.</span>
+<span class="sd">        stylesheets</span>
+<span class="sd">            External CSS files to load into the page.</span>
+<span class="sd">        commands</span>
+<span class="sd">            Contextual menu commands for this component.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Static Business Website</span>
+    <span class="c1"># index_file = open(&#39;static/html/index.html&#39;, &#39;r&#39;).read()</span>
+
+    <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ui</span><span class="o">.</span><span class="n">meta_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                                  <span class="n">title</span><span class="o">=</span><span class="s1">&#39;AntBot&#39;</span><span class="p">,</span>
+                                  <span class="n">layouts</span><span class="o">=</span><span class="p">[</span><span class="n">ui</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="nb">breakpoint</span><span class="o">=</span><span class="s1">&#39;xs&#39;</span><span class="p">,</span> <span class="n">min_height</span><span class="o">=</span><span class="s1">&#39;100vh&#39;</span><span class="p">,</span> <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
+                                      <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
+                                          <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;sidebar&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;208px&#39;</span><span class="p">),</span>
+                                          <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
+                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;header&#39;</span><span class="p">),</span>
+                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
+                                                  <span class="c1"># Specify various zones and use the one that is currently needed. Empty zones are ignored.</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;first_context&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;0 0 1 4&#39;</span><span class="p">,</span>
+                                                          <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span>
+                                                          <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
+                                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;first_context_1&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">),</span>
+                                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;first_context_2&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">),</span>
+                                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;first_context_3&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">),</span>
+                                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;first_context_4&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">),</span>
+                                                          <span class="p">]),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;second_context&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;0 0 1 4&#39;</span><span class="p">,</span>
+                                                          <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span>
+                                                          <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
+                                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;second_context_1&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">),</span>
+                                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;second_context_2&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">),</span>
+                                                              <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;second_context_3&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">,</span>
+                                                                      <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span>
+                                                                      <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
+                                                                          <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;second_context_3_1&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">),</span>
+                                                                          <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;second_context_3_2&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 4 0 0&#39;</span><span class="p">)</span>
+                                                                      <span class="p">]),</span>
+                                                          <span class="p">]),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;details&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;4 4 4 4&#39;</span><span class="p">),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;centered&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 1 1 1&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">),</span>
+                                                  <span class="c1"># Wrapping = &#39;start&#39;, &#39;end&#39;, &#39;center&#39;, &#39;between&#39;, &#39;around&#39;, &#39;stretch&#39;</span>
+                                                  <span class="c1"># Layout = &#39;start&#39;, &#39;end&#39;, &#39;center&#39;, &#39;between&#39;, &#39;around&#39;</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;grid_1&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+                                                          <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+                                                          <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;grid_3&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+                                                          <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;grid_4&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+                                                          <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;grid_5&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+                                                          <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">),</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;grid_6&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+                                                          <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">),</span>
+                                              <span class="p">]),</span>
+                                          <span class="p">]),</span>
+                                      <span class="p">]),</span>
+                                      <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;footer&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;0 1 0 0&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">),</span>
+                                  <span class="p">]),</span>
+                                           <span class="p">],</span>
+                                  <span class="n">themes</span><span class="o">=</span><span class="p">[</span>
+                                      <span class="n">ui</span><span class="o">.</span><span class="n">theme</span><span class="p">(</span>
+                                          <span class="n">name</span><span class="o">=</span><span class="s1">&#39;my-awesome-theme&#39;</span><span class="p">,</span>
+                                          <span class="n">primary</span><span class="o">=</span><span class="s1">&#39;#8C1B11&#39;</span><span class="p">,</span>  <span class="c1"># Header and Sidebaer - Color Light Red</span>
+                                          <span class="n">text</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span>  <span class="c1">#</span>
+                                          <span class="n">card</span><span class="o">=</span><span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
+                                          <span class="n">page</span><span class="o">=</span><span class="s1">&#39;#F2F2F2&#39;</span><span class="p">,</span>
+                                          <span class="c1"># page=&#39;#D91A1A&#39;,</span>
+
+                                      <span class="p">)</span>
+                                  <span class="p">],</span>
+                                  <span class="n">theme</span><span class="o">=</span><span class="s1">&#39;my-awesome-theme&#39;</span>
+                                  <span class="p">)</span>
+
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="initialize_client">
+<a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.initialize_client">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">initialize_client</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">):</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">cards</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">init</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Initially, no token is set.</span></div>
+
+
+
+<div class="viewcode-block" id="authenticate_with_firebase">
+<a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.authenticate_with_firebase">[docs]</a>
+<span class="k">def</span> <span class="nf">authenticate_with_firebase</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authenticate with Firebase and return token if successful, or an error message.&quot;&quot;&quot;</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=</span><span class="si">{</span><span class="n">FIREBASE_CONFIG</span><span class="p">[</span><span class="s1">&#39;apiKey&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
+        <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">password</span><span class="p">,</span>
+        <span class="s2">&quot;returnSecureToken&quot;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s2">&quot;idToken&quot;</span> <span class="ow">in</span> <span class="n">response_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;idToken&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;refreshToken&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;localId&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;expiresIn&#39;</span><span class="p">),</span>
+            <span class="p">}</span>
+
+        <span class="k">elif</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">response_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Authentication failed: </span><span class="si">{</span><span class="n">response_data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Unknown error.&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Authentication failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Authentication failed: Unknown error.&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="check_token_validity">
+<a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.check_token_validity">[docs]</a>
+<span class="k">def</span> <span class="nf">check_token_validity</span><span class="p">(</span><span class="n">idToken</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a Firebase token is valid.&quot;&quot;&quot;</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=</span><span class="si">{</span><span class="n">FIREBASE_CONFIG</span><span class="p">[</span><span class="s1">&#39;apiKey&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;idToken&quot;</span><span class="p">:</span> <span class="n">idToken</span><span class="p">}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="render_login_page">
+<a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.render_login_page">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">render_login_page</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render the login page.&quot;&quot;&quot;</span>
+
+    <span class="k">await</span> <span class="n">clear_cards</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ui</span><span class="o">.</span><span class="n">message_bar</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Please login to continue.&#39;</span><span class="p">,</span> <span class="p">),</span>
+        <span class="n">ui</span><span class="o">.</span><span class="n">text_xl</span><span class="p">(</span><span class="s1">&#39;Login&#39;</span><span class="p">),</span>
+        <span class="n">ui</span><span class="o">.</span><span class="n">textbox</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;email&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">ui</span><span class="o">.</span><span class="n">textbox</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;password&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">ui</span><span class="o">.</span><span class="n">buttons</span><span class="p">([</span><span class="n">ui</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Login&#39;</span><span class="p">,</span> <span class="n">primary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="p">)]),</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">error_message</span><span class="p">:</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">message_bar</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">error_message</span><span class="p">,</span> <span class="p">))</span>
+
+    <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">form_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;centered&#39;</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="n">items</span><span class="p">,</span> <span class="p">),</span> <span class="p">)</span></div>
+
+
+    <span class="c1"># Lets add decorations to the login page</span>
+
+
+<div class="viewcode-block" id="add_application_sidebar">
+<a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.add_application_sidebar">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">add_application_sidebar</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="n">image_address</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">image_address</span> <span class="o">=</span> <span class="s1">&#39;data:image/png;base64,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&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">]:</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;overview_page&#39;</span>
+
+    <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;Application_Sidebar&#39;</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">nav_card</span><span class="p">(</span>
+        <span class="n">box</span><span class="o">=</span><span class="s1">&#39;sidebar&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;primary&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;AntBot&#39;</span><span class="p">,</span>
+        <span class="n">subtitle</span><span class="o">=</span><span class="s2">&quot;just a tiny bot here to help you out&quot;</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;#</span><span class="si">{</span><span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="c1"># image=&#39;https://wave.h2o.ai/img/h2o-logo.svg&#39;, items=[]</span>
+        <span class="c1"># Loading from local file rather than url</span>
+        <span class="n">image</span><span class="o">=</span><span class="n">image_address</span><span class="p">,</span>
+        <span class="n">items</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">nav_group</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">ui</span><span class="o">.</span><span class="n">nav_item</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;#overview_page&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Overview&#39;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;Home&#39;</span><span class="p">),</span>
+                <span class="n">ui</span><span class="o">.</span><span class="n">nav_item</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;#okx_dashboard_page&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;OKX Dashboard&#39;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;eDiscoveryApp&#39;</span><span class="p">),</span>
+                <span class="n">ui</span><span class="o">.</span><span class="n">nav_item</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;#documentation_page&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Documentation&#39;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;Document&#39;</span><span class="p">),</span>
+            <span class="p">]),</span>
+            <span class="c1"># ui.nav_group(&#39;Docs&#39;, items=[</span>
+            <span class="c1">#     ui.nav_item(name=&#39;#admin_userdocs_link&#39;, label=&#39;Usage Documentation&#39;, icon=&#39;TextDocumentShared&#39;),</span>
+            <span class="c1">#     ui.nav_item(name=&#39;#admin_devdocs_link&#39;, label=&#39;Codebase Documentation&#39;, icon=&#39;TextDocumentEdit&#39;),</span>
+            <span class="c1"># ]),</span>
+            <span class="c1"># ui.nav_group(&#39;Account&#39;, items=[</span>
+            <span class="c1">#     ui.nav_item(name=&#39;#admin_account_page&#39;, label=&#39;Account&#39;, icon=&#39;AccountManagement&#39;),</span>
+            <span class="c1">#     ui.nav_item(name=&#39;#admin_plans_page&#39;, label=&#39;Plans&#39;, icon=&#39;PaymentCard&#39;),</span>
+            <span class="c1">#     ui.nav_item(name=&#39;logout&#39;, label=&#39;Logout&#39;, icon=&#39;Logout&#39;),</span>
+            <span class="c1"># ]),</span>
+
+        <span class="p">],</span>
+    <span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="render_hidden_content">
+<a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.render_hidden_content">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">render_hidden_content</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Render pages content e.g. overview_page or other pages get added here</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">await</span> <span class="n">clear_cards</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">add_application_sidebar</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;overview_page&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Route to Overview Page&quot;</span><span class="p">)</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">overview_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;okx_dashboard_page&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Route to OKX Dashboard Page&quot;</span><span class="p">)</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">okx_dashboard_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;documentation_page&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Route to Documentation Page&quot;</span><span class="p">)</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">documentation_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+        <span class="n">task</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: No route found&quot;</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="serve_security">
+<a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.serve_security">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">serve_security</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span> <span class="n">bypass_security</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># If logout is triggered, clear token and show login page</span>
+    <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">logout</span><span class="p">:</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">await</span> <span class="n">render_login_page</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="c1"># End the function after logging out</span>
+
+    <span class="c1"># If login is triggered, try to authenticate and decide what to render next</span>
+    <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">login</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">authenticate_with_firebase</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;success&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Token already exists and is valid&quot;</span><span class="p">)</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">]</span>
+            <span class="k">await</span> <span class="n">render_login_page</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;error_message&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">render_login_page</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;error_message&#39;</span><span class="p">])</span>
+            <span class="k">return</span>  <span class="c1"># End the function if login fails</span>
+
+    <span class="k">if</span> <span class="n">bypass_security</span><span class="p">:</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bypass&#39;</span>
+        <span class="k">await</span> <span class="n">render_hidden_content</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># If the client already has a token, check its validity and act accordingly</span>
+    <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">check_token_validity</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span><span class="p">):</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">response</span>  <span class="c1"># todo: implement better context handling</span>
+            <span class="k">await</span> <span class="n">render_hidden_content</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">await</span> <span class="n">render_login_page</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">render_login_page</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ruben Fernandez Carbon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

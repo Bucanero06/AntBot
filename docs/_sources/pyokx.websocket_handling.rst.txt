@@ -1,0 +1,11 @@
+pyokx.websocket_handling
+========================
+
+.. automodule:: pyokx.websocket_handling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.websocket_handling
+    :parts: 1
+

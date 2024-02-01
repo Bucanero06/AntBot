@@ -1,0 +1,4 @@
+<map id="inheritance3a612ad8cb" name="inheritance3a612ad8cb">
+<area shape="rect" id="node1" href="#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBook" target="_top" title="OrderBook(inst_id: str, _bids: List[pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBookLevel] = &lt;factory&gt;, _asks: List[pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBookLevel] = &lt;factory&gt;, timestamp: int = 0, exch_check_sum: int = 0)" alt="" coords="23,55,114,80"/>
+<area shape="rect" id="node2" href="#pyokx.okx_market_maker.market_data_service.model.OrderBook.OrderBookLevel" target="_top" title="OrderBookLevel(price: float, quantity: float, order_count: int, price_string: str, quantity_string: str, order_count_string: str)" alt="" coords="5,5,132,31"/>
+</map>

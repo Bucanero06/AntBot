@@ -1,0 +1,5 @@
+<map id="inheritancec17129be3d" name="inheritancec17129be3d">
+<area shape="rect" id="node1" title="Usage docs: https://docs.pydantic.dev/2.5/concepts/models/" alt="" coords="5,31,100,56"/>
+<area shape="rect" id="node2" href="#pyokx.rest_messages_service.FillHistoricalMetrics" target="_top" title="FillHistoricalMetrics" alt="" coords="165,5,316,31"/>
+<area shape="rect" id="node3" href="#pyokx.rest_messages_service.FillHistoricalMetricsEntry" target="_top" title="FillHistoricalMetricsEntry" alt="" coords="148,55,333,80"/>
+</map>

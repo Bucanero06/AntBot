@@ -1,0 +1,11 @@
+pyokx.test.SubAccountTest
+=========================
+
+.. automodule:: pyokx.test.SubAccountTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.SubAccountTest
+    :parts: 1
+

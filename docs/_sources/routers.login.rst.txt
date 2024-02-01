@@ -1,0 +1,11 @@
+routers.login
+=============
+
+.. automodule:: routers.login
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: routers.login
+    :parts: 1
+

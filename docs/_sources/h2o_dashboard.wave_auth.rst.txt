@@ -1,0 +1,11 @@
+h2o_dashboard.wave_auth
+=======================
+
+.. automodule:: h2o_dashboard.wave_auth
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: h2o_dashboard.wave_auth
+    :parts: 1
+

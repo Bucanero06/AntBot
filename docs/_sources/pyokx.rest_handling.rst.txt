@@ -1,0 +1,11 @@
+pyokx.rest_handling
+===================
+
+.. automodule:: pyokx.rest_handling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.rest_handling
+    :parts: 1
+

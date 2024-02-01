@@ -1,0 +1,11 @@
+pyokx.test.SpreadTest
+=====================
+
+.. automodule:: pyokx.test.SpreadTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.SpreadTest
+    :parts: 1
+

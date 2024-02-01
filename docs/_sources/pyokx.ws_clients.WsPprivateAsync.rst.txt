@@ -1,0 +1,11 @@
+pyokx.ws_clients.WsPprivateAsync
+================================
+
+.. automodule:: pyokx.ws_clients.WsPprivateAsync
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.ws_clients.WsPprivateAsync
+    :parts: 1
+

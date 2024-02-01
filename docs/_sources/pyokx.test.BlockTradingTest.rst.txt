@@ -1,0 +1,11 @@
+pyokx.test.BlockTradingTest
+===========================
+
+.. automodule:: pyokx.test.BlockTradingTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.BlockTradingTest
+    :parts: 1
+

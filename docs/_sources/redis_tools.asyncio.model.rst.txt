@@ -1,0 +1,11 @@
+redis_tools.asyncio.model
+=========================
+
+.. automodule:: redis_tools.asyncio.model
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: redis_tools.asyncio.model
+    :parts: 1
+

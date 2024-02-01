@@ -1,0 +1,11 @@
+pyokx.test.BrokerTest
+=====================
+
+.. automodule:: pyokx.test.BrokerTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.BrokerTest
+    :parts: 1
+

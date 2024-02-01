@@ -1,0 +1,11 @@
+shared.tmp_shared
+=================
+
+.. automodule:: shared.tmp_shared
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: shared.tmp_shared
+    :parts: 1
+

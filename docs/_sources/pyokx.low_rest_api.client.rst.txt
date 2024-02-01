@@ -1,0 +1,11 @@
+pyokx.low_rest_api.client
+=========================
+
+.. automodule:: pyokx.low_rest_api.client
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.low_rest_api.client
+    :parts: 1
+

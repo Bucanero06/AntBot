@@ -1,0 +1,11 @@
+pyokx.okx_market_maker.order_management_service.WssOrderManagementService
+=========================================================================
+
+.. automodule:: pyokx.okx_market_maker.order_management_service.WssOrderManagementService
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.okx_market_maker.order_management_service.WssOrderManagementService
+    :parts: 1
+

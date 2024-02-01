@@ -1,0 +1,11 @@
+pyokx.okx_market_maker.market_data_service.model.Instrument
+===========================================================
+
+.. automodule:: pyokx.okx_market_maker.market_data_service.model.Instrument
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.okx_market_maker.market_data_service.model.Instrument
+    :parts: 1
+

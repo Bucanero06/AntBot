@@ -1,0 +1,11 @@
+pyokx.okx_market_maker.strategy.model.StrategyOrder
+===================================================
+
+.. automodule:: pyokx.okx_market_maker.strategy.model.StrategyOrder
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.okx_market_maker.strategy.model.StrategyOrder
+    :parts: 1
+

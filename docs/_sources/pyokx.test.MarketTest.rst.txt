@@ -1,0 +1,11 @@
+pyokx.test.MarketTest
+=====================
+
+.. automodule:: pyokx.test.MarketTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.MarketTest
+    :parts: 1
+

@@ -1,0 +1,11 @@
+pyokx.redis_structured_streams
+==============================
+
+.. automodule:: pyokx.redis_structured_streams
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.redis_structured_streams
+    :parts: 1
+

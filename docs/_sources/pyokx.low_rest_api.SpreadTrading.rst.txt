@@ -1,0 +1,11 @@
+pyokx.low_rest_api.SpreadTrading
+================================
+
+.. automodule:: pyokx.low_rest_api.SpreadTrading
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.low_rest_api.SpreadTrading
+    :parts: 1
+

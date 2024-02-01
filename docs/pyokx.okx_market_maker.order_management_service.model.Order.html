@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyokx.okx_market_maker.order_management_service.model.Order &mdash; AntBot 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyokx.okx_market_maker.order_management_service.model.OrderRequest" href="pyokx.okx_market_maker.order_management_service.model.OrderRequest.html" />
+    <link rel="prev" title="pyokx.okx_market_maker.order_management_service.WssOrderManagementService" href="pyokx.okx_market_maker.order_management_service.WssOrderManagementService.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AntBot
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="autodocumentation_python.html">autodocumentation_python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firebase_tools.BaseClasses.html">firebase_tools.BaseClasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firebase_tools.FirestoreClient.html">firebase_tools.FirestoreClient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Convert.html">pyokx.low_rest_api.Convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.CopyTrading.html">pyokx.low_rest_api.CopyTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Earning.html">pyokx.low_rest_api.Earning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.FDBroker.html">pyokx.low_rest_api.FDBroker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Funding.html">pyokx.low_rest_api.Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Grid.html">pyokx.low_rest_api.Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.MarketData.html">pyokx.low_rest_api.MarketData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.NDBroker.html">pyokx.low_rest_api.NDBroker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.PublicData.html">pyokx.low_rest_api.PublicData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.SpreadTrading.html">pyokx.low_rest_api.SpreadTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Status.html">pyokx.low_rest_api.Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.SubAccount.html">pyokx.low_rest_api.SubAccount</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Trade.html">pyokx.low_rest_api.Trade</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.TradingData.html">pyokx.low_rest_api.TradingData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.client.html">pyokx.low_rest_api.client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.market_data_service.WssMarketDataService.html">pyokx.okx_market_maker.market_data_service.WssMarketDataService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.market_data_service.model.Instrument.html">pyokx.okx_market_maker.market_data_service.model.Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.market_data_service.model.MarkPx.html">pyokx.okx_market_maker.market_data_service.model.MarkPx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.market_data_service.model.OrderBook.html">pyokx.okx_market_maker.market_data_service.model.OrderBook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.market_data_service.model.Tickers.html">pyokx.okx_market_maker.market_data_service.model.Tickers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.order_management_service.WssOrderManagementService.html">pyokx.okx_market_maker.order_management_service.WssOrderManagementService</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pyokx.okx_market_maker.order_management_service.model.Order</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order"><code class="docutils literal notranslate"><span class="pre">Order</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.acc_fill_sz"><code class="docutils literal notranslate"><span class="pre">Order.acc_fill_sz</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.amend_result"><code class="docutils literal notranslate"><span class="pre">Order.amend_result</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.avg_px"><code class="docutils literal notranslate"><span class="pre">Order.avg_px</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.c_time"><code class="docutils literal notranslate"><span class="pre">Order.c_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.category"><code class="docutils literal notranslate"><span class="pre">Order.category</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.ccy"><code class="docutils literal notranslate"><span class="pre">Order.ccy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.cl_ord_id"><code class="docutils literal notranslate"><span class="pre">Order.cl_ord_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.exec_type"><code class="docutils literal notranslate"><span class="pre">Order.exec_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fee"><code class="docutils literal notranslate"><span class="pre">Order.fee</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fee_ccy"><code class="docutils literal notranslate"><span class="pre">Order.fee_ccy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_fee"><code class="docutils literal notranslate"><span class="pre">Order.fill_fee</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_fee_ccy"><code class="docutils literal notranslate"><span class="pre">Order.fill_fee_ccy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_notional_usd"><code class="docutils literal notranslate"><span class="pre">Order.fill_notional_usd</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_px"><code class="docutils literal notranslate"><span class="pre">Order.fill_px</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_sz"><code class="docutils literal notranslate"><span class="pre">Order.fill_sz</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_time"><code class="docutils literal notranslate"><span class="pre">Order.fill_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.init_from_ws_json_message"><code class="docutils literal notranslate"><span class="pre">Order.init_from_ws_json_message()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.inst_id"><code class="docutils literal notranslate"><span class="pre">Order.inst_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.inst_type"><code class="docutils literal notranslate"><span class="pre">Order.inst_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.lever"><code class="docutils literal notranslate"><span class="pre">Order.lever</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.notional_usd"><code class="docutils literal notranslate"><span class="pre">Order.notional_usd</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.ord_id"><code class="docutils literal notranslate"><span class="pre">Order.ord_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.ord_type"><code class="docutils literal notranslate"><span class="pre">Order.ord_type</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.pnl"><code class="docutils literal notranslate"><span class="pre">Order.pnl</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.pos_side"><code class="docutils literal notranslate"><span class="pre">Order.pos_side</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.px"><code class="docutils literal notranslate"><span class="pre">Order.px</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.rebate"><code class="docutils literal notranslate"><span class="pre">Order.rebate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.rebate_ccy"><code class="docutils literal notranslate"><span class="pre">Order.rebate_ccy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.reduce_only"><code class="docutils literal notranslate"><span class="pre">Order.reduce_only</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.req_id"><code class="docutils literal notranslate"><span class="pre">Order.req_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.side"><code class="docutils literal notranslate"><span class="pre">Order.side</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.state"><code class="docutils literal notranslate"><span class="pre">Order.state</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.sz"><code class="docutils literal notranslate"><span class="pre">Order.sz</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.tag"><code class="docutils literal notranslate"><span class="pre">Order.tag</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.to_dict"><code class="docutils literal notranslate"><span class="pre">Order.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.trade_id"><code class="docutils literal notranslate"><span class="pre">Order.trade_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.u_time"><code class="docutils literal notranslate"><span class="pre">Order.u_time</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders"><code class="docutils literal notranslate"><span class="pre">Orders</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.from_dict"><code class="docutils literal notranslate"><span class="pre">Orders.from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_active_orders"><code class="docutils literal notranslate"><span class="pre">Orders.get_active_orders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_filled_orders"><code class="docutils literal notranslate"><span class="pre">Orders.get_filled_orders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_inactive_orders"><code class="docutils literal notranslate"><span class="pre">Orders.get_inactive_orders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_non_client_order"><code class="docutils literal notranslate"><span class="pre">Orders.get_non_client_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_order_by_client_order_id"><code class="docutils literal notranslate"><span class="pre">Orders.get_order_by_client_order_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_order_by_order_id"><code class="docutils literal notranslate"><span class="pre">Orders.get_order_by_order_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.init_from_ws_json_message"><code class="docutils literal notranslate"><span class="pre">Orders.init_from_ws_json_message()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.remove_orders"><code class="docutils literal notranslate"><span class="pre">Orders.remove_orders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.to_dict"><code class="docutils literal notranslate"><span class="pre">Orders.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.update_from_ws_json_message"><code class="docutils literal notranslate"><span class="pre">Orders.update_from_ws_json_message()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.order_management_service.model.OrderRequest.html">pyokx.okx_market_maker.order_management_service.model.OrderRequest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.position_management_service.WssPositionManagementService.html">pyokx.okx_market_maker.position_management_service.WssPositionManagementService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.position_management_service.model.Account.html">pyokx.okx_market_maker.position_management_service.model.Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition.html">pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.position_management_service.model.Positions.html">pyokx.okx_market_maker.position_management_service.model.Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.run_sample_market_maker.html">pyokx.okx_market_maker.run_sample_market_maker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.settings.html">pyokx.okx_market_maker.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.strategy.BaseStrategy.html">pyokx.okx_market_maker.strategy.BaseStrategy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.strategy.SampleMM.html">pyokx.okx_market_maker.strategy.SampleMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.strategy.model.StrategyMeasurement.html">pyokx.okx_market_maker.strategy.model.StrategyMeasurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.strategy.model.StrategyOrder.html">pyokx.okx_market_maker.strategy.model.StrategyOrder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.strategy.params.ParamsLoader.html">pyokx.okx_market_maker.strategy.params.ParamsLoader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.strategy.risk.RiskCalculator.html">pyokx.okx_market_maker.strategy.risk.RiskCalculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.strategy.risk.RiskSnapshot.html">pyokx.okx_market_maker.strategy.risk.RiskSnapshot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.tests.test_strategy.html">pyokx.okx_market_maker.tests.test_strategy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.utils.InstrumentUtil.html">pyokx.okx_market_maker.utils.InstrumentUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html">pyokx.okx_market_maker.utils.OkxEnum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.utils.TdModeUtil.html">pyokx.okx_market_maker.utils.TdModeUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.utils.WsOrderUtil.html">pyokx.okx_market_maker.utils.WsOrderUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.rest_handling.html">pyokx.rest_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.strategy_handling.html">pyokx.strategy_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.AccountTest.html">pyokx.test.AccountTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.BlockTradingTest.html">pyokx.test.BlockTradingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.BrokerTest.html">pyokx.test.BrokerTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.ConvertTest.html">pyokx.test.ConvertTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.CopyTradingTest.html">pyokx.test.CopyTradingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.EarningTest.html">pyokx.test.EarningTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.FundingTest.html">pyokx.test.FundingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.GridTest.html">pyokx.test.GridTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.MarketTest.html">pyokx.test.MarketTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.PublicDataTest.html">pyokx.test.PublicDataTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.SpreadTest.html">pyokx.test.SpreadTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.StackingTest.html">pyokx.test.StackingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.SubAccountTest.html">pyokx.test.SubAccountTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.TradeTest.html">pyokx.test.TradeTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.TradingDataTest.html">pyokx.test.TradingDataTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.WsPrivateAsyncTest.html">pyokx.test.WsPrivateAsyncTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.test.WsPublicAsyncTest.html">pyokx.test.WsPublicAsyncTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.websocket_handling.html">pyokx.websocket_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WebSocketFactory.html">pyokx.ws_clients.WebSocketFactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WsPprivateAsync.html">pyokx.ws_clients.WsPprivateAsync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.store.html">redis_tools._shared.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routers.api_keys.html">routers.api_keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routers.login.html">routers.login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routers.okx.html">routers.okx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routers.okx_authentication.html">routers.okx_authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routers.signup.html">routers.signup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared.command_execution.html">shared.command_execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared.config.html">shared.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared.configuration_parser.html">shared.configuration_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared.data_processing_utils.html">shared.data_processing_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared.file_directory_ops.html">shared.file_directory_ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared.logging.html">shared.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared.string_dict_utils.html">shared.string_dict_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="websocket_app.html">websocket_app</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AntBot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pyokx.okx_market_maker.order_management_service.model.Order</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyokx.okx_market_maker.order_management_service.model.Order.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pyokx.okx_market_maker.order_management_service.model.Order">
+<span id="pyokx-okx-market-maker-order-management-service-model-order"></span><h1>pyokx.okx_market_maker.order_management_service.model.Order<a class="headerlink" href="#module-pyokx.okx_market_maker.order_management_service.model.Order" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.okx_market_maker.order_management_service.model.Order.</span></span><span class="sig-name descname"><span class="pre">Order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">acc_fill_sz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amend_result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">avg_px</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderCategory" title="pyokx.okx_market_maker.utils.OkxEnum.OrderCategory"><span class="pre">pyokx.okx_market_maker.utils.OkxEnum.OrderCategory</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cl_ord_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exec_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderExecType" title="pyokx.okx_market_maker.utils.OkxEnum.OrderExecType"><span class="pre">pyokx.okx_market_maker.utils.OkxEnum.OrderExecType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fee_ccy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_fee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_fee_ccy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_notional_usd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_px</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_sz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><span class="pre">pyokx.okx_market_maker.utils.OkxEnum.InstType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lever</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notional_usd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ord_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ord_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderType" title="pyokx.okx_market_maker.utils.OkxEnum.OrderType"><span class="pre">pyokx.okx_market_maker.utils.OkxEnum.OrderType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pnl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.PosSide" title="pyokx.okx_market_maker.utils.OkxEnum.PosSide"><span class="pre">pyokx.okx_market_maker.utils.OkxEnum.PosSide</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">px</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebate_ccy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduce_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(False,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">req_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderSide" title="pyokx.okx_market_maker.utils.OkxEnum.OrderSide"><span class="pre">pyokx.okx_market_maker.utils.OkxEnum.OrderSide</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderState" title="pyokx.okx_market_maker.utils.OkxEnum.OrderState"><span class="pre">pyokx.okx_market_maker.utils.OkxEnum.OrderState</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trade_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.acc_fill_sz">
+<span class="sig-name descname"><span class="pre">acc_fill_sz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0'</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.acc_fill_sz" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.amend_result">
+<span class="sig-name descname"><span class="pre">amend_result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.amend_result" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.avg_px">
+<span class="sig-name descname"><span class="pre">avg_px</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.avg_px" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.c_time">
+<span class="sig-name descname"><span class="pre">c_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.c_time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.category">
+<span class="sig-name descname"><span class="pre">category</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderCategory" title="pyokx.okx_market_maker.utils.OkxEnum.OrderCategory"><span class="pre">OrderCategory</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.category" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.ccy">
+<span class="sig-name descname"><span class="pre">ccy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.ccy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.cl_ord_id">
+<span class="sig-name descname"><span class="pre">cl_ord_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.cl_ord_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.exec_type">
+<span class="sig-name descname"><span class="pre">exec_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderExecType" title="pyokx.okx_market_maker.utils.OkxEnum.OrderExecType"><span class="pre">OrderExecType</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.exec_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.fee">
+<span class="sig-name descname"><span class="pre">fee</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fee" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.fee_ccy">
+<span class="sig-name descname"><span class="pre">fee_ccy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fee_ccy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_fee">
+<span class="sig-name descname"><span class="pre">fill_fee</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_fee" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_fee_ccy">
+<span class="sig-name descname"><span class="pre">fill_fee_ccy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_fee_ccy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_notional_usd">
+<span class="sig-name descname"><span class="pre">fill_notional_usd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_notional_usd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_px">
+<span class="sig-name descname"><span class="pre">fill_px</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_px" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_sz">
+<span class="sig-name descname"><span class="pre">fill_sz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0'</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_sz" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_time">
+<span class="sig-name descname"><span class="pre">fill_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.fill_time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.init_from_ws_json_message">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_from_ws_json_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Order.init_from_ws_json_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.init_from_ws_json_message" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.inst_id">
+<span class="sig-name descname"><span class="pre">inst_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.inst_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.inst_type">
+<span class="sig-name descname"><span class="pre">inst_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><span class="pre">InstType</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.inst_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.lever">
+<span class="sig-name descname"><span class="pre">lever</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.lever" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.notional_usd">
+<span class="sig-name descname"><span class="pre">notional_usd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.notional_usd" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.ord_id">
+<span class="sig-name descname"><span class="pre">ord_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.ord_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.ord_type">
+<span class="sig-name descname"><span class="pre">ord_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderType" title="pyokx.okx_market_maker.utils.OkxEnum.OrderType"><span class="pre">OrderType</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.ord_type" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.pnl">
+<span class="sig-name descname"><span class="pre">pnl</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.pnl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.pos_side">
+<span class="sig-name descname"><span class="pre">pos_side</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.PosSide" title="pyokx.okx_market_maker.utils.OkxEnum.PosSide"><span class="pre">PosSide</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.pos_side" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.px">
+<span class="sig-name descname"><span class="pre">px</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.px" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.rebate">
+<span class="sig-name descname"><span class="pre">rebate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.rebate" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.rebate_ccy">
+<span class="sig-name descname"><span class="pre">rebate_ccy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.rebate_ccy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.reduce_only">
+<span class="sig-name descname"><span class="pre">reduce_only</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(False,)</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.reduce_only" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.req_id">
+<span class="sig-name descname"><span class="pre">req_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.req_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.side">
+<span class="sig-name descname"><span class="pre">side</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderSide" title="pyokx.okx_market_maker.utils.OkxEnum.OrderSide"><span class="pre">OrderSide</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.side" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.state">
+<span class="sig-name descname"><span class="pre">state</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.OrderState" title="pyokx.okx_market_maker.utils.OkxEnum.OrderState"><span class="pre">OrderState</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.state" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.sz">
+<span class="sig-name descname"><span class="pre">sz</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.sz" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.tag">
+<span class="sig-name descname"><span class="pre">tag</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Order.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.to_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.trade_id">
+<span class="sig-name descname"><span class="pre">trade_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.trade_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Order.u_time">
+<span class="sig-name descname"><span class="pre">u_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order.u_time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.okx_market_maker.order_management_service.model.Order.</span></span><span class="sig-name descname"><span class="pre">Orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_order_map:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyokx.okx_market_maker.order_management_service.model.Order.Order]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_client_order_map:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyokx.okx_market_maker.order_management_service.model.Order.Order]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_non_client_order_map:</span> <span class="pre">Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyokx.okx_market_maker.order_management_service.model.Order.Order]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.from_dict">
+<span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.from_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_active_orders">
+<span class="sig-name descname"><span class="pre">get_active_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.get_active_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_active_orders" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_filled_orders">
+<span class="sig-name descname"><span class="pre">get_filled_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.get_filled_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_filled_orders" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_inactive_orders">
+<span class="sig-name descname"><span class="pre">get_inactive_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.get_inactive_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_inactive_orders" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_non_client_order">
+<span class="sig-name descname"><span class="pre">get_non_client_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.get_non_client_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_non_client_order" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_order_by_client_order_id">
+<span class="sig-name descname"><span class="pre">get_order_by_client_order_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_order_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order" title="pyokx.okx_market_maker.order_management_service.model.Order.Order"><span class="pre">Order</span></a></span></span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.get_order_by_client_order_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_order_by_client_order_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_order_by_order_id">
+<span class="sig-name descname"><span class="pre">get_order_by_order_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order" title="pyokx.okx_market_maker.order_management_service.model.Order.Order"><span class="pre">Order</span></a></span></span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.get_order_by_order_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.get_order_by_order_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.init_from_ws_json_message">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_from_ws_json_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.init_from_ws_json_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.init_from_ws_json_message" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.remove_orders">
+<span class="sig-name descname"><span class="pre">remove_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order" title="pyokx.okx_market_maker.order_management_service.model.Order.Order"><span class="pre">Order</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.remove_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.remove_orders" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.to_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyokx.okx_market_maker.order_management_service.model.Order.Orders.update_from_ws_json_message">
+<span class="sig-name descname"><span class="pre">update_from_ws_json_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_response</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/okx_market_maker/order_management_service/model/Order.html#Orders.update_from_ws_json_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders.update_from_ws_json_message" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<div class="graphviz"><img src="_images/inheritance-7b63314f5074107599bde092e51a284c475aa766.png" alt="Inheritance diagram of pyokx.okx_market_maker.order_management_service.model.Order" usemap="#inheritance2933851986" class="inheritance graphviz" /></div>
+<map id="inheritance2933851986" name="inheritance2933851986">
+<area shape="rect" id="node1" href="#pyokx.okx_market_maker.order_management_service.model.Order.Order" target="_top" title="Order(acc_fill_sz: str = &#39;0&#39;, amend_result: str = 0, avg_px: float = 0, c_time: int = 0, category: pyokx.okx_market_maker.utils.OkxEnum.OrderCategory = None, ccy: str = &#39;&#39;, cl_ord_id: str = &#39;&#39;, exec_type: pyokx.okx_market_maker.utils.OkxEnum.OrderExecType = None, fee: float = 0, fee_ccy: str = &#39;&#39;, fill_fee: float = 0, fill_fee_ccy: str = &#39;&#39;, fill_notional_usd: float = 0, fill_px: float = 0, fill_sz: str = &#39;0&#39;, fill_time: int = 0, inst_id: str = &#39;&#39;, inst_type: pyokx.okx_market_maker.utils.OkxEnum.InstType = None, lever: float = 0, notional_usd: float = 0, ord_id: str = &#39;&#39;, ord_type: pyokx.okx_market_maker.utils.OkxEnum.OrderType = None, pnl: float = 0, pos_side: pyokx.okx_market_maker.utils.OkxEnum.PosSide = None, px: float = 0, rebate: float = 0, rebate_ccy: str = &#39;&#39;, reduce_only: bool = (False,), req_id: str = &#39;&#39;, side: pyokx.okx_market_maker.utils.OkxEnum.OrderSide = None, state: pyokx.okx_market_maker.utils.OkxEnum.OrderState = None, sz: float = 0, tag: str = &#39;&#39;, trade_id: str = &#39;&#39;, u_time: int = 0)" alt="" coords="5,55,77,80"/>
+<area shape="rect" id="node2" href="#pyokx.okx_market_maker.order_management_service.model.Order.Orders" target="_top" title="Orders(_order_map: Dict[str, pyokx.okx_market_maker.order_management_service.model.Order.Order] = &lt;factory&gt;, _client_order_map: Dict[str, pyokx.okx_market_maker.order_management_service.model.Order.Order] = &lt;factory&gt;, _non_client_order_map: Dict[str, pyokx.okx_market_maker.order_management_service.model.Order.Order] = &lt;factory&gt;)" alt="" coords="5,5,77,31"/>
+</map></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyokx.okx_market_maker.order_management_service.WssOrderManagementService.html" class="btn btn-neutral float-left" title="pyokx.okx_market_maker.order_management_service.WssOrderManagementService" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyokx.okx_market_maker.order_management_service.model.OrderRequest.html" class="btn btn-neutral float-right" title="pyokx.okx_market_maker.order_management_service.model.OrderRequest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ruben Fernandez Carbon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

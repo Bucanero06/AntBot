@@ -1,0 +1,11 @@
+routers.okx_authentication
+==========================
+
+.. automodule:: routers.okx_authentication
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: routers.okx_authentication
+    :parts: 1
+

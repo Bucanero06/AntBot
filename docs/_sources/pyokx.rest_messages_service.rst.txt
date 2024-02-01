@@ -1,0 +1,11 @@
+pyokx.rest_messages_service
+===========================
+
+.. automodule:: pyokx.rest_messages_service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.rest_messages_service
+    :parts: 1
+

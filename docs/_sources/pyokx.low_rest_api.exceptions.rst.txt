@@ -1,0 +1,11 @@
+pyokx.low_rest_api.exceptions
+=============================
+
+.. automodule:: pyokx.low_rest_api.exceptions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.low_rest_api.exceptions
+    :parts: 1
+

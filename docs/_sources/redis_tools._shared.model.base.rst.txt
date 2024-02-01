@@ -1,0 +1,11 @@
+redis_tools._shared.model.base
+==============================
+
+.. automodule:: redis_tools._shared.model.base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: redis_tools._shared.model.base
+    :parts: 1
+

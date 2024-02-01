@@ -1,0 +1,11 @@
+pyokx.test.WsPrivateAsyncTest
+=============================
+
+.. automodule:: pyokx.test.WsPrivateAsyncTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.WsPrivateAsyncTest
+    :parts: 1
+

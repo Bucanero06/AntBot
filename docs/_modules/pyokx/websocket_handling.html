@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyokx.websocket_handling &mdash; AntBot 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            AntBot
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autodocumentation_python.html">autodocumentation_python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.BaseClasses.html">firebase_tools.BaseClasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.FirestoreClient.html">firebase_tools.FirestoreClient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../main.html">main</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Convert.html">pyokx.low_rest_api.Convert</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.CopyTrading.html">pyokx.low_rest_api.CopyTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Earning.html">pyokx.low_rest_api.Earning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.FDBroker.html">pyokx.low_rest_api.FDBroker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Funding.html">pyokx.low_rest_api.Funding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Grid.html">pyokx.low_rest_api.Grid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.MarketData.html">pyokx.low_rest_api.MarketData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.NDBroker.html">pyokx.low_rest_api.NDBroker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.PublicData.html">pyokx.low_rest_api.PublicData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.SpreadTrading.html">pyokx.low_rest_api.SpreadTrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Status.html">pyokx.low_rest_api.Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.SubAccount.html">pyokx.low_rest_api.SubAccount</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Trade.html">pyokx.low_rest_api.Trade</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.TradingData.html">pyokx.low_rest_api.TradingData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.client.html">pyokx.low_rest_api.client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.WssMarketDataService.html">pyokx.okx_market_maker.market_data_service.WssMarketDataService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.model.Instrument.html">pyokx.okx_market_maker.market_data_service.model.Instrument</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.model.MarkPx.html">pyokx.okx_market_maker.market_data_service.model.MarkPx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.model.OrderBook.html">pyokx.okx_market_maker.market_data_service.model.OrderBook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.market_data_service.model.Tickers.html">pyokx.okx_market_maker.market_data_service.model.Tickers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.order_management_service.WssOrderManagementService.html">pyokx.okx_market_maker.order_management_service.WssOrderManagementService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.order_management_service.model.Order.html">pyokx.okx_market_maker.order_management_service.model.Order</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.order_management_service.model.OrderRequest.html">pyokx.okx_market_maker.order_management_service.model.OrderRequest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.position_management_service.WssPositionManagementService.html">pyokx.okx_market_maker.position_management_service.WssPositionManagementService</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.position_management_service.model.Account.html">pyokx.okx_market_maker.position_management_service.model.Account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition.html">pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.position_management_service.model.Positions.html">pyokx.okx_market_maker.position_management_service.model.Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.run_sample_market_maker.html">pyokx.okx_market_maker.run_sample_market_maker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.settings.html">pyokx.okx_market_maker.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.BaseStrategy.html">pyokx.okx_market_maker.strategy.BaseStrategy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.SampleMM.html">pyokx.okx_market_maker.strategy.SampleMM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.model.StrategyMeasurement.html">pyokx.okx_market_maker.strategy.model.StrategyMeasurement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.model.StrategyOrder.html">pyokx.okx_market_maker.strategy.model.StrategyOrder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.params.ParamsLoader.html">pyokx.okx_market_maker.strategy.params.ParamsLoader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.risk.RiskCalculator.html">pyokx.okx_market_maker.strategy.risk.RiskCalculator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.strategy.risk.RiskSnapshot.html">pyokx.okx_market_maker.strategy.risk.RiskSnapshot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.tests.test_strategy.html">pyokx.okx_market_maker.tests.test_strategy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.utils.InstrumentUtil.html">pyokx.okx_market_maker.utils.InstrumentUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.utils.OkxEnum.html">pyokx.okx_market_maker.utils.OkxEnum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.utils.TdModeUtil.html">pyokx.okx_market_maker.utils.TdModeUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.okx_market_maker.utils.WsOrderUtil.html">pyokx.okx_market_maker.utils.WsOrderUtil</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.strategy_handling.html">pyokx.strategy_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.AccountTest.html">pyokx.test.AccountTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.BlockTradingTest.html">pyokx.test.BlockTradingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.BrokerTest.html">pyokx.test.BrokerTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.ConvertTest.html">pyokx.test.ConvertTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.CopyTradingTest.html">pyokx.test.CopyTradingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.EarningTest.html">pyokx.test.EarningTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.FundingTest.html">pyokx.test.FundingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.GridTest.html">pyokx.test.GridTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.MarketTest.html">pyokx.test.MarketTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.PublicDataTest.html">pyokx.test.PublicDataTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.SpreadTest.html">pyokx.test.SpreadTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.StackingTest.html">pyokx.test.StackingTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.SubAccountTest.html">pyokx.test.SubAccountTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.TradeTest.html">pyokx.test.TradeTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.TradingDataTest.html">pyokx.test.TradingDataTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.WsPrivateAsyncTest.html">pyokx.test.WsPrivateAsyncTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.test.WsPublicAsyncTest.html">pyokx.test.WsPublicAsyncTest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.websocket_handling.html">pyokx.websocket_handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WebSocketFactory.html">pyokx.ws_clients.WebSocketFactory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsPprivateAsync.html">pyokx.ws_clients.WsPprivateAsync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.store.html">redis_tools._shared.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.login.html">routers.login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.okx.html">routers.okx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.okx_authentication.html">routers.okx_authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../routers.signup.html">routers.signup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.command_execution.html">shared.command_execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.config.html">shared.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.configuration_parser.html">shared.configuration_parser</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.data_processing_utils.html">shared.data_processing_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.file_directory_ops.html">shared.file_directory_ops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.logging.html">shared.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.string_dict_utils.html">shared.string_dict_utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../websocket_app.html">websocket_app</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">AntBot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyokx.websocket_handling</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyokx.websocket_handling</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="kn">import</span> <span class="nn">dotenv</span>
+
+<span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.market_data_service.WssMarketDataService</span> <span class="kn">import</span> <span class="n">on_orderbook_snapshot_or_update</span>
+<span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.market_data_service.model.OrderBook</span> <span class="kn">import</span> <span class="n">OrderBook</span>
+<span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">get_ticker_with_higher_volume</span>
+<span class="kn">from</span> <span class="nn">pyokx.ws_clients.WsPprivateAsync</span> <span class="kn">import</span> <span class="n">WsPrivateAsync</span>
+<span class="kn">from</span> <span class="nn">pyokx.ws_clients.WsPublicAsync</span> <span class="kn">import</span> <span class="n">WsPublicAsync</span>
+<span class="kn">from</span> <span class="nn">pyokx.ws_data_structures</span> <span class="kn">import</span> <span class="n">PriceLimitChannel</span><span class="p">,</span> <span class="n">InstrumentsChannel</span><span class="p">,</span> \
+    <span class="n">MarkPriceChannel</span><span class="p">,</span> <span class="n">IndexTickersChannel</span><span class="p">,</span> <span class="n">MarkPriceCandleSticksChannel</span><span class="p">,</span> <span class="n">IndexCandleSticksChannel</span><span class="p">,</span> <span class="n">AccountChannel</span><span class="p">,</span> \
+    <span class="n">PositionsChannel</span><span class="p">,</span> <span class="n">BalanceAndPositionsChannel</span><span class="p">,</span> <span class="n">WebSocketConnectionConfig</span><span class="p">,</span> <span class="n">OrdersChannel</span><span class="p">,</span> <span class="n">OrderBookChannel</span><span class="p">,</span> \
+    <span class="n">TickersChannel</span><span class="p">,</span> <span class="n">IndexTickersChannelInputArgs</span><span class="p">,</span> <span class="n">OrderBookInputArgs</span><span class="p">,</span> <span class="n">MarkPriceChannelInputArgs</span><span class="p">,</span> \
+    <span class="n">TickersChannelInputArgs</span><span class="p">,</span> <span class="n">OrdersChannelInputArgs</span><span class="p">,</span> <span class="n">OKX_WEBSOCKET_URLS</span><span class="p">,</span> <span class="n">public_channels_available</span><span class="p">,</span> \
+    <span class="n">business_channels_available</span><span class="p">,</span> <span class="n">private_channels_available</span><span class="p">,</span> <span class="n">available_channel_models</span>
+<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">serialize_for_redis</span><span class="p">,</span> <span class="n">init_async_redis</span>
+
+<span class="n">REDIS_STREAM_MAX_LEN</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REDIS_STREAM_MAX_LEN&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+
+<div class="viewcode-block" id="okx_websockets_main_run">
+<a class="viewcode-back" href="../../pyokx.websocket_handling.html#pyokx.websocket_handling.okx_websockets_main_run">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">okx_websockets_main_run</span><span class="p">(</span><span class="n">input_channel_models</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                                  <span class="n">apikey</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">secretkey</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">sandbox_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">redis_store</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting OKX Websocket Connections &quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">input_channel_models</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No channels provided&quot;</span><span class="p">)</span>
+
+    <span class="n">public_channels_config</span> <span class="o">=</span> <span class="n">WebSocketConnectionConfig</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;okx_public&#39;</span><span class="p">,</span>
+        <span class="n">wss_url</span><span class="o">=</span><span class="n">OKX_WEBSOCKET_URLS</span><span class="p">[</span><span class="s2">&quot;public&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">sandbox_mode</span> <span class="k">else</span> <span class="n">OKX_WEBSOCKET_URLS</span><span class="p">[</span><span class="s2">&quot;public_demo&quot;</span><span class="p">],</span>
+        <span class="n">channels</span><span class="o">=</span><span class="n">public_channels_available</span>
+    <span class="p">)</span>
+    <span class="n">business_channels_config</span> <span class="o">=</span> <span class="n">WebSocketConnectionConfig</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;okx_business&#39;</span><span class="p">,</span>
+        <span class="n">wss_url</span><span class="o">=</span><span class="n">OKX_WEBSOCKET_URLS</span><span class="p">[</span><span class="s2">&quot;business&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">sandbox_mode</span> <span class="k">else</span> <span class="n">OKX_WEBSOCKET_URLS</span><span class="p">[</span><span class="s2">&quot;business_demo&quot;</span><span class="p">],</span>
+        <span class="n">channels</span><span class="o">=</span><span class="n">business_channels_available</span>
+    <span class="p">)</span>
+
+    <span class="n">private_channels_config</span> <span class="o">=</span> <span class="n">WebSocketConnectionConfig</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;okx_private&#39;</span><span class="p">,</span>
+        <span class="n">wss_url</span><span class="o">=</span><span class="n">OKX_WEBSOCKET_URLS</span><span class="p">[</span><span class="s2">&quot;private&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">sandbox_mode</span> <span class="k">else</span> <span class="n">OKX_WEBSOCKET_URLS</span><span class="p">[</span><span class="s2">&quot;private_demo&quot;</span><span class="p">],</span>
+        <span class="n">channels</span><span class="o">=</span><span class="n">private_channels_available</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">redis_store</span><span class="p">:</span>
+        <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">async_redis</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">ws_callback</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+        <span class="n">message_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">event</span> <span class="o">=</span> <span class="n">message_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incoming Raw WS Message: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">event</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span>  <span class="c1"># TODO: Handle events, mostly subscribe and error stop and reconnect task</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>  <span class="c1"># TODO: Handle events, mostly subscribe and error</span>
+
+        <span class="k">try</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            ----------------------------------------------------</span>
+<span class="sd">            Send out the Supported Models to their messages stream channel </span>
+<span class="sd">            (verifies the channel message has a pydantic model)</span>
+<span class="sd">            ----------------------------------------------------</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="n">message_args</span> <span class="o">=</span> <span class="n">message_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;arg&quot;</span><span class="p">)</span>
+            <span class="n">message_channel</span> <span class="o">=</span> <span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel&quot;</span><span class="p">)</span>
+
+            <span class="n">data_struct</span> <span class="o">=</span> <span class="n">available_channel_models</span><span class="p">[</span><span class="n">message_channel</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_struct</span><span class="p">,</span> <span class="s2">&quot;from_array&quot;</span><span class="p">):</span>  <span class="c1"># only applicatble to a few scenarios with candlesticks</span>
+                <span class="n">structured_message</span> <span class="o">=</span> <span class="n">data_struct</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="o">**</span><span class="n">message_json</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">structured_message</span> <span class="o">=</span> <span class="n">data_struct</span><span class="p">(</span><span class="o">**</span><span class="n">message_json</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received Structured-Data: </span><span class="si">{</span><span class="n">structured_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">redis_store</span> <span class="ow">and</span> <span class="n">async_redis</span><span class="p">:</span>
+                <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">structured_message</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span>
+                                       <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@all&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span>
+                                       <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+<span class="w">                </span><span class="sd">&#39;&#39;&#39; (ALPHA)</span>
+<span class="sd">                ----------------------------------------------------</span>
+<span class="sd">                Handle supported channels data </span>
+<span class="sd">                (can be moved to listen to the redistributed redis channel -from-above-)</span>
+<span class="sd">                e.g. </span>
+<span class="sd">                    message = _deserialize_from_redis(r.xrevrange(&#39;okx:websockets@account&#39;, count=1)[0][1])</span>
+<span class="sd">                    account: Account = on_account(incoming_account_message)</span>
+<span class="sd">                    redis_ready_message = serialize_for_redis(account.to_dict())</span>
+<span class="sd">                    r.xadd(f&#39;okx:reports@{message.get(&quot;arg&quot;).get(&quot;channel&quot;)}&#39;, redis_ready_message, maxlen=1000)</span>
+<span class="sd">                ----------------------------------------------------</span>
+<span class="sd">                &#39;&#39;&#39;</span>
+
+                <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;index-tickers&quot;</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;instId&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                           <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">structured_message</span><span class="p">)},</span>
+                                           <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+                <span class="c1"># await handle_reports(message_json, async_redis) # TODO: Handle reports</span>
+
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>  <span class="c1"># TODO: Handle exceptions</span>
+
+    <span class="n">public_channels_inputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">business_channels_inputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">private_channels_inputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">input_channel</span> <span class="ow">in</span> <span class="n">input_channel_models</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">input_channel</span><span class="o">.</span><span class="n">channel</span> <span class="ow">in</span> <span class="n">public_channels_config</span><span class="o">.</span><span class="n">channels</span><span class="p">:</span>
+            <span class="n">public_channels_inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_channel</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">input_channel</span><span class="o">.</span><span class="n">channel</span> <span class="ow">in</span> <span class="n">business_channels_config</span><span class="o">.</span><span class="n">channels</span><span class="p">:</span>
+            <span class="n">business_channels_inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_channel</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">input_channel</span><span class="o">.</span><span class="n">channel</span> <span class="ow">in</span> <span class="n">private_channels_config</span><span class="o">.</span><span class="n">channels</span><span class="p">:</span>
+            <span class="n">private_channels_inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_channel</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channel </span><span class="si">{</span><span class="n">input_channel</span><span class="o">.</span><span class="n">channel</span><span class="si">}</span><span class="s2"> not found in available channels&quot;</span><span class="p">)</span>
+
+    <span class="n">public_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">channel</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span> <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">public_channels_inputs</span><span class="p">]</span>
+    <span class="n">business_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">channel</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span> <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">business_channels_inputs</span><span class="p">]</span>
+    <span class="n">private_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">channel</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span> <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">private_channels_inputs</span><span class="p">]</span>
+
+    <span class="n">public_client</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">business_client</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">private_client</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">public_params</span><span class="p">:</span>
+        <span class="n">public_client</span> <span class="o">=</span> <span class="n">WsPublicAsync</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">public_channels_config</span><span class="o">.</span><span class="n">wss_url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">ws_callback</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subscribing to public channels: </span><span class="si">{</span><span class="n">public_params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">public_client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">public_client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">public_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">business_params</span><span class="p">:</span>
+        <span class="n">business_client</span> <span class="o">=</span> <span class="n">WsPublicAsync</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">business_channels_config</span><span class="o">.</span><span class="n">wss_url</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">ws_callback</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subscribing to business channels: </span><span class="si">{</span><span class="n">business_params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">business_client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">business_client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">business_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">private_params</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">apikey</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;API key was not provided&quot;</span>
+        <span class="k">assert</span> <span class="n">secretkey</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;API secret key was not provided&quot;</span>
+        <span class="k">assert</span> <span class="n">passphrase</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Passphrase was not provided&quot;</span>
+
+        <span class="n">private_client</span> <span class="o">=</span> <span class="n">WsPrivateAsync</span><span class="p">(</span><span class="n">apikey</span><span class="o">=</span><span class="n">apikey</span><span class="p">,</span> <span class="n">passphrase</span><span class="o">=</span><span class="n">passphrase</span><span class="p">,</span> <span class="n">secretkey</span><span class="o">=</span><span class="n">secretkey</span><span class="p">,</span>
+                                        <span class="n">url</span><span class="o">=</span><span class="n">private_channels_config</span><span class="o">.</span><span class="n">wss_url</span><span class="p">,</span> <span class="n">use_servertime</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">ws_callback</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Subscribing to private channels: </span><span class="si">{</span><span class="n">private_params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">private_client</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">private_client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">private_params</span><span class="p">)</span>
+
+    <span class="c1"># Keep the loop running, or perform other tasks</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>  <span class="c1"># This could be the main loop of the trading strategy or at least for the health checks</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Heartbeat </span><span class="se">\n</span><span class="s2"> ___________&quot;</span><span class="p">)</span>
+            <span class="c1"># Print stats for redis</span>
+            <span class="k">if</span> <span class="n">redis_store</span> <span class="ow">and</span> <span class="n">async_redis</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Redis Stats: &quot;</span><span class="p">)</span>
+                <span class="c1"># print only the relevant stats that have human in them</span>
+                <span class="n">redis_stats</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+                <span class="n">stats_to_print</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">redis_stats</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;human&quot;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">}</span>
+                <span class="n">pprint</span><span class="p">(</span><span class="n">stats_to_print</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;___________ </span><span class="se">\n</span><span class="s2"> Heartbeat&quot;</span><span class="p">)</span>
+
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">public_client</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">public_params</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">public_client</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">public_params</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">public_client</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">business_client</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">business_params</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">business_client</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">business_params</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">business_client</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">private_client</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">private_params</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">private_client</span><span class="o">.</span><span class="n">unsubscribe</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">private_params</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">private_client</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">redis_store</span> <span class="ow">and</span> <span class="n">async_redis</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="handle_reports">
+<a class="viewcode-back" href="../../pyokx.websocket_handling.html#pyokx.websocket_handling.handle_reports">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handle_reports</span><span class="p">(</span><span class="n">message_json</span><span class="p">,</span> <span class="n">async_redis</span><span class="p">):</span>
+    <span class="n">message_args</span> <span class="o">=</span> <span class="n">message_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;arg&quot;</span><span class="p">)</span>
+    <span class="n">message_channel</span> <span class="o">=</span> <span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel&quot;</span><span class="p">)</span>
+    <span class="c1"># Position Management Service</span>
+    <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;balance_and_position&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.position_management_service.WssPositionManagementService</span> <span class="kn">import</span> \
+            <span class="n">on_balance_and_position</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition</span> <span class="kn">import</span> \
+            <span class="n">BalanceAndPosition</span>
+        <span class="n">balance_and_position</span><span class="p">:</span> <span class="n">BalanceAndPosition</span> <span class="o">=</span> <span class="n">on_balance_and_position</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">balance_and_position</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">redis_ready_message</span><span class="p">,</span>
+                               <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;account&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.position_management_service.WssPositionManagementService</span> <span class="kn">import</span> \
+            <span class="n">on_account</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.position_management_service.model.Account</span> <span class="kn">import</span> <span class="n">Account</span>
+        <span class="n">account</span><span class="p">:</span> <span class="n">Account</span> <span class="o">=</span> <span class="n">on_account</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">account</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">redis_ready_message</span><span class="p">,</span>
+                               <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;positions&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.position_management_service.WssPositionManagementService</span> <span class="kn">import</span> \
+            <span class="n">on_position</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.position_management_service.model.Positions</span> <span class="kn">import</span> <span class="n">Positions</span>
+        <span class="n">positions</span><span class="p">:</span> <span class="n">Positions</span> <span class="o">=</span> <span class="n">on_position</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">positions</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@positions&#39;</span><span class="p">,</span> <span class="n">redis_ready_message</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+    <span class="c1"># Order Management Service</span>
+    <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;orders&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.order_management_service.WssOrderManagementService</span> <span class="kn">import</span> \
+            <span class="n">on_orders_update</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.order_management_service.model.Order</span> <span class="kn">import</span> <span class="n">Orders</span>
+        <span class="n">orders</span><span class="p">:</span> <span class="n">Orders</span> <span class="o">=</span> <span class="n">on_orders_update</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">orders</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                               <span class="n">redis_ready_message</span><span class="p">,</span>
+                               <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+    <span class="c1"># Market Data Service</span>
+    <span class="k">if</span> <span class="n">message_channel</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;books5&quot;</span><span class="p">,</span> <span class="s2">&quot;books&quot;</span><span class="p">,</span> <span class="s2">&quot;bbo-tbt&quot;</span><span class="p">,</span> <span class="s2">&quot;books50-l2-tbt&quot;</span><span class="p">,</span> <span class="s2">&quot;books-l2-tbt&quot;</span><span class="p">]:</span>
+        <span class="n">books</span><span class="p">:</span> <span class="n">OrderBook</span> <span class="o">=</span> <span class="n">on_orderbook_snapshot_or_update</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">books</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;instId&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                               <span class="n">redis_ready_message</span><span class="p">,</span>
+                               <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;mark-price&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.market_data_service.WssMarketDataService</span> <span class="kn">import</span> <span class="n">on_mark_price_update</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.market_data_service.model.MarkPx</span> <span class="kn">import</span> <span class="n">MarkPxCache</span>
+        <span class="n">mark_px</span><span class="p">:</span> <span class="n">MarkPxCache</span> <span class="o">=</span> <span class="n">on_mark_price_update</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">mark_px</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;instId&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                               <span class="n">redis_ready_message</span><span class="p">,</span>
+                               <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;tickers&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.market_data_service.WssMarketDataService</span> <span class="kn">import</span> <span class="n">on_ticker_update</span>
+        <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.market_data_service.model.Tickers</span> <span class="kn">import</span> <span class="n">Tickers</span>
+        <span class="n">tickers</span><span class="p">:</span> <span class="n">Tickers</span> <span class="o">=</span> <span class="n">on_ticker_update</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">tickers</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                               <span class="n">redis_ready_message</span><span class="p">,</span>
+                               <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_instrument_specific_channel_inputs_to_listen_to">
+<a class="viewcode-back" href="../../pyokx.websocket_handling.html#pyokx.websocket_handling.get_instrument_specific_channel_inputs_to_listen_to">[docs]</a>
+<span class="k">def</span> <span class="nf">get_instrument_specific_channel_inputs_to_listen_to</span><span class="p">():</span>
+    <span class="n">btc_</span> <span class="o">=</span> <span class="n">get_ticker_with_higher_volume</span><span class="p">(</span><span class="s2">&quot;BTC-USDT&quot;</span><span class="p">,</span>
+                                         <span class="n">instrument_type</span><span class="o">=</span><span class="s2">&quot;FUTURES&quot;</span><span class="p">,</span>
+                                         <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">eth_</span> <span class="o">=</span> <span class="n">get_ticker_with_higher_volume</span><span class="p">(</span><span class="s2">&quot;ETH-USDT&quot;</span><span class="p">,</span>
+                                         <span class="n">instrument_type</span><span class="o">=</span><span class="s2">&quot;FUTURES&quot;</span><span class="p">,</span>
+                                         <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ltc</span> <span class="o">=</span> <span class="n">get_ticker_with_higher_volume</span><span class="p">(</span><span class="s2">&quot;LTC-USDT&quot;</span><span class="p">,</span>
+                                        <span class="n">instrument_type</span><span class="o">=</span><span class="s2">&quot;FUTURES&quot;</span><span class="p">,</span>
+                                        <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">instruments_to_listen_to</span> <span class="o">=</span> <span class="n">btc_</span> <span class="o">+</span> <span class="n">eth_</span> <span class="o">+</span> <span class="n">ltc</span>
+    <span class="n">instrument_specific_channels</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">instrument</span> <span class="ow">in</span> <span class="n">instruments_to_listen_to</span><span class="p">:</span>
+        <span class="n">instrument_specific_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">OrderBookInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;books5&quot;</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instrument</span><span class="o">.</span><span class="n">instId</span><span class="p">))</span>
+        <span class="n">instrument_specific_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">OrderBookInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;books&quot;</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instrument</span><span class="o">.</span><span class="n">instId</span><span class="p">))</span>
+        <span class="n">instrument_specific_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">OrderBookInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;bbo-tbt&quot;</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instrument</span><span class="o">.</span><span class="n">instId</span><span class="p">))</span>
+        <span class="n">instrument_specific_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MarkPriceChannelInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;mark-price&quot;</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instrument</span><span class="o">.</span><span class="n">instId</span><span class="p">))</span>
+        <span class="n">instrument_specific_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TickersChannelInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;tickers&quot;</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instrument</span><span class="o">.</span><span class="n">instId</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">instrument_specific_channels</span></div>
+
+
+
+<div class="viewcode-block" id="get_btc_usdt_usd_index_channel_inputs_to_listen_to">
+<a class="viewcode-back" href="../../pyokx.websocket_handling.html#pyokx.websocket_handling.get_btc_usdt_usd_index_channel_inputs_to_listen_to">[docs]</a>
+<span class="k">def</span> <span class="nf">get_btc_usdt_usd_index_channel_inputs_to_listen_to</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">IndexTickersChannelInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;index-tickers&quot;</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="s2">&quot;BTC-USDT&quot;</span><span class="p">),</span>
+        <span class="n">IndexTickersChannelInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;index-tickers&quot;</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="s2">&quot;BTC-USD&quot;</span><span class="p">)</span>
+    <span class="p">]</span></div>
+
+
+
+
+<div class="viewcode-block" id="test_restart">
+<a class="viewcode-back" href="../../pyokx.websocket_handling.html#pyokx.websocket_handling.test_restart">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_restart</span><span class="p">(</span><span class="n">public_client</span><span class="p">,</span> <span class="n">business_client</span><span class="p">,</span> <span class="n">private_client</span><span class="p">):</span>
+    <span class="n">clients</span> <span class="o">=</span> <span class="p">[</span><span class="n">client</span> <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="p">[</span><span class="n">public_client</span><span class="p">,</span> <span class="n">business_client</span><span class="p">,</span> <span class="n">private_client</span><span class="p">]</span> <span class="k">if</span>
+               <span class="nb">hasattr</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="s2">&quot;restart&quot;</span><span class="p">)]</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">client</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span> <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="n">clients</span> <span class="k">if</span> <span class="n">client</span><span class="p">])</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
+    <span class="n">instrument_specific_channels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">btc_usdt_usd_index_channels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># instrument_specific_channels = get_channel_inputs_to_listen_to()</span>
+    <span class="c1"># btc_usdt_usd_index_channels = get_btc_usdt_usd_index_channel_inputs_to_listen_to()</span>
+    <span class="n">input_channel_models</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span>
+                <span class="c1">### Business Channels</span>
+                <span class="c1"># MarkPriceCandleSticksChannelInputArgs(channel=&quot;mark-price-candle1m&quot;, instId=instId),</span>
+                <span class="c1"># IndexCandleSticksChannelInputArgs(channel=&quot;index-candle1m&quot;, instId=instFamily),</span>
+
+                <span class="c1">### Public Channels</span>
+                <span class="c1"># # InstrumentsChannelInputArgs(channel=&quot;instruments&quot;, instType=&quot;FUTURES&quot;), # todo handle data</span>
+                <span class="c1"># PriceLimitChannelInputArgs(channel=&quot;price-limit&quot;, instId=instId),# todo handle data</span>
+                <span class="c1"># IndexTickersChannelInputArgs(</span>
+                <span class="c1">#     # Index with USD, USDT, BTC, USDC as the quote currency, e.g. BTC-USDT, e.g. not BTC-USDT-240628</span>
+                <span class="c1">#     channel=&quot;index-tickers&quot;, instId=&quot;BTC-USDT&quot;),</span>
+                <span class="c1"># IndexTickersChannelInputArgs(</span>
+                <span class="c1">#     # Index with USD, USDT, BTC, USDC as the quote currency, e.g. BTC-USDT, e.g. not BTC-USDT-240628</span>
+                <span class="c1">#     channel=&quot;index-tickers&quot;, instId=&quot;BTC-USD&quot;),</span>
+
+                <span class="c1">### Private Channels</span>
+                <span class="c1"># AccountChannelInputArgs(channel=&quot;account&quot;, ccy=None),</span>
+                <span class="c1"># PositionsChannelInputArgs(channel=&quot;positions&quot;, instType=&quot;ANY&quot;, instFamily=None,</span>
+                <span class="c1">#                          instId=None),</span>
+                <span class="c1"># BalanceAndPositionsChannelInputArgs(channel=&quot;balance_and_position&quot;),</span>
+                <span class="n">OrdersChannelInputArgs</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;orders&quot;</span><span class="p">,</span> <span class="n">instType</span><span class="o">=</span><span class="s2">&quot;FUTURES&quot;</span><span class="p">,</span> <span class="n">instFamily</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                       <span class="n">instId</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="p">]</span> <span class="o">+</span> <span class="n">instrument_specific_channels</span> <span class="o">+</span> <span class="n">btc_usdt_usd_index_channels</span><span class="p">)</span>
+
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">okx_websockets_main_run</span><span class="p">(</span><span class="n">input_channel_models</span><span class="o">=</span><span class="n">input_channel_models</span><span class="p">,</span>
+                                        <span class="n">apikey</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OKX_API_KEY&#39;</span><span class="p">),</span> <span class="n">passphrase</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OKX_PASSPHRASE&#39;</span><span class="p">),</span>
+                                        <span class="n">secretkey</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OKX_SECRET_KEY&#39;</span><span class="p">),</span>
+                                        <span class="c1"># todo/fixme this can differ from the actual trading strategy that is</span>
+                                        <span class="c1">#  listening to the streams thus watch out</span>
+                                        <span class="n">sandbox_mode</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OKX_SANDBOX_MODE&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">redis_store</span><span class="o">=</span><span class="kc">True</span>
+                                        <span class="p">)</span>
+                <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Ruben Fernandez Carbon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

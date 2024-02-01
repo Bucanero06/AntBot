@@ -1,0 +1,11 @@
+pyokx.test.CopyTradingTest
+==========================
+
+.. automodule:: pyokx.test.CopyTradingTest
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.test.CopyTradingTest
+    :parts: 1
+

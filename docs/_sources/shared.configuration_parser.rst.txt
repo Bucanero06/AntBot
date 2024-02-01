@@ -1,0 +1,11 @@
+shared.configuration_parser
+===========================
+
+.. automodule:: shared.configuration_parser
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: shared.configuration_parser
+    :parts: 1
+

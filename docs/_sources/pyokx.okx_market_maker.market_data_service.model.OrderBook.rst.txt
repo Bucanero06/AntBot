@@ -1,0 +1,11 @@
+pyokx.okx_market_maker.market_data_service.model.OrderBook
+==========================================================
+
+.. automodule:: pyokx.okx_market_maker.market_data_service.model.OrderBook
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.okx_market_maker.market_data_service.model.OrderBook
+    :parts: 1
+

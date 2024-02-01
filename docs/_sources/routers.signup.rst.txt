@@ -1,0 +1,11 @@
+routers.signup
+==============
+
+.. automodule:: routers.signup
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: routers.signup
+    :parts: 1
+

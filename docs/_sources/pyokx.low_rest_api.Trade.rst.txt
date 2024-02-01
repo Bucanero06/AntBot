@@ -1,0 +1,11 @@
+pyokx.low_rest_api.Trade
+========================
+
+.. automodule:: pyokx.low_rest_api.Trade
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.low_rest_api.Trade
+    :parts: 1
+

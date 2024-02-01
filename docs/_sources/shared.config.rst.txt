@@ -1,0 +1,11 @@
+shared.config
+=============
+
+.. automodule:: shared.config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: shared.config
+    :parts: 1
+

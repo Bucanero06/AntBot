@@ -1,20 +1,22 @@
-version: '3.10'
+#version: '3.10'
+version: '2.2'
+# sudo snap refresh docker --channel=latest/edge
 
 services:
-#  nginx:
-#    build:
-#      context: .
-#      dockerfile: .docker/nginx.dockerfile
-#    restart: unless-stopped
-#    networks:
-#      - my-network
-#    ports:
-#      - ${NGINX_SERVICE_PORT}:${NGINX_SERVICE_PORT}
-#    healthcheck:
-#      test: [ "CMD", "curl", "--fail", "http://localhost:80" ]
-#      interval: 10s
-#      timeout: 3s
-#      retries: 5
+  #  nginx:
+  #    build:
+  #      context: .
+  #      dockerfile: .docker/nginx.dockerfile
+  #    restart: unless-stopped
+  #    networks:
+  #      - my-network
+  #    ports:
+  #      - ${NGINX_SERVICE_PORT}:${NGINX_SERVICE_PORT}
+  #    healthcheck:
+  #      test: [ "CMD", "curl", "--fail", "http://localhost:80" ]
+  #      interval: 10s
+  #      timeout: 3s
+  #      retries: 5
 
   dashboard:
     build:
@@ -24,22 +26,27 @@ services:
     restart: unless-stopped
     networks:
       - my-network
+    depends_on:
+      okx_websockets:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       FIREBASE_API_KEY: ${FIREBASE_API_KEY}
-      H2O_WAVE_ACCESS_KEYCHAIN: ".wave-keychain"
-      H2O_WAVE_DATA_DIR: "./data"
-      H2O_WAVE_DEBUG: "1"
-      H2O_WAVE_FORWARDED_HTTP_HEADERS: "*"
+#      H2O_WAVE_ACCESS_KEYCHAIN: ".wave-keychain"
+#      H2O_WAVE_DATA_DIR: "./data"
+#      H2O_WAVE_DEBUG: "1"
+#      H2O_WAVE_FORWARDED_HTTP_HEADERS: "*"
       H2O_WAVE_LISTEN: 0.0.0.0:10101
       H2O_WAVE_ADDRESS: http://0.0.0.0:10101
       H2O_WAVE_APP_ADDRESS: http://0.0.0.0:8000
-      H2O_WAVE_BASE_URL: "/"
-      H2O_WAVE_MAX_CACHE_REQUEST_SIZE: "5M"
-      H2O_WAVE_MAX_PROXY_REQUEST_SIZE: "5M"
-      H2O_WAVE_MAX_PROXY_RESPONSE_SIZE: "5M"
-      H2O_WAVE_MAX_REQUEST_SIZE: "5M"
-      H2O_WAVE_NO_STORE: "1"
-      H2O_WAVE_NO_LOG: "1"
+#      H2O_WAVE_BASE_URL: "/"
+#      H2O_WAVE_MAX_CACHE_REQUEST_SIZE: "5M"
+#      H2O_WAVE_MAX_PROXY_REQUEST_SIZE: "5M"
+#      H2O_WAVE_MAX_PROXY_RESPONSE_SIZE: "5M"
+#      H2O_WAVE_MAX_REQUEST_SIZE: "5M"
+#      H2O_WAVE_NO_STORE: "1"
+#      H2O_WAVE_NO_LOG: "1"
       H2O_WAVE_PING_INTERVAL: "50s"
     ports:
       - "10101:10101"
@@ -49,12 +56,13 @@ services:
       timeout: 3s
       retries: 3
     logging:
-        driver: "json-file"
-        options:
-            max-size: "10m"
-            max-file: "3"
-
-
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    cpus: 0.5
+    mem_limit: 512m
+    mem_reservation: 256m
 
 
   redis:
@@ -74,6 +82,9 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    cpus: 0.5
+    mem_limit: 1g
+    mem_reservation: 512m
 
 
   okx_api:
@@ -115,6 +126,9 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    cpus: 1
+    mem_limit: 1g
+    mem_reservation: 512m
 
 
   okx_websockets:
@@ -122,7 +136,7 @@ services:
       context: .
       dockerfile: .docker/bot.dockerfile
     ports:
-        - ${OKX_WS_SERVICE_PORT}:${OKX_WS_SERVICE_PORT}
+      - ${OKX_WS_SERVICE_PORT}:${OKX_WS_SERVICE_PORT}
     restart: unless-stopped
     networks:
       - my-network
@@ -152,6 +166,10 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    cpus: 1
+    mem_limit: 1g
+    mem_reservation: 512m
+
 
 
 networks:

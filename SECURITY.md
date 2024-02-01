@@ -13,7 +13,7 @@ To report a security issue, please follow the steps below:
 
 2. **Use the Dedicated Reporting Channel:**
    - Report the vulnerability directly to us by using the GitHub Security Advisory ["Report a Vulnerability"](https://github.com/Bucanero06/AntBot/security/advisories/new) tab.
-   - Alternatively, you can email us at [security@carbonylllc.com](mailto:security@carbonylllc.com) with the relevant details.
+   - Alternatively, you can email us at [support@carbonyl.org](support@carbonyl.org) with the relevant details.
 
 ### What to Include in Your Report
 

@@ -5,7 +5,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from pyokx.data_structures import FillEntry
+from pyokx.data_structures import FillEntry, FillHistoricalMetricsEntry, FillHistoricalMetrics
 from pyokx.low_rest_api.exceptions import OkxAPIException, OkxParamsException, OkxRequestException
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
 from pyokx.rest_handling import fetch_fill_history

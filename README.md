@@ -1,113 +1,129 @@
-# AntBot
+## AntBot Project
 
-[Screencast from 01-25-2024 10:41:13 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/5c0a9a4f-78b1-4b5b-ab3b-13c439bb8d8b)
+### Overview
 
-## Setup
+This refined document presents a comprehensive and professional guide for the AntBot project, developed by Carbonyl
+LLC & Carbonyl R&D. The AntBot is a sophisticated, high-performance trading application, meticulously engineered for
+seamless interaction with the OKX exchange. It emphasizes real-time data processing, efficient resource management, and
+state-of-the-art technological integration.
 
-Install docker
+#### Document Details
 
-```bash
-sudo snap refresh docker --channel=latest/edge # Has fixes I need
+- **Document Title:** AntBot Project Comprehensive Documentation
+- **Copyright:** © 2024 Carbonyl LLC & Carbonyl R&D
+- **Visual Reference:** [Screencast from 01-25-2024 10:41:13 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/5c0a9a4f-78b1-4b5b-ab3b-13c439bb8d8b)
+
+### Deployment Guidelines
+
+#### Initial Setup
+
+1. **Prerequisite Installation:**
+    - Install the latest version of Docker for compatibility and specific feature support:
+      ```bash
+      sudo snap refresh docker --channel=latest/edge # Incorporates essential fixes
+      ```
+
+2. **Repository Initialization:**
+    - Clone and prepare the AntBot repository:
+      ```bash
+      git clone https://github.com/Bucanero06/AntBot.git
+      cd AntBot
+      ```
+    - Verify `.env` file configuration for environmental consistency.
+
+#### Container Deployment
+
+1. **Container Initialization:**
+    - Deploy Docker containers efficiently, ensuring build and execution in a non-interactive mode:
+      ```bash
+      docker-compose up -d --build
+      ```
+
+2. **Log Monitoring:**
+    - For comprehensive logs:
+      ```bash
+      docker-compose logs -f
+      ```
+    - For targeted container logs:
+      ```bash
+      docker-compose logs -f <container_name>
+      ```
+
+3. **Docker-Compose Specification:**
+    - Utilization of docker-compose version 2.2 is strategic for optimal resource management within a VM environment,
+      despite version 3.x offering the latest features.
+
+### Technology Stack Synopsis
+
+The AntBot project integrates an array of leading-edge technologies, each contributing uniquely to the system's overall
+performance and versatility:
+
+1. **FastAPI & Uvicorn:**
+    - Implements a modern, high-performance framework with Uvicorn serving for high concurrency and reliability.
+
+2. **Pydantic & Redis:**
+    - Employs Pydantic for robust data structuring and Redis for fast, scalable data processing.
+
+3. **Supplementary Technologies:**
+    - Nginx, Asyncio, Wave, VectorBT(PRO), Nautilus Trader, and TradingView enrich the stack with capabilities ranging
+      from request management to advanced backtesting and market analysis. 
+
+4. **Additional Components:**
+    - Incorporates Websockets, Requests, Docker, GCP Logging & Monitoring, Firebase (GCP), and OAuth2 to fortify the
+      infrastructure, security, and operational monitoring.
+    - Prometheus and Grafana are being integrated to provide comprehensive monitoring and alerting.
+
+Each of these has many features yet to be fully integrated into the AntBot project, but the potential for expansion
+and enhancement is vast, many low-hanging fruits are available for the taking. 
+
+### TradingView Alerts Configuration
+
+A forthcoming feature includes an automated alert creation and management page. Initial steps to set up alerts using the
+LuxAlgo Premium Indicator are detailed, emphasizing customization and webhook integration for comprehensive strategy
+alerting.
+
+### Legal Disclaimer
+
+The document concludes with a disclaimer, stressing the informational nature of the project and disclaiming liability
+for any resulting claims, damages, or losses.
+
+---
+
+### Creating the TradingView Alerts
+
+Automated Alert Creation and Management Page coming soon
+
+```
+e.g. LuxAlgo Premium Indicator
+    i   - Create Alert on {ASSET}
+    ii  - Set Alert "Condition" to ["LuxAlgo Premium"]["Any Confirmation"]
+    iii - Set Alert "Action" to "Webhook"
+    iv  - Set appropriate "Expiration Time" (e.g. 1 hour, 1 month, Open-ended)
+    v   - Set "Webhook URL" to your Hosted app URL (e.g. http://your-app-ip:your-port/yourtvendpoint)
+            make sure to select the Webhook URL check box so that the alert is sent using the Webhook
+    vi  - Name Alert Name (e.g. "LuxAlgo Premium") to something that is easy to identify in the logs
+    vii - Add the Message as found in the json payload examples below, you can customize the message to your liking
+    viii - Create Alert - Congratulations you just set up your first TradingView Strategy Alert Webhook!
+            if you want other conditions to trigger alerts, repeat steps i-viii since LuxAlgo Premium Indicator
+            does not allow for custom webhooks  explicitely but you easily adjusted. This application is designed to be used with the LuxAlgo Premium Indicator
+            but can be used with any TradingView Strategy Alert Webhook that is sent in the correct format.
+            See the TradingView Webhook Documentation for more information on how to create a custom webhook and notify
+            the bot of your custom webhook format for entries and exits. *TODO: See the "Expanding the Bot" section in this 
+            ReadMe for more.*
 ```
 
-Clone the repo
+## Disclaimer
 
-```bash
-git clone https://github.com/Bucanero06/AntBot.git
-```
+This project is for informational purposes only. You should not construe this information or any other material as
+legal, tax, investment, financial or other advice. Nothing contained herein constitutes a solicitation, recommendation,
+endorsement or offer by us or any third party provider to buy or sell any securities or other financial instruments in
+this or any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of such
+jurisdiction.
 
-Make sure you have your .env file filled out and move inside the AntBot directory
+***If you intend to use real money, use it at your own risk.***
 
-```bash
-cd AntBot
-```
+Under no circumstances will we be responsible or liable for any claims, damages, losses, expenses, costs or liabilities
+of any kind, including but not limited to direct or indirect damages for loss of profits.
 
-Run the docker containers in the background and build them if they don't exist
-
-```bash
-docker-compose up -d --build
-```
-
-The bot should be running now, you can check the logs with
-
-```bash
-docker-compose logs -f
-```
-
-or you can check the logs for a specific container with
-
-```bash
-docker-compose logs -f <container_name>
-```
-
-___
-
-Version 2.2 for docker-compose is used to limit the resources used by the containers since. Despite version 3.x bringing 
-the latest features, the resource management is meant to only work swarm mode and is not of use when working with
-limited resources in a VM. Rather, optimize the containers to use fewer resources and limit the resources.
-
-___
-
-## Stack-Description
-
-### FastAPI (OKX_REST)
-
-The services running FastAPI applications are the `okx_rest` and `okx_websockets` services. The `okx_rest` service
-is used to interact with the OKX exchange and the `okx_websockets` service is used to provide real-time data to the
-Redis-Stack database.
-
-FastAPI is a modern, fast (high performance), web framework for building APIs with Python 3.9+ based on standard Python
-type hints. It is designed to be easy to use and learn, and it is also highly performant. It is built on top of
-Starlette for the web parts and Pydantic for the data parts.
-
-In addition to the RESTful API, a websocket server is used to provide real-time data from the exchange to
-the Redis-Stack database. This is used to provide real-time data to the user interface and other services that
-require up-to-date data.
-
-### Uvicorn (ASGI Server)
-
-Uvicorn is a lightning-fast ASGI server, built on uvloop and httptools. It is used to serve the FastAPI applications
-and is used to handle the asynchronous requests made to the RESTful API and the websocket server.
-
-### Gunicorn (WSGI Server)
-
-We use Gunicorn to serve the FastAPI application in production.
-Gunicorn is a Python WSGI HTTP Server for UNIX.
-The difference between ASGI and WSGI is that ASGI is designed to handle asynchronous requests and WSGI is designed to
-handle synchronous requests.
-The reasoning of handling synchronous requests with Gunicorn is that the RESTful API is not designed to handle
-
-
-### Pydantic (Data Validation)
-
-### Nginx (Optional - Reverse Proxy)
-
-### Redis (Cache and Message Broker)
-
-### Asyncio (Concurrent Requests)
-
-### Websockets (Real-time Data)
-
-### Requests (HTTP Requests)
-
-### Wave (Dashboard and Data Visualization)
-
-### VectorBT(PRO) (Backtesting and Strategy Development)
-
-### Nautilus Trader (High-Frequency Trading)
-
-### Docker (Containerization)
-
-### Docker-Compose (Orchestration)
-
-### GCP Logging & Monitoring + Installed Ops Agent (Monitoring)
-
-### Firebase (GCP) (Authentication)
-
-### Oauth2 (Authentication)
-
-### TradingView (Widgets and Alerts)
-
-##
-
-
+For further elaboration or specific details, please proceed to the codebase documentation or refer to the official
+documentation of each integrated component or library.

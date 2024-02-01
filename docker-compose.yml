@@ -87,12 +87,12 @@ services:
     mem_reservation: 512m
 
 
-  okx_api:
+  okx_rest:
     build:
       context: .
       dockerfile: .docker/bot.dockerfile
     ports:
-      #      - ${OKX_API_SERVICE_PORT}:${OKX_API_SERVICE_PORT}
+      #      - ${OKX_REST_SERVICE_PORT}:${OKX_REST_SERVICE_PORT}
       - 8080:8080
     restart: unless-stopped
     networks:
@@ -104,8 +104,8 @@ services:
         condition: service_healthy
     environment:
       - FIREBASE_API_KEY=${FIREBASE_API_KEY}
-      - MODULE_PATH=${OKX_API_MODULE_PATH}
-      - MODULE_NAME=${OKX_API_MODULE_NAME}
+      - MODULE_PATH=${OKX_REST_MODULE_PATH}
+      - MODULE_NAME=${OKX_REST_MODULE_NAME}
       - HOST=0.0.0.0
       - PORT=8080
       - REDIS_STREAM_MAX_LEN=${REDIS_STREAM_MAX_LEN}

@@ -21,44 +21,11 @@ import asyncio
 
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
-from h2o_dashboard.util import add_card, init_page_card_set
+from h2o_dashboard.util import add_card
 from h2o_dashboard.widgets.okx_streams import OKX_Account_StreamWidget, OKX_Positions_StreamWidget, \
-    OKX_Fill_Report_StreamWidget
+    OKX_Fill_Report_StreamWidget, OKX_Manual_ControlsWidget
 
 app = AsyncSite()
-
-
-async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
-    await add_card(q, card_name, ui.form_card(box=box, items=[
-        ui.frame(content="""<!-- TradingView Widget BEGIN -->
-            <div class="tradingview-widget-container" style="height:100%;width:100%">
-              <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
-              <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
-              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
-              {
-              "autosize": true,
-              "symbol": "OKX:BTCUSDT.P",
-              "interval": "D",
-              "timezone": "Etc/UTC",
-              "theme": "light",
-              "style": "1",
-              "locale": "en",
-              "enable_publishing": false,
-              "withdateranges": true,
-              "hide_side_toolbar": false,
-              "allow_symbol_change": true,
-              "details": true,
-              "hotlist": true,
-              "calendar": true,
-              "show_popup_button": true,
-              "popup_width": "1000",
-              "popup_height": "650",
-              "support_host": "https://www.tradingview.com"
-            }
-              </script>
-            </div>
-            <!-- TradingView Widget END -->""", height="500px", width="100%")
-    ]))
 
 
 async def okx_dashboard_page(q: Q):
@@ -79,8 +46,11 @@ async def okx_dashboard_page(q: Q):
                                                          count=1)
     fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_4',
                                                              count=1)
+    manual_controls_widget = OKX_Manual_ControlsWidget(q=q, card_name='OKXDEBUG_Manual_Controls', box='grid_5')
+
     '''Init RealTime Page Cards'''
-    await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget)
+    await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget,
+                         manual_controls_widget)
     await q.page.save()
 
     # q.client.okx_dashboard_page_running_event.set()
@@ -90,7 +60,8 @@ async def okx_dashboard_page(q: Q):
                 print("Breaking OKX Dashboard Page Loop")
                 break
             await asyncio.sleep(1)
-            await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget)
+            await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget,
+                                 manual_controls_widget)
             await q.page.save()
     except asyncio.CancelledError:
         print("Cancelled")
@@ -103,12 +74,9 @@ async def okx_dashboard_page(q: Q):
 
 async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
                          positions_stream_widget: OKX_Positions_StreamWidget,
-                         fill_report_stream_widget: OKX_Fill_Report_StreamWidget):
-
-
-
-    '''Account Stream Metrics'''
-    # TODO Will likely replace this with BalanceAndPositionsChannelChannel for more up to date data
+                         fill_report_stream_widget: OKX_Fill_Report_StreamWidget,
+                         manual_controls_widget: OKX_Manual_ControlsWidget):
+    # '''Account Stream Metrics'''
     if await account_stream_widget._is_initialized():
         print("Updating Account Stream Metrics card")
         await account_stream_widget.update_cards()
@@ -117,7 +85,6 @@ async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
         await account_stream_widget.add_cards()
 
     '''Positions Stream Metrics'''
-    # TODO Will likely replace this with BalanceAndPositionsChannelChannel for more up to date data
     if await positions_stream_widget._is_initialized():
         print("Updating Positions Stream Metrics card")
         await positions_stream_widget.update_cards()
@@ -132,7 +99,14 @@ async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
         print("Adding Fills Report Stream Metrics card")
         await fill_report_stream_widget.add_cards()
 
+    if await manual_controls_widget._is_initialized():
+        print("Updating Manual Controls card")
 
+        await manual_controls_widget.update_cards()
+    else:
+        print("Adding Manual Controls card")
+        await manual_controls_widget.add_cards()
+    await q.page.save()
 
 # signal_response = okx_signal_handler(
 #                 red_button=True,

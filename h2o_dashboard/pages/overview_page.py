@@ -24,6 +24,37 @@ from h2o_wave import main, Q, app, ui, on, run_on, data  # noqa F401
 from h2o_dashboard.util import add_card
 from h2o_dashboard.widgets.okx_streams import Overview_StreamWidget
 
+async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
+    await add_card(q, card_name, ui.form_card(box=box, items=[
+        ui.frame(content="""<!-- TradingView Widget BEGIN -->
+            <div class="tradingview-widget-container" style="height:100%;width:100%">
+              <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+              <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+              {
+              "autosize": true,
+              "symbol": "OKX:BTCUSDT.P",
+              "interval": "D",
+              "timezone": "Etc/UTC",
+              "theme": "light",
+              "style": "1",
+              "locale": "en",
+              "enable_publishing": false,
+              "withdateranges": true,
+              "hide_side_toolbar": false,
+              "allow_symbol_change": true,
+              "details": true,
+              "hotlist": true,
+              "calendar": true,
+              "show_popup_button": true,
+              "popup_width": "1000",
+              "popup_height": "650",
+              "support_host": "https://www.tradingview.com"
+            }
+              </script>
+            </div>
+            <!-- TradingView Widget END -->""", height="500px", width="100%")
+    ]))
 
 # Usage
 
@@ -38,9 +69,9 @@ async def overview_page(q: Q):
                                   icon='Home',
                                   icon_color=None,
                                   ))
-
+    await add_tradingview_advanced_chart(q, card_name='Overview_Page_TradingView_Advanced_Chart', box='grid_1')
     '''Init Widgets'''
-    overview_widget = Overview_StreamWidget(q=q, card_name='Overview_Page_Account_Stream', count=2)
+    overview_widget = Overview_StreamWidget(q=q, card_name='grid_2', box='grid_2', count=2)
 
     '''Init RealTime Page Cards'''
     await overview_widget.add_cards()

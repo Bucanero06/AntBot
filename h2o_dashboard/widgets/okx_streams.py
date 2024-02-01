@@ -301,9 +301,65 @@ class OKX_Fill_Report_StreamWidget:
         await self.q.page.save()
 
 
+class OKX_Manual_ControlsWidget:
+
+    def __init__(self, q: Q, card_name: str, box: str):
+        self.q = q
+        self.card_name = card_name
+        self.box = box
+        self._initialized = False
+
+    async def _is_initialized(self):
+        return self._initialized
+
+    async def get_manual_controls(self, box: str):
+        # # signal_response = okx_signal_handler(
+        # #                 red_button=True,
+        # #             )
+        # # signal_response = okx_signal_handler(
+        # #     instID="BTC-USDT-240628",
+        # #     order_size=1,
+        # #     leverage=5,
+        # #     order_side="BUY",
+        # #     order_type="POST_ONLY",
+        # #     max_orderbook_limit_price_offset=0.1,
+        # #     flip_position_if_opposite_side=True,
+        # #     clear_prior_to_new_order=False,
+        # #     red_button=False,
+        # #     # order_usd_amount=100,
+        # #     stop_loss_price_offset=None,
+        # #     tp_price_offset=None,
+        # #     trailing_stop_activation_percentage=None,
+        # #     trailing_stop_callback_ratio=None,
+        # #     stop_loss_trigger_percentage=None,
+        # #     take_profit_trigger_percentage=None,
+        # #     tp_trigger_price_type=None,
+        # #     sl_trigger_price_type=None,
+        # # )
+        # # print(f"{signal_response = }")
+
+        return ui.form_card(
+            box=box,
+            # Lets set up a form to send a signal to the okx_signal_handler
+            items=[
+                ui.text_xl('Ping the bot'),
+                ui.buttons([ui.button(name='ping_bot', label='Ping', primary=True),
+                            ui.button(name='send_signal', label='Send', primary=True)]),
+            ]
+        )
+
+    async def add_cards(self):
+        await add_card(self.q, self.card_name + '_manual_controls', await self.get_manual_controls(box=self.box))
+        await self.q.page.save()
+        self._initialized = True
+
+    async def update_cards(self):
+        await self.q.page.save()
+
+
 class Overview_StreamWidget:  # TODO: Will connect to the account streams for all exchanges, rn it's just okx
 
-    def __init__(self, q: Q, card_name: str, count: int = 10):
+    def __init__(self, q: Q, card_name: str, box: str, count: int = 10):
         self.q = q
         self.count = count
         self.card_name = card_name
@@ -321,6 +377,7 @@ class Overview_StreamWidget:  # TODO: Will connect to the account streams for al
             margin={'label': 'Margin', 'type': 'float'},
             pTime={'label': 'Time', 'type': 'timestamp'},
         )
+        self.box = box
 
     async def _update_stream(self):
         self.okx_account_stream: List[AccountChannel] = await get_stream_okx_account_messages(
@@ -330,7 +387,6 @@ class Overview_StreamWidget:  # TODO: Will connect to the account streams for al
 
     async def _is_initialized(self):
         return len(self.okx_account_stream) > 0 and len(self.okx_positions_stream) > 0
-
 
     async def get_all_exchanges_account_breakdown_table_card(self, box: str):
         # Table Exchange:Asset|Total-Asset-Value|FreeAssetCash
@@ -461,6 +517,7 @@ class Overview_StreamWidget:  # TODO: Will connect to the account streams for al
         account_breakdown_card.items = items
         account_breakdown_card.title = f'Live Account - {{exchange}}:websockets@account - ${round(total_equity, 2)}'
         await self.q.page.save()
+
     async def update_all_exchanges_live_positions_table_card(self):
         latest_positions_report: PositionsChannel = self.okx_positions_stream[-1]
         latest_positions_data: List[WSPosition] = latest_positions_report.data
@@ -493,15 +550,14 @@ class Overview_StreamWidget:  # TODO: Will connect to the account streams for al
         positions_table_card.items = items
         await self.q.page.save()
 
-
     async def add_cards(self):
         await self._update_stream()
         # await add_card(self.q, self.card_name + 'Accounts_PieChart',
         #                await self.get_all_exchanges_account_breakdown_pie_chart_card(box='first_context_1'))
         await add_card(self.q, self.card_name + '_overview_accounts_table',
-                       await self.get_all_exchanges_account_breakdown_table_card(box='first_context_1'))
+                       await self.get_all_exchanges_account_breakdown_table_card(box=self.box))
         await add_card(self.q, self.card_name + '_overview_positions_table',
-                       await self.get_all_exchanges_live_positions_table_card(box='first_context_1'))
+                       await self.get_all_exchanges_live_positions_table_card(box=self.box))
         await self.q.page.save()
 
     async def update_cards(self):
@@ -509,5 +565,3 @@ class Overview_StreamWidget:  # TODO: Will connect to the account streams for al
         await self.update_all_exchanges_account_breakdown_table_card()
         # await self.update_all_exchanges_live_positions_table_card()
         await self.q.page.save()
-
-

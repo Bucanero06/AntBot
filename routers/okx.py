@@ -50,15 +50,17 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
                                                reference_instID=signal_input.OKXSignalInput.instID,
                                                )
         assert valid == True, "InstIdAPIKey verification failed"
-    except JWTError:
+    except JWTError as e:
+        print(f"JWTError in okx_antbot_webhook: {e}")
         raise credentials_exception
-    # except AssertionError:
-    #     raise credentials_exception
-    # except HTTPException:
-    #     raise credentials_exception
+    except AssertionError as e:
+        print(f"AssertionError in okx_antbot_webhook: {e}")
+        raise credentials_exception
+    except HTTPException as e:
+        print(f"HTTPException in okx_antbot_webhook: {e}")
+        raise credentials_exception
     except Exception as e:
         print(f"Exception in okx_antbot_webhook: {e}")
-        # return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
         raise credentials_exception
     from pyokx.rest_handling import okx_signal_handler
     try:
@@ -93,7 +95,17 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
     # Update the enxchange info on the database
     return {"detail": "okx signal received"}
 
-
+@okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
+async def okx_premium_indicator_handler(indicator_input: PremiumIndicatorSignalRequestForm):
+    async_redis = await init_async_redis()
+    redis_ready_message = serialize_for_redis(indicator_input.model_dump())
+    await async_redis.xadd(f'okx:webhook@premium_indicator@input', {'data': redis_ready_message},
+                           maxlen=REDIS_STREAM_MAX_LEN)
+    result = okx_premium_indicator(indicator_input)
+    if isinstance(result, (dict, list, tuple, BaseModel)):
+        await async_redis.xadd(f'okx:webhook@premium_indicator@result', {'data': serialize_for_redis(result)},
+                               maxlen=REDIS_STREAM_MAX_LEN)
+    return result
 @okx_router.get(path="/okx/highest_volume_ticker/{symbol}", status_code=status.HTTP_200_OK)
 async def okx_highest_volume_ticker(symbol: str,
                                     current_user=Depends(check_token_validity),
@@ -113,16 +125,4 @@ async def okx_instID_status(instID: str,
     return fetch_status_report_for_instrument(instID, TD_MODE)
 
 
-@okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
-async def okx_premium_indicator_handler(indicator_input: PremiumIndicatorSignalRequestForm):
-    async_redis = await init_async_redis()
-    redis_ready_message = serialize_for_redis(indicator_input.model_dump())
 
-    await async_redis.xadd(f'okx:webhook@premium_indicator@input', {'data': redis_ready_message},
-                           maxlen=REDIS_STREAM_MAX_LEN)
-
-    result = okx_premium_indicator(indicator_input)
-    if isinstance(result, (dict, list, tuple, BaseModel)):
-        await async_redis.xadd(f'okx:webhook@premium_indicator@result', {'data': serialize_for_redis(result)},
-                               maxlen=REDIS_STREAM_MAX_LEN)
-    return result

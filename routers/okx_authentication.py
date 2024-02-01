@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from firebase_tools.BaseClasses import FirebaseAuthGoodResponse
 from firebase_tools.authenticate import check_token_validity, authenticate_with_firebase
-from pyokx.signal_handling import clean_and_verify_instID, instrument_searcher
+from pyokx.rest_handling import clean_and_verify_instID, instrument_searcher
 from routers.api_keys import create_access_token
 from shared.config import SECRET_KEY, ALGORITHM
 

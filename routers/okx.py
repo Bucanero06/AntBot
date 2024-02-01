@@ -1,19 +1,22 @@
+import os
 from pprint import pprint
 
 from fastapi import APIRouter, HTTPException
 from jose import JWTError
+from pydantic import BaseModel
 
 from firebase_tools.authenticate import check_token_validity
 from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, PremiumIndicatorSignalRequestForm
-from pyokx.signal_handling import okx_premium_indicator
-from redis_tools.utils import serialize_for_redis
+from pyokx.rest_handling import okx_premium_indicator
+from redis_tools.utils import serialize_for_redis, init_async_redis
 from routers.okx_authentication import check_token_against_instrument
 
 okx_router = APIRouter(tags=["OKX"])
 
 from fastapi import Depends, status
 
-from routers import async_redis
+
+REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
 
 @okx_router.post(path="/okx_antbot_signal", status_code=status.HTTP_202_ACCEPTED)
@@ -38,7 +41,7 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
         print(f"Exception in okx_antbot_webhook: {e}")
         # return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
         raise credentials_exception
-    from pyokx.signal_handling import okx_signal_handler
+    from pyokx.rest_handling import okx_signal_handler
     try:
         assert signal_input.OKXSignalInput, "OKXSignalInput is None"
         okx_signal_input = signal_input.OKXSignalInput
@@ -76,7 +79,7 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
 async def okx_highest_volume_ticker(symbol: str,
                                     current_user=Depends(check_token_validity),
                                     ):
-    from pyokx.signal_handling import get_ticker_with_higher_volume
+    from pyokx.rest_handling import get_ticker_with_higher_volume
     return get_ticker_with_higher_volume(symbol)
 
 
@@ -87,15 +90,20 @@ async def okx_instID_status(instID: str,
                             ):
     assert TD_MODE == 'isolated', f"TD_MODE {TD_MODE} is currently not supported by this endpoint, try \'isolated\'"
 
-    from pyokx.signal_handling import fetch_status_report_for_instrument
+    from pyokx.rest_handling import fetch_status_report_for_instrument
     return fetch_status_report_for_instrument(instID, TD_MODE)
 
 
 @okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
 async def okx_premium_indicator_handler(indicator_input: PremiumIndicatorSignalRequestForm):
+    async_redis = await init_async_redis()
     redis_ready_message = serialize_for_redis(indicator_input.model_dump())
-    await async_redis.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message)
+
+    await async_redis.xadd(f'okx:webhook@premium_indicator@input', {'data': redis_ready_message},
+                           maxlen=REDIS_STREAM_MAX_LEN)
+
     result = okx_premium_indicator(indicator_input)
-    if isinstance(result, dict):
-        await async_redis.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result))
+    if isinstance(result, (dict, list, tuple, BaseModel)):
+        await async_redis.xadd(f'okx:webhook@premium_indicator@result', {'data': serialize_for_redis(result)},
+                               maxlen=REDIS_STREAM_MAX_LEN)
     return result

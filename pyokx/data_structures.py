@@ -2,17 +2,9 @@ from datetime import datetime
 from enum import Enum
 from typing import List, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
-
-
-class InstType(Enum):
-    # Enumerate all possible values for instType
-    SPOT = "SPOT"
-    MARGIN = "MARGIN"
-    SWAP = "SWAP"
-    FUTURES = "FUTURES"
-    OPTION = "OPTION"
+from pyokx.okx_market_maker.utils.OkxEnum import MgnMode, PosSide, InstType
 
 
 class Order(BaseModel):
@@ -149,6 +141,7 @@ class Position(BaseModel):
     usdPx: str
     vegaBS: str
     vegaPA: str
+
 
 
 class Closed_Position(BaseModel):
@@ -404,6 +397,66 @@ class AccountBalanceData(BaseModel):
     ordFroz: str
     totalEq: str
     uTime: str
+class PositionHistory(BaseModel):
+    instType: InstType  # Instrument type
+    instId: str  # Instrument ID
+    mgnMode: MgnMode  # Margin mode
+    type: int  # The type of latest close position, mapping to OrderCategory for similar behavior
+    cTime: int  # Created time of position
+    uTime: int  # Updated time of position
+    openAvgPx: float  # Average price of opening position
+    closeAvgPx: float  # Average price of closing position
+    posId: str  # Position ID
+    openMaxPos: float  # Max quantity of position
+    closeTotalPos: float  # Position's cumulative closed volume
+    realizedPnl: float  # Realized profit and loss
+    fee: float  # Accumulated fee. Negative represents charge, positive represents rebate.
+    fundingFee: float  # Accumulated funding fee
+    liqPenalty: float  # Accumulated liquidation penalty, negative when there is a value.
+    pnl: float  # Profit and loss
+    pnlRatio: float  # P&L ratio
+    lever: float  # Leverage
+    direction: PosSide  # Direction: long, short
+    triggerPx: Optional[float] = None  # Trigger mark price, value when type is 3, 4, or 5; None when type is 1 or 2
+    uly: str  # Underlying
+    ccy: str  # Currency used for margin
+
+    @validator('triggerPx', pre=True)
+    def handle_triggerPx(cls, value):
+        if value == '':
+            return None  # Convert empty string to None
+        try:
+            return float(value)  # Try to convert to float
+        except ValueError:
+            raise ValueError(f"triggerPx should be a float or empty string, got {value}")
+
+    class Config:
+        use_enum_values = True
+class FillEntry(BaseModel):
+    side: str
+    fillSz: str
+    fillPx: str
+    fillPxVol: Optional[str] = None
+    fillFwdPx: Optional[str] = None
+    fee: str
+    fillPnl: str
+    ordId: str
+    instType: str
+    fillPxUsd: Optional[str] = None
+    instId: str
+    clOrdId: str
+    posSide: str
+    billId: str
+    fillMarkVol: Optional[str] = None
+    tag: Optional[str] = None
+    fillTime: str
+    execType: str
+    fillIdxPx: Optional[str] = None
+    tradeId: str
+    fillMarkPx: Optional[str] = None
+    feeCcy: str
+    ts: str
+
 
 
 class AccountConfigData(BaseModel):

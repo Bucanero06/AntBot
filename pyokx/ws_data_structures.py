@@ -408,22 +408,6 @@ class OrdersChannel(BaseModel):
     arg: OrdersChannelReturnArgs
     data: List[WSOrder]
 
-    @staticmethod
-    def register_models(redis_store):
-        if WSOrder.__name__.lower() not in redis_store.models:
-            redis_store.register_model(WSOrder)
-
-    def refresh_models(self):
-        orders: List[WSOrder] = self.data
-        self.update_models((orders), life_spans_in_seconds=None)
-
-    @staticmethod
-    def get_models() -> dict:
-        orders: List[WSOrder] = WSOrder.select()
-        return {
-            'orders': orders or [],
-        }
-
 
 class OrderBookInputArgs(BaseModel):
     channel: str

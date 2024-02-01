@@ -3,7 +3,7 @@ import os
 import dotenv
 
 from pyokx.data_structures import Ticker
-from pyokx.signal_handling import get_ticker_with_higher_volume
+from pyokx.rest_handling import get_ticker_with_higher_volume
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 # api key credential

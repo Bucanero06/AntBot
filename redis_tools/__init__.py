@@ -12,10 +12,6 @@ above classes
 5. Parent-child relationships allowing for nesting models within models.
 """
 
-# from redis_tools.syncio import Store, RedisConfig, Model
-#
-#
-# __all__ = [Store, RedisConfig, Model, asyncio]
-#
-# __version__ = "0.4.3"
+async_redis = None
+
 

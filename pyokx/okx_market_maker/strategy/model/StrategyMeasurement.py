@@ -31,7 +31,7 @@ class StrategyMeasurement:
     _redis_client: redis.Redis = connect_to_redis()
 
     def get_usdt_to_usd_rate(self):
-        # Get last BTC-USDT and BTC-USD index price from okx:messages@index-tickers@{inst_id}
+        # Get last BTC-USDT and BTC-USD index price from okx:websockets@index-tickers@{inst_id}
         btc_usdt_index_ticker = self._redis_client.xrevrange('okx:reports@index-tickers@BTC-USDT', count=1)
         btc_usd_index_ticker = self._redis_client.xrevrange('okx:reports@index-tickers@BTC-USD', count=1)
         if not btc_usdt_index_ticker or not btc_usd_index_ticker:

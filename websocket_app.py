@@ -1,11 +1,15 @@
 import asyncio
+import os
 
 import dotenv
 import uvicorn
 from fastapi import FastAPI, APIRouter
 
+from pyokx.rest_messages_service import okx_rest_messages_services
 from pyokx.websocket_handling import okx_websockets_main_run
-from pyokx.ws_data_structures import *
+from pyokx.ws_data_structures import AccountChannelInputArgs, PositionsChannelInputArgs, \
+    BalanceAndPositionsChannelInputArgs, OrdersChannelInputArgs
+from redis_tools.utils import init_async_redis, stop_async_redis
 
 app = FastAPI(
     title="AntBot-Websocket-API",
@@ -13,6 +17,7 @@ app = FastAPI(
     version="2.0.0",
 )
 websocket_task = None
+rest_task = None
 # websocket_instrument_task = None # need to have per instrument
 websocket_instrument_task = None
 
@@ -33,10 +38,31 @@ def health_check():
 
 @app.on_event("startup")
 async def startup_event():
+    print("Startup event triggered")
     global websocket_task
+    global rest_task
     global websocket_instrument_task
 
-    websocket_task = asyncio.create_task(start_websocket())
+    async_redis = await init_async_redis()
+    assert async_redis, "async_redis is None, check the connection to the Redis server"
+
+    websocket_task = asyncio.create_task(okx_websockets_main_run(input_channel_models=[
+        ### Private Channels
+        AccountChannelInputArgs(channel="account", ccy=None,
+                                extraParams="{"
+                                            "\"updateInterval\": \"1\""
+                                            "}"),
+        PositionsChannelInputArgs(channel="positions", instType="ANY", instFamily=None, instId=None,
+                                  extraParams="{"
+                                              "\"updateInterval\": \"1\""
+                                              "}"),
+        BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
+        OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None, instId=None)
+    ], apikey=os.getenv('OKX_API_KEY'), passphrase=os.getenv('OKX_PASSPHRASE'),
+        secretkey=os.getenv('OKX_SECRET_KEY'), sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
+        redis_store=True
+    ))
+    rest_task = asyncio.create_task(okx_rest_messages_services(reload_interval=30))
 
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus
     #  instruments change
@@ -49,6 +75,7 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_event():
+    print("Shutdown event triggered")
     if websocket_task:
         websocket_task.cancel()
         try:
@@ -58,6 +85,15 @@ async def shutdown_event():
     else:
         print("WebSocket task was not running")
 
+    if rest_task:
+        rest_task.cancel()
+        try:
+            await rest_task
+        except asyncio.CancelledError:
+            print("REST task was cancelled")
+    else:
+        print("REST task was not running")
+
     if websocket_instrument_task:
         websocket_instrument_task.cancel()
         try:
@@ -65,43 +101,7 @@ async def shutdown_event():
         except asyncio.CancelledError:
             print("WebSocket task was cancelled")
 
-
-async def start_websocket():
-    try:
-        import os
-        await okx_websockets_main_run(input_channel_models=[
-            ### Private Channels
-            AccountChannelInputArgs(channel="account", ccy=None,
-                                    extraParams="{"
-                                                "\"updateInterval\": \"1\""
-                                                "}"),
-            PositionsChannelInputArgs(channel="positions", instType="ANY", instFamily=None, instId=None,
-                                      extraParams="{"
-                                                  "\"updateInterval\": \"1\""
-                                                  "}"),
-            BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
-            OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None, instId=None)
-        ], apikey=os.getenv('OKX_API_KEY'), passphrase=os.getenv('OKX_PASSPHRASE'),
-            secretkey=os.getenv('OKX_SECRET_KEY'), sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
-            redis_store=True
-        )
-    except Exception as e:
-        print(f"WebSocket Error: {e}")
-        # TODO Implement your reconnection logic here
-
-
-async def start_instrument_websocket(input_channel_models: list):
-    try:
-        import os
-        await okx_websockets_main_run(input_channel_models=input_channel_models, apikey=os.getenv('OKX_API_KEY'),
-                                      passphrase=os.getenv('OKX_PASSPHRASE'),
-                                      secretkey=os.getenv('OKX_SECRET_KEY'),
-                                      sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
-                                      redis_store=True
-                                      )
-    except Exception as e:
-        print(f"WebSocket Error: {e}")
-        # TODO Implement your reconnection logic here
+    await stop_async_redis()
 
 
 '''
@@ -114,6 +114,7 @@ websocket_router = APIRouter(tags=["websocket"], include_in_schema=False)
 
 @websocket_router.get("/restart_instrument_websocket")
 async def restart_instrument_websocket():  # Todo adds security for now dont expose
+    return {"status": "failed", "message": "Endpoint not enabled implemented yet"}
     global websocket_instrument_task
     # turn down the websocket
     if websocket_instrument_task:
@@ -137,5 +138,4 @@ async def restart_instrument_websocket():  # Todo adds security for now dont exp
 
 
 if __name__ == "__main__":
-    uvicorn.run(app=app, host="127.0.0.0", port=8081)
-    # uvicorn.run(app="main:app", host="127.0.0.0", port=8080, reload=True)
+    uvicorn.run(app="main:app", host="127.0.0.0", port=8080)

@@ -6,6 +6,7 @@ from shared.logging import setup_logger
 logger = setup_logger(__name__.split('.')[-1])
 
 
+
 def remove_spaces_and_set_case(key: str, case='lower') -> str:
     """
     Normalize a string key by converting all characters to lowercase
@@ -162,3 +163,27 @@ def save_json_file(filename, data):
     assert filename.endswith(".json") or filename.endswith(".JSON"), "File must be a JSON file"
     with open(filename, 'w') as f:
         json.dump(data, f, indent=4)
+
+def parse_and_identify_type(s):
+    # Initialize the type as None
+    identified_type = None
+
+    # Check if the string is an integer
+    if s.isdigit() or (s.startswith('-') and s[1:].isdigit()):
+        value = int(s)
+        identified_type = 'int'
+        print(f"{s} is an integer.")
+    # Check if the string is a float
+    elif (s.count('.') == 1 and
+          (s.replace('.', '', 1).isdigit() or
+           (s.startswith('-') and s[1:].replace('.', '', 1).isdigit()))):
+        value = float(s)
+        identified_type = 'float'
+        print(f"{s} is a float.")
+    else:
+        value = s
+        identified_type = 'str'
+        print(f"{s} is a regular string.")
+
+    # Return both the value and its identified type
+    return value, identified_type

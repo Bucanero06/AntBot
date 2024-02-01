@@ -7,7 +7,7 @@ import dotenv
 
 from pyokx.okx_market_maker.market_data_service.WssMarketDataService import on_orderbook_snapshot_or_update
 from pyokx.okx_market_maker.market_data_service.model.OrderBook import OrderBook
-from pyokx.signal_handling import get_ticker_with_higher_volume
+from pyokx.rest_handling import get_ticker_with_higher_volume
 from pyokx.ws_clients.WsPprivateAsync import WsPrivateAsync
 from pyokx.ws_clients.WsPublicAsync import WsPublicAsync
 from pyokx.ws_data_structures import PriceLimitChannel, InstrumentsChannel, \
@@ -16,13 +16,14 @@ from pyokx.ws_data_structures import PriceLimitChannel, InstrumentsChannel, \
     TickersChannel, IndexTickersChannelInputArgs, OrderBookInputArgs, MarkPriceChannelInputArgs, \
     TickersChannelInputArgs, OrdersChannelInputArgs, OKX_WEBSOCKET_URLS, public_channels_available, \
     business_channels_available, private_channels_available, available_channel_models
-from redis_tools.utils import serialize_for_redis, connect_to_aioredis, connect_to_redis, _deserialize_from_redis
+from redis_tools.utils import serialize_for_redis, init_async_redis
 
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
 async def okx_websockets_main_run(input_channel_models: list,
                                   apikey: str = None, passphrase: str = None, secretkey: str = None,
                                   sandbox_mode: bool = True, redis_store: bool = True):
+    print(f"Starting OKX Websocket Connections ")
     if not input_channel_models:
         raise Exception("No channels provided")
 
@@ -44,7 +45,7 @@ async def okx_websockets_main_run(input_channel_models: list,
     )
 
     if redis_store:
-        async_redis = await connect_to_aioredis()
+        async_redis = await init_async_redis()
     else:
         async_redis = None
 
@@ -77,10 +78,10 @@ async def okx_websockets_main_run(input_channel_models: list,
             print(f"Received Structured-Data: {structured_message}")
 
             if redis_store and async_redis:
-                redis_ready_message = serialize_for_redis(structured_message.model_dump())
-                await async_redis.xadd(f'okx:messages@{message_channel}', redis_ready_message,
+                redis_ready_message = serialize_for_redis(structured_message)
+                await async_redis.xadd(f'okx:websockets@{message_channel}', {'data': redis_ready_message},
                                        maxlen=REDIS_STREAM_MAX_LEN)
-                await async_redis.xadd(f'okx:messages@all', redis_ready_message,
+                await async_redis.xadd(f'okx:websockets@all', {'data': redis_ready_message},
                                        maxlen=REDIS_STREAM_MAX_LEN)
 
                 ''' (ALPHA)
@@ -88,7 +89,7 @@ async def okx_websockets_main_run(input_channel_models: list,
                 Handle supported channels data 
                 (can be moved to listen to the redistributed redis channel -from-above-)
                 e.g. 
-                    message = _deserialize_from_redis(r.xrevrange('okx:messages@account', count=1)[0][1])
+                    message = _deserialize_from_redis(r.xrevrange('okx:websockets@account', count=1)[0][1])
                     account: Account = on_account(incoming_account_message)
                     redis_ready_message = serialize_for_redis(account.to_dict())
                     r.xadd(f'okx:reports@{message.get("arg").get("channel")}', redis_ready_message, maxlen=1000)
@@ -96,11 +97,11 @@ async def okx_websockets_main_run(input_channel_models: list,
                 '''
 
                 if message_channel == "index-tickers":
-                    await async_redis.xadd(f'okx:messages@{message_channel}@{message_args.get("instId")}',
-                                           serialize_for_redis(structured_message.model_dump()),
+                    await async_redis.xadd(f'okx:websockets@{message_channel}@{message_args.get("instId")}',
+                                           {'data': serialize_for_redis(structured_message)},
                                            maxlen=REDIS_STREAM_MAX_LEN)
 
-                await handle_reports(message_json, async_redis)
+                # await handle_reports(message_json, async_redis) # TODO: Handle reports
 
 
         except Exception as e:
@@ -151,7 +152,7 @@ async def okx_websockets_main_run(input_channel_models: list,
     # Keep the loop running, or perform other tasks
     try:
         while True:  # This could be the main loop of the trading strategy or at least for the health checks
-            await asyncio.sleep(1)
+            await asyncio.sleep(60)
             print("Heartbeat \n ___________")
             # Print stats for redis
             if redis_store and async_redis:
@@ -197,7 +198,7 @@ async def okx_websockets_main_run(input_channel_models: list,
         print("Exiting")
 
 
-async def handle_reports(message_json, async_redis, structured_message=None):
+async def handle_reports(message_json, async_redis):
     message_args = message_json.get("arg")
     message_channel = message_args.get("channel")
     # Position Management Service
@@ -265,8 +266,6 @@ async def handle_reports(message_json, async_redis, structured_message=None):
                                maxlen=REDIS_STREAM_MAX_LEN)
 
 
-
-
 def get_instrument_specific_channel_inputs_to_listen_to():
     btc_ = get_ticker_with_higher_volume("BTC-USDT",
                                          instrument_type="FUTURES",
@@ -297,70 +296,6 @@ def get_btc_usdt_usd_index_channel_inputs_to_listen_to():
         IndexTickersChannelInputArgs(channel="index-tickers", instId="BTC-USD")
     ]
 
-
-def testout():
-    r = connect_to_redis()
-
-    incoming_message = {'arg': {'channel': 'account', 'uid': '452871299048588011'}, 'data': [
-        {'adjEq': '', 'borrowFroz': '', 'details': [
-            {'availBal': '1', 'availEq': '1', 'borrowFroz': '', 'cashBal': '1', 'ccy': 'BTC', 'coinUsdPrice': '42630.1',
-             'crossLiab': '', 'disEq': '42630.1', 'eq': '1', 'eqUsd': '42630.1', 'fixedBal': '0', 'frozenBal': '0',
-             'imr': '0', 'interest': '', 'isoEq': '0', 'isoLiab': '', 'isoUpl': '0', 'liab': '', 'maxLoan': '',
-             'mgnRatio': '', 'mmr': '0', 'notionalLever': '0', 'ordFrozen': '0', 'spotInUseAmt': '', 'spotIsoBal': '0',
-             'stgyEq': '0', 'twap': '0', 'uTime': '1703639691142', 'upl': '0', 'uplLiab': ''},
-            {'availBal': '100', 'availEq': '100', 'borrowFroz': '', 'cashBal': '100', 'ccy': 'OKB',
-             'coinUsdPrice': '54.92', 'crossLiab': '', 'disEq': '5217.4', 'eq': '100', 'eqUsd': '5492', 'fixedBal': '0',
-             'frozenBal': '0', 'imr': '0', 'interest': '', 'isoEq': '0', 'isoLiab': '', 'isoUpl': '0', 'liab': '',
-             'maxLoan': '', 'mgnRatio': '', 'mmr': '0', 'notionalLever': '0', 'ordFrozen': '0', 'spotInUseAmt': '',
-             'spotIsoBal': '0', 'stgyEq': '0', 'twap': '0', 'uTime': '1703639691152', 'upl': '0', 'uplLiab': ''},
-            {'availBal': '4879.1068088', 'availEq': '4879.1068088', 'borrowFroz': '', 'cashBal': '4879.1068088',
-             'ccy': 'USDT', 'coinUsdPrice': '0.99957', 'crossLiab': '', 'disEq': '4877.008792872216',
-             'eq': '4879.1068088', 'eqUsd': '4877.008792872216', 'fixedBal': '0', 'frozenBal': '0', 'imr': '0',
-             'interest': '', 'isoEq': '0', 'isoLiab': '', 'isoUpl': '0', 'liab': '', 'maxLoan': '', 'mgnRatio': '',
-             'mmr': '0', 'notionalLever': '0', 'ordFrozen': '0', 'spotInUseAmt': '', 'spotIsoBal': '0', 'stgyEq': '0',
-             'twap': '0', 'uTime': '1705451890859', 'upl': '0', 'uplLiab': ''},
-            {'availBal': '1', 'availEq': '1', 'borrowFroz': '', 'cashBal': '1', 'ccy': 'ETH', 'coinUsdPrice': '2531.68',
-             'crossLiab': '', 'disEq': '2531.68', 'eq': '1', 'eqUsd': '2531.68', 'fixedBal': '0', 'frozenBal': '0',
-             'imr': '0', 'interest': '', 'isoEq': '0', 'isoLiab': '', 'isoUpl': '0', 'liab': '', 'maxLoan': '',
-             'mgnRatio': '', 'mmr': '0', 'notionalLever': '0', 'ordFrozen': '0', 'spotInUseAmt': '', 'spotIsoBal': '0',
-             'stgyEq': '0', 'twap': '0', 'uTime': '1703639691162', 'upl': '0', 'uplLiab': ''}], 'imr': '', 'isoEq': '0',
-         'mgnRatio': '', 'mmr': '', 'notionalUsd': '', 'ordFroz': '', 'totalEq': '55530.78879287221',
-         'uTime': '1705522902915', 'upl': ''}]}
-
-    '''Incoming Message:'''
-    message_args = incoming_message.get("arg")
-    message_channel = message_args.get("channel")
-    structured_message = AccountChannel(**incoming_message)
-    print(f"Received Data: {structured_message}")
-    redis_ready_message = serialize_for_redis(structured_message.model_dump())
-    r.xadd(f'okx:messages@{message_channel}', redis_ready_message, maxlen=1000)
-
-    '''Handle Data Type Specific Channels:'''
-    incoming_account_message = _deserialize_from_redis(r.xrevrange('okx:messages@account', count=1)[0][1])
-
-    message_args = incoming_account_message.get("arg")
-    message_channel = message_args.get("channel")
-
-    # Use the incoming_account_message for the account report channel
-    from pyokx.okx_market_maker.position_management_service.WssPositionManagementService import \
-        on_account
-    from pyokx.okx_market_maker.position_management_service.model.Account import Account
-
-    account: Account = on_account(incoming_account_message)
-    redis_ready_message = serialize_for_redis(account.to_dict())
-    r.xadd(f'okx:reports@{message_channel}', redis_ready_message, maxlen=1000)
-
-    '''Intake Data from Redis:'''
-    account_report_serialized = r.xrevrange('okx:reports@account', count=1)[0][1]
-    print(f'{account_report_serialized = }')
-
-    account_report_deserialized = _deserialize_from_redis(account_report_serialized)
-    print(f'{account_report_deserialized = }')
-
-    account: Account = Account().from_dict(account_dict=account_report_deserialized)
-    print(f'{account = }')
-
-    exit()
 
 
 async def test_restart(public_client, business_client, private_client):

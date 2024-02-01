@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+
 def calculate_stop_prices(order_side, reference_price, stop_loss_trigger_percentage,
                           stop_surplus_trigger_percentage, stop_loss_price_offset, stop_surplus_price_offset):
     """
@@ -95,4 +98,13 @@ def execute_function_calls(function_calls):
     with ThreadPoolExecutor() as executor:
         futures = [executor.submit(func_call.execute) for func_call in function_calls]
         return [future.result() for future in futures]
+
+
+def get_timestamp_from_days_ago(days_ago=0, hours_ago=0, minutes_ago=0, seconds_ago=0, reference_time: datetime = None):
+
+    if not reference_time:
+        reference_time = datetime.now()
+
+    past_time = reference_time - timedelta(days=days_ago, hours=hours_ago, minutes=minutes_ago, seconds=seconds_ago)
+    return int(past_time.timestamp() * 1000)
 

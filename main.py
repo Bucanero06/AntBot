@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
+from redis_tools.utils import init_async_redis, stop_async_redis
 from routers.api_keys import api_key_router
 from routers.login import login_router
 from routers.okx import okx_router
@@ -11,7 +12,7 @@ app = FastAPI(
     description="",
     version="1.8.0",
 )
-websocket_task = None
+
 
 '''
 ----------------------------------------------------
@@ -29,21 +30,14 @@ def health_check():
 @app.on_event("startup")
 async def startup_event():
     print("Startup event triggered")
-    from redis_tools.utils import connect_to_aioredis
-    global async_redis
-    async_redis = await connect_to_aioredis()
+    await init_async_redis()
 
-    if not async_redis:
-        raise Exception("Redis connection failed")
-
-    import routers
-    routers.async_redis = async_redis
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
     print("Shutdown event triggered")
-    await async_redis.close()
+    await stop_async_redis()
 
 
 

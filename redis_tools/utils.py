@@ -2,6 +2,7 @@ import json
 from enum import Enum
 
 import redis
+from pydantic import BaseModel
 
 
 def _serialize_for_redis(data):
@@ -13,6 +14,8 @@ def _serialize_for_redis(data):
         return [_serialize_for_redis(item) for item in data]
     elif isinstance(data, tuple):
         return tuple(_serialize_for_redis(item) for item in data)
+    elif isinstance(data, BaseModel):
+        return data.model_dump()
     elif data is None:
         return ""
     else:
@@ -20,11 +23,8 @@ def _serialize_for_redis(data):
 
 
 def serialize_for_redis(model_dict):
-    message_dict = dict()
-    for key, value in model_dict.items():
-        message_dict[key] = _serialize_for_redis(value)
-    return {k: (json.dumps(v) if isinstance(v, (dict, list)) else v)
-            for k, v in message_dict.items()}
+    serialized_data = _serialize_for_redis(model_dict)
+    return json.dumps(serialized_data)
 
 
 def _deserialize_from_redis(data):
@@ -75,23 +75,28 @@ async def connect_to_aioredis():
     return None
 
 
-def connect_to_redis():
-    sync_redis = None
-    # Define possible Redis hosts and ports
-    local_redis = ('localhost', 6379)
-    docker_redis = ('redis', 6379)
-    # Add more tuples (host, port) for other scenarios
+async def init_async_redis():
+    from redis_tools import async_redis
 
-    redis_options = [local_redis, docker_redis]  # Add more options as needed
+    if isinstance(async_redis, aioredis.Redis):
+        print("Async Redis connection already exists")
+        return async_redis
 
-    for host, port in redis_options:
-        try:
-            sync_redis = redis.from_url(f"redis://{host}:{port}", decode_responses=True)
-            sync_redis.ping()
-            print(f"Connected to Redis at {host}:{port}")
-            return sync_redis  # Return as soon as a successful connection is made
-        except Exception as e:
-            print(f"Redis connection attempt to {host}:{port} failed: {e}")
+    async_redis = await connect_to_aioredis()
 
-    print("Unable to connect to Redis using any of the configured options.")
-    return None
+    if not async_redis:
+        raise Exception("Redis connection failed")
+
+    import redis_tools
+    redis_tools.async_redis = async_redis
+
+    return async_redis
+
+
+async def stop_async_redis():
+    from redis_tools import async_redis
+    if isinstance(async_redis, aioredis.Redis):
+        await async_redis.close()
+        print("Async Redis connection closed")
+    else:
+        print("No async Redis connection to close")

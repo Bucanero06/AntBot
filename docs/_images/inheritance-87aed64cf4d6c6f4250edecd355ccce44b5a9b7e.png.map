@@ -1,7 +1,0 @@
-<map id="inheritance6eb7fd0924" name="inheritance6eb7fd0924">
-<area shape="rect" id="node1" title="Usage docs: https://docs.pydantic.dev/2.5/concepts/models/" alt="" coords="5,55,100,80"/>
-<area shape="rect" id="node2" href="#firebase_tools.BaseClasses.ConStrBase" target="_top" title="ConStrBase" alt="" coords="201,5,299,31"/>
-<area shape="rect" id="node3" href="#firebase_tools.BaseClasses.CoreModel" target="_top" title="Core base model with basic fields and common validation. Models that inherit this class should implement" alt="" coords="204,55,296,80"/>
-<area shape="rect" id="node4" href="#firebase_tools.BaseClasses.FirebaseAuthGoodResponse" target="_top" title="FirebaseAuthGoodResponse" alt="" coords="148,104,352,129"/>
-<area shape="rect" id="node5" href="#firebase_tools.BaseClasses.FirestoreIDType" target="_top" title="FirestoreIDType" alt="" coords="400,5,523,31"/>
-</map>

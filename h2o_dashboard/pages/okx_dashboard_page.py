@@ -70,7 +70,7 @@ async def okx_dashboard_page(q: Q):
     try:
         while True:
             if not q.client.okx_dashboard_page_running_event.is_set():
-                print("Breaking")
+                print("Breaking OKX Dashboard Page Loop")
                 break
             await asyncio.sleep(1)
             await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget)
@@ -114,7 +114,6 @@ async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
     else:
         print("Adding Fills Report Stream Metrics card")
         await fill_report_stream_widget.add_cards()
-    return
 
 
 

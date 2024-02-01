@@ -1,4 +1,0 @@
-<map id="inheritance6bfcab16f8" name="inheritance6bfcab16f8">
-<area shape="rect" id="node1" href="#shared.logging.ColoredLogger" target="_top" title="Custom logger formatter to add colors to log messages" alt="" coords="140,5,256,31"/>
-<area shape="rect" id="node2" title="Formatter instances are used to convert a LogRecord to text." alt="" coords="5,5,92,31"/>
-</map>

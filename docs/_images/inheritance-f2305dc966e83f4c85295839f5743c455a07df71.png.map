@@ -1,4 +1,0 @@
-<map id="inheritancec404d3f057" name="inheritancec404d3f057">
-<area shape="rect" id="node1" title="Usage docs: https://docs.pydantic.dev/2.5/concepts/models/" alt="" coords="5,5,100,31"/>
-<area shape="rect" id="node2" href="#redis_tools.config.RedisConfig" target="_top" title="Configuration for connecting to redis database." alt="" coords="148,5,247,31"/>
-</map>

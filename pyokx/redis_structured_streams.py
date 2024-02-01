@@ -49,7 +49,6 @@ async def get_stream_okx_account_messages(async_redis: aioredis.Redis, count: in
 
     account_messages = []
     for account_message in account_messages_serialized:
-        print(f"{account_message = }")
         redis_stream_id = account_message[0]
         account_message_serialized = account_message[1].get("data")
         if not account_message_serialized:

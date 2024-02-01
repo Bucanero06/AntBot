@@ -1,5 +1,0 @@
-<map id="inheritance34339dbc74" name="inheritance34339dbc74">
-<area shape="rect" id="node1" href="redis_tools._shared.model.base.html#redis_tools._shared.model.base.AbstractModel" target="_top" title="A base class for all Models, sync and async alike." alt="" coords="148,5,264,31"/>
-<area shape="rect" id="node3" href="#redis_tools.syncio.model.Model" target="_top" title="The Base class for all Synchronous models." alt="" coords="312,5,384,31"/>
-<area shape="rect" id="node2" title="Usage docs: https://docs.pydantic.dev/2.5/concepts/models/" alt="" coords="5,5,100,31"/>
-</map>

@@ -1,5 +1,0 @@
-<map id="inheritance877abd50e6" name="inheritance877abd50e6">
-<area shape="rect" id="node1" href="#pyokx.low_rest_api.exceptions.OkxAPIException" target="_top" title="OkxAPIException" alt="" coords="21,104,155,129"/>
-<area shape="rect" id="node2" href="#pyokx.low_rest_api.exceptions.OkxParamsException" target="_top" title="OkxParamsException" alt="" coords="8,55,168,80"/>
-<area shape="rect" id="node3" href="#pyokx.low_rest_api.exceptions.OkxRequestException" target="_top" title="OkxRequestException" alt="" coords="5,5,171,31"/>
-</map>

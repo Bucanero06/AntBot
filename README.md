@@ -12,10 +12,7 @@ robust technological stack.
 - **Copyright:** © 2024 Carbonyl LLC & Carbonyl R&D
 - **Visual Reference:**
 
-<div align="center">
-<img src="https://github.com/Bucanero06/AntBot/assets/60953006/8fc47d8b-1120-4861-98f6-bbdb28a50cf5" height="300">
-</div>
-
+[Screencast from 02-01-2024 05:19:04 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/ed98d3fd-5f47-493a-9230-f1ae907c8058)
 
 ### Deployment Guidelines
 

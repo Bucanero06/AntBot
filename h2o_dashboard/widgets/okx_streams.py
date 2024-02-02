@@ -342,14 +342,74 @@ class OKX_Manual_ControlsWidget:
             box=box,
             # Lets set up a form to send a signal to the okx_signal_handler
             items=[
-                ui.text_xl('Ping the bot'),
+                ui.label('MVP-Bot-Manual-Controls'),
                 ui.buttons([ui.button(name='ping_bot', label='Ping', primary=True),
                             ui.button(name='send_signal', label='Send', primary=True)]),
+                # The input parameters so user can interact with the bot
+        ui.textbox(name='instID_textbox', label='instID'),
+        ui.textbox(name='order_size_textbox', label='order_size'),
+        ui.textbox(name='leverage_textbox', label='leverage'),
+        ui.textbox(name='order_side_textbox', label='order_side'),
+        ui.textbox(name='order_type_textbox', label='order_type'),
+        ui.textbox(name='max_orderbook_limit_price_offset_textbox', label='max_orderbook_limit_price_offset'),
+        ui.textbox(name='flip_position_if_opposite_side_textbox', label='flip_position_if_opposite_side'),
+        ui.textbox(name='clear_prior_to_new_order_textbox', label='clear_prior_to_new_order'),
+        ui.textbox(name='red_button_textbox', label='red_button'),
+        ui.textbox(name='order_usd_amount_textbox', label='order_usd_amount'),
+        ui.textbox(name='stop_loss_price_offset_textbox', label='stop_loss_price_offset'),
+        ui.textbox(name='tp_price_offset_textbox', label='tp_price_offset'),
+        ui.textbox(name='trailing_stop_activation_percentage_textbox', label='trailing_stop_activation_percentage'),
+        ui.textbox(name='trailing_stop_callback_ratio_textbox', label='trailing_stop_callback_ratio'),
+        ui.textbox(name='stop_loss_trigger_percentage_textbox', label='stop_loss_trigger_percentage'),
+        ui.textbox(name='take_profit_trigger_percentage_textbox', label='take_profit_trigger_percentage'),
+        ui.textbox(name='tp_trigger_price_type_textbox', label='tp_trigger_price_type'),
+        ui.textbox(name='sl_trigger_price_type_textbox', label='sl_trigger_price_type'),
             ]
         )
 
     async def add_cards(self):
-        await add_card(self.q, self.card_name + '_manual_controls', await self.get_manual_controls(box=self.box))
+        # await add_card(self.q, self.card_name + '_manual_controls', await self.get_manual_controls(box=self.box))
+        # Split get manual controls into two cards
+        mvp_bot_manual_controls_1  = ui.form_card(
+            box='mvp_bot_manual_controls_1',
+            # Lets set up a form to send a signal to the okx_signal_handler
+            items=[
+                ui.label('MVP-Bot-Manual-Controls'),
+                ui.buttons([ui.button(name='ping_bot', label='Ping', primary=True)]),
+                # The input parameters so user can interact with the bot
+        ui.textbox(name='instID_textbox', label='instID'),
+        ui.textbox(name='order_size_textbox', label='order_size'),
+        ui.textbox(name='leverage_textbox', label='leverage'),
+        ui.textbox(name='order_side_textbox', label='order_side'),
+        ui.textbox(name='order_type_textbox', label='order_type'),
+        ui.textbox(name='max_orderbook_limit_price_offset_textbox', label='max_orderbook_limit_price_offset'),
+        ui.textbox(name='flip_position_if_opposite_side_textbox', label='flip_position_if_opposite_side'),
+        ui.textbox(name='clear_prior_to_new_order_textbox', label='clear_prior_to_new_order'),
+                ui.textbox(name='red_button_textbox', label='red_button'),
+            ]
+        )
+        mvp_bot_manual_controls_2 =  ui.form_card(
+            box='mvp_bot_manual_controls_2',
+            # Lets set up a form to send a signal to the okx_signal_handler
+            items=[
+                ui.label('MVP-Bot-Manual-Controls'),
+                ui.buttons([ui.button(name='send_signal', label='Send', primary=True)]),
+                # The input parameters so user can interact with the bot
+                ui.textbox(name='order_usd_amount_textbox', label='order_usd_amount'),
+                ui.textbox(name='stop_loss_price_offset_textbox', label='stop_loss_price_offset'),
+                ui.textbox(name='tp_price_offset_textbox', label='tp_price_offset'),
+                ui.textbox(name='trailing_stop_activation_percentage_textbox',
+                           label='trailing_stop_activation_percentage'),
+                ui.textbox(name='trailing_stop_callback_ratio_textbox', label='trailing_stop_callback_ratio'),
+                ui.textbox(name='stop_loss_trigger_percentage_textbox', label='stop_loss_trigger_percentage'),
+                ui.textbox(name='take_profit_trigger_percentage_textbox', label='take_profit_trigger_percentage'),
+                ui.textbox(name='tp_trigger_price_type_textbox', label='tp_trigger_price_type'),
+                ui.textbox(name='sl_trigger_price_type_textbox', label='sl_trigger_price_type'),
+            ]
+        )
+        await add_card(self.q, self.card_name + '_manual_controls_1', mvp_bot_manual_controls_1)
+        await add_card(self.q, self.card_name + '_manual_controls_2', mvp_bot_manual_controls_2)
+
         await self.q.page.save()
         self._initialized = True
 

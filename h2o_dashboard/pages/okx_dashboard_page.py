@@ -41,12 +41,12 @@ async def okx_dashboard_page(q: Q):
     # await add_tradingview_advanced_chart(q, card_name='OKXDEBUG_TradingView_Advanced_Chart', box='grid_1')
 
     '''Init Widgets'''
-    account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_2', count=100)
+    account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_2', count=900)
     positions_stream_widget = OKX_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_3',
                                                          count=1)
     fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_4',
                                                              count=1)
-    manual_controls_widget = OKX_Manual_ControlsWidget(q=q, card_name='OKXDEBUG_Manual_Controls', box='grid_5')
+    manual_controls_widget = OKX_Manual_ControlsWidget(q=q, card_name='OKXDEBUG_Manual_Controls', box='mvp_bot_manual_controls_1')
 
     '''Init RealTime Page Cards'''
     await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget,

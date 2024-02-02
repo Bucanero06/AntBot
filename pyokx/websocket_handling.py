@@ -17,6 +17,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+"""
+This module handles the real-time interaction with the OKX exchange Websocket APIs. It subscribes to various data streams
+including public, business, and private channels, processes the incoming data, and optionally stores the data in a Redis
+stream for further analysis or decision-making. The main function `okx_websockets_main_run` initializes the websocket
+connections, handles message receipt, and maintains a heartbeat to keep the connections alive.
+"""
+
 import asyncio
 import json
 import os
@@ -39,9 +46,92 @@ from redis_tools.utils import serialize_for_redis, init_async_redis
 
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
+
+async def ws_callback(message):
+    """
+    Callback function to handle messages received from the websocket. It processes the raw message, converts it into
+    structured data, and stores it in Redis if enabled.
+
+    Args:
+        message (str): The raw message received from the websocket.
+
+    """
+    message_json = json.loads(message)
+    event = message_json.get("event", None)
+    print(f"Incoming Raw WS Message: {message_json}")
+    if event:
+        if event == "error":
+            print(f"Error: {message_json}")
+            return  # TODO: Handle events, mostly subscribe and error stop and reconnect task
+        print(f"Event: {message_json}")
+        return  # TODO: Handle events, mostly subscribe and error
+
+    try:
+        '''
+        ----------------------------------------------------
+        Send out the Supported Models to their messages stream channel 
+        (verifies the channel message has a pydantic model)
+        ----------------------------------------------------
+        '''
+        message_args = message_json.get("arg")
+        message_channel = message_args.get("channel")
+
+        data_struct = available_channel_models[message_channel]
+        if hasattr(data_struct, "from_array"):  # only applicatble to a few scenarios with candlesticks
+            structured_message = data_struct.from_array(**message_json)
+        else:
+            structured_message = data_struct(**message_json)
+        print(f"Received Structured-Data: {structured_message}")
+
+        if _redis_store and async_redis:
+            redis_ready_message = serialize_for_redis(structured_message)
+            await async_redis.xadd(f'okx:websockets@{message_channel}', {'data': redis_ready_message},
+                                   maxlen=REDIS_STREAM_MAX_LEN)
+            await async_redis.xadd(f'okx:websockets@all', {'data': redis_ready_message},
+                                   maxlen=REDIS_STREAM_MAX_LEN)
+
+            ''' (ALPHA)
+            ----------------------------------------------------
+            Handle supported channels data 
+            (can be moved to listen to the redistributed redis channel -from-above-)
+            e.g. 
+                message = _deserialize_from_redis(r.xrevrange('okx:websockets@account', count=1)[0][1])
+                account: Account = on_account(incoming_account_message)
+                redis_ready_message = serialize_for_redis(account.to_dict())
+                r.xadd(f'okx:reports@{message.get("arg").get("channel")}', redis_ready_message, maxlen=1000)
+            ----------------------------------------------------
+            '''
+
+            if message_channel == "index-tickers":
+                await async_redis.xadd(f'okx:websockets@{message_channel}@{message_args.get("instId")}',
+                                       {'data': serialize_for_redis(structured_message)},
+                                       maxlen=REDIS_STREAM_MAX_LEN)
+
+            # await handle_reports(message_json, async_redis) # TODO: Handle reports
+
+
+    except Exception as e:
+        print(f"Exception: {e} \n {message_json}")
+        return  # TODO: Handle exceptions
 async def okx_websockets_main_run(input_channel_models: list,
                                   apikey: str = None, passphrase: str = None, secretkey: str = None,
                                   sandbox_mode: bool = True, redis_store: bool = True):
+    """
+    Initializes and manages websocket connections to the OKX exchange. It subscribes to the specified channels,
+    processes incoming messages, and optionally stores structured data in a Redis stream.
+
+    Args:
+        input_channel_models (list): A list of channel input arguments specifying the channels to subscribe.
+        apikey (str, optional): The API key for accessing private channels.
+        passphrase (str, optional): The passphrase associated with the API key.
+        secretkey (str, optional): The secret key for accessing private channels.
+        sandbox_mode (bool, optional): If True, use the sandbox environment. Defaults to True.
+        redis_store (bool, optional): If True, store the received messages in a Redis stream. Defaults to True.
+
+    Raises:
+        Exception: If no channels are provided or if an invalid channel is specified.
+
+    """
     print(f"Starting OKX Websocket Connections ")
     if not input_channel_models:
         raise Exception("No channels provided")
@@ -64,68 +154,14 @@ async def okx_websockets_main_run(input_channel_models: list,
     )
 
     if redis_store:
+        global async_redis
+        global _redis_store
         async_redis = await init_async_redis()
+        _redis_store = redis_store
     else:
         async_redis = None
 
-    async def ws_callback(message):
-        message_json = json.loads(message)
-        event = message_json.get("event", None)
-        print(f"Incoming Raw WS Message: {message_json}")
-        if event:
-            if event == "error":
-                print(f"Error: {message_json}")
-                return  # TODO: Handle events, mostly subscribe and error stop and reconnect task
-            print(f"Event: {message_json}")
-            return  # TODO: Handle events, mostly subscribe and error
 
-        try:
-            '''
-            ----------------------------------------------------
-            Send out the Supported Models to their messages stream channel 
-            (verifies the channel message has a pydantic model)
-            ----------------------------------------------------
-            '''
-            message_args = message_json.get("arg")
-            message_channel = message_args.get("channel")
-
-            data_struct = available_channel_models[message_channel]
-            if hasattr(data_struct, "from_array"):  # only applicatble to a few scenarios with candlesticks
-                structured_message = data_struct.from_array(**message_json)
-            else:
-                structured_message = data_struct(**message_json)
-            print(f"Received Structured-Data: {structured_message}")
-
-            if redis_store and async_redis:
-                redis_ready_message = serialize_for_redis(structured_message)
-                await async_redis.xadd(f'okx:websockets@{message_channel}', {'data': redis_ready_message},
-                                       maxlen=REDIS_STREAM_MAX_LEN)
-                await async_redis.xadd(f'okx:websockets@all', {'data': redis_ready_message},
-                                       maxlen=REDIS_STREAM_MAX_LEN)
-
-                ''' (ALPHA)
-                ----------------------------------------------------
-                Handle supported channels data 
-                (can be moved to listen to the redistributed redis channel -from-above-)
-                e.g. 
-                    message = _deserialize_from_redis(r.xrevrange('okx:websockets@account', count=1)[0][1])
-                    account: Account = on_account(incoming_account_message)
-                    redis_ready_message = serialize_for_redis(account.to_dict())
-                    r.xadd(f'okx:reports@{message.get("arg").get("channel")}', redis_ready_message, maxlen=1000)
-                ----------------------------------------------------
-                '''
-
-                if message_channel == "index-tickers":
-                    await async_redis.xadd(f'okx:websockets@{message_channel}@{message_args.get("instId")}',
-                                           {'data': serialize_for_redis(structured_message)},
-                                           maxlen=REDIS_STREAM_MAX_LEN)
-
-                # await handle_reports(message_json, async_redis) # TODO: Handle reports
-
-
-        except Exception as e:
-            print(f"Exception: {e} \n {message_json}")
-            return  # TODO: Handle exceptions
 
     public_channels_inputs = []
     business_channels_inputs = []
@@ -324,6 +360,10 @@ async def test_restart(public_client, business_client, private_client):
 
 
 if __name__ == '__main__':
+    """
+    Main execution block. Loads the environment variables, prepares the channel models for subscription,
+    and starts the websocket main run function.
+    """
     dotenv.load_dotenv(dotenv.find_dotenv())
     instrument_specific_channels = []
     btc_usdt_usd_index_channels = []

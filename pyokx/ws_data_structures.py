@@ -22,7 +22,20 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 from pyokx.data_structures import Instrument, AccountBalanceData, Ask, Bid, Ticker
-
+"""The data structures used to represent the data received from the OKX Websocket API.""
+The channels are split into three categories: public, business, and private. The public channels are available to all
+users, the business channels are typically for market makers, and the private channels are for the user's account data.
+The websocket paths are
+- wss://ws.okx.com:8443/ws/v5/public
+- wss://ws.okx.com:8443/ws/v5/business
+- wss://ws.okx.com:8443/ws/v5/private
+- wss://wsaws.okx.com:8443/ws/v5/public
+- wss://wsaws.okx.com:8443/ws/v5/business
+- wss://wsaws.okx.com:8443/ws/v5/private
+- wss://wspap.okx.com:8443/ws/v5/public?brokerId=9999
+- wss://wspap.okx.com:8443/ws/v5/private?brokerId=9999
+- wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999
+"""
 
 class TickersChannelInputArgs(BaseModel):
     channel: str

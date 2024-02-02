@@ -40,6 +40,15 @@ REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
 
 async def analyze_transaction_history(instType: InstType = 'FUTURES'):
+    """
+    Analyzes the transaction history for a given instrument type over the last 90 days.
+
+    This function fetches the fill history, calculates various metrics for different timeframes,
+    and stores the results in a Redis stream.
+
+    :param instType: The type of instrument to analyze (e.g., 'FUTURES'). Default is 'FUTURES'.
+    :type instType: InstType
+    """
     # When using this endpoint, the maximum time range is 90 days
     start_timestamp = get_timestamp_from_days_ago(days_ago=90)
     end_timestamp = get_timestamp_from_days_ago()
@@ -97,6 +106,16 @@ async def analyze_transaction_history(instType: InstType = 'FUTURES'):
 
 
 async def okx_rest_messages_services(reload_interval: int = 30):
+    """
+    Main service loop for processing OKX REST messages.
+
+    This function initializes the Redis connection and enters a loop that, at each interval,
+    calls `analyze_transaction_history` to analyze and store the last 90 days of transaction history.
+    Handles exceptions and logs them accordingly.
+
+    :param reload_interval: The interval in seconds between each iteration of the loop. Default is 30 seconds.
+    :type reload_interval: int
+    """
     print("Starting okx_rest_messages_services")
     global async_redis
     async_redis = await init_async_redis()

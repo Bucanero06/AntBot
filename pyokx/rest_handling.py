@@ -17,6 +17,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import asyncio
 import json
 import os
 import random
@@ -56,8 +57,20 @@ publicAPI = okx_client.publicAPI
 
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
+"""NOTE: THE MODULE NEEDS TO BE UPDATED WITH ENUMS AND STRUCTURED DATA TYPES WHERE APPLICABLE"""
+
 
 def get_request_data(returned_data, target_data_structure):
+    """
+    Processes the returned data from an API call, mapping it to the specified data structure.
+
+    Args:
+        returned_data (dict): The raw data returned from the API call.
+        target_data_structure (class): The class to which the returned data items will be mapped.
+
+    Returns:
+        List[Any]: A list of instances of the target data structure class, populated with the returned data.
+    """
     # print(f'{returned_data = }')
     if len(returned_data['data']) == 0:
         if returned_data["code"] != '0':
@@ -75,6 +88,19 @@ all_futures_instruments = get_request_data(publicAPI.get_instruments(instType='F
 
 
 class InstrumentSearcher:
+    """
+    Provides functionality to search for instruments within a provided list of instruments based on various criteria
+    such as instrument ID, type, or underlying asset.
+
+    Args:
+        instruments (List[Instrument]): A list of instruments to search within.
+
+    Methods:
+        find_by_instId: Returns an instrument matching a specific instrument ID.
+        find_by_type: Returns all instruments of a specific type.
+        find_by_underlying: Returns all instruments with a specific underlying asset.
+    """
+
     def __init__(self, instruments: List[Instrument]):
         """
         InstrumentSearcher is a class that allows you to search for instruments by instId, instType, or underlying
@@ -115,6 +141,18 @@ instrument_searcher = InstrumentSearcher(all_futures_instruments)
 
 
 def get_ticker_with_higher_volume(seed_symbol_name, instrument_type="FUTURES", top_n=1):
+    """
+    Retrieves the ticker(s) with the highest trading volume for a given seed symbol and instrument type.
+    Optionally, returns the top N tickers sorted by volume.
+
+    Args:
+        seed_symbol_name (str): The base symbol to search for.
+        instrument_type (str, optional): The type of instrument (e.g., "FUTURES"). Defaults to "FUTURES".
+        top_n (int, optional): The number of top-volume tickers to return. Defaults to 1.
+
+    Returns:
+        List[Ticker]: A list of tickers, sorted by volume, up to the specified top_n number.
+    """
     print(f'{seed_symbol_name = }')  # tickers_data = okx_client.marketAPI.get_tickers(instType=instrument_type)
 
     # raise DeprecationWarning("This function is deprecated. Waiting to update to Structured Data Types.")
@@ -149,6 +187,15 @@ def get_ticker_with_higher_volume(seed_symbol_name, instrument_type="FUTURES", t
 
 
 def assert_okx_account_level(account_level: [1, 2, 3, 4]):
+    """
+    Validates and sets the OKX account level, ensuring it is one of the acceptable levels.
+
+    Args:
+        account_level (list[int]): The account level to be validated and set. Acceptable levels are 1, 2, 3, and 4.
+
+    Raises:
+        AssertionError: If the account level is not one of the acceptable levels or if the account level could not be set.
+    """
     raise DeprecationWarning("This function is deprecated. Waiting to update to Structured Data Types.")
     ACCLV_MAPPING = {
         1: "Simple mode",
@@ -180,12 +227,31 @@ def assert_okx_account_level(account_level: [1, 2, 3, 4]):
 
 
 def is_valid_alphanumeric(string, max_length):
-    """ Validate alphanumeric strings with a maximum length """
+    """
+    Validates if the input string is alphanumeric and conforms to the specified maximum length.
+
+    Args:
+        string (str): The string to validate.
+        max_length (int): The maximum allowable length for the string.
+
+    Returns:
+        bool: True if the string is alphanumeric and does not exceed the max_length, False otherwise.
+    """
 
     return bool(re.match('^[a-zA-Z0-9]{1,' + str(max_length) + '}$', string))
 
 
 def get_all_orders(instType: str = None, instId: str = None):
+    """
+    Fetches all orders matching the given criteria from the trading API.
+
+    Args:
+        instType (str, optional): The type of instrument to fetch orders for (e.g., "FUTURES").
+        instId (str, optional): The specific instrument ID to fetch orders for.
+
+    Returns:
+        List[Order]: A list of orders that match the given criteria.
+    """
     params = {}
     if instType is not None:
         params['instType'] = instType
@@ -195,6 +261,17 @@ def get_all_orders(instType: str = None, instId: str = None):
 
 
 def cancel_all_orders(orders_list: List[Order] = None, instType: InstType = None, instId: str = None):
+    """
+    Cancels all or specific orders based on the provided parameters.
+
+    Args:
+        orders_list (List[Order], optional): A list of specific orders to cancel. If not provided, all orders are cancelled.
+        instType (InstType, optional): The type of instrument to cancel orders for.
+        instId (str, optional): The specific instrument ID to cancel orders for.
+
+    Returns:
+        List[Cancelled_Order]: A list of the orders that were successfully cancelled.
+    """
     if orders_list is None:
         params = {}
         if instType is not None:
@@ -221,6 +298,25 @@ def cancel_all_orders(orders_list: List[Order] = None, instType: InstType = None
 
 
 def close_position(instId, mgnMode, posSide='', ccy='', autoCxl='', clOrdId='', tag=''):
+    """
+    Closes a position based on the given parameters.
+
+    :param instId: The instrument ID for the position to be closed.
+    :type instId: str
+    :param mgnMode: The margin mode for the position (e.g., 'isolated', 'cross').
+    :type mgnMode: str
+    :param posSide: The position side (e.g., 'long', 'short'). Defaults to an empty string.
+    :type posSide: str, optional
+    :param ccy: The currency used for the position. Defaults to an empty string.
+    :type ccy: str, optional
+    :param autoCxl: Automatically cancel the position. Defaults to an empty string.
+    :type autoCxl: str, optional
+    :param clOrdId: The client order ID. Defaults to an empty string.
+    :type clOrdId: str, optional
+    :param tag: A tag for the position. Defaults to an empty string.
+    :type tag: str, optional
+    :returns: The response from the position close request.
+    """
     params = {'instId': instId, 'mgnMode': mgnMode, 'posSide': posSide, 'ccy': ccy, 'autoCxl': autoCxl,
               'clOrdId': clOrdId, 'tag': tag}
     from pyokx.low_rest_api.consts import CLOSE_POSITION
@@ -230,6 +326,17 @@ def close_position(instId, mgnMode, posSide='', ccy='', autoCxl='', clOrdId='', 
 
 
 def close_all_positions(positions_list: List[Position] = None, instType: InstType = None, instId: str = None):
+    """
+    Closes all or specific positions based on the provided parameters.
+
+    :param positions_list: A list of specific positions to close. If not provided, all positions are closed.
+    :type positions_list: List[Position], optional
+    :param instType: The type of instrument to close positions for.
+    :type instType: InstType, optional
+    :param instId: The specific instrument ID to close positions for.
+    :type instId: str, optional
+    :returns: A list of the positions that were successfully closed.
+    """
     if positions_list is None:
         params = {}
         if instType is not None:
@@ -260,6 +367,15 @@ def close_all_positions(positions_list: List[Position] = None, instType: InstTyp
 
 
 def get_all_positions(instType: InstType = None, instId: str = None):
+    """
+    Fetches all positions matching the given criteria from the account API.
+
+    :param instType: The type of instrument to fetch positions for (e.g., 'FUTURES').
+    :type instType: InstType, optional
+    :param instId: The specific instrument ID to fetch positions for.
+    :type instId: str, optional
+    :returns: A list of positions that match the given criteria.
+    """
     params = {}
     if instType is not None:
         params['instType'] = instType
@@ -294,6 +410,22 @@ def place_order(instId: Any,
                 # developed yet downstream
                 # amendPxOnTriggerType: str = ''
                 ):
+    """
+    Places an order with the specified parameters.
+
+    :param instId: The instrument ID for the order.
+    :type instId: Any
+    :param tdMode: The trade mode for the order (e.g., 'cash', 'margin').
+    :type tdMode: Any
+    :param side: The side of the order ('buy' or 'sell').
+    :type side: Any
+    :param ordType: The type of the order (e.g., 'limit', 'market').
+    :type ordType: Any
+    :param sz: The size of the order.
+    :type sz: Any
+    ... (and so on for other parameters)
+    :returns: The response from the order placement request.
+    """
     result = tradeAPI.place_order(
         instId=instId, tdMode=tdMode, side=side, ordType=ordType, sz=sz,
         ccy=ccy, clOrdId=clOrdId, tag=tag, posSide=posSide,
@@ -320,10 +452,26 @@ def place_order(instId: Any,
 
 
 def get_ticker(instId):
+    """
+    Retrieves the latest ticker information for a specified instrument.
+
+    :param instId: The instrument ID for which to get the ticker information.
+    :type instId: str
+    :returns: The latest ticker information for the specified instrument.
+    """
     return get_request_data(marketAPI.get_ticker(instId=instId), Ticker)[0]
 
 
 def get_all_algo_orders(instId=None, ordType=None):
+    """
+    Fetches all algorithmic orders matching the given criteria from the trading API.
+
+    :param instId: The specific instrument ID to fetch algo orders for, defaults to None.
+    :type instId: str, optional
+    :param ordType: The type of algo order (e.g., 'trigger', 'oco'), defaults to None.
+    :type ordType: str, optional
+    :returns: A list of algo orders that match the given criteria.
+    """
     if ordType is None:
         ORDER_TYPES_TO_TRY = ['trigger', 'oco', 'conditional', 'move_order_stop', 'twap']
     else:
@@ -351,6 +499,17 @@ def get_all_algo_orders(instId=None, ordType=None):
 
 
 def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] = None, instId=None, ordType=None):
+    """
+    Cancels all or specific algorithmic orders based on the provided parameters.
+
+    :param algo_orders_list: A list of specific algo orders to cancel. If not provided, all algo orders are cancelled.
+    :type algo_orders_list: List[Algo_Order], optional
+    :param instId: The specific instrument ID to cancel algo orders for, defaults to None.
+    :type instId: str, optional
+    :param ordType: The type of algo order (e.g., 'trigger', 'oco'), defaults to None.
+    :type ordType: str, optional
+    :returns: A list of the algo orders that were successfully cancelled.
+    """
     assert algo_orders_list is None or (
             instId is not None or ordType is not None), f'algo_orders_list or instId must be provided'
 
@@ -409,6 +568,17 @@ def place_algo_order(
         algoClOrdId: str = '',
         cxlOnClosePos: str = ''
 ):
+    """
+    Places an algorithmic order with detailed parameters.
+    (as defined by the OKX API documentation, see Orders vs Algo Orders for more details)
+
+    :param instId: The instrument ID for the order.
+    :type instId: str
+    :param tdMode: The trade mode for the order (e.g., 'cash', 'margin').
+    :type tdMode: str
+    ... (and so on for other parameters)
+    :returns: The response from the algorithmic order placement request.
+    """
     result = tradeAPI.place_algo_order(
         # Main Order with TP and SL
         instId=instId,
@@ -440,6 +610,11 @@ def place_algo_order(
 
 
 def get_account_balance():
+    """
+    Retrieves the account balance details.
+
+    :returns: The account balance data, structured according to the AccountBalanceData class.
+    """
     account_balance = accountAPI.get_account_balance()['data'][0]
     details = account_balance['details']
     structured_details = []
@@ -450,18 +625,52 @@ def get_account_balance():
 
 
 def get_account_config():
+    """
+    Retrieves the account configuration details.
+
+    :returns: The account configuration data, structured according to the AccountConfigData class.
+    """
     return AccountConfigData(**accountAPI.get_account_config()['data'][0])
 
 
 def get_max_order_size(instId, tdMode):
+    """
+    Retrieves the maximum order size for a specific instrument and trade mode.
+
+    :param instId: The instrument ID for which to get the maximum order size.
+    :type instId: str
+    :param tdMode: The trade mode (e.g., 'cash', 'margin').
+    :type tdMode: str
+    :returns: The maximum order size data, structured according to the MaxOrderSizeData class.
+    """
     return MaxOrderSizeData(**accountAPI.get_max_order_size(instId=instId, tdMode=tdMode)['data'][0])
 
 
 def get_max_avail_size(instId, tdMode):
+    """
+    Retrieves the maximum available size for trading a specific instrument in a specific trade mode.
+
+    :param instId: The instrument ID for which to get the maximum available size.
+    :type instId: str
+    :param tdMode: The trade mode (e.g., 'cash', 'margin').
+    :type tdMode: str
+    :returns: The maximum available size data, structured according to the MaxAvailSizeData class.
+    """
     return MaxAvailSizeData(**accountAPI.get_max_avail_size(instId=instId, tdMode=tdMode)['data'][0])
 
 
 def generate_random_string(length, char_type='alphanumeric'):
+    """
+    Generates a random string of the specified length and character type.
+
+    :param length: The length of the random string to generate.
+    :type length: int
+    :param char_type: The type of characters to include in the string ('alphanumeric', 'numeric', or 'alphabetic').
+                      Defaults to 'alphanumeric'.
+    :type char_type: str, optional
+    :returns: A random string of the specified length and character type.
+    :raises ValueError: If the length exceeds 32 or if an invalid char_type is specified.
+    """
     if length > 32:
         raise ValueError("Maximum length allowed is 32")
 
@@ -478,6 +687,15 @@ def generate_random_string(length, char_type='alphanumeric'):
 
 
 def fetch_status_report_for_instrument(instId, TD_MODE):
+    """
+    Fetches a comprehensive status report for a specific instrument.
+
+    :param instId: The instrument ID for which to fetch the status report.
+    :type instId: str
+    :param TD_MODE: The trade mode (e.g., 'cash', 'margin').
+    :type TD_MODE: str
+    :returns: A status report for the instrument, structured according to the InstrumentStatusReport class.
+    """
     initial_data_pull = [
         FunctionCall(get_max_order_size, instId=instId, tdMode=TD_MODE),
         FunctionCall(get_max_avail_size, instId=instId, tdMode=TD_MODE),
@@ -499,6 +717,15 @@ def fetch_status_report_for_instrument(instId, TD_MODE):
 
 
 def fetch_initial_data(TD_MODE, instId=None):
+    """
+    Fetches initial data including account balance, account configuration, and instrument status.
+
+    :param TD_MODE: The trade mode (e.g., 'cash', 'margin').
+    :type TD_MODE: str
+    :param instId: The instrument ID for which to fetch the data, defaults to None.
+    :type instId: str, optional
+    :returns: A tuple containing simplified balance details, account configuration data, and instrument status report.
+    """
     initial_data_pull = [
         FunctionCall(get_account_balance),
         FunctionCall(get_account_config),
@@ -522,12 +749,28 @@ def fetch_initial_data(TD_MODE, instId=None):
 
 
 def clear_orders_and_positions_for_instrument(instId):
+    """
+    Clears all orders and positions for a specific instrument.
+
+    :param instId: The instrument ID for which to clear orders and positions.
+    :type instId: str
+    """
     print(f'{ close_all_positions(instId=instId) = }')
     print(f'{ cancel_all_orders(instId=instId) = }')
     print(f'{ cancel_all_algo_orders_with_params(instId=instId) = }')
 
 
 def get_order_book(instId, depth):
+    """
+    Fetches the order book for a specific instrument.
+
+    :param instId: The instrument ID for which to get the order book.
+    :type instId: str
+    :param depth: The depth of the order book to fetch.
+    :type depth: int
+    :returns: The order book snapshot, structured according to the Orderbook_Snapshot class.
+    :raises ValueError: If the order book could not be fetched for the specified instrument ID.
+    """
     orderbook_return = marketAPI.get_orderbook(instId=instId, sz=depth)
     if orderbook_return['code'] != '0':
         print(f'{orderbook_return = }')
@@ -549,6 +792,22 @@ def get_order_book(instId, depth):
 def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[int, float], side, reference_price: float,
                         max_orderbook_price_offset=None,
                         ):
+    """
+    Prepares a limit price based on the order book, quantity, side, reference price, and maximum order book price offset.
+
+    :param order_book: The snapshot of the order book.
+    :type order_book: Orderbook_Snapshot
+    :param quantity: The quantity for which to prepare the limit price.
+    :type quantity: Union[int, float]
+    :param side: The side of the order ('buy' or 'sell').
+    :type side: str
+    :param reference_price: The reference price to base the limit price on.
+    :type reference_price: float
+    :param max_orderbook_price_offset: The maximum allowed offset from the reference price, defaults to None.
+    :type max_orderbook_price_offset: float, optional
+    :returns: The prepared limit price.
+    :raises Exception: If a price in the order book that has enough volume to cover the quantity cannot be found.
+    """
     assert side in ['buy', 'sell']
     limit_price = None
 
@@ -602,6 +861,16 @@ def place_algo_trailing_stop_loss(
         algoClOrdId: str = '',
         cxlOnClosePos: str = ''
 ):
+    """
+    Places a trailing stop-loss order with detailed parameters.
+
+    :param instId: The instrument ID for the order.
+    :type instId: str
+    :param tdMode: The trade mode for the order (e.g., 'cash', 'margin').
+    :type tdMode: str
+    ... (and so on for other parameters)
+    :returns: The response from the trailing stop-loss order placement request.
+    """
     return place_algo_order(
         instId=instId,
         tdMode=tdMode,
@@ -618,6 +887,14 @@ def place_algo_trailing_stop_loss(
 
 
 def clean_and_verify_instID(instID):
+    """
+    Cleans and verifies an instrument ID to ensure it's in the correct format and exists within the list of instruments.
+
+    :param instID: The instrument ID to clean and verify.
+    :type instID: str
+    :returns: The cleaned and verified instrument ID.
+    :raises AssertionError: If the instrument ID is not in the correct format or the instrument is not found.
+    """
     # Clean Input Data
     instID = instID.upper()
     splitted = instID.split('-')
@@ -648,6 +925,56 @@ async def okx_signal_handler(
         trailing_stop_activation_percentage: float = None,
         trailing_stop_callback_ratio: float = None,
 ):
+    """
+    Handles trading signals for the OKX platform, executing trades based on the specified parameters and current market conditions.
+
+    :param instID: Instrument ID for trading.
+    :type instID: str, optional
+    :param order_size: Size of the order to execute.
+    :type order_size: int, optional
+    :param leverage: Leverage to apply for the trade.
+    :type leverage: int, optional
+    :param order_side: Side of the order ('buy' or 'sell').
+    :type order_side: str, optional
+    :param order_type: Type of the order (e.g., 'limit', 'market').
+    :type order_type: str, optional
+    :param max_orderbook_limit_price_offset: Maximum offset for the limit price from the order book.
+    :type max_orderbook_limit_price_offset: float, optional
+    :param flip_position_if_opposite_side: Flag to indicate if the position should be flipped if the current position is on the opposite side.
+    :type flip_position_if_opposite_side: bool, optional
+    :param clear_prior_to_new_order: Flag to clear existing orders before placing a new order.
+    :type clear_prior_to_new_order: bool, optional
+    :param red_button: Emergency stop flag to cancel all orders and close all positions.
+    :type red_button: bool, optional
+    :param order_usd_amount: Amount in USD for the order, used for calculations if specified.
+    :type order_usd_amount: float, optional
+    :param stop_loss_trigger_percentage: Percentage for triggering the stop loss.
+    :type stop_loss_trigger_percentage: float, optional
+    :param take_profit_trigger_percentage: Percentage for triggering take profit.
+    :type take_profit_trigger_percentage: float, optional
+    :param tp_trigger_price_type: Type of trigger price for take profit ('index', 'mark', 'last').
+    :type tp_trigger_price_type: str, optional
+    :param stop_loss_price_offset: Offset price for stop loss.
+    :type stop_loss_price_offset: float, optional
+    :param tp_price_offset: Offset price for take profit.
+    :type tp_price_offset: float, optional
+    :param sl_trigger_price_type: Type of trigger price for stop loss ('index', 'mark', 'last').
+    :type sl_trigger_price_type: str, optional
+    :param trailing_stop_activation_percentage: Activation percentage for the trailing stop loss.
+    :type trailing_stop_activation_percentage: float, optional
+    :param trailing_stop_callback_ratio: Callback ratio for the trailing stop loss.
+    :type trailing_stop_callback_ratio: float, optional
+    :returns: An object containing the status report of the instrument after processing the signal, detailing the positions, orders, and algo orders.
+
+    Process Flow:
+    1. Validates and processes input parameters, preparing the trading signal.
+    2. Checks and manages current positions based on new signal, potentially flipping positions or clearing orders as configured.
+    3. Calculates and sets order parameters such as price and size, leveraging current market data and user preferences.
+    4. Executes the trading actions (placing/canceling orders, opening/closing positions) on the OKX platform.
+    5. Fetches and returns an updated status report of the instrument, reflecting the changes made by the executed signal.
+
+    :raises Exception: Catches and logs any exceptions that occur during signal handling, providing detailed error information.
+    """
     TD_MODE: str = 'isolated'
     POSSIDETYPE: str = 'net'  # net or long/short, need to cancel all orders/positions to change
 
@@ -955,6 +1282,18 @@ async def okx_signal_handler(
 
 async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
     """
+    Fetches the fill history for a specific period and instrument type.
+
+    :param start_timestamp: The starting timestamp for the fill history.
+    :type start_timestamp: int
+    :param end_timestamp: The ending timestamp for the fill history.
+    :type end_timestamp: int
+    :param instType: The type of instrument for the fill history, defaults to None.
+    :type instType: str, optional
+    :returns: A list of fill entries.
+    :raises AssertionError: If the requested period is outside the allowed range based on the instrument type.
+    """
+    """
 
     Note:
         If instType passed in then up to 30 days ago the data can be pulled, but if None then only up to 3 days, verify
@@ -1011,7 +1350,8 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
             if request_count % 10 == 0:
                 elapsed = time.time() - start_time
                 if elapsed < 2:
-                    time.sleep(2 - elapsed)
+                    # time.sleep(2 - elapsed)
+                    await asyncio.sleep(2 - elapsed)
                 start_time = time.time()
 
 
@@ -1026,6 +1366,30 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
 
 
 async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
+    """
+    Handles incoming premium indicator signals for trading on the OKX platform. It processes the signals,
+    interprets the trading instructions, manages positions based on the received signals, and executes trading actions.
+
+    :param indicator_input: The input containing the signals and parameters from the premium indicator.
+                            This can be an instance of PremiumIndicatorSignalRequestForm or a dictionary
+                            that corresponds to the structure of PremiumIndicatorSignalRequestForm.
+    :type indicator_input: PremiumIndicatorSignalRequestForm or dict
+
+    :returns: A dictionary detailing the outcome of the signal processing. If the processing is successful, it includes
+              the 'instrument_status_report' which is a comprehensive status report of the instrument after handling the signal.
+              In case of an error, it returns a message detailing the issue.
+
+    Process Flow:
+    1. Validates the input type and converts it into PremiumIndicatorSignalRequestForm if necessary.
+    2. Extracts and processes trading signals (like Bearish, Bullish, and their respective exit signals) from the input.
+    3. Determines the trading action (buy/sell) based on the processed signals.
+    4. Fetches the current positions for the given instrument ID and aligns them with the received signals.
+    5. Prepares the trading action by setting order sides, clearing prior orders if needed, and handling the 'red_button' emergency stop.
+    6. Passes the processed signal to `okx_signal_handler` for executing the trading operations on the OKX platform.
+    7. Returns a success message with the 'instrument_status_report' or an error message in case of an exception.
+
+    :raises Exception: Catches and logs any exceptions that occur during the processing of the signal, returning a detailed error message.
+    """
     if isinstance(indicator_input, PremiumIndicatorSignalRequestForm):
         input_to_pass = indicator_input
     elif isinstance(indicator_input, dict):
@@ -1105,13 +1469,21 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 if __name__ == '__main__':
     import dotenv
 
+    # Define the test function to be used
     TEST_FUNCTION = 'okx_signal_handler'
-    okx_signal_handler(red_button=True)  # todo we should only handle the relevant orders/positions
 
+    # Immediately execute the 'red button' functionality to clear all positions and orders
+    # TODO: Ensure only relevant orders/positions are handled.
+    okx_signal_handler(red_button=True)
+
+    # Load environment variables from a .env file
     dotenv.load_dotenv(dotenv.find_dotenv())
 
+    # Branching logic based on the test function chosen
     if TEST_FUNCTION == 'okx_signal_handler':
+        # Execute the 'okx_signal_handler' with predefined parameters for testing
         response = okx_signal_handler(
+            # Parameters for the 'okx_signal_handler'
             instID="BTC-USDT-240628",
             order_size=1,
             leverage=5,
@@ -1121,40 +1493,43 @@ if __name__ == '__main__':
             flip_position_if_opposite_side=True,
             clear_prior_to_new_order=False,
             red_button=False,
-            # order_usd_amount=100,
-            stop_loss_price_offset=None,
-            tp_price_offset=None,
-            trailing_stop_activation_percentage=None,
-            trailing_stop_callback_ratio=None,
-            stop_loss_trigger_percentage=None,
-            take_profit_trigger_percentage=None,
-            tp_trigger_price_type=None,
-            sl_trigger_price_type=None,
+            # More parameters...
         )
     elif TEST_FUNCTION == 'okx_premium_indicator':
+        # Load a payload from a file for testing the 'okx_premium_indicator'
         with open('../debugging_payload.json', 'r') as f:
             webhook_payload = json.load(f)
+
+        # Debugging print statement
         pprint(f'{webhook_payload = }')
 
+        # Construct the signal request form
         indicator_input = PremiumIndicatorSignalRequestForm(**webhook_payload)
         import redis
 
+        # Connect to Redis server
         r = redis.Redis(host='localhost', port=6379, db=0)
 
+        # Prepare and send a message to a Redis stream for debugging
         redis_ready_message = serialize_for_redis(indicator_input.model_dump())
         r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message)
+
+        # Process the indicator input and store the result
         result = okx_premium_indicator(indicator_input)
 
+        # Get the response from the 'okx_premium_indicator' function
         response = okx_premium_indicator(webhook_payload)
         if isinstance(result, dict):
+            # Send the result to a Redis stream for debugging
             r.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result))
-
     else:
+        # Handle invalid test function selection
         raise ValueError(f'Invalid test function {TEST_FUNCTION = }')
 
-    # okx_signal_handler(red_button=True)  # todo we should only handle the relevant orders/positions
-
+    # Print the final response for debugging
     print(f'{response = }')
+
+    # Validation and print statements for the instrument status report
     if response is None:
         print("No response")
         exit()
@@ -1164,12 +1539,13 @@ if __name__ == '__main__':
     elif isinstance(response, dict):
         instrument_report = response.get('instrument_status_report')
         if instrument_report is None:
-            print("No instument status report")
+            print("No instrument status report")
             exit()
     else:
-        print("No instument status report")
+        print("No instrument status report")
         exit()
 
+    # Debugging print statements for the instrument report
     print(f'{instrument_report = }')
     pprint(f'{instrument_report.positions = }')
     pprint(f'{len(instrument_report.positions) = }')

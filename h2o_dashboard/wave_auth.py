@@ -130,6 +130,13 @@ async def init(q: Q) -> None:
                                                           justify='center'),
                                                   ui.zone('grid_6', direction=ui.ZoneDirection.ROW, wrap='stretch',
                                                           justify='center'),
+                                                  ui.zone('mvp_bot_manual_controls', size='1 1 1 1',
+                                                            direction=ui.ZoneDirection.ROW,
+                                                          zones=[
+                                                                ui.zone('mvp_bot_manual_controls_1', size='1 1 1 1'),
+                                                                ui.zone('mvp_bot_manual_controls_2', size='1 1 1 1')
+                                                              ]
+                                                            ),
                                               ]),
                                           ]),
                                       ]),

@@ -1,5 +1,5 @@
 .. AntBot documentation master file, created by
-   sphinx-quickstart on Wed Jan 31 23:22:03 2024.
+   sphinx-quickstart on Fri Feb  2 14:41:35 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -18,11 +18,9 @@ Welcome to AntBot's documentation!
    h2o_dashboard.pages.documentation_page
    h2o_dashboard.pages.okx_dashboard_page
    h2o_dashboard.pages.overview_page
-   h2o_dashboard.tradingview_widgets
    h2o_dashboard.util
    h2o_dashboard.wave_auth
    h2o_dashboard.widgets.okx_streams
-   main
    pyokx.Futures_Exchange_Client
    pyokx.data_structures
    pyokx.low_rest_api.Account
@@ -113,6 +111,7 @@ Welcome to AntBot's documentation!
    redis_tools.syncio.model
    redis_tools.syncio.store
    redis_tools.utils
+   rest_app
    routers.api_keys
    routers.login
    routers.okx
@@ -126,6 +125,7 @@ Welcome to AntBot's documentation!
    shared.logging
    shared.string_dict_utils
    shared.tmp_shared
+   tradingview_tools.tradingview_widgets
    websocket_app
 
 

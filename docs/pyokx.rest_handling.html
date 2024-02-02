@@ -58,11 +58,9 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
@@ -118,8 +116,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#pyokx.rest_handling.InstrumentSearcher.find_by_instId"><code class="docutils literal notranslate"><span class="pre">InstrumentSearcher.find_by_instId()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyokx.rest_handling.InstrumentSearcher.find_by_type"><code class="docutils literal notranslate"><span class="pre">InstrumentSearcher.find_by_type()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyokx.rest_handling.InstrumentSearcher.find_by_underlying"><code class="docutils literal notranslate"><span class="pre">InstrumentSearcher.find_by_underlying()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">InstrumentSearcher.find_by_instId()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">InstrumentSearcher.find_by_type()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">InstrumentSearcher.find_by_underlying()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.rest_handling.REDIS_STREAM_MAX_LEN"><code class="docutils literal notranslate"><span class="pre">REDIS_STREAM_MAX_LEN</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.rest_handling.assert_okx_account_level"><code class="docutils literal notranslate"><span class="pre">assert_okx_account_level()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.rest_handling.cancel_all_algo_orders_with_params"><code class="docutils literal notranslate"><span class="pre">cancel_all_algo_orders_with_params()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.rest_handling.cancel_all_orders"><code class="docutils literal notranslate"><span class="pre">cancel_all_orders()</span></code></a></li>
@@ -190,6 +192,7 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.api_keys.html">routers.api_keys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.login.html">routers.login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.okx.html">routers.okx</a></li>
@@ -203,6 +206,7 @@
 <li class="toctree-l1"><a class="reference internal" href="shared.logging.html">shared.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shared.string_dict_utils.html">shared.string_dict_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tradingview_tools.tradingview_widgets.html">tradingview_tools.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="websocket_app.html">websocket_app</a></li>
 </ul>
 
@@ -236,81 +240,200 @@
 <dt class="sig sig-object py" id="pyokx.rest_handling.InstrumentSearcher">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">InstrumentSearcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instruments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.InstrumentSearcher" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides functionality to search for instruments within a provided list of instruments based on various criteria
+such as instrument ID, type, or underlying asset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instruments</strong> (<em>List</em><em>[</em><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><em>Instrument</em></a><em>]</em>) – A list of instruments to search within.</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyokx.rest_handling.InstrumentSearcher.find_by_instId">
-<span class="sig-name descname"><span class="pre">find_by_instId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_instId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.InstrumentSearcher.find_by_instId" title="Link to this definition"></a></dt>
-<dd><p>Find an instrument by its instId</p>
+<span class="sig-name descname"><span class="pre">find_by_instId</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_instId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.InstrumentSearcher.find_by_instId" title="Link to this definition"></a></dt>
+<dd><p>Returns an instrument matching a specific instrument ID.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyokx.rest_handling.InstrumentSearcher.find_by_type">
-<span class="sig-name descname"><span class="pre">find_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><span class="pre">InstType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.InstrumentSearcher.find_by_type" title="Link to this definition"></a></dt>
-<dd><p>Find all instruments of a specific type</p>
+<span class="sig-name descname"><span class="pre">find_by_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.InstrumentSearcher.find_by_type" title="Link to this definition"></a></dt>
+<dd><p>Returns all instruments of a specific type.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyokx.rest_handling.InstrumentSearcher.find_by_underlying">
-<span class="sig-name descname"><span class="pre">find_by_underlying</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">underlying</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_underlying"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.InstrumentSearcher.find_by_underlying" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_by_underlying</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_underlying"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.InstrumentSearcher.find_by_underlying" title="Link to this definition"></a></dt>
+<dd><p>Returns all instruments with a specific underlying asset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">find_by_instId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_instId"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Find an instrument by its instId</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">find_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><span class="pre">InstType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd><p>Find all instruments of a specific type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">find_by_underlying</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">underlying</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/rest_handling.html#InstrumentSearcher.find_by_underlying"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
 <dd><p>Find all instruments of a specific underlying</p>
 </dd></dl>
 
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="pyokx.rest_handling.REDIS_STREAM_MAX_LEN">
+<span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">REDIS_STREAM_MAX_LEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000</span></em><a class="headerlink" href="#pyokx.rest_handling.REDIS_STREAM_MAX_LEN" title="Link to this definition"></a></dt>
+<dd><p>THE MODULE NEEDS TO BE UPDATED WITH ENUMS AND STRUCTURED DATA TYPES WHERE APPLICABLE</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NOTE</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.assert_okx_account_level">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">assert_okx_account_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">4</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#assert_okx_account_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.assert_okx_account_level" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Validates and sets the OKX account level, ensuring it is one of the acceptable levels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>account_level</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – The account level to be validated and set. Acceptable levels are 1, 2, 3, and 4.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – If the account level is not one of the acceptable levels or if the account level could not be set.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.cancel_all_algo_orders_with_params">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">cancel_all_algo_orders_with_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algo_orders_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order" title="pyokx.data_structures.Algo_Order"><span class="pre">Algo_Order</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#cancel_all_algo_orders_with_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.cancel_all_algo_orders_with_params" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Cancels all or specific algorithmic orders based on the provided parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>algo_orders_list</strong> (<em>List</em><em>[</em><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order" title="pyokx.data_structures.Algo_Order"><em>Algo_Order</em></a><em>]</em><em>, </em><em>optional</em>) – A list of specific algo orders to cancel. If not provided, all algo orders are cancelled.</p></li>
+<li><p><strong>instId</strong> (<em>str</em><em>, </em><em>optional</em>) – The specific instrument ID to cancel algo orders for, defaults to </p></li>
+<li><p><strong>ordType</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of algo order (e.g., ‘trigger’, ‘oco’), defaults to </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of the algo orders that were successfully cancelled.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.cancel_all_orders">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">cancel_all_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Order" title="pyokx.data_structures.Order"><span class="pre">Order</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><span class="pre">InstType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#cancel_all_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.cancel_all_orders" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Cancels all or specific orders based on the provided parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orders_list</strong> (<em>List</em><em>[</em><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Order" title="pyokx.data_structures.Order"><em>Order</em></a><em>]</em><em>, </em><em>optional</em>) – A list of specific orders to cancel. If not provided, all orders are cancelled.</p></li>
+<li><p><strong>instType</strong> (<a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><em>InstType</em></a><em>, </em><em>optional</em>) – The type of instrument to cancel orders for.</p></li>
+<li><p><strong>instId</strong> (<em>str</em><em>, </em><em>optional</em>) – The specific instrument ID to cancel orders for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of the orders that were successfully cancelled.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Cancelled_Order" title="pyokx.data_structures.Cancelled_Order">Cancelled_Order</a>]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.clean_and_verify_instID">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">clean_and_verify_instID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instID</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#clean_and_verify_instID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.clean_and_verify_instID" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Cleans and verifies an instrument ID to ensure it’s in the correct format and exists within the list of instruments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instID</strong> (<em>str</em>) – The instrument ID to clean and verify.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cleaned and verified instrument ID.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AssertionError</strong> – If the instrument ID is not in the correct format or the instrument is not found.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.clear_orders_and_positions_for_instrument">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">clear_orders_and_positions_for_instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#clear_orders_and_positions_for_instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.clear_orders_and_positions_for_instrument" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Clears all orders and positions for a specific instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instId</strong> (<em>str</em>) – The instrument ID for which to clear orders and positions.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.close_all_positions">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">close_all_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Position" title="pyokx.data_structures.Position"><span class="pre">Position</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><span class="pre">InstType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#close_all_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.close_all_positions" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Closes all or specific positions based on the provided parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions_list</strong> (<em>List</em><em>[</em><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Position" title="pyokx.data_structures.Position"><em>Position</em></a><em>]</em><em>, </em><em>optional</em>) – A list of specific positions to close. If not provided, all positions are closed.</p></li>
+<li><p><strong>instType</strong> (<a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><em>InstType</em></a><em>, </em><em>optional</em>) – The type of instrument to close positions for.</p></li>
+<li><p><strong>instId</strong> (<em>str</em><em>, </em><em>optional</em>) – The specific instrument ID to close positions for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of the positions that were successfully closed.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.close_position">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">close_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mgnMode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posSide</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoCxl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clOrdId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#close_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.close_position" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Closes a position based on the given parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>str</em>) – The instrument ID for the position to be closed.</p></li>
+<li><p><strong>mgnMode</strong> (<em>str</em>) – The margin mode for the position (e.g., ‘isolated’, ‘cross’).</p></li>
+<li><p><strong>posSide</strong> (<em>str</em><em>, </em><em>optional</em>) – The position side (e.g., ‘long’, ‘short’). Defaults to an empty string.</p></li>
+<li><p><strong>ccy</strong> (<em>str</em><em>, </em><em>optional</em>) – The currency used for the position. Defaults to an empty string.</p></li>
+<li><p><strong>autoCxl</strong> (<em>str</em><em>, </em><em>optional</em>) – Automatically cancel the position. Defaults to an empty string.</p></li>
+<li><p><strong>clOrdId</strong> (<em>str</em><em>, </em><em>optional</em>) – The client order ID. Defaults to an empty string.</p></li>
+<li><p><strong>tag</strong> (<em>str</em><em>, </em><em>optional</em>) – A tag for the position. Defaults to an empty string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The response from the position close request.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.fetch_fill_history">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">fetch_fill_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#fetch_fill_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.fetch_fill_history" title="Link to this definition"></a></dt>
-<dd><div class="admonition note">
-<p class="admonition-title">Note</p>
-<dl class="simple">
-<dt>If instType passed in then up to 30 days ago the data can be pulled, but if None then only up to 3 days, verify</dt><dd><p>Im refering to AGO!!! meaning from now</p>
-</dd>
-</dl>
-</div>
+<dd><p>Fetches the fill history for a specific period and instrument type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start_timestamp</strong> – </p></li>
-<li><p><strong>end_timestamp</strong> – </p></li>
-<li><p><strong>instType</strong> – </p></li>
+<li><p><strong>start_timestamp</strong> (<em>int</em>) – The starting timestamp for the fill history.</p></li>
+<li><p><strong>end_timestamp</strong> (<em>int</em>) – The ending timestamp for the fill history.</p></li>
+<li><p><strong>instType</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of instrument for the fill history, defaults to </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>A list of fill entries.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>AssertionError</strong> – If the requested period is outside the allowed range based on the instrument type.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -318,112 +441,418 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.fetch_initial_data">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">fetch_initial_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">TD_MODE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#fetch_initial_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.fetch_initial_data" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Fetches initial data including account balance, account configuration, and instrument status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>TD_MODE</strong> (<em>str</em>) – The trade mode (e.g., ‘cash’, ‘margin’).</p></li>
+<li><p><strong>instId</strong> (<em>str</em><em>, </em><em>optional</em>) – The instrument ID for which to fetch the data, defaults to </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing simplified balance details, account configuration data, and instrument status report.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.fetch_status_report_for_instrument">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">fetch_status_report_for_instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TD_MODE</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#fetch_status_report_for_instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.fetch_status_report_for_instrument" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Fetches a comprehensive status report for a specific instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>str</em>) – The instrument ID for which to fetch the status report.</p></li>
+<li><p><strong>TD_MODE</strong> (<em>str</em>) – The trade mode (e.g., ‘cash’, ‘margin’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A status report for the instrument, structured according to the InstrumentStatusReport class.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.generate_random_string">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">generate_random_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">char_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'alphanumeric'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#generate_random_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.generate_random_string" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Generates a random string of the specified length and character type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>length</strong> (<em>int</em>) – The length of the random string to generate.</p></li>
+<li><p><strong>char_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of characters to include in the string (‘alphanumeric’, ‘numeric’, or ‘alphabetic’).
+Defaults to ‘alphanumeric’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A random string of the specified length and character type.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the length exceeds 32 or if an invalid char_type is specified.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_account_balance">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_account_balance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_account_balance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_account_balance" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieves the account balance details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The account balance data, structured according to the AccountBalanceData class.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_account_config">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_account_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_account_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_account_config" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieves the account configuration details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The account configuration data, structured according to the AccountConfigData class.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_all_algo_orders">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_all_algo_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_all_algo_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_all_algo_orders" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Fetches all algorithmic orders matching the given criteria from the trading API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>str</em><em>, </em><em>optional</em>) – The specific instrument ID to fetch algo orders for, defaults to </p></li>
+<li><p><strong>ordType</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of algo order (e.g., ‘trigger’, ‘oco’), defaults to </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of algo orders that match the given criteria.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_all_orders">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_all_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_all_orders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_all_orders" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Fetches all orders matching the given criteria from the trading API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instType</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of instrument to fetch orders for (e.g., “FUTURES”).</p></li>
+<li><p><strong>instId</strong> (<em>str</em><em>, </em><em>optional</em>) – The specific instrument ID to fetch orders for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of orders that match the given criteria.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Order" title="pyokx.data_structures.Order">Order</a>]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_all_positions">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_all_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><span class="pre">InstType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_all_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_all_positions" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Fetches all positions matching the given criteria from the account API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instType</strong> (<a class="reference internal" href="pyokx.okx_market_maker.utils.OkxEnum.html#pyokx.okx_market_maker.utils.OkxEnum.InstType" title="pyokx.okx_market_maker.utils.OkxEnum.InstType"><em>InstType</em></a><em>, </em><em>optional</em>) – The type of instrument to fetch positions for (e.g., ‘FUTURES’).</p></li>
+<li><p><strong>instId</strong> (<em>str</em><em>, </em><em>optional</em>) – The specific instrument ID to fetch positions for.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of positions that match the given criteria.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_max_avail_size">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_max_avail_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tdMode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_max_avail_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_max_avail_size" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieves the maximum available size for trading a specific instrument in a specific trade mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>str</em>) – The instrument ID for which to get the maximum available size.</p></li>
+<li><p><strong>tdMode</strong> (<em>str</em>) – The trade mode (e.g., ‘cash’, ‘margin’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The maximum available size data, structured according to the MaxAvailSizeData class.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_max_order_size">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_max_order_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tdMode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_max_order_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_max_order_size" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieves the maximum order size for a specific instrument and trade mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>str</em>) – The instrument ID for which to get the maximum order size.</p></li>
+<li><p><strong>tdMode</strong> (<em>str</em>) – The trade mode (e.g., ‘cash’, ‘margin’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The maximum order size data, structured according to the MaxOrderSizeData class.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_order_book">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_order_book</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_order_book"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_order_book" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Fetches the order book for a specific instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>str</em>) – The instrument ID for which to get the order book.</p></li>
+<li><p><strong>depth</strong> (<em>int</em>) – The depth of the order book to fetch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The order book snapshot, structured according to the Orderbook_Snapshot class.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the order book could not be fetched for the specified instrument ID.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_request_data">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_request_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returned_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_data_structure</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_request_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_request_data" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Processes the returned data from an API call, mapping it to the specified data structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>returned_data</strong> (<em>dict</em>) – The raw data returned from the API call.</p></li>
+<li><p><strong>target_data_structure</strong> (<em>class</em>) – The class to which the returned data items will be mapped.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of instances of the target data structure class, populated with the returned data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Any]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_ticker">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_ticker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_ticker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_ticker" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieves the latest ticker information for a specified instrument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instId</strong> (<em>str</em>) – The instrument ID for which to get the ticker information.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The latest ticker information for the specified instrument.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.get_ticker_with_higher_volume">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">get_ticker_with_higher_volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed_symbol_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FUTURES'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#get_ticker_with_higher_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.get_ticker_with_higher_volume" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Retrieves the ticker(s) with the highest trading volume for a given seed symbol and instrument type.
+Optionally, returns the top N tickers sorted by volume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed_symbol_name</strong> (<em>str</em>) – The base symbol to search for.</p></li>
+<li><p><strong>instrument_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of instrument (e.g., “FUTURES”). Defaults to “FUTURES”.</p></li>
+<li><p><strong>top_n</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of top-volume tickers to return. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of tickers, sorted by volume, up to the specified top_n number.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Ticker" title="pyokx.data_structures.Ticker">Ticker</a>]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.is_valid_alphanumeric">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">is_valid_alphanumeric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#is_valid_alphanumeric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.is_valid_alphanumeric" title="Link to this definition"></a></dt>
-<dd><p>Validate alphanumeric strings with a maximum length</p>
+<dd><p>Validates if the input string is alphanumeric and conforms to the specified maximum length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>string</strong> (<em>str</em>) – The string to validate.</p></li>
+<li><p><strong>max_length</strong> (<em>int</em>) – The maximum allowable length for the string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the string is alphanumeric and does not exceed the max_length, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.okx_premium_indicator">
-<span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">okx_premium_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignalRequestForm" title="pyokx.data_structures.PremiumIndicatorSignalRequestForm"><span class="pre">PremiumIndicatorSignalRequestForm</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#okx_premium_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.okx_premium_indicator" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">okx_premium_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignalRequestForm" title="pyokx.data_structures.PremiumIndicatorSignalRequestForm"><span class="pre">PremiumIndicatorSignalRequestForm</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#okx_premium_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.okx_premium_indicator" title="Link to this definition"></a></dt>
+<dd><p>Handles incoming premium indicator signals for trading on the OKX platform. It processes the signals,
+interprets the trading instructions, manages positions based on the received signals, and executes trading actions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>indicator_input</strong> (<a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignalRequestForm" title="pyokx.data_structures.PremiumIndicatorSignalRequestForm"><em>PremiumIndicatorSignalRequestForm</em></a><em> or </em><em>dict</em>) – The input containing the signals and parameters from the premium indicator.
+This can be an instance of PremiumIndicatorSignalRequestForm or a dictionary
+that corresponds to the structure of PremiumIndicatorSignalRequestForm.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary detailing the outcome of the signal processing. If the processing is successful, it includes
+the ‘instrument_status_report’ which is a comprehensive status report of the instrument after handling the signal.
+In case of an error, it returns a message detailing the issue.</p>
+</dd>
+</dl>
+<p>Process Flow:
+1. Validates the input type and converts it into PremiumIndicatorSignalRequestForm if necessary.
+2. Extracts and processes trading signals (like Bearish, Bullish, and their respective exit signals) from the input.
+3. Determines the trading action (buy/sell) based on the processed signals.
+4. Fetches the current positions for the given instrument ID and aligns them with the received signals.
+5. Prepares the trading action by setting order sides, clearing prior orders if needed, and handling the ‘red_button’ emergency stop.
+6. Passes the processed signal to <cite>okx_signal_handler</cite> for executing the trading operations on the OKX platform.
+7. Returns a success message with the ‘instrument_status_report’ or an error message in case of an exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Catches and logs any exceptions that occur during the processing of the signal, returning a detailed error message.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.okx_signal_handler">
-<span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">okx_signal_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_orderbook_limit_price_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip_position_if_opposite_side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear_prior_to_new_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">red_button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_usd_amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_trigger_percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">take_profit_trigger_percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_trigger_price_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_price_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_price_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sl_trigger_price_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_stop_activation_percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_stop_callback_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#okx_signal_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.okx_signal_handler" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">okx_signal_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leverage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_orderbook_limit_price_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip_position_if_opposite_side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear_prior_to_new_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">red_button</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_usd_amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_trigger_percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">take_profit_trigger_percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_trigger_price_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_price_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_price_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sl_trigger_price_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_stop_activation_percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trailing_stop_callback_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#okx_signal_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.okx_signal_handler" title="Link to this definition"></a></dt>
+<dd><p>Handles trading signals for the OKX platform, executing trades based on the specified parameters and current market conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instID</strong> (<em>str</em><em>, </em><em>optional</em>) – Instrument ID for trading.</p></li>
+<li><p><strong>order_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Size of the order to execute.</p></li>
+<li><p><strong>leverage</strong> (<em>int</em><em>, </em><em>optional</em>) – Leverage to apply for the trade.</p></li>
+<li><p><strong>order_side</strong> (<em>str</em><em>, </em><em>optional</em>) – Side of the order (‘buy’ or ‘sell’).</p></li>
+<li><p><strong>order_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of the order (e.g., ‘limit’, ‘market’).</p></li>
+<li><p><strong>max_orderbook_limit_price_offset</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum offset for the limit price from the order book.</p></li>
+<li><p><strong>flip_position_if_opposite_side</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to indicate if the position should be flipped if the current position is on the opposite side.</p></li>
+<li><p><strong>clear_prior_to_new_order</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to clear existing orders before placing a new order.</p></li>
+<li><p><strong>red_button</strong> (<em>bool</em><em>, </em><em>optional</em>) – Emergency stop flag to cancel all orders and close all positions.</p></li>
+<li><p><strong>order_usd_amount</strong> (<em>float</em><em>, </em><em>optional</em>) – Amount in USD for the order, used for calculations if specified.</p></li>
+<li><p><strong>stop_loss_trigger_percentage</strong> (<em>float</em><em>, </em><em>optional</em>) – Percentage for triggering the stop loss.</p></li>
+<li><p><strong>take_profit_trigger_percentage</strong> (<em>float</em><em>, </em><em>optional</em>) – Percentage for triggering take profit.</p></li>
+<li><p><strong>tp_trigger_price_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of trigger price for take profit (‘index’, ‘mark’, ‘last’).</p></li>
+<li><p><strong>stop_loss_price_offset</strong> (<em>float</em><em>, </em><em>optional</em>) – Offset price for stop loss.</p></li>
+<li><p><strong>tp_price_offset</strong> (<em>float</em><em>, </em><em>optional</em>) – Offset price for take profit.</p></li>
+<li><p><strong>sl_trigger_price_type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of trigger price for stop loss (‘index’, ‘mark’, ‘last’).</p></li>
+<li><p><strong>trailing_stop_activation_percentage</strong> (<em>float</em><em>, </em><em>optional</em>) – Activation percentage for the trailing stop loss.</p></li>
+<li><p><strong>trailing_stop_callback_ratio</strong> (<em>float</em><em>, </em><em>optional</em>) – Callback ratio for the trailing stop loss.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An object containing the status report of the instrument after processing the signal, detailing the positions, orders, and algo orders.</p>
+</dd>
+</dl>
+<p>Process Flow:
+1. Validates and processes input parameters, preparing the trading signal.
+2. Checks and manages current positions based on new signal, potentially flipping positions or clearing orders as configured.
+3. Calculates and sets order parameters such as price and size, leveraging current market data and user preferences.
+4. Executes the trading actions (placing/canceling orders, opening/closing positions) on the OKX platform.
+5. Fetches and returns an updated status report of the instrument, reflecting the changes made by the executed signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Catches and logs any exceptions that occur during signal handling, providing detailed error information.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.place_algo_order">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">place_algo_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tdMode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posSide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduceOnly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tpTriggerPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tpOrdPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slTriggerPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slOrdPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triggerPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orderPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tgtCcy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pxVar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pxSpread</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">szLimit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pxLimit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeInterval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tpTriggerPxType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slTriggerPxType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbackRatio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbackSpread</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activePx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triggerPxType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closeFraction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quickMgnType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algoClOrdId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cxlOnClosePos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#place_algo_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.place_algo_order" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Places an algorithmic order with detailed parameters.
+(as defined by the OKX API documentation, see Orders vs Algo Orders for more details)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>str</em>) – The instrument ID for the order.</p></li>
+<li><p><strong>tdMode</strong> (<em>str</em>) – The trade mode for the order (e.g., ‘cash’, ‘margin’).</p></li>
+</ul>
+</dd>
+</dl>
+<p>… (and so on for other parameters)
+:returns: The response from the algorithmic order placement request.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.place_algo_trailing_stop_loss">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">place_algo_trailing_stop_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tdMode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activePx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posSide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbackRatio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduceOnly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algoClOrdId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cxlOnClosePos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#place_algo_trailing_stop_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.place_algo_trailing_stop_loss" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Places a trailing stop-loss order with detailed parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>str</em>) – The instrument ID for the order.</p></li>
+<li><p><strong>tdMode</strong> (<em>str</em>) – The trade mode for the order (e.g., ‘cash’, ‘margin’).</p></li>
+</ul>
+</dd>
+</dl>
+<p>… (and so on for other parameters)
+:returns: The response from the trailing stop-loss order placement request.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.place_order">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">place_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tdMode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sz</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clOrdId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posSide</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">px</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduceOnly</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tgtCcy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tpTriggerPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tpOrdPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slTriggerPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slOrdPx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tpTriggerPxType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slTriggerPxType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quickMgnType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stpId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stpMode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algoClOrdId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#place_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.place_order" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Places an order with the specified parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instId</strong> (<em>Any</em>) – The instrument ID for the order.</p></li>
+<li><p><strong>tdMode</strong> (<em>Any</em>) – The trade mode for the order (e.g., ‘cash’, ‘margin’).</p></li>
+<li><p><strong>side</strong> (<em>Any</em>) – The side of the order (‘buy’ or ‘sell’).</p></li>
+<li><p><strong>ordType</strong> (<em>Any</em>) – The type of the order (e.g., ‘limit’, ‘market’).</p></li>
+<li><p><strong>sz</strong> (<em>Any</em>) – The size of the order.</p></li>
+</ul>
+</dd>
+</dl>
+<p>… (and so on for other parameters)
+:returns: The response from the order placement request.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.prepare_limit_price">
 <span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">prepare_limit_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_book</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Orderbook_Snapshot" title="pyokx.data_structures.Orderbook_Snapshot"><span class="pre">Orderbook_Snapshot</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_orderbook_price_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#prepare_limit_price"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.prepare_limit_price" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Prepares a limit price based on the order book, quantity, side, reference price, and maximum order book price offset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order_book</strong> (<a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Orderbook_Snapshot" title="pyokx.data_structures.Orderbook_Snapshot"><em>Orderbook_Snapshot</em></a>) – The snapshot of the order book.</p></li>
+<li><p><strong>quantity</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – The quantity for which to prepare the limit price.</p></li>
+<li><p><strong>side</strong> (<em>str</em>) – The side of the order (‘buy’ or ‘sell’).</p></li>
+<li><p><strong>reference_price</strong> (<em>float</em>) – The reference price to base the limit price on.</p></li>
+<li><p><strong>max_orderbook_price_offset</strong> (<em>float</em><em>, </em><em>optional</em>) – The maximum allowed offset from the reference price, defaults to </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The prepared limit price.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – If a price in the order book that has enough volume to cover the quantity cannot be found.</p>
+</dd>
+</dl>
+</dd></dl>
 
-<div class="graphviz"><img src="_images/inheritance-cedde207e89535f10d1adad63f76cbd698239466.png" alt="Inheritance diagram of pyokx.rest_handling" usemap="#inheritance3cc16f9d3f" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-3834010fc6ad507b6939ba07361d1675f0ea1f7b.png" alt="Inheritance diagram of pyokx.rest_handling" usemap="#inheritance3cc16f9d3f" class="inheritance graphviz" /></div>
 <map id="inheritance3cc16f9d3f" name="inheritance3cc16f9d3f">
-<area shape="rect" id="node1" href="#pyokx.rest_handling.InstrumentSearcher" target="_top" title="InstrumentSearcher" alt="" coords="5,5,156,31"/>
+<area shape="rect" id="node1" href="#pyokx.rest_handling.InstrumentSearcher" target="_top" title="Provides functionality to search for instruments within a provided list of instruments based on various criteria" alt="" coords="5,5,156,31"/>
 </map></section>
 
 

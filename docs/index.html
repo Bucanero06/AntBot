@@ -57,11 +57,9 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
@@ -152,6 +150,7 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.api_keys.html">routers.api_keys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.login.html">routers.login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.okx.html">routers.okx</a></li>
@@ -165,6 +164,7 @@
 <li class="toctree-l1"><a class="reference internal" href="shared.logging.html">shared.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shared.string_dict_utils.html">shared.string_dict_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tradingview_tools.tradingview_widgets.html">tradingview_tools.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="websocket_app.html">websocket_app</a></li>
 </ul>
 
@@ -223,6 +223,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.dashboard.html#h2o_dashboard.dashboard.on_client_disconnect"><code class="docutils literal notranslate"><span class="pre">on_client_disconnect()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.dashboard.html#h2o_dashboard.dashboard.on_global_notification_bar_dismissed"><code class="docutils literal notranslate"><span class="pre">on_global_notification_bar_dismissed()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.dashboard.html#h2o_dashboard.dashboard.on_shutdown"><code class="docutils literal notranslate"><span class="pre">on_shutdown()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.dashboard.html#h2o_dashboard.dashboard.on_startup"><code class="docutils literal notranslate"><span class="pre">on_startup()</span></code></a></li>
@@ -235,18 +236,12 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html#h2o_dashboard.pages.okx_dashboard_page.add_page_cards"><code class="docutils literal notranslate"><span class="pre">add_page_cards()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html#h2o_dashboard.pages.okx_dashboard_page.add_tradingview_advanced_chart"><code class="docutils literal notranslate"><span class="pre">add_tradingview_advanced_chart()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html#h2o_dashboard.pages.okx_dashboard_page.okx_dashboard_page"><code class="docutils literal notranslate"><span class="pre">okx_dashboard_page()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html#h2o_dashboard.pages.overview_page.add_tradingview_advanced_chart"><code class="docutils literal notranslate"><span class="pre">add_tradingview_advanced_chart()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html#h2o_dashboard.pages.overview_page.overview_page"><code class="docutils literal notranslate"><span class="pre">overview_page()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.tradingview_widgets.html#h2o_dashboard.tradingview_widgets.get_chart_widget"><code class="docutils literal notranslate"><span class="pre">get_chart_widget()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.tradingview_widgets.html#h2o_dashboard.tradingview_widgets.get_fundamentals"><code class="docutils literal notranslate"><span class="pre">get_fundamentals()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.tradingview_widgets.html#h2o_dashboard.tradingview_widgets.get_info_widget"><code class="docutils literal notranslate"><span class="pre">get_info_widget()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a><ul>
@@ -273,15 +268,9 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html#h2o_dashboard.widgets.okx_streams.OKX_Account_StreamWidget"><code class="docutils literal notranslate"><span class="pre">OKX_Account_StreamWidget</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html#h2o_dashboard.widgets.okx_streams.OKX_Fill_Report_StreamWidget"><code class="docutils literal notranslate"><span class="pre">OKX_Fill_Report_StreamWidget</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html#h2o_dashboard.widgets.okx_streams.OKX_Manual_ControlsWidget"><code class="docutils literal notranslate"><span class="pre">OKX_Manual_ControlsWidget</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html#h2o_dashboard.widgets.okx_streams.OKX_Positions_StreamWidget"><code class="docutils literal notranslate"><span class="pre">OKX_Positions_StreamWidget</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html#h2o_dashboard.widgets.okx_streams.Overview_StreamWidget"><code class="docutils literal notranslate"><span class="pre">Overview_StreamWidget</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="main.html">main</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="main.html#main.app"><code class="docutils literal notranslate"><span class="pre">app</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="main.html#main.health_check"><code class="docutils literal notranslate"><span class="pre">health_check()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="main.html#main.shutdown_event"><code class="docutils literal notranslate"><span class="pre">shutdown_event()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="main.html#main.startup_event"><code class="docutils literal notranslate"><span class="pre">startup_event()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a><ul>
@@ -301,6 +290,8 @@
 <li class="toctree-l2"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Cancelled_Order"><code class="docutils literal notranslate"><span class="pre">Cancelled_Order</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Closed_Position"><code class="docutils literal notranslate"><span class="pre">Closed_Position</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.FillEntry"><code class="docutils literal notranslate"><span class="pre">FillEntry</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetrics"><code class="docutils literal notranslate"><span class="pre">FillHistoricalMetrics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry"><code class="docutils literal notranslate"><span class="pre">FillHistoricalMetricsEntry</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.InstIdSignalRequestForm"><code class="docutils literal notranslate"><span class="pre">InstIdSignalRequestForm</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument"><code class="docutils literal notranslate"><span class="pre">Instrument</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.InstrumentStatusReport"><code class="docutils literal notranslate"><span class="pre">InstrumentStatusReport</span></code></a></li>
@@ -542,6 +533,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_handling.html">pyokx.rest_handling</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.rest_handling.html#pyokx.rest_handling.InstrumentSearcher"><code class="docutils literal notranslate"><span class="pre">InstrumentSearcher</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyokx.rest_handling.html#pyokx.rest_handling.REDIS_STREAM_MAX_LEN"><code class="docutils literal notranslate"><span class="pre">REDIS_STREAM_MAX_LEN</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.rest_handling.html#pyokx.rest_handling.assert_okx_account_level"><code class="docutils literal notranslate"><span class="pre">assert_okx_account_level()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.rest_handling.html#pyokx.rest_handling.cancel_all_algo_orders_with_params"><code class="docutils literal notranslate"><span class="pre">cancel_all_algo_orders_with_params()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.rest_handling.html#pyokx.rest_handling.cancel_all_orders"><code class="docutils literal notranslate"><span class="pre">cancel_all_orders()</span></code></a></li>
@@ -574,8 +566,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_messages_service.html">pyokx.rest_messages_service</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pyokx.rest_messages_service.html#pyokx.rest_messages_service.FillHistoricalMetrics"><code class="docutils literal notranslate"><span class="pre">FillHistoricalMetrics</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyokx.rest_messages_service.html#pyokx.rest_messages_service.FillHistoricalMetricsEntry"><code class="docutils literal notranslate"><span class="pre">FillHistoricalMetricsEntry</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.rest_messages_service.html#pyokx.rest_messages_service.analyze_transaction_history"><code class="docutils literal notranslate"><span class="pre">analyze_transaction_history()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.rest_messages_service.html#pyokx.rest_messages_service.okx_rest_messages_services"><code class="docutils literal notranslate"><span class="pre">okx_rest_messages_services()</span></code></a></li>
 </ul>
@@ -653,6 +643,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pyokx.websocket_handling.html#pyokx.websocket_handling.handle_reports"><code class="docutils literal notranslate"><span class="pre">handle_reports()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.websocket_handling.html#pyokx.websocket_handling.okx_websockets_main_run"><code class="docutils literal notranslate"><span class="pre">okx_websockets_main_run()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyokx.websocket_handling.html#pyokx.websocket_handling.test_restart"><code class="docutils literal notranslate"><span class="pre">test_restart()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyokx.websocket_handling.html#pyokx.websocket_handling.ws_callback"><code class="docutils literal notranslate"><span class="pre">ws_callback()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WebSocketFactory.html">pyokx.ws_clients.WebSocketFactory</a><ul>
@@ -804,6 +795,13 @@
 <li class="toctree-l2"><a class="reference internal" href="redis_tools.utils.html#redis_tools.utils.stop_async_redis"><code class="docutils literal notranslate"><span class="pre">stop_async_redis()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="rest_app.html">rest_app</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest_app.html#rest_app.app"><code class="docutils literal notranslate"><span class="pre">app</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_app.html#rest_app.health_check"><code class="docutils literal notranslate"><span class="pre">health_check()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_app.html#rest_app.shutdown_event"><code class="docutils literal notranslate"><span class="pre">shutdown_event()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest_app.html#rest_app.startup_event"><code class="docutils literal notranslate"><span class="pre">startup_event()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="routers.api_keys.html">routers.api_keys</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="routers.api_keys.html#routers.api_keys.create_access_token"><code class="docutils literal notranslate"><span class="pre">create_access_token()</span></code></a></li>
 </ul>
@@ -884,6 +882,12 @@
 <li class="toctree-l2"><a class="reference internal" href="shared.tmp_shared.html#shared.tmp_shared.calculate_tp_stop_prices"><code class="docutils literal notranslate"><span class="pre">calculate_tp_stop_prices()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="shared.tmp_shared.html#shared.tmp_shared.execute_function_calls"><code class="docutils literal notranslate"><span class="pre">execute_function_calls()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="shared.tmp_shared.html#shared.tmp_shared.get_timestamp_from_days_ago"><code class="docutils literal notranslate"><span class="pre">get_timestamp_from_days_ago()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tradingview_tools.tradingview_widgets.html">tradingview_tools.tradingview_widgets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tradingview_tools.tradingview_widgets.html#tradingview_tools.tradingview_widgets.get_chart_widget"><code class="docutils literal notranslate"><span class="pre">get_chart_widget()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tradingview_tools.tradingview_widgets.html#tradingview_tools.tradingview_widgets.get_fundamentals"><code class="docutils literal notranslate"><span class="pre">get_fundamentals()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tradingview_tools.tradingview_widgets.html#tradingview_tools.tradingview_widgets.get_info_widget"><code class="docutils literal notranslate"><span class="pre">get_info_widget()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="websocket_app.html">websocket_app</a><ul>

@@ -55,11 +55,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../main.html">main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
@@ -150,6 +148,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.login.html">routers.login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.okx.html">routers.okx</a></li>
@@ -163,6 +162,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../shared.logging.html">shared.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../shared.string_dict_utils.html">shared.string_dict_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tradingview_tools.tradingview_widgets.html">tradingview_tools.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../websocket_app.html">websocket_app</a></li>
 </ul>
 
@@ -191,14 +191,33 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pyokx.rest_messages_service</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span></span><span class="c1"># Copyright (c) 2024 Carbonyl LLC &amp; Carbonyl R&amp;D</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 
-<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">FillEntry</span>
+<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">FillEntry</span><span class="p">,</span> <span class="n">FillHistoricalMetricsEntry</span><span class="p">,</span> <span class="n">FillHistoricalMetrics</span>
 <span class="kn">from</span> <span class="nn">pyokx.low_rest_api.exceptions</span> <span class="kn">import</span> <span class="n">OkxAPIException</span><span class="p">,</span> <span class="n">OkxParamsException</span><span class="p">,</span> <span class="n">OkxRequestException</span>
 <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
 <span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">fetch_fill_history</span>
@@ -211,28 +230,20 @@
 <span class="n">REDIS_STREAM_MAX_LEN</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REDIS_STREAM_MAX_LEN&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="FillHistoricalMetricsEntry">
-<a class="viewcode-back" href="../../pyokx.rest_messages_service.html#pyokx.rest_messages_service.FillHistoricalMetricsEntry">[docs]</a>
-<span class="k">class</span> <span class="nc">FillHistoricalMetricsEntry</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">avg_fill_pnl</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">total_fill_pnl</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">total_fill_fee</span><span class="p">:</span> <span class="nb">float</span></div>
-
-
-
-<div class="viewcode-block" id="FillHistoricalMetrics">
-<a class="viewcode-back" href="../../pyokx.rest_messages_service.html#pyokx.rest_messages_service.FillHistoricalMetrics">[docs]</a>
-<span class="k">class</span> <span class="nc">FillHistoricalMetrics</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-    <span class="n">ONE_DAY</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
-    <span class="n">ONE_WEEK</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
-    <span class="n">ONE_MONTH</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
-    <span class="n">THREE_MONTHS</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span></div>
-
 
 
 <div class="viewcode-block" id="analyze_transaction_history">
 <a class="viewcode-back" href="../../pyokx.rest_messages_service.html#pyokx.rest_messages_service.analyze_transaction_history">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">analyze_transaction_history</span><span class="p">(</span><span class="n">instType</span><span class="p">:</span> <span class="n">InstType</span> <span class="o">=</span> <span class="s1">&#39;FUTURES&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analyzes the transaction history for a given instrument type over the last 90 days.</span>
+
+<span class="sd">    This function fetches the fill history, calculates various metrics for different timeframes,</span>
+<span class="sd">    and stores the results in a Redis stream.</span>
+
+<span class="sd">    :param instType: The type of instrument to analyze (e.g., &#39;FUTURES&#39;). Default is &#39;FUTURES&#39;.</span>
+<span class="sd">    :type instType: InstType</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># When using this endpoint, the maximum time range is 90 days</span>
     <span class="n">start_timestamp</span> <span class="o">=</span> <span class="n">get_timestamp_from_days_ago</span><span class="p">(</span><span class="n">days_ago</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
     <span class="n">end_timestamp</span> <span class="o">=</span> <span class="n">get_timestamp_from_days_ago</span><span class="p">()</span>
@@ -293,6 +304,16 @@
 <div class="viewcode-block" id="okx_rest_messages_services">
 <a class="viewcode-back" href="../../pyokx.rest_messages_service.html#pyokx.rest_messages_service.okx_rest_messages_services">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">okx_rest_messages_services</span><span class="p">(</span><span class="n">reload_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main service loop for processing OKX REST messages.</span>
+
+<span class="sd">    This function initializes the Redis connection and enters a loop that, at each interval,</span>
+<span class="sd">    calls `analyze_transaction_history` to analyze and store the last 90 days of transaction history.</span>
+<span class="sd">    Handles exceptions and logs them accordingly.</span>
+
+<span class="sd">    :param reload_interval: The interval in seconds between each iteration of the loop. Default is 30 seconds.</span>
+<span class="sd">    :type reload_interval: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting okx_rest_messages_services&quot;</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">async_redis</span>
     <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>

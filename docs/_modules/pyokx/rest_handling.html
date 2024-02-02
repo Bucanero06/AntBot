@@ -55,11 +55,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../main.html">main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
@@ -150,6 +148,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.login.html">routers.login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.okx.html">routers.okx</a></li>
@@ -163,6 +162,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../shared.logging.html">shared.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../shared.string_dict_utils.html">shared.string_dict_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tradingview_tools.tradingview_widgets.html">tradingview_tools.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../websocket_app.html">websocket_app</a></li>
 </ul>
 
@@ -191,7 +191,27 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pyokx.rest_handling</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span></span><span class="c1"># Copyright (c) 2024 Carbonyl LLC &amp; Carbonyl R&amp;D</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -228,10 +248,24 @@
 <span class="n">accountAPI</span> <span class="o">=</span> <span class="n">okx_client</span><span class="o">.</span><span class="n">accountAPI</span>
 <span class="n">publicAPI</span> <span class="o">=</span> <span class="n">okx_client</span><span class="o">.</span><span class="n">publicAPI</span>
 
+<span class="n">REDIS_STREAM_MAX_LEN</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REDIS_STREAM_MAX_LEN&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+
+<span class="sd">&quot;&quot;&quot;NOTE: THE MODULE NEEDS TO BE UPDATED WITH ENUMS AND STRUCTURED DATA TYPES WHERE APPLICABLE&quot;&quot;&quot;</span>
+
 
 <div class="viewcode-block" id="get_request_data">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_request_data">[docs]</a>
 <span class="k">def</span> <span class="nf">get_request_data</span><span class="p">(</span><span class="n">returned_data</span><span class="p">,</span> <span class="n">target_data_structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Processes the returned data from an API call, mapping it to the specified data structure.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        returned_data (dict): The raw data returned from the API call.</span>
+<span class="sd">        target_data_structure (class): The class to which the returned data items will be mapped.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Any]: A list of instances of the target data structure class, populated with the returned data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># print(f&#39;{returned_data = }&#39;)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">returned_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">returned_data</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
@@ -252,6 +286,19 @@
 <div class="viewcode-block" id="InstrumentSearcher">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.InstrumentSearcher">[docs]</a>
 <span class="k">class</span> <span class="nc">InstrumentSearcher</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provides functionality to search for instruments within a provided list of instruments based on various criteria</span>
+<span class="sd">    such as instrument ID, type, or underlying asset.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        instruments (List[Instrument]): A list of instruments to search within.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        find_by_instId: Returns an instrument matching a specific instrument ID.</span>
+<span class="sd">        find_by_type: Returns all instruments of a specific type.</span>
+<span class="sd">        find_by_underlying: Returns all instruments with a specific underlying asset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instrument</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        InstrumentSearcher is a class that allows you to search for instruments by instId, instType, or underlying</span>
@@ -304,6 +351,18 @@
 <div class="viewcode-block" id="get_ticker_with_higher_volume">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_ticker_with_higher_volume">[docs]</a>
 <span class="k">def</span> <span class="nf">get_ticker_with_higher_volume</span><span class="p">(</span><span class="n">seed_symbol_name</span><span class="p">,</span> <span class="n">instrument_type</span><span class="o">=</span><span class="s2">&quot;FUTURES&quot;</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the ticker(s) with the highest trading volume for a given seed symbol and instrument type.</span>
+<span class="sd">    Optionally, returns the top N tickers sorted by volume.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        seed_symbol_name (str): The base symbol to search for.</span>
+<span class="sd">        instrument_type (str, optional): The type of instrument (e.g., &quot;FUTURES&quot;). Defaults to &quot;FUTURES&quot;.</span>
+<span class="sd">        top_n (int, optional): The number of top-volume tickers to return. Defaults to 1.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Ticker]: A list of tickers, sorted by volume, up to the specified top_n number.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">seed_symbol_name</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># tickers_data = okx_client.marketAPI.get_tickers(instType=instrument_type)</span>
 
     <span class="c1"># raise DeprecationWarning(&quot;This function is deprecated. Waiting to update to Structured Data Types.&quot;)</span>
@@ -341,6 +400,15 @@
 <div class="viewcode-block" id="assert_okx_account_level">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.assert_okx_account_level">[docs]</a>
 <span class="k">def</span> <span class="nf">assert_okx_account_level</span><span class="p">(</span><span class="n">account_level</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validates and sets the OKX account level, ensuring it is one of the acceptable levels.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        account_level (list[int]): The account level to be validated and set. Acceptable levels are 1, 2, 3, and 4.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AssertionError: If the account level is not one of the acceptable levels or if the account level could not be set.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">DeprecationWarning</span><span class="p">(</span><span class="s2">&quot;This function is deprecated. Waiting to update to Structured Data Types.&quot;</span><span class="p">)</span>
     <span class="n">ACCLV_MAPPING</span> <span class="o">=</span> <span class="p">{</span>
         <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Simple mode&quot;</span><span class="p">,</span>
@@ -375,17 +443,34 @@
 <div class="viewcode-block" id="is_valid_alphanumeric">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.is_valid_alphanumeric">[docs]</a>
 <span class="k">def</span> <span class="nf">is_valid_alphanumeric</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Validate alphanumeric strings with a maximum length &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validates if the input string is alphanumeric and conforms to the specified maximum length.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string (str): The string to validate.</span>
+<span class="sd">        max_length (int): The maximum allowable length for the string.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if the string is alphanumeric and does not exceed the max_length, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s1">&#39;^[a-zA-Z0-9]{1,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">max_length</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}$&#39;</span><span class="p">,</span> <span class="n">string</span><span class="p">))</span></div>
-
-
 
 
 
 <div class="viewcode-block" id="get_all_orders">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_all_orders">[docs]</a>
 <span class="k">def</span> <span class="nf">get_all_orders</span><span class="p">(</span><span class="n">instType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches all orders matching the given criteria from the trading API.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        instType (str, optional): The type of instrument to fetch orders for (e.g., &quot;FUTURES&quot;).</span>
+<span class="sd">        instId (str, optional): The specific instrument ID to fetch orders for.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Order]: A list of orders that match the given criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">instType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;instType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instType</span>
@@ -398,6 +483,17 @@
 <div class="viewcode-block" id="cancel_all_orders">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.cancel_all_orders">[docs]</a>
 <span class="k">def</span> <span class="nf">cancel_all_orders</span><span class="p">(</span><span class="n">orders_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instType</span><span class="p">:</span> <span class="n">InstType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cancels all or specific orders based on the provided parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        orders_list (List[Order], optional): A list of specific orders to cancel. If not provided, all orders are cancelled.</span>
+<span class="sd">        instType (InstType, optional): The type of instrument to cancel orders for.</span>
+<span class="sd">        instId (str, optional): The specific instrument ID to cancel orders for.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Cancelled_Order]: A list of the orders that were successfully cancelled.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">orders_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">instType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -427,6 +523,25 @@
 <div class="viewcode-block" id="close_position">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.close_position">[docs]</a>
 <span class="k">def</span> <span class="nf">close_position</span><span class="p">(</span><span class="n">instId</span><span class="p">,</span> <span class="n">mgnMode</span><span class="p">,</span> <span class="n">posSide</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ccy</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">autoCxl</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">clOrdId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Closes a position based on the given parameters.</span>
+
+<span class="sd">    :param instId: The instrument ID for the position to be closed.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    :param mgnMode: The margin mode for the position (e.g., &#39;isolated&#39;, &#39;cross&#39;).</span>
+<span class="sd">    :type mgnMode: str</span>
+<span class="sd">    :param posSide: The position side (e.g., &#39;long&#39;, &#39;short&#39;). Defaults to an empty string.</span>
+<span class="sd">    :type posSide: str, optional</span>
+<span class="sd">    :param ccy: The currency used for the position. Defaults to an empty string.</span>
+<span class="sd">    :type ccy: str, optional</span>
+<span class="sd">    :param autoCxl: Automatically cancel the position. Defaults to an empty string.</span>
+<span class="sd">    :type autoCxl: str, optional</span>
+<span class="sd">    :param clOrdId: The client order ID. Defaults to an empty string.</span>
+<span class="sd">    :type clOrdId: str, optional</span>
+<span class="sd">    :param tag: A tag for the position. Defaults to an empty string.</span>
+<span class="sd">    :type tag: str, optional</span>
+<span class="sd">    :returns: The response from the position close request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;instId&#39;</span><span class="p">:</span> <span class="n">instId</span><span class="p">,</span> <span class="s1">&#39;mgnMode&#39;</span><span class="p">:</span> <span class="n">mgnMode</span><span class="p">,</span> <span class="s1">&#39;posSide&#39;</span><span class="p">:</span> <span class="n">posSide</span><span class="p">,</span> <span class="s1">&#39;ccy&#39;</span><span class="p">:</span> <span class="n">ccy</span><span class="p">,</span> <span class="s1">&#39;autoCxl&#39;</span><span class="p">:</span> <span class="n">autoCxl</span><span class="p">,</span>
               <span class="s1">&#39;clOrdId&#39;</span><span class="p">:</span> <span class="n">clOrdId</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="n">tag</span><span class="p">}</span>
     <span class="kn">from</span> <span class="nn">pyokx.low_rest_api.consts</span> <span class="kn">import</span> <span class="n">CLOSE_POSITION</span>
@@ -439,6 +554,17 @@
 <div class="viewcode-block" id="close_all_positions">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.close_all_positions">[docs]</a>
 <span class="k">def</span> <span class="nf">close_all_positions</span><span class="p">(</span><span class="n">positions_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Position</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instType</span><span class="p">:</span> <span class="n">InstType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Closes all or specific positions based on the provided parameters.</span>
+
+<span class="sd">    :param positions_list: A list of specific positions to close. If not provided, all positions are closed.</span>
+<span class="sd">    :type positions_list: List[Position], optional</span>
+<span class="sd">    :param instType: The type of instrument to close positions for.</span>
+<span class="sd">    :type instType: InstType, optional</span>
+<span class="sd">    :param instId: The specific instrument ID to close positions for.</span>
+<span class="sd">    :type instId: str, optional</span>
+<span class="sd">    :returns: A list of the positions that were successfully closed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">positions_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">instType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -472,6 +598,15 @@
 <div class="viewcode-block" id="get_all_positions">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_all_positions">[docs]</a>
 <span class="k">def</span> <span class="nf">get_all_positions</span><span class="p">(</span><span class="n">instType</span><span class="p">:</span> <span class="n">InstType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches all positions matching the given criteria from the account API.</span>
+
+<span class="sd">    :param instType: The type of instrument to fetch positions for (e.g., &#39;FUTURES&#39;).</span>
+<span class="sd">    :type instType: InstType, optional</span>
+<span class="sd">    :param instId: The specific instrument ID to fetch positions for.</span>
+<span class="sd">    :type instId: str, optional</span>
+<span class="sd">    :returns: A list of positions that match the given criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">if</span> <span class="n">instType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;instType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instType</span>
@@ -509,6 +644,22 @@
                 <span class="c1"># developed yet downstream</span>
                 <span class="c1"># amendPxOnTriggerType: str = &#39;&#39;</span>
                 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Places an order with the specified parameters.</span>
+
+<span class="sd">    :param instId: The instrument ID for the order.</span>
+<span class="sd">    :type instId: Any</span>
+<span class="sd">    :param tdMode: The trade mode for the order (e.g., &#39;cash&#39;, &#39;margin&#39;).</span>
+<span class="sd">    :type tdMode: Any</span>
+<span class="sd">    :param side: The side of the order (&#39;buy&#39; or &#39;sell&#39;).</span>
+<span class="sd">    :type side: Any</span>
+<span class="sd">    :param ordType: The type of the order (e.g., &#39;limit&#39;, &#39;market&#39;).</span>
+<span class="sd">    :type ordType: Any</span>
+<span class="sd">    :param sz: The size of the order.</span>
+<span class="sd">    :type sz: Any</span>
+<span class="sd">    ... (and so on for other parameters)</span>
+<span class="sd">    :returns: The response from the order placement request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">place_order</span><span class="p">(</span>
         <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="n">side</span><span class="p">,</span> <span class="n">ordType</span><span class="o">=</span><span class="n">ordType</span><span class="p">,</span> <span class="n">sz</span><span class="o">=</span><span class="n">sz</span><span class="p">,</span>
         <span class="n">ccy</span><span class="o">=</span><span class="n">ccy</span><span class="p">,</span> <span class="n">clOrdId</span><span class="o">=</span><span class="n">clOrdId</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">,</span> <span class="n">posSide</span><span class="o">=</span><span class="n">posSide</span><span class="p">,</span>
@@ -538,6 +689,13 @@
 <div class="viewcode-block" id="get_ticker">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_ticker">[docs]</a>
 <span class="k">def</span> <span class="nf">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the latest ticker information for a specified instrument.</span>
+
+<span class="sd">    :param instId: The instrument ID for which to get the ticker information.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    :returns: The latest ticker information for the specified instrument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">marketAPI</span><span class="o">.</span><span class="n">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">),</span> <span class="n">Ticker</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
@@ -545,6 +703,15 @@
 <div class="viewcode-block" id="get_all_algo_orders">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_all_algo_orders">[docs]</a>
 <span class="k">def</span> <span class="nf">get_all_algo_orders</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ordType</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches all algorithmic orders matching the given criteria from the trading API.</span>
+
+<span class="sd">    :param instId: The specific instrument ID to fetch algo orders for, defaults to </span>
+<span class="sd">    :type instId: str, optional</span>
+<span class="sd">    :param ordType: The type of algo order (e.g., &#39;trigger&#39;, &#39;oco&#39;), defaults to </span>
+<span class="sd">    :type ordType: str, optional</span>
+<span class="sd">    :returns: A list of algo orders that match the given criteria.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ordType</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ORDER_TYPES_TO_TRY</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;trigger&#39;</span><span class="p">,</span> <span class="s1">&#39;oco&#39;</span><span class="p">,</span> <span class="s1">&#39;conditional&#39;</span><span class="p">,</span> <span class="s1">&#39;move_order_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;twap&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -575,6 +742,17 @@
 <div class="viewcode-block" id="cancel_all_algo_orders_with_params">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.cancel_all_algo_orders_with_params">[docs]</a>
 <span class="k">def</span> <span class="nf">cancel_all_algo_orders_with_params</span><span class="p">(</span><span class="n">algo_orders_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Algo_Order</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ordType</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cancels all or specific algorithmic orders based on the provided parameters.</span>
+
+<span class="sd">    :param algo_orders_list: A list of specific algo orders to cancel. If not provided, all algo orders are cancelled.</span>
+<span class="sd">    :type algo_orders_list: List[Algo_Order], optional</span>
+<span class="sd">    :param instId: The specific instrument ID to cancel algo orders for, defaults to </span>
+<span class="sd">    :type instId: str, optional</span>
+<span class="sd">    :param ordType: The type of algo order (e.g., &#39;trigger&#39;, &#39;oco&#39;), defaults to </span>
+<span class="sd">    :type ordType: str, optional</span>
+<span class="sd">    :returns: A list of the algo orders that were successfully cancelled.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">algo_orders_list</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span>
             <span class="n">instId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ordType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;algo_orders_list or instId must be provided&#39;</span>
 
@@ -636,6 +814,17 @@
         <span class="n">algoClOrdId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
         <span class="n">cxlOnClosePos</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Places an algorithmic order with detailed parameters.</span>
+<span class="sd">    (as defined by the OKX API documentation, see Orders vs Algo Orders for more details)</span>
+
+<span class="sd">    :param instId: The instrument ID for the order.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    :param tdMode: The trade mode for the order (e.g., &#39;cash&#39;, &#39;margin&#39;).</span>
+<span class="sd">    :type tdMode: str</span>
+<span class="sd">    ... (and so on for other parameters)</span>
+<span class="sd">    :returns: The response from the algorithmic order placement request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">place_algo_order</span><span class="p">(</span>
         <span class="c1"># Main Order with TP and SL</span>
         <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span>
@@ -670,6 +859,11 @@
 <div class="viewcode-block" id="get_account_balance">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_account_balance">[docs]</a>
 <span class="k">def</span> <span class="nf">get_account_balance</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the account balance details.</span>
+
+<span class="sd">    :returns: The account balance data, structured according to the AccountBalanceData class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">account_balance</span> <span class="o">=</span> <span class="n">accountAPI</span><span class="o">.</span><span class="n">get_account_balance</span><span class="p">()[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">details</span> <span class="o">=</span> <span class="n">account_balance</span><span class="p">[</span><span class="s1">&#39;details&#39;</span><span class="p">]</span>
     <span class="n">structured_details</span> <span class="o">=</span> <span class="p">[]</span>
@@ -683,6 +877,11 @@
 <div class="viewcode-block" id="get_account_config">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_account_config">[docs]</a>
 <span class="k">def</span> <span class="nf">get_account_config</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the account configuration details.</span>
+
+<span class="sd">    :returns: The account configuration data, structured according to the AccountConfigData class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">AccountConfigData</span><span class="p">(</span><span class="o">**</span><span class="n">accountAPI</span><span class="o">.</span><span class="n">get_account_config</span><span class="p">()[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
 
 
@@ -690,6 +889,15 @@
 <div class="viewcode-block" id="get_max_order_size">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_max_order_size">[docs]</a>
 <span class="k">def</span> <span class="nf">get_max_order_size</span><span class="p">(</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the maximum order size for a specific instrument and trade mode.</span>
+
+<span class="sd">    :param instId: The instrument ID for which to get the maximum order size.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    :param tdMode: The trade mode (e.g., &#39;cash&#39;, &#39;margin&#39;).</span>
+<span class="sd">    :type tdMode: str</span>
+<span class="sd">    :returns: The maximum order size data, structured according to the MaxOrderSizeData class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">MaxOrderSizeData</span><span class="p">(</span><span class="o">**</span><span class="n">accountAPI</span><span class="o">.</span><span class="n">get_max_order_size</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">)[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
 
 
@@ -697,6 +905,15 @@
 <div class="viewcode-block" id="get_max_avail_size">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_max_avail_size">[docs]</a>
 <span class="k">def</span> <span class="nf">get_max_avail_size</span><span class="p">(</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves the maximum available size for trading a specific instrument in a specific trade mode.</span>
+
+<span class="sd">    :param instId: The instrument ID for which to get the maximum available size.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    :param tdMode: The trade mode (e.g., &#39;cash&#39;, &#39;margin&#39;).</span>
+<span class="sd">    :type tdMode: str</span>
+<span class="sd">    :returns: The maximum available size data, structured according to the MaxAvailSizeData class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">MaxAvailSizeData</span><span class="p">(</span><span class="o">**</span><span class="n">accountAPI</span><span class="o">.</span><span class="n">get_max_avail_size</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">)[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
 
 
@@ -704,6 +921,17 @@
 <div class="viewcode-block" id="generate_random_string">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.generate_random_string">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_random_string</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">char_type</span><span class="o">=</span><span class="s1">&#39;alphanumeric&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a random string of the specified length and character type.</span>
+
+<span class="sd">    :param length: The length of the random string to generate.</span>
+<span class="sd">    :type length: int</span>
+<span class="sd">    :param char_type: The type of characters to include in the string (&#39;alphanumeric&#39;, &#39;numeric&#39;, or &#39;alphabetic&#39;).</span>
+<span class="sd">                      Defaults to &#39;alphanumeric&#39;.</span>
+<span class="sd">    :type char_type: str, optional</span>
+<span class="sd">    :returns: A random string of the specified length and character type.</span>
+<span class="sd">    :raises ValueError: If the length exceeds 32 or if an invalid char_type is specified.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="mi">32</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Maximum length allowed is 32&quot;</span><span class="p">)</span>
 
@@ -723,6 +951,15 @@
 <div class="viewcode-block" id="fetch_status_report_for_instrument">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_status_report_for_instrument">[docs]</a>
 <span class="k">def</span> <span class="nf">fetch_status_report_for_instrument</span><span class="p">(</span><span class="n">instId</span><span class="p">,</span> <span class="n">TD_MODE</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches a comprehensive status report for a specific instrument.</span>
+
+<span class="sd">    :param instId: The instrument ID for which to fetch the status report.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    :param TD_MODE: The trade mode (e.g., &#39;cash&#39;, &#39;margin&#39;).</span>
+<span class="sd">    :type TD_MODE: str</span>
+<span class="sd">    :returns: A status report for the instrument, structured according to the InstrumentStatusReport class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">initial_data_pull</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">FunctionCall</span><span class="p">(</span><span class="n">get_max_order_size</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">TD_MODE</span><span class="p">),</span>
         <span class="n">FunctionCall</span><span class="p">(</span><span class="n">get_max_avail_size</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">TD_MODE</span><span class="p">),</span>
@@ -747,6 +984,15 @@
 <div class="viewcode-block" id="fetch_initial_data">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_initial_data">[docs]</a>
 <span class="k">def</span> <span class="nf">fetch_initial_data</span><span class="p">(</span><span class="n">TD_MODE</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches initial data including account balance, account configuration, and instrument status.</span>
+
+<span class="sd">    :param TD_MODE: The trade mode (e.g., &#39;cash&#39;, &#39;margin&#39;).</span>
+<span class="sd">    :type TD_MODE: str</span>
+<span class="sd">    :param instId: The instrument ID for which to fetch the data, defaults to </span>
+<span class="sd">    :type instId: str, optional</span>
+<span class="sd">    :returns: A tuple containing simplified balance details, account configuration data, and instrument status report.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">initial_data_pull</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">FunctionCall</span><span class="p">(</span><span class="n">get_account_balance</span><span class="p">),</span>
         <span class="n">FunctionCall</span><span class="p">(</span><span class="n">get_account_config</span><span class="p">),</span>
@@ -773,6 +1019,12 @@
 <div class="viewcode-block" id="clear_orders_and_positions_for_instrument">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.clear_orders_and_positions_for_instrument">[docs]</a>
 <span class="k">def</span> <span class="nf">clear_orders_and_positions_for_instrument</span><span class="p">(</span><span class="n">instId</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clears all orders and positions for a specific instrument.</span>
+
+<span class="sd">    :param instId: The instrument ID for which to clear orders and positions.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="w"> </span><span class="n">close_all_positions</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">)</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="w"> </span><span class="n">cancel_all_orders</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">)</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="w"> </span><span class="n">cancel_all_algo_orders_with_params</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">)</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span></div>
@@ -782,6 +1034,16 @@
 <div class="viewcode-block" id="get_order_book">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_order_book">[docs]</a>
 <span class="k">def</span> <span class="nf">get_order_book</span><span class="p">(</span><span class="n">instId</span><span class="p">,</span> <span class="n">depth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches the order book for a specific instrument.</span>
+
+<span class="sd">    :param instId: The instrument ID for which to get the order book.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    :param depth: The depth of the order book to fetch.</span>
+<span class="sd">    :type depth: int</span>
+<span class="sd">    :returns: The order book snapshot, structured according to the Orderbook_Snapshot class.</span>
+<span class="sd">    :raises ValueError: If the order book could not be fetched for the specified instrument ID.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">orderbook_return</span> <span class="o">=</span> <span class="n">marketAPI</span><span class="o">.</span><span class="n">get_orderbook</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">sz</span><span class="o">=</span><span class="n">depth</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">orderbook_return</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">orderbook_return</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -806,6 +1068,22 @@
 <span class="k">def</span> <span class="nf">prepare_limit_price</span><span class="p">(</span><span class="n">order_book</span><span class="p">:</span> <span class="n">Orderbook_Snapshot</span><span class="p">,</span> <span class="n">quantity</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">side</span><span class="p">,</span> <span class="n">reference_price</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                         <span class="n">max_orderbook_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prepares a limit price based on the order book, quantity, side, reference price, and maximum order book price offset.</span>
+
+<span class="sd">    :param order_book: The snapshot of the order book.</span>
+<span class="sd">    :type order_book: Orderbook_Snapshot</span>
+<span class="sd">    :param quantity: The quantity for which to prepare the limit price.</span>
+<span class="sd">    :type quantity: Union[int, float]</span>
+<span class="sd">    :param side: The side of the order (&#39;buy&#39; or &#39;sell&#39;).</span>
+<span class="sd">    :type side: str</span>
+<span class="sd">    :param reference_price: The reference price to base the limit price on.</span>
+<span class="sd">    :type reference_price: float</span>
+<span class="sd">    :param max_orderbook_price_offset: The maximum allowed offset from the reference price, defaults to </span>
+<span class="sd">    :type max_orderbook_price_offset: float, optional</span>
+<span class="sd">    :returns: The prepared limit price.</span>
+<span class="sd">    :raises Exception: If a price in the order book that has enough volume to cover the quantity cannot be found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">side</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;buy&#39;</span><span class="p">,</span> <span class="s1">&#39;sell&#39;</span><span class="p">]</span>
     <span class="n">limit_price</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -862,6 +1140,16 @@
         <span class="n">algoClOrdId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
         <span class="n">cxlOnClosePos</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Places a trailing stop-loss order with detailed parameters.</span>
+
+<span class="sd">    :param instId: The instrument ID for the order.</span>
+<span class="sd">    :type instId: str</span>
+<span class="sd">    :param tdMode: The trade mode for the order (e.g., &#39;cash&#39;, &#39;margin&#39;).</span>
+<span class="sd">    :type tdMode: str</span>
+<span class="sd">    ... (and so on for other parameters)</span>
+<span class="sd">    :returns: The response from the trailing stop-loss order placement request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">place_algo_order</span><span class="p">(</span>
         <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span>
         <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">,</span>
@@ -881,6 +1169,14 @@
 <div class="viewcode-block" id="clean_and_verify_instID">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.clean_and_verify_instID">[docs]</a>
 <span class="k">def</span> <span class="nf">clean_and_verify_instID</span><span class="p">(</span><span class="n">instID</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans and verifies an instrument ID to ensure it&#39;s in the correct format and exists within the list of instruments.</span>
+
+<span class="sd">    :param instID: The instrument ID to clean and verify.</span>
+<span class="sd">    :type instID: str</span>
+<span class="sd">    :returns: The cleaned and verified instrument ID.</span>
+<span class="sd">    :raises AssertionError: If the instrument ID is not in the correct format or the instrument is not found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Clean Input Data</span>
     <span class="n">instID</span> <span class="o">=</span> <span class="n">instID</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="n">splitted</span> <span class="o">=</span> <span class="n">instID</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
@@ -894,7 +1190,7 @@
 
 <div class="viewcode-block" id="okx_signal_handler">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.okx_signal_handler">[docs]</a>
-<span class="k">def</span> <span class="nf">okx_signal_handler</span><span class="p">(</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">okx_signal_handler</span><span class="p">(</span>
         <span class="n">instID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
         <span class="n">order_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">leverage</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -914,6 +1210,56 @@
         <span class="n">trailing_stop_activation_percentage</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">trailing_stop_callback_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handles trading signals for the OKX platform, executing trades based on the specified parameters and current market conditions.</span>
+
+<span class="sd">    :param instID: Instrument ID for trading.</span>
+<span class="sd">    :type instID: str, optional</span>
+<span class="sd">    :param order_size: Size of the order to execute.</span>
+<span class="sd">    :type order_size: int, optional</span>
+<span class="sd">    :param leverage: Leverage to apply for the trade.</span>
+<span class="sd">    :type leverage: int, optional</span>
+<span class="sd">    :param order_side: Side of the order (&#39;buy&#39; or &#39;sell&#39;).</span>
+<span class="sd">    :type order_side: str, optional</span>
+<span class="sd">    :param order_type: Type of the order (e.g., &#39;limit&#39;, &#39;market&#39;).</span>
+<span class="sd">    :type order_type: str, optional</span>
+<span class="sd">    :param max_orderbook_limit_price_offset: Maximum offset for the limit price from the order book.</span>
+<span class="sd">    :type max_orderbook_limit_price_offset: float, optional</span>
+<span class="sd">    :param flip_position_if_opposite_side: Flag to indicate if the position should be flipped if the current position is on the opposite side.</span>
+<span class="sd">    :type flip_position_if_opposite_side: bool, optional</span>
+<span class="sd">    :param clear_prior_to_new_order: Flag to clear existing orders before placing a new order.</span>
+<span class="sd">    :type clear_prior_to_new_order: bool, optional</span>
+<span class="sd">    :param red_button: Emergency stop flag to cancel all orders and close all positions.</span>
+<span class="sd">    :type red_button: bool, optional</span>
+<span class="sd">    :param order_usd_amount: Amount in USD for the order, used for calculations if specified.</span>
+<span class="sd">    :type order_usd_amount: float, optional</span>
+<span class="sd">    :param stop_loss_trigger_percentage: Percentage for triggering the stop loss.</span>
+<span class="sd">    :type stop_loss_trigger_percentage: float, optional</span>
+<span class="sd">    :param take_profit_trigger_percentage: Percentage for triggering take profit.</span>
+<span class="sd">    :type take_profit_trigger_percentage: float, optional</span>
+<span class="sd">    :param tp_trigger_price_type: Type of trigger price for take profit (&#39;index&#39;, &#39;mark&#39;, &#39;last&#39;).</span>
+<span class="sd">    :type tp_trigger_price_type: str, optional</span>
+<span class="sd">    :param stop_loss_price_offset: Offset price for stop loss.</span>
+<span class="sd">    :type stop_loss_price_offset: float, optional</span>
+<span class="sd">    :param tp_price_offset: Offset price for take profit.</span>
+<span class="sd">    :type tp_price_offset: float, optional</span>
+<span class="sd">    :param sl_trigger_price_type: Type of trigger price for stop loss (&#39;index&#39;, &#39;mark&#39;, &#39;last&#39;).</span>
+<span class="sd">    :type sl_trigger_price_type: str, optional</span>
+<span class="sd">    :param trailing_stop_activation_percentage: Activation percentage for the trailing stop loss.</span>
+<span class="sd">    :type trailing_stop_activation_percentage: float, optional</span>
+<span class="sd">    :param trailing_stop_callback_ratio: Callback ratio for the trailing stop loss.</span>
+<span class="sd">    :type trailing_stop_callback_ratio: float, optional</span>
+<span class="sd">    :returns: An object containing the status report of the instrument after processing the signal, detailing the positions, orders, and algo orders.</span>
+
+<span class="sd">    Process Flow:</span>
+<span class="sd">    1. Validates and processes input parameters, preparing the trading signal.</span>
+<span class="sd">    2. Checks and manages current positions based on new signal, potentially flipping positions or clearing orders as configured.</span>
+<span class="sd">    3. Calculates and sets order parameters such as price and size, leveraging current market data and user preferences.</span>
+<span class="sd">    4. Executes the trading actions (placing/canceling orders, opening/closing positions) on the OKX platform.</span>
+<span class="sd">    5. Fetches and returns an updated status report of the instrument, reflecting the changes made by the executed signal.</span>
+
+<span class="sd">    :raises Exception: Catches and logs any exceptions that occur during signal handling, providing detailed error information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">TD_MODE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;isolated&#39;</span>
     <span class="n">POSSIDETYPE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;net&#39;</span>  <span class="c1"># net or long/short, need to cancel all orders/positions to change</span>
 
@@ -1224,6 +1570,18 @@
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_fill_history">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_fill_history</span><span class="p">(</span><span class="n">start_timestamp</span><span class="p">,</span> <span class="n">end_timestamp</span><span class="p">,</span> <span class="n">instType</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches the fill history for a specific period and instrument type.</span>
+
+<span class="sd">    :param start_timestamp: The starting timestamp for the fill history.</span>
+<span class="sd">    :type start_timestamp: int</span>
+<span class="sd">    :param end_timestamp: The ending timestamp for the fill history.</span>
+<span class="sd">    :type end_timestamp: int</span>
+<span class="sd">    :param instType: The type of instrument for the fill history, defaults to </span>
+<span class="sd">    :type instType: str, optional</span>
+<span class="sd">    :returns: A list of fill entries.</span>
+<span class="sd">    :raises AssertionError: If the requested period is outside the allowed range based on the instrument type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        If instType passed in then up to 30 days ago the data can be pulled, but if None then only up to 3 days, verify</span>
@@ -1280,7 +1638,8 @@
             <span class="k">if</span> <span class="n">request_count</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
                 <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
+                    <span class="c1"># time.sleep(2 - elapsed)</span>
+                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
                 <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
 
@@ -1297,34 +1656,38 @@
 
 <div class="viewcode-block" id="okx_premium_indicator">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.okx_premium_indicator">[docs]</a>
-<span class="k">def</span> <span class="nf">okx_premium_indicator</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">:</span> <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">HTTPException</span>
-    <span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
-    <span class="n">credentials_exception</span> <span class="o">=</span> <span class="n">HTTPException</span><span class="p">(</span>
-        <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
-        <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;credentials invalid&quot;</span><span class="p">,</span>
-        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>
-    <span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">okx_premium_indicator</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">:</span> <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Handles incoming premium indicator signals for trading on the OKX platform. It processes the signals,</span>
+<span class="sd">    interprets the trading instructions, manages positions based on the received signals, and executes trading actions.</span>
 
-    <span class="n">input_to_pass</span> <span class="o">=</span> <span class="n">indicator_input</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">,</span>
-                                                               <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">)</span> <span class="k">else</span> <span class="n">indicator_input</span>
+<span class="sd">    :param indicator_input: The input containing the signals and parameters from the premium indicator.</span>
+<span class="sd">                            This can be an instance of PremiumIndicatorSignalRequestForm or a dictionary</span>
+<span class="sd">                            that corresponds to the structure of PremiumIndicatorSignalRequestForm.</span>
+<span class="sd">    :type indicator_input: PremiumIndicatorSignalRequestForm or dict</span>
+
+<span class="sd">    :returns: A dictionary detailing the outcome of the signal processing. If the processing is successful, it includes</span>
+<span class="sd">              the &#39;instrument_status_report&#39; which is a comprehensive status report of the instrument after handling the signal.</span>
+<span class="sd">              In case of an error, it returns a message detailing the issue.</span>
+
+<span class="sd">    Process Flow:</span>
+<span class="sd">    1. Validates the input type and converts it into PremiumIndicatorSignalRequestForm if necessary.</span>
+<span class="sd">    2. Extracts and processes trading signals (like Bearish, Bullish, and their respective exit signals) from the input.</span>
+<span class="sd">    3. Determines the trading action (buy/sell) based on the processed signals.</span>
+<span class="sd">    4. Fetches the current positions for the given instrument ID and aligns them with the received signals.</span>
+<span class="sd">    5. Prepares the trading action by setting order sides, clearing prior orders if needed, and handling the &#39;red_button&#39; emergency stop.</span>
+<span class="sd">    6. Passes the processed signal to `okx_signal_handler` for executing the trading operations on the OKX platform.</span>
+<span class="sd">    7. Returns a success message with the &#39;instrument_status_report&#39; or an error message in case of an exception.</span>
+
+<span class="sd">    :raises Exception: Catches and logs any exceptions that occur during the processing of the signal, returning a detailed error message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">,</span> <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">):</span>
+        <span class="n">input_to_pass</span> <span class="o">=</span> <span class="n">indicator_input</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">input_to_pass</span> <span class="o">=</span> <span class="n">indicator_input</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Invalid input type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
     <span class="n">indicator_input</span> <span class="o">=</span> <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">(</span><span class="o">**</span><span class="n">input_to_pass</span><span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">jose</span> <span class="kn">import</span> <span class="n">JWTError</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">routers.okx_authentication</span> <span class="kn">import</span> <span class="n">check_token_against_instrument</span>
-        <span class="n">valid</span> <span class="o">=</span> <span class="n">check_token_against_instrument</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">InstIdAPIKey</span><span class="p">,</span>
-                                               <span class="n">reference_instID</span><span class="o">=</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">instID</span>
-                                               <span class="p">)</span>
-        <span class="k">assert</span> <span class="n">valid</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;InstIdAPIKey verification failed&quot;</span>
-    <span class="k">except</span> <span class="n">JWTError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">credentials_exception</span>
-    <span class="c1"># except AssertionError:</span>
-    <span class="c1">#     raise credentials_exception</span>
-    <span class="c1"># except HTTPException:</span>
-    <span class="c1">#     raise credentials_exception</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in okx_antbot_webhook: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx signal received but there was an exception, check the logs&quot;</span><span class="p">,</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pprint</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1354,8 +1717,6 @@
         <span class="k">elif</span> <span class="n">premium_indicator</span><span class="o">.</span><span class="n">Bullish_Exit</span><span class="p">:</span>
             <span class="n">_close_signal</span> <span class="o">=</span> <span class="s1">&#39;exit_sell&#39;</span>
 
-        <span class="c1"># Get current positions</span>
-        <span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">get_all_positions</span>
         <span class="n">instId_positions</span> <span class="o">=</span> <span class="n">get_all_positions</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">instID</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instId_positions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">current_position</span> <span class="o">=</span> <span class="n">instId_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1393,67 +1754,74 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx signal received but no action taken&quot;</span><span class="p">}</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in okx_premium_indicator </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx premium indicator signal received but not handled yet&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="s2">&quot;okx premium indicator signal received but not handled yet&quot;</span>
-        <span class="p">}</span>
-
-    <span class="c1"># Update the enxchange info on the database</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;unexpected end of point??.&quot;</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx signal received but there was an exception, check the logs&quot;</span><span class="p">,</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span></div>
 
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">dotenv</span>
 
+    <span class="c1"># Define the test function to be used</span>
     <span class="n">TEST_FUNCTION</span> <span class="o">=</span> <span class="s1">&#39;okx_signal_handler&#39;</span>
-    <span class="n">okx_signal_handler</span><span class="p">(</span><span class="n">red_button</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># todo we should only handle the relevant orders/positions</span>
 
+    <span class="c1"># Immediately execute the &#39;red button&#39; functionality to clear all positions and orders</span>
+    <span class="c1"># TODO: Ensure only relevant orders/positions are handled.</span>
+    <span class="c1"># await okx_signal_handler(red_button=True)</span>
+
+    <span class="c1"># Load environment variables from a .env file</span>
     <span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
 
+    <span class="c1"># Branching logic based on the test function chosen</span>
     <span class="k">if</span> <span class="n">TEST_FUNCTION</span> <span class="o">==</span> <span class="s1">&#39;okx_signal_handler&#39;</span><span class="p">:</span>
+        <span class="c1"># Execute the &#39;okx_signal_handler&#39; with predefined parameters for testing</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">okx_signal_handler</span><span class="p">(</span>
+            <span class="c1"># Parameters for the &#39;okx_signal_handler&#39;</span>
             <span class="n">instID</span><span class="o">=</span><span class="s2">&quot;BTC-USDT-240628&quot;</span><span class="p">,</span>
             <span class="n">order_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">leverage</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">leverage</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">order_side</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
             <span class="n">order_type</span><span class="o">=</span><span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
             <span class="n">max_orderbook_limit_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">flip_position_if_opposite_side</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">clear_prior_to_new_order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">red_button</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="c1"># order_usd_amount=100,</span>
-            <span class="n">stop_loss_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">tp_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">trailing_stop_activation_percentage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">trailing_stop_callback_ratio</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">stop_loss_trigger_percentage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">take_profit_trigger_percentage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">tp_trigger_price_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">sl_trigger_price_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1"># More parameters...</span>
         <span class="p">)</span>
     <span class="k">elif</span> <span class="n">TEST_FUNCTION</span> <span class="o">==</span> <span class="s1">&#39;okx_premium_indicator&#39;</span><span class="p">:</span>
+        <span class="c1"># Load a payload from a file for testing the &#39;okx_premium_indicator&#39;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../debugging_payload.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">webhook_payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="c1"># Debugging print statement</span>
         <span class="n">pprint</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">webhook_payload</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
 
+        <span class="c1"># Construct the signal request form</span>
         <span class="n">indicator_input</span> <span class="o">=</span> <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">(</span><span class="o">**</span><span class="n">webhook_payload</span><span class="p">)</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">connect_to_redis</span><span class="p">()</span>
+        <span class="kn">import</span> <span class="nn">redis</span>
 
+        <span class="c1"># Connect to Redis server</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">redis</span><span class="o">.</span><span class="n">Redis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Prepare and send a message to a Redis stream for debugging</span>
         <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
         <span class="n">r</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@premium_indicator@input&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">redis_ready_message</span><span class="p">)</span>
+
+        <span class="c1"># Process the indicator input and store the result</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">okx_premium_indicator</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">)</span>
 
+        <span class="c1"># Get the response from the &#39;okx_premium_indicator&#39; function</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">okx_premium_indicator</span><span class="p">(</span><span class="n">webhook_payload</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># Send the result to a Redis stream for debugging</span>
             <span class="n">r</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@premium_indicator@result&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
-
     <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Handle invalid test function selection</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid test function </span><span class="si">{</span><span class="n">TEST_FUNCTION</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="c1"># okx_signal_handler(red_button=True)  # todo we should only handle the relevant orders/positions</span>
-
+    <span class="c1"># Print the final response for debugging</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">response</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Validation and print statements for the instrument status report</span>
     <span class="k">if</span> <span class="n">response</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No response&quot;</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">()</span>
@@ -1463,12 +1831,13 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">instrument_report</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;instrument_status_report&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">instrument_report</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No instument status report&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No instrument status report&quot;</span><span class="p">)</span>
             <span class="n">exit</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No instument status report&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No instrument status report&quot;</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">()</span>
 
+    <span class="c1"># Debugging print statements for the instrument report</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instrument_report</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">pprint</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instrument_report</span><span class="o">.</span><span class="n">positions</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">pprint</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">instrument_report</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>

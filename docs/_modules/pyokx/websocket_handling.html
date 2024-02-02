@@ -55,11 +55,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../main.html">main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
@@ -150,6 +148,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.login.html">routers.login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.okx.html">routers.okx</a></li>
@@ -163,6 +162,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../shared.logging.html">shared.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../shared.string_dict_utils.html">shared.string_dict_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tradingview_tools.tradingview_widgets.html">tradingview_tools.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../websocket_app.html">websocket_app</a></li>
 </ul>
 
@@ -191,7 +191,33 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pyokx.websocket_handling</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span></span><span class="c1"># Copyright (c) 2024 Carbonyl LLC &amp; Carbonyl R&amp;D</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module handles the real-time interaction with the OKX exchange Websocket APIs. It subscribes to various data streams</span>
+<span class="sd">including public, business, and private channels, processes the incoming data, and optionally stores the data in a Redis</span>
+<span class="sd">stream for further analysis or decision-making. The main function `okx_websockets_main_run` initializes the websocket</span>
+<span class="sd">connections, handles message receipt, and maintains a heartbeat to keep the connections alive.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
@@ -213,11 +239,97 @@
 
 <span class="n">REDIS_STREAM_MAX_LEN</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REDIS_STREAM_MAX_LEN&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
 
+
+<div class="viewcode-block" id="ws_callback">
+<a class="viewcode-back" href="../../pyokx.websocket_handling.html#pyokx.websocket_handling.ws_callback">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">ws_callback</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Callback function to handle messages received from the websocket. It processes the raw message, converts it into</span>
+<span class="sd">    structured data, and stores it in Redis if enabled.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        message (str): The raw message received from the websocket.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">message_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="n">event</span> <span class="o">=</span> <span class="n">message_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incoming Raw WS Message: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">event</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>  <span class="c1"># TODO: Handle events, mostly subscribe and error stop and reconnect task</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="c1"># TODO: Handle events, mostly subscribe and error</span>
+
+    <span class="k">try</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        ----------------------------------------------------</span>
+<span class="sd">        Send out the Supported Models to their messages stream channel </span>
+<span class="sd">        (verifies the channel message has a pydantic model)</span>
+<span class="sd">        ----------------------------------------------------</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">message_args</span> <span class="o">=</span> <span class="n">message_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;arg&quot;</span><span class="p">)</span>
+        <span class="n">message_channel</span> <span class="o">=</span> <span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel&quot;</span><span class="p">)</span>
+
+        <span class="n">data_struct</span> <span class="o">=</span> <span class="n">available_channel_models</span><span class="p">[</span><span class="n">message_channel</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_struct</span><span class="p">,</span> <span class="s2">&quot;from_array&quot;</span><span class="p">):</span>  <span class="c1"># only applicatble to a few scenarios with candlesticks</span>
+            <span class="n">structured_message</span> <span class="o">=</span> <span class="n">data_struct</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="o">**</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">structured_message</span> <span class="o">=</span> <span class="n">data_struct</span><span class="p">(</span><span class="o">**</span><span class="n">message_json</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received Structured-Data: </span><span class="si">{</span><span class="n">structured_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_redis_store</span> <span class="ow">and</span> <span class="n">async_redis</span><span class="p">:</span>
+            <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">structured_message</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span>
+                                   <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@all&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span>
+                                   <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+<span class="w">            </span><span class="sd">&#39;&#39;&#39; (ALPHA)</span>
+<span class="sd">            ----------------------------------------------------</span>
+<span class="sd">            Handle supported channels data </span>
+<span class="sd">            (can be moved to listen to the redistributed redis channel -from-above-)</span>
+<span class="sd">            e.g. </span>
+<span class="sd">                message = _deserialize_from_redis(r.xrevrange(&#39;okx:websockets@account&#39;, count=1)[0][1])</span>
+<span class="sd">                account: Account = on_account(incoming_account_message)</span>
+<span class="sd">                redis_ready_message = serialize_for_redis(account.to_dict())</span>
+<span class="sd">                r.xadd(f&#39;okx:reports@{message.get(&quot;arg&quot;).get(&quot;channel&quot;)}&#39;, redis_ready_message, maxlen=1000)</span>
+<span class="sd">            ----------------------------------------------------</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;index-tickers&quot;</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;instId&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                       <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">structured_message</span><span class="p">)},</span>
+                                       <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+
+            <span class="c1"># await handle_reports(message_json, async_redis) # TODO: Handle reports</span>
+
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="c1"># TODO: Handle exceptions</span></div>
+
 <div class="viewcode-block" id="okx_websockets_main_run">
 <a class="viewcode-back" href="../../pyokx.websocket_handling.html#pyokx.websocket_handling.okx_websockets_main_run">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">okx_websockets_main_run</span><span class="p">(</span><span class="n">input_channel_models</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
                                   <span class="n">apikey</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">passphrase</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">secretkey</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                   <span class="n">sandbox_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">redis_store</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initializes and manages websocket connections to the OKX exchange. It subscribes to the specified channels,</span>
+<span class="sd">    processes incoming messages, and optionally stores structured data in a Redis stream.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_channel_models (list): A list of channel input arguments specifying the channels to subscribe.</span>
+<span class="sd">        apikey (str, optional): The API key for accessing private channels.</span>
+<span class="sd">        passphrase (str, optional): The passphrase associated with the API key.</span>
+<span class="sd">        secretkey (str, optional): The secret key for accessing private channels.</span>
+<span class="sd">        sandbox_mode (bool, optional): If True, use the sandbox environment. Defaults to True.</span>
+<span class="sd">        redis_store (bool, optional): If True, store the received messages in a Redis stream. Defaults to True.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: If no channels are provided or if an invalid channel is specified.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting OKX Websocket Connections &quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">input_channel_models</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No channels provided&quot;</span><span class="p">)</span>
@@ -240,68 +352,14 @@
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">redis_store</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">async_redis</span>
+        <span class="k">global</span> <span class="n">_redis_store</span>
         <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>
+        <span class="n">_redis_store</span> <span class="o">=</span> <span class="n">redis_store</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">async_redis</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">ws_callback</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
-        <span class="n">message_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-        <span class="n">event</span> <span class="o">=</span> <span class="n">message_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incoming Raw WS Message: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">event</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">return</span>  <span class="c1"># TODO: Handle events, mostly subscribe and error stop and reconnect task</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Event: </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span>  <span class="c1"># TODO: Handle events, mostly subscribe and error</span>
 
-        <span class="k">try</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">            ----------------------------------------------------</span>
-<span class="sd">            Send out the Supported Models to their messages stream channel </span>
-<span class="sd">            (verifies the channel message has a pydantic model)</span>
-<span class="sd">            ----------------------------------------------------</span>
-<span class="sd">            &#39;&#39;&#39;</span>
-            <span class="n">message_args</span> <span class="o">=</span> <span class="n">message_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;arg&quot;</span><span class="p">)</span>
-            <span class="n">message_channel</span> <span class="o">=</span> <span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel&quot;</span><span class="p">)</span>
-
-            <span class="n">data_struct</span> <span class="o">=</span> <span class="n">available_channel_models</span><span class="p">[</span><span class="n">message_channel</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_struct</span><span class="p">,</span> <span class="s2">&quot;from_array&quot;</span><span class="p">):</span>  <span class="c1"># only applicatble to a few scenarios with candlesticks</span>
-                <span class="n">structured_message</span> <span class="o">=</span> <span class="n">data_struct</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="o">**</span><span class="n">message_json</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">structured_message</span> <span class="o">=</span> <span class="n">data_struct</span><span class="p">(</span><span class="o">**</span><span class="n">message_json</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received Structured-Data: </span><span class="si">{</span><span class="n">structured_message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">redis_store</span> <span class="ow">and</span> <span class="n">async_redis</span><span class="p">:</span>
-                <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">structured_message</span><span class="p">)</span>
-                <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span>
-                                       <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
-                <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@all&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span>
-                                       <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
-
-<span class="w">                </span><span class="sd">&#39;&#39;&#39; (ALPHA)</span>
-<span class="sd">                ----------------------------------------------------</span>
-<span class="sd">                Handle supported channels data </span>
-<span class="sd">                (can be moved to listen to the redistributed redis channel -from-above-)</span>
-<span class="sd">                e.g. </span>
-<span class="sd">                    message = _deserialize_from_redis(r.xrevrange(&#39;okx:websockets@account&#39;, count=1)[0][1])</span>
-<span class="sd">                    account: Account = on_account(incoming_account_message)</span>
-<span class="sd">                    redis_ready_message = serialize_for_redis(account.to_dict())</span>
-<span class="sd">                    r.xadd(f&#39;okx:reports@{message.get(&quot;arg&quot;).get(&quot;channel&quot;)}&#39;, redis_ready_message, maxlen=1000)</span>
-<span class="sd">                ----------------------------------------------------</span>
-<span class="sd">                &#39;&#39;&#39;</span>
-
-                <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;index-tickers&quot;</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:websockets@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;instId&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                                           <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">structured_message</span><span class="p">)},</span>
-                                           <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
-
-                <span class="c1"># await handle_reports(message_json, async_redis) # TODO: Handle reports</span>
-
-
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">message_json</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span>  <span class="c1"># TODO: Handle exceptions</span>
 
     <span class="n">public_channels_inputs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">business_channels_inputs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -407,7 +465,7 @@
             <span class="n">BalanceAndPosition</span>
         <span class="n">balance_and_position</span><span class="p">:</span> <span class="n">BalanceAndPosition</span> <span class="o">=</span> <span class="n">on_balance_and_position</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
         <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">balance_and_position</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">redis_ready_message</span><span class="p">,</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@balance_and_position&#39;</span><span class="p">,</span> <span class="n">redis_ready_message</span><span class="p">,</span>
                                <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;account&quot;</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.position_management_service.WssPositionManagementService</span> <span class="kn">import</span> \
@@ -415,7 +473,7 @@
         <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.position_management_service.model.Account</span> <span class="kn">import</span> <span class="n">Account</span>
         <span class="n">account</span><span class="p">:</span> <span class="n">Account</span> <span class="o">=</span> <span class="n">on_account</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
         <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">account</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">redis_ready_message</span><span class="p">,</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@account&#39;</span><span class="p">,</span> <span class="n">redis_ready_message</span><span class="p">,</span>
                                <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">message_channel</span> <span class="o">==</span> <span class="s2">&quot;positions&quot;</span><span class="p">:</span>
@@ -433,7 +491,7 @@
         <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.order_management_service.model.Order</span> <span class="kn">import</span> <span class="n">Orders</span>
         <span class="n">orders</span><span class="p">:</span> <span class="n">Orders</span> <span class="o">=</span> <span class="n">on_orders_update</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
         <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">orders</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@orders&#39;</span><span class="p">,</span>
                                <span class="n">redis_ready_message</span><span class="p">,</span>
                                <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
 
@@ -450,7 +508,7 @@
         <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.market_data_service.model.MarkPx</span> <span class="kn">import</span> <span class="n">MarkPxCache</span>
         <span class="n">mark_px</span><span class="p">:</span> <span class="n">MarkPxCache</span> <span class="o">=</span> <span class="n">on_mark_price_update</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
         <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">mark_px</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">@</span><span class="si">{</span><span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;instId&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@mark-price@</span><span class="si">{</span><span class="n">message_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;instId&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                                <span class="n">redis_ready_message</span><span class="p">,</span>
                                <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
 
@@ -459,7 +517,7 @@
         <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.market_data_service.model.Tickers</span> <span class="kn">import</span> <span class="n">Tickers</span>
         <span class="n">tickers</span><span class="p">:</span> <span class="n">Tickers</span> <span class="o">=</span> <span class="n">on_ticker_update</span><span class="p">(</span><span class="n">message_json</span><span class="p">)</span>
         <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">tickers</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">message_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:reports@</span><span class="si">{</span><span class="n">tickers</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                                <span class="n">redis_ready_message</span><span class="p">,</span>
                                <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span></div>
 
@@ -513,6 +571,10 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main execution block. Loads the environment variables, prepares the channel models for subscription,</span>
+<span class="sd">    and starts the websocket main run function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
     <span class="n">instrument_specific_channels</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">btc_usdt_usd_index_channels</span> <span class="o">=</span> <span class="p">[]</span>

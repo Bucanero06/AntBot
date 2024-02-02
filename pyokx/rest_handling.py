@@ -1474,7 +1474,7 @@ if __name__ == '__main__':
 
     # Immediately execute the 'red button' functionality to clear all positions and orders
     # TODO: Ensure only relevant orders/positions are handled.
-    okx_signal_handler(red_button=True)
+    # await okx_signal_handler(red_button=True)
 
     # Load environment variables from a .env file
     dotenv.load_dotenv(dotenv.find_dotenv())
@@ -1486,7 +1486,7 @@ if __name__ == '__main__':
             # Parameters for the 'okx_signal_handler'
             instID="BTC-USDT-240628",
             order_size=1,
-            leverage=5,
+            leverage=0,
             order_side="",
             order_type="MARKET",
             max_orderbook_limit_price_offset=None,

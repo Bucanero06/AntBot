@@ -58,11 +58,9 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="main.html">main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
@@ -139,6 +137,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.websocket_handling.handle_reports"><code class="docutils literal notranslate"><span class="pre">handle_reports()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.websocket_handling.okx_websockets_main_run"><code class="docutils literal notranslate"><span class="pre">okx_websockets_main_run()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.websocket_handling.test_restart"><code class="docutils literal notranslate"><span class="pre">test_restart()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.websocket_handling.ws_callback"><code class="docutils literal notranslate"><span class="pre">ws_callback()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WebSocketFactory.html">pyokx.ws_clients.WebSocketFactory</a></li>
@@ -160,6 +159,7 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.api_keys.html">routers.api_keys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.login.html">routers.login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.okx.html">routers.okx</a></li>
@@ -173,6 +173,7 @@
 <li class="toctree-l1"><a class="reference internal" href="shared.logging.html">shared.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shared.string_dict_utils.html">shared.string_dict_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tradingview_tools.tradingview_widgets.html">tradingview_tools.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="websocket_app.html">websocket_app</a></li>
 </ul>
 
@@ -202,6 +203,10 @@
              
   <section id="module-pyokx.websocket_handling">
 <span id="pyokx-websocket-handling"></span><h1>pyokx.websocket_handling<a class="headerlink" href="#module-pyokx.websocket_handling" title="Link to this heading"></a></h1>
+<p>This module handles the real-time interaction with the OKX exchange Websocket APIs. It subscribes to various data streams
+including public, business, and private channels, processes the incoming data, and optionally stores the data in a Redis
+stream for further analysis or decision-making. The main function <cite>okx_websockets_main_run</cite> initializes the websocket
+connections, handles message receipt, and maintains a heartbeat to keep the connections alive.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.websocket_handling.get_btc_usdt_usd_index_channel_inputs_to_listen_to">
 <span class="sig-prename descclassname"><span class="pre">pyokx.websocket_handling.</span></span><span class="sig-name descname"><span class="pre">get_btc_usdt_usd_index_channel_inputs_to_listen_to</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/websocket_handling.html#get_btc_usdt_usd_index_channel_inputs_to_listen_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.websocket_handling.get_btc_usdt_usd_index_channel_inputs_to_listen_to" title="Link to this definition"></a></dt>
@@ -220,12 +225,41 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.websocket_handling.okx_websockets_main_run">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.websocket_handling.</span></span><span class="sig-name descname"><span class="pre">okx_websockets_main_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channel_models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apikey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passphrase</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secretkey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sandbox_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redis_store</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/websocket_handling.html#okx_websockets_main_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.websocket_handling.okx_websockets_main_run" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Initializes and manages websocket connections to the OKX exchange. It subscribes to the specified channels,
+processes incoming messages, and optionally stores structured data in a Redis stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channel_models</strong> (<em>list</em>) – A list of channel input arguments specifying the channels to subscribe.</p></li>
+<li><p><strong>apikey</strong> (<em>str</em><em>, </em><em>optional</em>) – The API key for accessing private channels.</p></li>
+<li><p><strong>passphrase</strong> (<em>str</em><em>, </em><em>optional</em>) – The passphrase associated with the API key.</p></li>
+<li><p><strong>secretkey</strong> (<em>str</em><em>, </em><em>optional</em>) – The secret key for accessing private channels.</p></li>
+<li><p><strong>sandbox_mode</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, use the sandbox environment. Defaults to True.</p></li>
+<li><p><strong>redis_store</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, store the received messages in a Redis stream. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If no channels are provided or if an invalid channel is specified.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.websocket_handling.test_restart">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.websocket_handling.</span></span><span class="sig-name descname"><span class="pre">test_restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">public_client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">business_client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">private_client</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/websocket_handling.html#test_restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.websocket_handling.test_restart" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyokx.websocket_handling.ws_callback">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.websocket_handling.</span></span><span class="sig-name descname"><span class="pre">ws_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/websocket_handling.html#ws_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.websocket_handling.ws_callback" title="Link to this definition"></a></dt>
+<dd><p>Callback function to handle messages received from the websocket. It processes the raw message, converts it into
+structured data, and stores it in Redis if enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The raw message received from the websocket.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 

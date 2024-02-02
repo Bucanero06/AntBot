@@ -55,11 +55,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.tradingview_widgets.html">h2o_dashboard.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../main.html">main</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
@@ -150,6 +148,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.utils.html">redis_tools.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routers.api_keys.html">routers.api_keys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routers.login.html">routers.login</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../routers.okx.html">routers.okx</a></li>
@@ -163,6 +162,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../shared.logging.html">shared.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../shared.string_dict_utils.html">shared.string_dict_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../shared.tmp_shared.html">shared.tmp_shared</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tradingview_tools.tradingview_widgets.html">tradingview_tools.tradingview_widgets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../websocket_app.html">websocket_app</a></li>
 </ul>
 
@@ -191,21 +191,65 @@
            <div itemprop="articleBody">
              
   <h1>Source code for h2o_dashboard.pages.overview_page</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span></span><span class="c1"># Copyright (c) 2024 Carbonyl LLC &amp; Carbonyl R&amp;D</span>
+<span class="c1">#</span>
+<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="c1"># in the Software without restriction, including without limitation the rights</span>
+<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
+<span class="c1"># furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
+<span class="c1"># copies or substantial portions of the Software.</span>
+<span class="c1">#</span>
+<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
+<span class="c1"># SOFTWARE.</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
 
 <span class="kn">from</span> <span class="nn">h2o_wave</span> <span class="kn">import</span> <span class="n">main</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">run_on</span><span class="p">,</span> <span class="n">data</span>  <span class="c1"># noqa F401</span>
 
 <span class="kn">from</span> <span class="nn">h2o_dashboard.util</span> <span class="kn">import</span> <span class="n">add_card</span>
 <span class="kn">from</span> <span class="nn">h2o_dashboard.widgets.okx_streams</span> <span class="kn">import</span> <span class="n">Overview_StreamWidget</span>
-<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">AccountBalanceData</span>
-<span class="kn">from</span> <span class="nn">pyokx.redis_structured_streams</span> <span class="kn">import</span> <span class="n">get_stream_okx_account_messages</span><span class="p">,</span> <span class="n">get_stream_okx_position_messages</span>
-<span class="kn">from</span> <span class="nn">pyokx.ws_data_structures</span> <span class="kn">import</span> <span class="n">AccountChannel</span><span class="p">,</span> <span class="n">PositionsChannel</span><span class="p">,</span> <span class="n">WSPosition</span>
 
-
-
-
+<div class="viewcode-block" id="add_tradingview_advanced_chart">
+<a class="viewcode-back" href="../../../h2o_dashboard.pages.overview_page.html#h2o_dashboard.pages.overview_page.add_tradingview_advanced_chart">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">add_tradingview_advanced_chart</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span> <span class="n">card_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">form_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">ui</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;&lt;!-- TradingView Widget BEGIN --&gt;</span>
+<span class="s2">            &lt;div class=&quot;tradingview-widget-container&quot; style=&quot;height:100%;width:100%&quot;&gt;</span>
+<span class="s2">              &lt;div class=&quot;tradingview-widget-container__widget&quot; style=&quot;height:calc(100% - 32px);width:100%&quot;&gt;&lt;/div&gt;</span>
+<span class="s2">              &lt;div class=&quot;tradingview-widget-copyright&quot;&gt;&lt;a href=&quot;https://www.tradingview.com/&quot; rel=&quot;noopener nofollow&quot; target=&quot;_blank&quot;&gt;&lt;span class=&quot;blue-text&quot;&gt;Track all markets on TradingView&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;</span>
+<span class="s2">              &lt;script type=&quot;text/javascript&quot; src=&quot;https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js&quot; async&gt;</span>
+<span class="s2">              {</span>
+<span class="s2">              &quot;autosize&quot;: true,</span>
+<span class="s2">              &quot;symbol&quot;: &quot;OKX:BTCUSDT.P&quot;,</span>
+<span class="s2">              &quot;interval&quot;: &quot;D&quot;,</span>
+<span class="s2">              &quot;timezone&quot;: &quot;Etc/UTC&quot;,</span>
+<span class="s2">              &quot;theme&quot;: &quot;light&quot;,</span>
+<span class="s2">              &quot;style&quot;: &quot;1&quot;,</span>
+<span class="s2">              &quot;locale&quot;: &quot;en&quot;,</span>
+<span class="s2">              &quot;enable_publishing&quot;: false,</span>
+<span class="s2">              &quot;withdateranges&quot;: true,</span>
+<span class="s2">              &quot;hide_side_toolbar&quot;: false,</span>
+<span class="s2">              &quot;allow_symbol_change&quot;: true,</span>
+<span class="s2">              &quot;details&quot;: true,</span>
+<span class="s2">              &quot;hotlist&quot;: true,</span>
+<span class="s2">              &quot;calendar&quot;: true,</span>
+<span class="s2">              &quot;show_popup_button&quot;: true,</span>
+<span class="s2">              &quot;popup_width&quot;: &quot;1000&quot;,</span>
+<span class="s2">              &quot;popup_height&quot;: &quot;650&quot;,</span>
+<span class="s2">              &quot;support_host&quot;: &quot;https://www.tradingview.com&quot;</span>
+<span class="s2">            }</span>
+<span class="s2">              &lt;/script&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">            &lt;!-- TradingView Widget END --&gt;&quot;&quot;&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">)</span>
+    <span class="p">]))</span></div>
 
 
 <span class="c1"># Usage</span>
@@ -215,7 +259,6 @@
 <a class="viewcode-back" href="../../../h2o_dashboard.pages.overview_page.html#h2o_dashboard.pages.overview_page.overview_page">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">overview_page</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading Overview Page&quot;</span><span class="p">)</span>
-
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Header&#39;&#39;&#39;</span>
     <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;Overview_Page_Header&#39;</span><span class="p">,</span>
                    <span class="n">ui</span><span class="o">.</span><span class="n">header_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;header&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Overview Home&#39;</span><span class="p">,</span> <span class="n">subtitle</span><span class="o">=</span><span class="s1">&#39;Welcome to the AntBot Dashboard&#39;</span><span class="p">,</span>
@@ -224,15 +267,15 @@
                                   <span class="n">icon</span><span class="o">=</span><span class="s1">&#39;Home&#39;</span><span class="p">,</span>
                                   <span class="n">icon_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="p">))</span>
-
+    <span class="k">await</span> <span class="n">add_tradingview_advanced_chart</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;Overview_Page_TradingView_Advanced_Chart&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_1&#39;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Init Widgets&#39;&#39;&#39;</span>
-    <span class="n">overview_widget</span> <span class="o">=</span> <span class="n">Overview_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;Overview_Page_Account_Stream&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">overview_widget</span> <span class="o">=</span> <span class="n">Overview_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Init RealTime Page Cards&#39;&#39;&#39;</span>
     <span class="k">await</span> <span class="n">overview_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
     <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="c1"># q.client.overview_page_running_event.set()</span>
 
-    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
@@ -240,13 +283,13 @@
                 <span class="k">break</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-            <span class="c1"># &#39;&#39;&#39;CARD UPDATES&#39;&#39;&#39;</span>
-            <span class="c1"># if await overview_widget._is_initialized():</span>
-            <span class="c1">#     print(&quot;Updating Overview card&quot;)</span>
-            <span class="c1">#     await overview_widget.update_cards()</span>
-            <span class="c1"># else:</span>
-            <span class="c1">#     print(&quot;Adding Overview card&quot;)</span>
-            <span class="c1">#     await overview_widget.add_cards()</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;CARD UPDATES&#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="k">await</span> <span class="n">overview_widget</span><span class="o">.</span><span class="n">_is_initialized</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updating Overview card&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">overview_widget</span><span class="o">.</span><span class="n">update_cards</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Adding Overview card&quot;</span><span class="p">)</span>
+                <span class="k">await</span> <span class="n">overview_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cancelled&quot;</span><span class="p">)</span>

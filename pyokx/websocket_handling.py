@@ -228,7 +228,7 @@ async def handle_reports(message_json, async_redis):
             BalanceAndPosition
         balance_and_position: BalanceAndPosition = on_balance_and_position(message_json)
         redis_ready_message = serialize_for_redis(balance_and_position.to_dict())
-        await async_redis.xadd(f'okx:reports@{message_channel}', redis_ready_message,
+        await async_redis.xadd(f'okx:reports@balance_and_position', redis_ready_message,
                                maxlen=REDIS_STREAM_MAX_LEN)
     if message_channel == "account":
         from pyokx.okx_market_maker.position_management_service.WssPositionManagementService import \
@@ -236,7 +236,7 @@ async def handle_reports(message_json, async_redis):
         from pyokx.okx_market_maker.position_management_service.model.Account import Account
         account: Account = on_account(message_json)
         redis_ready_message = serialize_for_redis(account.to_dict())
-        await async_redis.xadd(f'okx:reports@{message_channel}', redis_ready_message,
+        await async_redis.xadd(f'okx:reports@account', redis_ready_message,
                                maxlen=REDIS_STREAM_MAX_LEN)
 
     if message_channel == "positions":
@@ -254,7 +254,7 @@ async def handle_reports(message_json, async_redis):
         from pyokx.okx_market_maker.order_management_service.model.Order import Orders
         orders: Orders = on_orders_update(message_json)
         redis_ready_message = serialize_for_redis(orders.to_dict())
-        await async_redis.xadd(f'okx:reports@{message_channel}',
+        await async_redis.xadd(f'okx:reports@orders',
                                redis_ready_message,
                                maxlen=REDIS_STREAM_MAX_LEN)
 
@@ -271,7 +271,7 @@ async def handle_reports(message_json, async_redis):
         from pyokx.okx_market_maker.market_data_service.model.MarkPx import MarkPxCache
         mark_px: MarkPxCache = on_mark_price_update(message_json)
         redis_ready_message = serialize_for_redis(mark_px.to_dict())
-        await async_redis.xadd(f'okx:reports@{message_channel}@{message_args.get("instId")}',
+        await async_redis.xadd(f'okx:reports@mark-price@{message_args.get("instId")}',
                                redis_ready_message,
                                maxlen=REDIS_STREAM_MAX_LEN)
 
@@ -280,7 +280,7 @@ async def handle_reports(message_json, async_redis):
         from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
         tickers: Tickers = on_ticker_update(message_json)
         redis_ready_message = serialize_for_redis(tickers.to_dict())
-        await async_redis.xadd(f'okx:reports@{message_channel}',
+        await async_redis.xadd(f'okx:reports@{tickers}',
                                redis_ready_message,
                                maxlen=REDIS_STREAM_MAX_LEN)
 

@@ -54,6 +54,8 @@ marketAPI = okx_client.marketAPI
 accountAPI = okx_client.accountAPI
 publicAPI = okx_client.publicAPI
 
+REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
+
 
 def get_request_data(returned_data, target_data_structure):
     # print(f'{returned_data = }')
@@ -181,8 +183,6 @@ def is_valid_alphanumeric(string, max_length):
     """ Validate alphanumeric strings with a maximum length """
 
     return bool(re.match('^[a-zA-Z0-9]{1,' + str(max_length) + '}$', string))
-
-
 
 
 def get_all_orders(instType: str = None, instId: str = None):
@@ -628,7 +628,7 @@ def clean_and_verify_instID(instID):
     return instID
 
 
-def okx_signal_handler(
+async def okx_signal_handler(
         instID: str = '',
         order_size: int = None,
         leverage: int = None,
@@ -1025,34 +1025,14 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
     return [FillEntry(**fill) for fill in all_data]
 
 
-def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
-    from fastapi import HTTPException
-    from starlette import status
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="credentials invalid",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-
-    input_to_pass = indicator_input.model_dump() if isinstance(indicator_input,
-                                                               PremiumIndicatorSignalRequestForm) else indicator_input
+async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
+    if isinstance(indicator_input, PremiumIndicatorSignalRequestForm):
+        input_to_pass = indicator_input
+    elif isinstance(indicator_input, dict):
+        input_to_pass = indicator_input
+    else:
+        return {"detail": f"Invalid input type {type(indicator_input)}"}
     indicator_input = PremiumIndicatorSignalRequestForm(**input_to_pass)
-    from jose import JWTError
-    try:
-        from routers.okx_authentication import check_token_against_instrument
-        valid = check_token_against_instrument(token=indicator_input.InstIdAPIKey,
-                                               reference_instID=indicator_input.OKXSignalInput.instID
-                                               )
-        assert valid == True, "InstIdAPIKey verification failed"
-    except JWTError:
-        raise credentials_exception
-    # except AssertionError:
-    #     raise credentials_exception
-    # except HTTPException:
-    #     raise credentials_exception
-    except Exception as e:
-        print(f"Exception in okx_antbot_webhook: {e}")
-        return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
 
     try:
         pprint(f'{indicator_input.OKXSignalInput = }')
@@ -1082,8 +1062,6 @@ def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
         elif premium_indicator.Bullish_Exit:
             _close_signal = 'exit_sell'
 
-        # Get current positions
-        from pyokx.rest_handling import get_all_positions
         instId_positions = get_all_positions(instId=indicator_input.OKXSignalInput.instID)
         if len(instId_positions) > 0:
             current_position = instId_positions[0]
@@ -1121,13 +1099,7 @@ def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
         return {"detail": "okx signal received but no action taken"}
     except Exception as e:
         print(f"Exception in okx_premium_indicator {e}")
-        return {
-            "detail": "okx premium indicator signal received but not handled yet",
-            "exception": "okx premium indicator signal received but not handled yet"
-        }
-
-    # Update the enxchange info on the database
-    return {"detail": "unexpected end of point??."}
+        return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
 
 
 if __name__ == '__main__':
@@ -1165,7 +1137,9 @@ if __name__ == '__main__':
         pprint(f'{webhook_payload = }')
 
         indicator_input = PremiumIndicatorSignalRequestForm(**webhook_payload)
-        r = connect_to_redis()
+        import redis
+
+        r = redis.Redis(host='localhost', port=6379, db=0)
 
         redis_ready_message = serialize_for_redis(indicator_input.model_dump())
         r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message)

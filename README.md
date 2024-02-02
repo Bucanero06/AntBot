@@ -112,6 +112,72 @@ e.g. LuxAlgo Premium Indicator
             ReadMe for more.*
 ```
 
+### Redis Channels 
+Currently there are a few channels used by default, here are all that have been implemented.
+
+
+#### Rest API Channels
+```redis
+okx:webhook@okx_premium_indicator@input@{instrument_id}
+okx:webhook@okx_premium_indicator@response@{instrument_id}
+```
+```redis
+okx:webhook@okx_antbot_webhook@input@{instrument_id}
+okx:webhook@okx_antbot_webhook@response@{instrument_id}
+```
+```redis
+okx:rest@fill@3months
+okx:reports@fill_metrics
+```
+
+#### Websockets
+```redis
+okx:websockets@all
+```
+```redis
+okx:websockets@{message_channel} 
+```
+where `message_channel` is one of the following:
+```yaml
+{
+    "price-limit": PriceLimitChannel,
+    "instruments": InstrumentsChannel,
+    "mark-price": MarkPriceChannel,
+    "index-tickers": IndexTickersChannel,
+    "tickers": TickersChannel,
+    "books5": OrderBookChannel,
+    "books": OrderBookChannel,
+    "bbo-tbt": OrderBookChannel,
+    "books50-l2-tbt": OrderBookChannel,
+    "books-l2-tbt": OrderBookChannel,
+    "mark-price-candle{**}": MarkPriceCandleSticksChannel,
+    "index-candle{**}": IndexCandleSticksChannel,
+    "account": AccountChannel,  # Missing coinUsdPrice
+    "positions": PositionsChannel,  # Missing pTime
+    "balance_and_position": BalanceAndPositionsChannel,
+    "orders": OrdersChannel
+}
+```
+```redis
+okx:reports@balance_and_position
+okx:reports@account
+okx:reports@positions
+okx:reports@orders
+okx:reports@mark-price@{instId}
+okx:reports@{tickers}
+okx:reports@{message_channel}@{instId}
+```
+where `message_channel` is one of the following:
+```yaml
+[
+   "books5", 
+   "books", 
+   "bbo-tbt", 
+   "books50-l2-tbt", 
+   "books-l2-tbt"
+]
+```
+
 ## Disclaimer
 
 This project is for informational purposes only. You should not construe this information or any other material as

@@ -2,13 +2,12 @@
 
 ### Overview
 
-This project synopsis document presents a guide for the AntBot codebase, developed by Carbonyl R&D. The AntBot is a sophisticated, high-performance trading application, engineered for interaction with the OKX exchange. It emphasizes real-time data processing, efficient resource management, and
+This project synopsis document presents a guide for the AntBot codebase. The AntBot is a sophisticated, high-performance trading application, engineered for interaction with the OKX exchange. It emphasizes real-time data processing, efficient resource management, and
 robust technological stack.
 
 #### Document Details
 
 - **Document Title:** AntBot Project Synopsis Documentation
-- **Copyright:** © 2024 Carbonyl LLC & Carbonyl R&D
 - **Visual Reference:**
 
 [Screencast from 02-01-2024 05:19:04 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/ed98d3fd-5f47-493a-9230-f1ae907c8058)

@@ -1,20 +1,20 @@
-## AntBot Project (under active development)
+# AntBot Project (under active development)
 
-### Overview
+## Overview
 
 This project synopsis document presents a guide for the AntBot codebase. The AntBot is a high-performance trading application tailored for the OKX exchange. It emphasizes real-time data processing, efficient resource management, and
 robust technological stack.
 
-#### Document Details
+### Document Details
 
 - **Document Title:** AntBot Project Synopsis Documentation
 - **Visual Reference:**
 
 [Screencast from 02-01-2024 05:19:04 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/ed98d3fd-5f47-493a-9230-f1ae907c8058)
 
-### Deployment Guidelines
+## Deployment Guidelines
 
-#### Initial Setup
+### Initial Setup
 
 1. **Prerequisite Installation:**
     - Install the latest version of Docker for compatibility and specific feature support:
@@ -30,7 +30,7 @@ robust technological stack.
       ```
     - Verify `.env` file configuration for environmental consistency.
 
-#### Container Deployment
+### Container Deployment
 
 1. **Container Initialization:**
     - Deploy Docker containers efficiently, ensuring build and execution in a non-interactive mode:
@@ -52,7 +52,7 @@ robust technological stack.
     - Utilization of docker-compose version 2.2 is strategic for optimal resource management within a VM environment,
       despite version 3.x offering the latest features.
 
-### Technology Stack Synopsis
+## Technology Stack Synopsis
 
 The AntBot project integrates an array of leading-edge technologies, each contributing uniquely to the system's overall
 performance and versatility:
@@ -75,16 +75,11 @@ performance and versatility:
 Each of these has many features yet to be fully integrated into the AntBot project, but the potential for expansion
 and enhancement is vast, many low-hanging fruits are available for the taking. 
 
-### TradingView Alerts Configuration
+## TradingView Alerts Configuration
 
 A forthcoming feature includes an automated alert creation and management page. Initial steps to set up alerts using the
 LuxAlgo Premium Indicator are detailed, emphasizing customization and webhook integration for comprehensive strategy
 alerting.
-
-### Legal Disclaimer
-
-The document concludes with a disclaimer, stressing the informational nature of the project and disclaiming liability
-for any resulting claims, damages, or losses.
 
 ---
 
@@ -111,11 +106,41 @@ e.g. LuxAlgo Premium Indicator
             ReadMe for more.*
 ```
 
-### Redis Channels 
+## Redis Stack 
 Currently there are a few channels used by default, here are all that have been implemented.
 
 
-#### Rest API Channels
+### Quick Usage of `on_stream_data`
+
+The `on_stream_data` decorator lets you easily link callback functions to specific Redis streams. When new data arrives on a stream, the corresponding callback is triggered automatically.
+
+#### Define Your Callbacks:
+
+```python
+@on_stream_data('stock_updates')
+async def handle_stock_updates(data):
+    print(f"Received stock update: {data}")
+
+@on_stream_data('currency_fluctuations')
+async def handle_currency_fluctuations(data):
+    print(f"Received currency fluctuation: {data}")
+```
+
+#### Start Listening:
+
+```python
+asyncio.run(start_listening(['stock_updates', 'currency_fluctuations']))
+```
+
+That's it! The callbacks `handle_stock_updates` and `handle_currency_fluctuations` will process data from their respective streams in real-time. Simple and straightforward! 😊
+
+#### Consumers Management
+
+Once your callbacks are set up and listening, you can manage your stream listeners and data processing with functions like add_listener_task, remove_listener_task, and get_all_listener_tasks. These allow you to dynamically control and monitor your stream listeners for optimal operation and maintenance.
+
+That's the quick overview! For detailed operations or further assistance, dive into the specific functions or ask away! 😊
+
+### Rest API Channels
 ```redis
 okx:webhook@okx_premium_indicator@input@{instrument_id}
 okx:webhook@okx_premium_indicator@response@{instrument_id}
@@ -129,7 +154,7 @@ okx:rest@fill@3months
 okx:reports@fill_metrics
 ```
 
-#### Websockets
+### Websockets
 ```redis
 okx:websockets@all
 ```

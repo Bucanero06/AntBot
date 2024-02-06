@@ -177,6 +177,8 @@ where `message_channel` is one of the following:
 ]
 ```
 
+[Screencast from 02-06-2024 01:02:50 AM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/20c98bba-a336-4bc8-bc16-01fd013b36b3)
+
 ## Disclaimer
 
 This project is for informational purposes only. You should not construe this information or any other material as

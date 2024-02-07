@@ -10,7 +10,7 @@ robust technological stack.
 - **Document Title:** AntBot Project Synopsis Documentation
 - **Visual Reference:**
 
-[Screencast from 02-01-2024 05:19:04 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/ed98d3fd-5f47-493a-9230-f1ae907c8058)
+[Screencast from 02-07-2024 01:06:45 AM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/d47830d0-bd6c-4718-bb3e-ecce9da40ffe)
 
 ## Deployment Guidelines
 

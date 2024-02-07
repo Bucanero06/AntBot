@@ -24,6 +24,7 @@ from h2o_wave import main, Q, app, ui, on, run_on, data  # noqa F401
 from h2o_dashboard.util import add_card
 from h2o_dashboard.widgets.okx_streams import Overview_StreamWidget
 
+
 async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
     await add_card(q, card_name, ui.form_card(box=box, items=[
         ui.frame(content="""<!-- TradingView Widget BEGIN -->
@@ -56,6 +57,7 @@ async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
             <!-- TradingView Widget END -->""", height="500px", width="100%")
     ]))
 
+
 # Usage
 
 
@@ -75,8 +77,10 @@ async def overview_page(q: Q):
 
     '''Init RealTime Page Cards'''
     await overview_widget.add_cards()
+    if not isinstance(q.client.overview_tv_card_symbol_name, str):
+        q.client.overview_tv_card_symbol_name = "OKX:BTCUSDT.P"
+
     await q.page.save()
-    # q.client.overview_page_running_event.set()
 
     try:
         while True:

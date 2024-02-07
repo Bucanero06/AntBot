@@ -37,11 +37,20 @@ async def documentation_page(q: Q):
                                   icon_color=None,
                                   ))
 
+    await add_card(q, 'Documentation_Page_FASTAPIDOCS', ui.form_card(box='grid_1', items=[
+        ui.frame(content="""<iframe src="http://localhost:8080/docs" width="100%" height="100%"></iframe>""",
+                 height="500px",
+                 width="100%")
+    ]))
+
     # embed https://bucanero06.github.io/AntBot
-    await add_card(q, 'Documentation_Page_Documentation', ui.markdown_card(box='grid_1', title='Documentation',
+    await add_card(q, 'Documentation_Page_Documentation', ui.markdown_card(box='grid_2', title='Documentation',
                                                                            content='<div style="width: 100%; height: 480px; margin: 10px; position: relative;"><iframe allowfullscreen frameborder="0" style="width:100%; height:100%" src="https://bucanero06.github.io/AntBot" id="ygM8fjvwnLkk"></iframe></div>'
                                                                            ))
-    await add_card(q, 'Documentation_Page_Diagram', ui.markdown_card(box='grid_2', title='Diagram',
+
+
+
+    await add_card(q, 'Documentation_Page_Diagram', ui.markdown_card(box='grid_3', title='Diagram',
                                                                      content='<div style="width: 100%; height: 480px; margin: 10px; position: relative;"><iframe allowfullscreen frameborder="0" style="width:100%; height:480px" src="https://lucid.app/documents/embedded/e5260455-d74f-4d36-af21-5e018177e9f0" id="ygM8fjvwnLkk"></iframe></div>'
                                                                      ))
     # q.client.documentation_page_running_event.set()

@@ -22,14 +22,16 @@ import asyncio
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
 from h2o_dashboard.util import add_card
+from h2o_dashboard.widgets.okx_antbot_controls import OKX_Manual_ControlsWidget
 from h2o_dashboard.widgets.okx_streams import OKX_Account_StreamWidget, OKX_Positions_StreamWidget, \
-    OKX_Fill_Report_StreamWidget, OKX_Manual_ControlsWidget
+    OKX_Fill_Report_StreamWidget
 
 app = AsyncSite()
 
 
+
 async def okx_dashboard_page(q: Q):
-    ''''''
+
     '''Header'''
     await add_card(q, 'OKXDEBUG_Header', ui.header_card(box='header', title='OKX Dashboard', subtitle='DevPage',
                                                         # Color
@@ -38,22 +40,22 @@ async def okx_dashboard_page(q: Q):
                                                         icon_color=None,
                                                         ))
 
-    # await add_tradingview_advanced_chart(q, card_name='OKXDEBUG_TradingView_Advanced_Chart', box='grid_1')
-
+    # Add the the
     '''Init Widgets'''
-    account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_2', count=900)
-    positions_stream_widget = OKX_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_3',
+    positions_stream_widget = OKX_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_1',
                                                          count=1)
-    fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_4',
+    fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_1',
                                                              count=1)
-    manual_controls_widget = OKX_Manual_ControlsWidget(q=q, card_name='OKXDEBUG_Manual_Controls', box='mvp_bot_manual_controls_1')
+
+    manual_controls_widget = OKX_Manual_ControlsWidget(q=q, card_name='OKXDEBUG_Manual_Controls', box='grid_2')
+    account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_3', count=900)
+
 
     '''Init RealTime Page Cards'''
     await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget,
                          manual_controls_widget)
     await q.page.save()
 
-    # q.client.okx_dashboard_page_running_event.set()
     try:
         while True:
             if not q.client.okx_dashboard_page_running_event.is_set():
@@ -76,14 +78,14 @@ async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
                          positions_stream_widget: OKX_Positions_StreamWidget,
                          fill_report_stream_widget: OKX_Fill_Report_StreamWidget,
                          manual_controls_widget: OKX_Manual_ControlsWidget):
-    # '''Account Stream Metrics'''
+    '''Account Stream Metrics'''
     if await account_stream_widget._is_initialized():
         print("Updating Account Stream Metrics card")
         await account_stream_widget.update_cards()
     else:
         print("Adding Account Stream Metrics card")
         await account_stream_widget.add_cards()
-
+    #
     '''Positions Stream Metrics'''
     if await positions_stream_widget._is_initialized():
         print("Updating Positions Stream Metrics card")
@@ -92,6 +94,7 @@ async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
         print("Adding Positions Stream Metrics card")
         await positions_stream_widget.add_cards()
 
+    '''Fills Report Stream Metrics'''
     if await fill_report_stream_widget._is_initialized():
         print("Updating Fills Report Stream Metrics card")
         await fill_report_stream_widget.update_cards()
@@ -108,27 +111,3 @@ async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
         await manual_controls_widget.add_cards()
     await q.page.save()
 
-# signal_response = okx_signal_handler(
-#                 red_button=True,
-#             )
-# signal_response = okx_signal_handler(
-#     instID="BTC-USDT-240628",
-#     order_size=1,
-#     leverage=5,
-#     order_side="BUY",
-#     order_type="POST_ONLY",
-#     max_orderbook_limit_price_offset=0.1,
-#     flip_position_if_opposite_side=True,
-#     clear_prior_to_new_order=False,
-#     red_button=False,
-#     # order_usd_amount=100,
-#     stop_loss_price_offset=None,
-#     tp_price_offset=None,
-#     trailing_stop_activation_percentage=None,
-#     trailing_stop_callback_ratio=None,
-#     stop_loss_trigger_percentage=None,
-#     take_profit_trigger_percentage=None,
-#     tp_trigger_price_type=None,
-#     sl_trigger_price_type=None,
-# )
-# print(f"{signal_response = }")

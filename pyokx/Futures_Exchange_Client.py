@@ -29,6 +29,8 @@ from shared.logging import setup_logger
 
 logger = setup_logger(__name__.split(".")[0])
 
+import dotenv
+dotenv.load_dotenv(dotenv.find_dotenv())
 
 class OKX_Futures_Exchange_Client:
 

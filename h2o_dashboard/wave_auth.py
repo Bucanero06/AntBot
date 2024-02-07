@@ -85,9 +85,10 @@ async def init(q: Q) -> None:
 
     q.page['meta'] = ui.meta_card(box='',
                                   title='AntBot',
-                                  layouts=[ui.layout(breakpoint='xs', min_height='100vh', zones=[
+                                  layouts=[ui.layout(breakpoint='xs', min_height='100vh', name='default',
+                                                     zones=[
                                       ui.zone('main', size='1', direction=ui.ZoneDirection.ROW, zones=[
-                                          ui.zone('sidebar', size='208px'),
+                                          ui.zone('sidebar', size='180px'),
                                           ui.zone('body', zones=[
                                               ui.zone('header'),
                                               ui.zone('content', zones=[
@@ -130,12 +131,11 @@ async def init(q: Q) -> None:
                                                           justify='center'),
                                                   ui.zone('grid_6', direction=ui.ZoneDirection.ROW, wrap='stretch',
                                                           justify='center'),
-                                                  ui.zone('mvp_bot_manual_controls', size='1 1 1 1',
+                                                  ui.zone('bot_manual_controls',
                                                             direction=ui.ZoneDirection.ROW,
-                                                          zones=[
-                                                                ui.zone('mvp_bot_manual_controls_1', size='1 1 1 1'),
-                                                                ui.zone('mvp_bot_manual_controls_2', size='1 1 1 1')
-                                                              ]
+                                                          # Cover the entire card
+                                                            wrap='stretch',
+
                                                             ),
                                               ]),
                                           ]),
@@ -282,39 +282,52 @@ async def add_application_sidebar(q):
     ))
 
 
+
 async def render_hidden_content(q: Q):
     """
     Render pages content e.g. overview_page or other pages get added here
     """
-    await clear_cards(q)
     await add_application_sidebar(q)
     await q.page.save()
-    q.client.overview_page_running_event.clear()
-    q.client.okx_dashboard_page_running_event.clear()
-    q.client.documentation_page_running_event.clear()
+
+    # What path is the user at right now
+    print(f'Path: {q.args["#"]}')
+
+
 
     if q.args['#'] == 'overview_page':
         print("Route to Overview Page")
-        q.client.overview_page_running_event.set()
-        q.client.overview_page_task = asyncio.create_task(overview_page(q))
-        # q.client.overview_page_task.cancel()
-        # await overview_page(q)
+        q.client.okx_dashboard_page_running_event.clear()
+        q.client.documentation_page_running_event.clear()
+        if not q.client.overview_page_running_event.is_set():
+            await clear_cards(q)
+            await add_application_sidebar(q)
+            await q.page.save()
+            q.client.overview_page_running_event.set()
+            q.client.overview_page_task = asyncio.create_task(overview_page(q))
         await q.page.save()
+
     elif q.args['#'] == 'okx_dashboard_page':
         print("Route to OKX Dashboard Page")
-        q.client.okx_dashboard_page_running_event.set()
-        q.client.okx_dashboard_page_task = asyncio.create_task(okx_dashboard_page(q))
-
-        # q.client.okx_dashboard_page_task.cancel()
-        # await okx_dashboard_page(q)
+        q.client.overview_page_running_event.clear()
+        q.client.documentation_page_running_event.clear()
+        if not q.client.okx_dashboard_page_running_event.is_set():
+            await clear_cards(q)
+            await add_application_sidebar(q)
+            await q.page.save()
+            q.client.okx_dashboard_page_running_event.set()
+            q.client.okx_dashboard_page_task = asyncio.create_task(okx_dashboard_page(q))
         await q.page.save()
     elif q.args['#'] == 'documentation_page':
         print("Route to Documentation Page")
-        q.client.documentation_page_running_event.set()
-        q.client.documentation_page_task = asyncio.create_task(documentation_page(q))
-        # q.client.documentation_page_task.cancel()
-        await q.client.documentation_page_task
-        # await documentation_page(q)
+        q.client.overview_page_running_event.clear()
+        q.client.okx_dashboard_page_running_event.clear()
+        if not q.client.documentation_page_running_event.is_set():
+            await clear_cards(q)
+            await add_application_sidebar(q)
+            await q.page.save()
+            q.client.documentation_page_running_event.set()
+            q.client.documentation_page_task = asyncio.create_task(documentation_page(q))
         await q.page.save()
     else:
         print("Error: No route found")

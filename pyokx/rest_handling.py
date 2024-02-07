@@ -25,35 +25,28 @@ import re
 import string
 import time
 from pprint import pprint
-from typing import List, Any, Optional, Dict, Union
+from typing import List, Any, Union
 from urllib.error import HTTPError
 
-import dotenv
-
+from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Return,
                                    Position, Closed_Position, Ticker,
                                    Algo_Order, Algo_Order_Placement_Return,
                                    AccountBalanceDetails, AccountBalanceData,
                                    AccountConfigData, MaxOrderSizeData, MaxAvailSizeData, Cancelled_Algo_Order,
-                                   Instrument, Orderbook_Snapshot, Bid, Ask,
+                                   Orderbook_Snapshot, Bid, Ask,
                                    Simplified_Balance_Details, InstrumentStatusReport,
-                                   PremiumIndicatorSignalRequestForm, FillEntry)
+                                   PremiumIndicatorSignalRequestForm, FillEntry, OKXSignalInput)
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
-from redis_tools.utils import serialize_for_redis
+from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
+from redis_tools.utils import serialize_for_redis, init_async_redis
 from shared import logging
-from shared.tmp_shared import calculate_tp_stop_prices, calculate_sl_stop_prices, FunctionCall, execute_function_calls
+from shared.tmp_shared import calculate_tp_stop_prices, calculate_sl_stop_prices, FunctionCall, execute_function_calls, \
+    calculate_tp_stop_prices_usd, calculate_sl_stop_prices_usd
 
 logger = logging.setup_logger(__name__)
 
-dotenv.load_dotenv(dotenv.find_dotenv())
-from pyokx.Futures_Exchange_Client import OKX_Futures_Exchange_Client as OKXClient
-
-okx_client = OKXClient(api_key=os.getenv('OKX_API_KEY'), api_secret=os.getenv('OKX_SECRET_KEY'),
-                       passphrase=os.getenv('OKX_PASSPHRASE'), sandbox_mode=os.getenv('OKX_SANDBOX_MODE'))
-tradeAPI = okx_client.tradeAPI
-marketAPI = okx_client.marketAPI
-accountAPI = okx_client.accountAPI
-publicAPI = okx_client.publicAPI
+from pyokx import okx_client, tradeAPI, marketAPI, accountAPI, publicAPI, ENFORCED_INSTRUMENT_TYPE  # noqa
 
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
@@ -72,72 +65,15 @@ def get_request_data(returned_data, target_data_structure):
         List[Any]: A list of instances of the target data structure class, populated with the returned data.
     """
     # print(f'{returned_data = }')
-    if len(returned_data['data']) == 0:
-        if returned_data["code"] != '0':
-            print(f'{returned_data["code"] = }')
-            print(f'{returned_data["msg"] = }')
+    if returned_data["code"] != "0":
+        print(f"Unsuccessful {target_data_structure} request，\n  error_code = ", returned_data["code"], ", \n  Error_message = ",
+              returned_data["msg"])
         return []
+
     structured_data = []
     for data in returned_data['data']:
         structured_data.append(target_data_structure(**data))
     return structured_data
-
-
-all_futures_instruments = get_request_data(publicAPI.get_instruments(instType='FUTURES'),
-                                           target_data_structure=Instrument)
-
-
-class InstrumentSearcher:
-    """
-    Provides functionality to search for instruments within a provided list of instruments based on various criteria
-    such as instrument ID, type, or underlying asset.
-
-    Args:
-        instruments (List[Instrument]): A list of instruments to search within.
-
-    Methods:
-        find_by_instId: Returns an instrument matching a specific instrument ID.
-        find_by_type: Returns all instruments of a specific type.
-        find_by_underlying: Returns all instruments with a specific underlying asset.
-    """
-
-    def __init__(self, instruments: List[Instrument]):
-        """
-        InstrumentSearcher is a class that allows you to search for instruments by instId, instType, or underlying
-
-        :param instruments:
-
-        Usage:
-        ```
-        instrument_searcher = InstrumentSearcher(all_futures_instruments)
-        print(f'{instrument_searcher.find_by_instId("BTC-USDT-240329") = }')
-        print(f'{instrument_searcher.find_by_type(InstType.FUTURES) = }')
-        print(f'{instrument_searcher.find_by_underlying("BTC-USDT") = }')
-        print(f'{"BTC-USDT-240329" in instrument_searcher._instrument_map = }')
-        ```
-        """
-
-        self.instruments = instruments
-        self._instrument_map = self._create_map(instruments)
-
-    def _create_map(self, instruments: List[Instrument]) -> Dict[str, Instrument]:
-        """ Create a map for quicker search by instId """
-        return {instrument.instId: instrument for instrument in instruments}
-
-    def find_by_instId(self, instId: str) -> Optional[Instrument]:
-        """ Find an instrument by its instId """
-        return self._instrument_map.get(instId)
-
-    def find_by_type(self, instType: InstType) -> List[Instrument]:
-        """ Find all instruments of a specific type """
-        return [instrument for instrument in self.instruments if instrument.instType == instType]
-
-    def find_by_underlying(self, underlying: str) -> List[Instrument]:
-        """ Find all instruments of a specific underlying """
-        return [instrument for instrument in self.instruments if instrument.uly == underlying]
-
-
-instrument_searcher = InstrumentSearcher(all_futures_instruments)
 
 
 def get_ticker_with_higher_volume(seed_symbol_name, instrument_type="FUTURES", top_n=1):
@@ -209,9 +145,7 @@ def assert_okx_account_level(account_level: [1, 2, 3, 4]):
     # Set account level
     result_set_account_level = accountAPI.set_account_level(acctLv=2)
     print(result_set_account_level)
-    if result_set_account_level['code'] == "0":
-        print("Successful request，\n  acctLv = ", result_set_account_level["data"][0]["acctLv"])
-    else:
+    if result_set_account_level['code'] != "0":
         print("Unsuccessful request，\n  error_code = ", result_set_account_level['code'], ", \n  Error_message = ",
               result_set_account_level["msg"])
 
@@ -222,7 +156,7 @@ def assert_okx_account_level(account_level: [1, 2, 3, 4]):
         acctLv = result_get_account_config["data"][0]["acctLv"]
         assert acctLv == account_level, f"Account level was not set to {ACCLV_MAPPING[account_level]}"
     else:
-        print("Unsuccessful request，\n  error_code = ", result_get_account_config['code'], ", \n  Error_message = ",
+        print("Unsuccessful `assert_okx_account_level` request，\n  error_code = ", result_get_account_config['code'], ", \n  Error_message = ",
               result_get_account_config["msg"])
 
 
@@ -441,17 +375,17 @@ def place_order(instId: Any,
 
     )
 
-    if result["code"] == "0":
-        print("Successful order request，\n  order_id = ", result["data"][0]["ordId"])
-
-    else:
+    if result["code"] != "0":
         print(f'{result = }')
         print("Unsuccessful order request，\n  error_code = ", result["msg"], ", \n  Error_message = ",
               result["msg"])
+        return None
+
     return get_request_data(result, Order_Placement_Return)[0]
 
 
-def get_ticker(instId):
+
+async def get_ticker(instId):
     """
     Retrieves the latest ticker information for a specified instrument.
 
@@ -459,7 +393,12 @@ def get_ticker(instId):
     :type instId: str
     :returns: The latest ticker information for the specified instrument.
     """
-    return get_request_data(marketAPI.get_ticker(instId=instId), Ticker)[0]
+    result = get_request_data(marketAPI.get_ticker(instId=instId), Ticker)
+
+    if result:
+        return result[0]
+    else:
+        return None
 
 
 def get_all_algo_orders(instId=None, ordType=None):
@@ -490,7 +429,6 @@ def get_all_algo_orders(instId=None, ordType=None):
         )
     orders_fetched_list = execute_function_calls(algo_type_to_fetch)
 
-    print(f'{orders_fetched_list = }')
     orders_fetched = []
     for order_types in orders_fetched_list:
         orders_fetched.extend(get_request_data(order_types, Algo_Order))
@@ -598,12 +536,9 @@ def place_algo_order(
     )
     print(f'{result = }')
 
-    if result["code"] == "0":
-        print("Successful order request，\n  order_id = ", result["data"][0]["algoId"])
-
-    else:
+    if result["code"] != "0":
         print(f'{result = }')
-        print("Unsuccessful order request，\n  error_code = ", result["msg"], ", \n  Error_message = ",
+        print("Unsuccessful algo order request，\n  error_code = ", result["msg"], ", \n  Error_message = ",
               result["msg"])
 
     return get_request_data(result, Algo_Order_Placement_Return)
@@ -643,7 +578,13 @@ def get_max_order_size(instId, tdMode):
     :type tdMode: str
     :returns: The maximum order size data, structured according to the MaxOrderSizeData class.
     """
-    return MaxOrderSizeData(**accountAPI.get_max_order_size(instId=instId, tdMode=tdMode)['data'][0])
+    # return MaxOrderSizeData(**accountAPI.get_max_order_size(instId=instId, tdMode=tdMode)['data'][0])
+    result = accountAPI.get_max_order_size(instId=instId, tdMode=tdMode)
+    if result["code"] != "0":
+        print("Unsuccessful get_max_order_size request，\n  error_code = ", result["code"], ", \n  Error_message = ",
+              result["msg"])
+        return []
+    return MaxOrderSizeData(**result['data'][0])
 
 
 def get_max_avail_size(instId, tdMode):
@@ -656,7 +597,13 @@ def get_max_avail_size(instId, tdMode):
     :type tdMode: str
     :returns: The maximum available size data, structured according to the MaxAvailSizeData class.
     """
-    return MaxAvailSizeData(**accountAPI.get_max_avail_size(instId=instId, tdMode=tdMode)['data'][0])
+    # return MaxAvailSizeData(**accountAPI.get_max_avail_size(instId=instId, tdMode=tdMode)['data'][0])
+    result = accountAPI.get_max_avail_size(instId=instId, tdMode=tdMode)
+    if result["code"] != "0":
+        print("Unsuccessful get_max_avail_size request，\n  error_code = ", result["code"], ", \n  Error_message = ",
+              result["msg"])
+        return []
+    return MaxAvailSizeData(**result['data'][0])
 
 
 def generate_random_string(length, char_type='alphanumeric'):
@@ -696,6 +643,10 @@ def fetch_status_report_for_instrument(instId, TD_MODE):
     :type TD_MODE: str
     :returns: A status report for the instrument, structured according to the InstrumentStatusReport class.
     """
+    # Handle the case where instId is None
+    if instId is None:
+        return None
+
     initial_data_pull = [
         FunctionCall(get_max_order_size, instId=instId, tdMode=TD_MODE),
         FunctionCall(get_max_avail_size, instId=instId, tdMode=TD_MODE),
@@ -886,7 +837,7 @@ def place_algo_trailing_stop_loss(
     )
 
 
-def clean_and_verify_instID(instID):
+async def _validate_instID_and_return_ticker_info(instID):
     """
     Cleans and verifies an instrument ID to ensure it's in the correct format and exists within the list of instruments.
 
@@ -899,15 +850,310 @@ def clean_and_verify_instID(instID):
     instID = instID.upper()
     splitted = instID.split('-')
     assert len(splitted) == 3, f'The Futures instrument ID must be in the format of "BTC-USDT-210326". {instID = }'
-    instrument = instrument_searcher.find_by_instId(instID)
-    assert instrument is not None, f'Instrument {instID} not found in {all_futures_instruments = }'
-    # assert instrument.instType == InstType.FUTURES, f'{instrument.instType = }'
-    return instID
+    okx_futures_instrument_searcher: InstrumentSearcher = await get_instruments_searcher_from_redis(
+        await init_async_redis(),
+        instType=ENFORCED_INSTRUMENT_TYPE)
+
+    instrument = okx_futures_instrument_searcher.find_by_instId(instID)
+    assert instrument, f'Instrument not found. {instID = }'
+    return instrument
+
+
+async def _validate_okx_signal_input_tp_sl_trail_params(sl_trigger_price_offset=None,
+                                                        tp_trigger_price_offset=None,
+                                                        sl_execution_price_offset=None, tp_execution_price_offset=None,
+                                                        trailing_stop_activation_price_offset=None,
+                                                        trailing_stop_callback_offset=None,
+                                                        max_orderbook_limit_price_offset=None,
+                                                        flip_position_if_opposite_side=None,
+                                                        tp_trigger_price_type=None, sl_trigger_price_type=None):
+    if not tp_trigger_price_type:
+        tp_trigger_price_type = 'last'
+    if not sl_trigger_price_type:
+        sl_trigger_price_type = 'last'
+    if not sl_trigger_price_offset:
+        sl_trigger_price_offset = False
+    if not tp_trigger_price_offset:
+        tp_trigger_price_offset = False
+    if not sl_execution_price_offset:
+        sl_execution_price_offset = False
+    if not tp_execution_price_offset:
+        tp_execution_price_offset = False
+    if not trailing_stop_activation_price_offset:
+        trailing_stop_activation_price_offset = False
+    if not trailing_stop_callback_offset:
+        trailing_stop_callback_offset = False
+
+    tp_trigger_price_type, sl_trigger_price_type = tp_trigger_price_type.lower(), sl_trigger_price_type.lower()
+
+    sl_trigger_price_offset = False if (
+            sl_trigger_price_offset == '' or not sl_trigger_price_offset) else float(
+        sl_trigger_price_offset)
+    tp_trigger_price_offset = False if tp_trigger_price_offset == '' or not tp_trigger_price_offset else float(
+        tp_trigger_price_offset)
+    sl_execution_price_offset = False if sl_execution_price_offset == '' or not sl_execution_price_offset else float(
+        sl_execution_price_offset)
+    tp_execution_price_offset = False if tp_execution_price_offset == '' or not tp_execution_price_offset else float(
+        tp_execution_price_offset)
+
+    trailing_stop_activation_price_offset = False if trailing_stop_activation_price_offset == '' or not trailing_stop_activation_price_offset else float(
+        trailing_stop_activation_price_offset)
+    trailing_stop_callback_offset = False if trailing_stop_callback_offset == '' or not trailing_stop_callback_offset else float(
+        trailing_stop_callback_offset)
+
+    max_orderbook_limit_price_offset = False if max_orderbook_limit_price_offset == '' or max_orderbook_limit_price_offset == 0 or not max_orderbook_limit_price_offset else float(
+        max_orderbook_limit_price_offset)
+
+    flip_position_if_opposite_side = False if flip_position_if_opposite_side == '' or not flip_position_if_opposite_side else bool(
+        flip_position_if_opposite_side)
+
+    take_profit_activated = None
+    stop_loss_activated = None
+    trailing_stop_loss_activated = None
+    # TODO multiple_tp and amendPxOnTriggerType are commented out because they need multiple TP's to work and is not
+    #   developed yet downstream
+    #   multiple_tp = None
+    #   amendPxOnTriggerType = None
+    if tp_trigger_price_offset or tp_execution_price_offset:
+        assert tp_trigger_price_offset and tp_execution_price_offset
+        take_profit_activated = True
+        tp_trigger_price_type = tp_trigger_price_type or 'last'
+
+    if sl_trigger_price_offset or sl_execution_price_offset:
+        assert sl_trigger_price_offset and sl_execution_price_offset
+        stop_loss_activated = True
+        sl_trigger_price_type = sl_trigger_price_type or 'last'
+
+    if trailing_stop_activation_price_offset or trailing_stop_callback_offset:
+        assert trailing_stop_callback_offset, f'trailing_stop_callback_offset must be provided if trailing_stop_activation_price_offset is provided. {trailing_stop_callback_offset = }'
+        trailing_stop_loss_activated = True
+
+    assert not sl_trigger_price_offset or isinstance(sl_trigger_price_offset,
+                                                          float), f'{sl_trigger_price_offset = }'
+    assert not tp_trigger_price_offset or isinstance(tp_trigger_price_offset,
+                                                            float), f'{tp_trigger_price_offset = }'
+    assert not sl_execution_price_offset or isinstance(sl_execution_price_offset, float), f'{sl_execution_price_offset = }'
+    assert not tp_execution_price_offset or isinstance(tp_execution_price_offset, float), f'{tp_execution_price_offset = }'
+    assert not sl_trigger_price_offset or sl_trigger_price_offset >= 0, f'{sl_trigger_price_offset = }'
+    assert not tp_trigger_price_offset or tp_trigger_price_offset >= 0, f'{tp_trigger_price_offset = }'
+    assert not sl_execution_price_offset or sl_execution_price_offset >= 0, f'{sl_execution_price_offset = }'
+    assert not tp_execution_price_offset or tp_execution_price_offset >= 0, f'{tp_execution_price_offset = }'
+    assert not tp_trigger_price_type or tp_trigger_price_type in ['index', 'mark',
+                                                                  'last'], f'{tp_trigger_price_type = }'
+    assert not sl_trigger_price_type or sl_trigger_price_type in ['index', 'mark',
+                                                                  'last'], f'{sl_trigger_price_type = }'
+
+
+
+    return {
+        'sl_trigger_price_offset': sl_trigger_price_offset,
+        'tp_trigger_price_offset': tp_trigger_price_offset,
+        'sl_execution_price_offset': sl_execution_price_offset,
+        'tp_execution_price_offset': tp_execution_price_offset,
+        'trailing_stop_activation_price_offset': trailing_stop_activation_price_offset,
+        'trailing_stop_callback_offset': trailing_stop_callback_offset,
+        'max_orderbook_limit_price_offset': max_orderbook_limit_price_offset,
+        'flip_position_if_opposite_side': flip_position_if_opposite_side,
+        'tp_trigger_price_type': tp_trigger_price_type,
+        'sl_trigger_price_type': sl_trigger_price_type,
+        'take_profit_activated': take_profit_activated,
+        'stop_loss_activated': stop_loss_activated,
+        'trailing_stop_loss_activated': trailing_stop_loss_activated,
+    }
+
+
+async def _validate_okx_signal_order_params(order_type, order_side, order_size):
+    if not order_type:
+        order_type = 'limit'
+    if not order_side:
+        order_side = ''
+    if not order_size:
+        order_size = 0
+
+    order_type, order_side = order_type.lower(), order_side.lower(),
+    order_size = int(order_size)
+    assert order_side in ['buy', 'sell'] or not order_side, (
+        f'order_side must be either "buy" or "sell" or empty. \n '
+        f'for maintenance mode \n      {order_side = }')
+    assert order_type in ['market', 'limit', 'post_only', 'fok', 'ioc'], f'{order_type = }'
+    assert isinstance(order_size, int), f'Order size must be an integer/multiple of a lot size. {order_size = }'
+    assert order_size > 0, f'Order size must be greater than 0. {order_size = }'
+    generated_client_order_id = generate_random_string(20, 'alphanumeric')  # 6 characters for type later
+
+    return {
+        'order_type': order_type,
+        'order_side': order_side,
+        'order_size': order_size,
+        'generated_client_order_id': generated_client_order_id
+    }
+
+
+async def _validate_okx_signal_additional_params(
+        leverage=None, max_orderbook_limit_price_offset=None, flip_position_if_opposite_side=None,
+        clear_prior_to_new_order=None
+):
+    leverage = 0 if not leverage else int(leverage)
+    max_orderbook_limit_price_offset = 0 \
+        if not max_orderbook_limit_price_offset else float(max_orderbook_limit_price_offset)
+    flip_position_if_opposite_side = False \
+        if not flip_position_if_opposite_side else bool(flip_position_if_opposite_side)
+    clear_prior_to_new_order = False if not clear_prior_to_new_order else bool(clear_prior_to_new_order)
+
+
+    return {
+        'leverage': leverage,
+        'max_orderbook_limit_price_offset': max_orderbook_limit_price_offset,
+        'flip_position_if_opposite_side': flip_position_if_opposite_side,
+        'clear_prior_to_new_order': clear_prior_to_new_order,
+    }
+
+
+def ccy_contracts_to_usd(contracts_amount, ccy_contract_size, ccy_last_price, usd_base_ratio, leverage=None):
+    base_cost_of_one_contract = ccy_contract_size * ccy_last_price
+    base_total_cost = base_cost_of_one_contract * contracts_amount
+    total_cost_usd = base_total_cost / usd_base_ratio
+    if not leverage:
+        return total_cost_usd
+    else:
+        leverage = 10  # example leverage
+        return total_cost_usd / leverage
+
+
+def ccy_usd_to_contracts(usd_equivalent, ccy_contract_size, ccy_last_price,
+                         min_order_quantity,
+                         max_market_order_quantity,
+                         usd_base_ratio, leverage=None):
+    cost_of_one_contract_usdt = ccy_contract_size * ccy_last_price
+    base_equivalent = usd_equivalent * usd_base_ratio
+
+    if not leverage:
+        max_contracts = base_equivalent / cost_of_one_contract_usdt
+        max_contracts = int(max_contracts)  # round down to the nearest whole number
+        order_contracts = max(min_order_quantity, min(max_contracts, max_market_order_quantity))
+        return order_contracts
+    else:
+        cost_of_one_contract_with_leverage = cost_of_one_contract_usdt / leverage
+        max_contracts_with_leverage = base_equivalent / cost_of_one_contract_with_leverage
+        max_contracts_with_leverage = int(max_contracts_with_leverage)  # round down to the nearest whole number
+        order_contracts_with_leverage = max(min_order_quantity,
+                                            min(max_contracts_with_leverage, max_market_order_quantity))
+        return order_contracts_with_leverage
+
+async def get_leverage(instId, mgnMode):
+    result = accountAPI.get_leverage(instId=instId, mgnMode=mgnMode)
+    if result["code"] != "0":
+        print("Unsuccessful get_leverage request，\n  error_code = ", result["code"], ", \n  Error_message = ",
+              result["msg"])
+        return []
+    if len(result['data'])!=0:
+        leverage = result['data'][0]['lever']
+        return int(leverage)
+async def validate_okx_signal_params(
+        okx_signal: OKXSignalInput
+):
+    generated_client_order_id = None
+    validated_order_params = {}
+    validated_tp_sl_trail_params = {}
+
+    if okx_signal.red_button:
+        return {'red_button': okx_signal.red_button}
+    else:
+        red_button = False
+
+    instId_info = await _validate_instID_and_return_ticker_info(okx_signal.instID)
+    assert instId_info, f'Instrument not found. {okx_signal.instID = }'
+
+    validated_additional_params = await _validate_okx_signal_additional_params(
+        leverage=okx_signal.leverage, max_orderbook_limit_price_offset=okx_signal.max_orderbook_limit_price_offset,
+        flip_position_if_opposite_side=okx_signal.flip_position_if_opposite_side,
+        clear_prior_to_new_order=okx_signal.clear_prior_to_new_order)
+    passed_expiration_test = False if int(instId_info.expTime) < int(time.time() * 1000) else True
+    passed_leverage_test = False if int(instId_info.lever) <= validated_additional_params.get('leverage') else True
+    assert passed_expiration_test, f'Instrument has expired. {instId_info.expTime = }'
+    assert passed_leverage_test, f'Instrument has a higher leverage than the one provided. {instId_info.lever = }'
+
+    if okx_signal.usd_order_size:
+        usd_amount = float(okx_signal.usd_order_size)
+        usd_to_base_rate = 1
+        min_order_quantity = int(instId_info.minSz)  # contracts
+        max_market_order_quantity = int(instId_info.maxMktSz)  # contracts
+        ccy_contract_size = float(instId_info.ctVal)
+        instId_ticker: Ticker = await get_ticker(instId=instId_info.instId)
+        assert instId_ticker, f'Could not fetch ticker for {instId_info.instId = }'
+        ccy_last_price = float(instId_ticker.last)
+        leverage = validated_additional_params.get('leverage') or await get_leverage(instId=instId_info.instId, mgnMode='isolated')
+
+        # convert USD to order size (contracts)
+        order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount, ccy_contract_size=ccy_contract_size,
+                                               ccy_last_price=ccy_last_price, min_order_quantity=min_order_quantity,
+                                               max_market_order_quantity=max_market_order_quantity,
+                                               usd_base_ratio=usd_to_base_rate, leverage=leverage)
+
+        # Convert these into trailing_stop_callback_offset to trailing_stop_callback_ratio
+        if okx_signal.trailing_stop_callback_offset:
+            trailing_stop_callback_offset = float(okx_signal.trailing_stop_callback_offset)
+            trailing_stop_callback_ratio = trailing_stop_callback_offset / ccy_last_price
+            print(f'{trailing_stop_callback_ratio = }')
+            # Min is 0,001 and max is 1
+            if trailing_stop_callback_ratio < 0.001:
+                trailing_stop_callback_ratio = 0.001
+            if trailing_stop_callback_ratio > 1:
+                trailing_stop_callback_ratio = 1
+
+            trailing_stop_callback_offset = round(trailing_stop_callback_ratio,3)
+        else:
+            trailing_stop_callback_offset = 0.0
+
+        print(f"Number of contracts you can buy: {order_contracts} {instId_info.instId}")
+
+
+
+
+        validated_order_params = await _validate_okx_signal_order_params(
+            order_type=okx_signal.order_type, order_side=okx_signal.order_side,
+            order_size=order_contracts)
+
+        validated_tp_sl_trail_params = await _validate_okx_signal_input_tp_sl_trail_params(
+            sl_trigger_price_offset=okx_signal.sl_trigger_price_offset,
+            tp_trigger_price_offset=okx_signal.tp_trigger_price_offset,
+            sl_execution_price_offset=okx_signal.sl_execution_price_offset, tp_execution_price_offset=okx_signal.tp_execution_price_offset,
+            trailing_stop_activation_price_offset=okx_signal.trailing_stop_activation_price_offset,
+            trailing_stop_callback_offset=trailing_stop_callback_offset,
+            max_orderbook_limit_price_offset=okx_signal.max_orderbook_limit_price_offset,
+            flip_position_if_opposite_side=okx_signal.flip_position_if_opposite_side,
+            tp_trigger_price_type=okx_signal.tp_trigger_price_type,
+            sl_trigger_price_type=okx_signal.sl_trigger_price_type)
+
+    result = {
+        'instID': instId_info.instId,
+        'order_size': validated_order_params.get('order_size'),
+        'leverage': validated_additional_params.get('leverage'),
+        'order_side': validated_order_params.get('order_side'),
+        'order_type': validated_order_params.get('order_type'),
+        'max_orderbook_limit_price_offset': validated_additional_params.get('max_orderbook_limit_price_offset'),
+        'flip_position_if_opposite_side': validated_additional_params.get('flip_position_if_opposite_side'),
+        'clear_prior_to_new_order': validated_additional_params.get('clear_prior_to_new_order'),
+        'red_button': red_button,
+        'sl_trigger_price_offset': validated_tp_sl_trail_params.get('sl_trigger_price_offset'),
+        'tp_trigger_price_offset': validated_tp_sl_trail_params.get('tp_trigger_price_offset'),
+        'tp_trigger_price_type': validated_tp_sl_trail_params.get('tp_trigger_price_type'),
+        'sl_execution_price_offset': validated_tp_sl_trail_params.get('sl_execution_price_offset'),
+        'tp_execution_price_offset': validated_tp_sl_trail_params.get('tp_execution_price_offset'),
+        'sl_trigger_price_type': validated_tp_sl_trail_params.get('sl_trigger_price_type'),
+        'trailing_stop_activation_price_offset': validated_tp_sl_trail_params.get('trailing_stop_activation_price_offset'),
+        'trailing_stop_callback_offset': validated_tp_sl_trail_params.get('trailing_stop_callback_offset'),
+        #
+        'generated_client_order_id': validated_order_params.get('generated_client_order_id'),
+        'take_profit_activated': validated_tp_sl_trail_params.get('take_profit_activated'),
+        'stop_loss_activated': validated_tp_sl_trail_params.get('stop_loss_activated'),
+        'trailing_stop_loss_activated': validated_tp_sl_trail_params.get('trailing_stop_loss_activated'),
+    }
+    return result
 
 
 async def okx_signal_handler(
         instID: str = '',
-        order_size: int = None,
+        usd_order_size: int = None,
         leverage: int = None,
         order_side: str = None,
         order_type: str = None,
@@ -915,56 +1161,17 @@ async def okx_signal_handler(
         flip_position_if_opposite_side: bool = False,
         clear_prior_to_new_order: bool = False,
         red_button: bool = False,
-        order_usd_amount: float = None,
-        stop_loss_trigger_percentage: float = None,
-        take_profit_trigger_percentage: float = None,
+        sl_trigger_price_offset: float = None,
+        tp_trigger_price_offset: float = None,
         tp_trigger_price_type: str = None,
-        stop_loss_price_offset: float = None,
-        tp_price_offset: float = None,
+        sl_execution_price_offset: float = None,
+        tp_execution_price_offset: float = None,
         sl_trigger_price_type: str = None,
-        trailing_stop_activation_percentage: float = None,
-        trailing_stop_callback_ratio: float = None,
+        trailing_stop_activation_price_offset: float = None,
+        trailing_stop_callback_offset: float = None,
 ):
     """
     Handles trading signals for the OKX platform, executing trades based on the specified parameters and current market conditions.
-
-    :param instID: Instrument ID for trading.
-    :type instID: str, optional
-    :param order_size: Size of the order to execute.
-    :type order_size: int, optional
-    :param leverage: Leverage to apply for the trade.
-    :type leverage: int, optional
-    :param order_side: Side of the order ('buy' or 'sell').
-    :type order_side: str, optional
-    :param order_type: Type of the order (e.g., 'limit', 'market').
-    :type order_type: str, optional
-    :param max_orderbook_limit_price_offset: Maximum offset for the limit price from the order book.
-    :type max_orderbook_limit_price_offset: float, optional
-    :param flip_position_if_opposite_side: Flag to indicate if the position should be flipped if the current position is on the opposite side.
-    :type flip_position_if_opposite_side: bool, optional
-    :param clear_prior_to_new_order: Flag to clear existing orders before placing a new order.
-    :type clear_prior_to_new_order: bool, optional
-    :param red_button: Emergency stop flag to cancel all orders and close all positions.
-    :type red_button: bool, optional
-    :param order_usd_amount: Amount in USD for the order, used for calculations if specified.
-    :type order_usd_amount: float, optional
-    :param stop_loss_trigger_percentage: Percentage for triggering the stop loss.
-    :type stop_loss_trigger_percentage: float, optional
-    :param take_profit_trigger_percentage: Percentage for triggering take profit.
-    :type take_profit_trigger_percentage: float, optional
-    :param tp_trigger_price_type: Type of trigger price for take profit ('index', 'mark', 'last').
-    :type tp_trigger_price_type: str, optional
-    :param stop_loss_price_offset: Offset price for stop loss.
-    :type stop_loss_price_offset: float, optional
-    :param tp_price_offset: Offset price for take profit.
-    :type tp_price_offset: float, optional
-    :param sl_trigger_price_type: Type of trigger price for stop loss ('index', 'mark', 'last').
-    :type sl_trigger_price_type: str, optional
-    :param trailing_stop_activation_percentage: Activation percentage for the trailing stop loss.
-    :type trailing_stop_activation_percentage: float, optional
-    :param trailing_stop_callback_ratio: Callback ratio for the trailing stop loss.
-    :type trailing_stop_callback_ratio: float, optional
-    :returns: An object containing the status report of the instrument after processing the signal, detailing the positions, orders, and algo orders.
 
     Process Flow:
     1. Validates and processes input parameters, preparing the trading signal.
@@ -975,8 +1182,29 @@ async def okx_signal_handler(
 
     :raises Exception: Catches and logs any exceptions that occur during signal handling, providing detailed error information.
     """
-    TD_MODE: str = 'isolated'
+    okx_signal_input: OKXSignalInput = OKXSignalInput(
+        instID=instID,
+        usd_order_size=usd_order_size,
+        leverage=leverage,
+        order_side=order_side,
+        order_type=order_type,
+        max_orderbook_limit_price_offset=max_orderbook_limit_price_offset,
+        flip_position_if_opposite_side=flip_position_if_opposite_side,
+        clear_prior_to_new_order=clear_prior_to_new_order,
+        red_button=red_button,
+        sl_trigger_price_offset=sl_trigger_price_offset,
+        tp_trigger_price_offset=tp_trigger_price_offset,
+        tp_trigger_price_type=tp_trigger_price_type,
+        sl_execution_price_offset=sl_execution_price_offset,
+        tp_execution_price_offset=tp_execution_price_offset,
+        sl_trigger_price_type=sl_trigger_price_type,
+        trailing_stop_activation_price_offset=trailing_stop_activation_price_offset,
+        trailing_stop_callback_offset=trailing_stop_callback_offset,
+    )
+    TD_MODE: str = 'isolated'.lower()  # here for completeness, but assumed to be isolated
     POSSIDETYPE: str = 'net'  # net or long/short, need to cancel all orders/positions to change
+    assert TD_MODE in ['isolated', 'crossed'], f'{TD_MODE = }'
+    assert POSSIDETYPE in ['net', 'long', 'short'], f'{POSSIDETYPE = }'
 
     if red_button:
         print(f'{close_all_positions() = }')
@@ -985,120 +1213,39 @@ async def okx_signal_handler(
         print(f'{get_all_positions() = }')
         print(f'{get_all_orders() = }')
         print(f'{get_all_algo_orders() = }')
-        return
-    if not instID:
-        return None
+        return {'red_button': 'ok'}
+
     # Clean Input Data
-    instID = clean_and_verify_instID(instID)
+    try:
+        validated_params = await validate_okx_signal_params(okx_signal_input)
+    except Exception as e:
+        return {'error': str(e)}
 
-    if not tp_trigger_price_type:
-        tp_trigger_price_type = 'last'
-    if not sl_trigger_price_type:
-        sl_trigger_price_type = 'last'
-    if not order_type:
-        order_type = 'limit'
-    if not order_side:
-        order_side = ''
-    if not order_size:
-        order_size = 0
-    if not leverage:
-        leverage = 0
-    if not max_orderbook_limit_price_offset:
-        max_orderbook_limit_price_offset = False
-    if not stop_loss_trigger_percentage:
-        stop_loss_trigger_percentage = False
-    if not take_profit_trigger_percentage:
-        take_profit_trigger_percentage = False
-    if not stop_loss_price_offset:
-        stop_loss_price_offset = False
-    if not tp_price_offset:
-        tp_price_offset = False
-    if not trailing_stop_activation_percentage:
-        trailing_stop_activation_percentage = False
-    if not trailing_stop_callback_ratio:
-        trailing_stop_callback_ratio = False
-    if not flip_position_if_opposite_side:
-        flip_position_if_opposite_side = False
-    if not clear_prior_to_new_order:
-        clear_prior_to_new_order = False
+    # Get back all the values validated
+    instID = validated_params.get('instID')
+    order_size = validated_params.get('order_size')
+    leverage = validated_params.get('leverage')
+    order_side = validated_params.get('order_side')
+    order_type = validated_params.get('order_type')
+    max_orderbook_limit_price_offset = validated_params.get('max_orderbook_limit_price_offset')
+    flip_position_if_opposite_side = validated_params.get('flip_position_if_opposite_side')
+    clear_prior_to_new_order = validated_params.get('clear_prior_to_new_order')
+    red_button = validated_params.get('red_button')
+    sl_trigger_price_offset = validated_params.get('sl_trigger_price_offset')
+    tp_trigger_price_offset = validated_params.get('tp_trigger_price_offset')
+    tp_trigger_price_type = validated_params.get('tp_trigger_price_type')
+    sl_execution_price_offset = validated_params.get('sl_execution_price_offset')
+    tp_execution_price_offset = validated_params.get('tp_execution_price_offset')
+    sl_trigger_price_type = validated_params.get('sl_trigger_price_type')
+    trailing_stop_activation_price_offset = validated_params.get('trailing_stop_activation_price_offset')
+    trailing_stop_callback_offset = validated_params.get('trailing_stop_callback_offset')
+    generated_client_order_id = validated_params.get('generated_client_order_id')
+    take_profit_activated = validated_params.get('take_profit_activated')
+    stop_loss_activated = validated_params.get('stop_loss_activated')
+    trailing_stop_loss_activated = validated_params.get('trailing_stop_loss_activated')
 
-    if order_side:
-        (order_type, order_side,
-         TD_MODE,
-         tp_trigger_price_type, sl_trigger_price_type) = (order_type.lower(), order_side.lower(),
-                                                          TD_MODE.lower(), tp_trigger_price_type.lower(),
-                                                          sl_trigger_price_type.lower())
-        order_size = int(order_size)
-        leverage = int(leverage)
 
-        stop_loss_trigger_percentage = False if (
-                stop_loss_trigger_percentage == '' or not stop_loss_trigger_percentage) else float(
-            stop_loss_trigger_percentage)
-        take_profit_trigger_percentage = False if take_profit_trigger_percentage == '' or not take_profit_trigger_percentage else float(
-            take_profit_trigger_percentage)
-        stop_loss_price_offset = False if stop_loss_price_offset == '' or not stop_loss_price_offset else float(
-            stop_loss_price_offset)
-        tp_price_offset = False if tp_price_offset == '' or not tp_price_offset else float(
-            tp_price_offset)
-
-        trailing_stop_activation_percentage = False if trailing_stop_activation_percentage == '' or not trailing_stop_activation_percentage else float(
-            trailing_stop_activation_percentage)
-        trailing_stop_callback_ratio = False if trailing_stop_callback_ratio == '' or not trailing_stop_callback_ratio else float(
-            trailing_stop_callback_ratio)
-
-        max_orderbook_limit_price_offset = False if max_orderbook_limit_price_offset == '' or max_orderbook_limit_price_offset == 0 or not max_orderbook_limit_price_offset else float(
-            max_orderbook_limit_price_offset)
-
-        flip_position_if_opposite_side = False if flip_position_if_opposite_side == '' or not flip_position_if_opposite_side else bool(
-            flip_position_if_opposite_side)
-
-        take_profit_activated = None
-        stop_loss_activated = None
-        trailing_stop_loss_activated = None
-        # TODO multiple_tp and amendPxOnTriggerType are commented out because they need multiple TP's to work and is not
-        #   developed yet downstream
-        #   multiple_tp = None
-        #   amendPxOnTriggerType = None
-        if take_profit_trigger_percentage or tp_price_offset:
-            assert take_profit_trigger_percentage and tp_price_offset
-            take_profit_activated = True
-            tp_trigger_price_type = tp_trigger_price_type or 'last'
-
-        if stop_loss_trigger_percentage or stop_loss_price_offset:
-            assert stop_loss_trigger_percentage and stop_loss_price_offset
-            stop_loss_activated = True
-            sl_trigger_price_type = sl_trigger_price_type or 'last'
-
-        if trailing_stop_activation_percentage or trailing_stop_callback_ratio:
-            assert trailing_stop_callback_ratio, f'trailing_stop_callback_ratio must be provided if trailing_stop_activation_percentage is provided. {trailing_stop_callback_ratio = }'
-            trailing_stop_loss_activated = True
-
-        assert TD_MODE in ['isolated', 'crossed'], f'{TD_MODE = }'
-        assert order_side in ['buy', 'sell'] or not order_side, (
-            f'order_side must be either "buy" or "sell" or empty. \n '
-            f'for maintenance mode \n      {order_side = }')
-
-        assert not stop_loss_trigger_percentage or isinstance(stop_loss_trigger_percentage,
-                                                              float), f'{stop_loss_trigger_percentage = }'
-        assert not take_profit_trigger_percentage or isinstance(take_profit_trigger_percentage,
-                                                                float), f'{take_profit_trigger_percentage = }'
-        assert not stop_loss_price_offset or isinstance(stop_loss_price_offset, float), f'{stop_loss_price_offset = }'
-        assert not tp_price_offset or isinstance(tp_price_offset, float), f'{tp_price_offset = }'
-        assert not stop_loss_trigger_percentage or stop_loss_trigger_percentage >= 0, f'{stop_loss_trigger_percentage = }'
-        assert not take_profit_trigger_percentage or take_profit_trigger_percentage >= 0, f'{take_profit_trigger_percentage = }'
-        assert not stop_loss_price_offset or stop_loss_price_offset >= 0, f'{stop_loss_price_offset = }'
-        assert not tp_price_offset or tp_price_offset >= 0, f'{tp_price_offset = }'
-        assert not tp_trigger_price_type or tp_trigger_price_type in ['index', 'mark',
-                                                                      'last'], f'{tp_trigger_price_type = }'
-        assert not sl_trigger_price_type or sl_trigger_price_type in ['index', 'mark',
-                                                                      'last'], f'{sl_trigger_price_type = }'
-
-        assert order_type in ['market', 'limit', 'post_only', 'fok', 'ioc'], f'{order_type = }'
-        assert isinstance(order_size, int), f'Order size must be an integer/multiple of a lot size. {order_size = }'
-        assert order_size > 0, f'Order size must be greater than 0. {order_size = }'
-
-        generated_client_order_id = generate_random_string(20, 'alphanumeric')  # 6 characters for type later
-
+    assert isinstance(instID, str), f'{instID = }'
     if clear_prior_to_new_order:
         clear_orders_and_positions_for_instrument(instID)
 
@@ -1116,7 +1263,7 @@ async def okx_signal_handler(
         instrument_status_report.positions) > 0 else None  # we are only using net so only one position
 
     if order_side:
-        ticker = get_ticker(instId=instID)
+        ticker = await get_ticker(instId=instID)
         print(f'{ticker = }')
         ask_price = float(ticker.askPx) if ticker.askPx else ticker.bidPx  # fixme sometimes okx returns '' for askPx
         bid_price = float(ticker.bidPx)
@@ -1207,47 +1354,50 @@ async def okx_signal_handler(
             order_request_dict['px'] = limit_price
 
         if take_profit_activated:
-            stop_surplus_trigger_price, stop_surplus_execute_price = calculate_tp_stop_prices(
-                reference_price=reference_price, order_side=order_side,
-                tp_trigger_percentage=take_profit_trigger_percentage,
-                tp_price_offset=tp_price_offset,
+            stop_surplus_trigger_price, stop_surplus_execute_price = calculate_tp_stop_prices_usd(
+                order_side=order_side,
+                reference_price=reference_price,
+                tp_trigger_usd=tp_trigger_price_offset,
+                tp_execute_usd=tp_execution_price_offset,
             )
-
-            tpTriggerPxType = tp_trigger_price_type
             order_request_dict.update(
                 tpTriggerPx=stop_surplus_trigger_price,
                 tpOrdPx=stop_surplus_execute_price,
-                tpTriggerPxType=tpTriggerPxType,
+                tpTriggerPxType=tp_trigger_price_type,
                 algoClOrdId=f'{generated_client_order_id}TPORSL'
             )
         if stop_loss_activated:
-            stop_loss_trigger_price, stop_loss_execute_price = calculate_sl_stop_prices(
-                reference_price=reference_price, order_side=order_side,
-                sl_trigger_percentage=stop_loss_trigger_percentage,
-                sl_price_offset=stop_loss_price_offset)
-            slTriggerPxType = sl_trigger_price_type
+            stop_loss_trigger_price, stop_loss_execute_price = calculate_sl_stop_prices_usd(
+                order_side=order_side,
+                reference_price=reference_price,
+                sl_trigger_usd=sl_trigger_price_offset,
+                sl_execute_usd=sl_execution_price_offset,
+            )
             order_request_dict.update(
                 slTriggerPx=stop_loss_trigger_price,
                 slOrdPx=stop_loss_execute_price,
-                slTriggerPxType=slTriggerPxType,
+                slTriggerPxType=sl_trigger_price_type,
                 algoClOrdId=f'{generated_client_order_id}TPORSL'
             )
+
+
         order_placement_return = place_order(**order_request_dict)
 
         print(f'{order_placement_return = }')
 
         # If error, cancel all orders and exit
-        if order_placement_return.sCode != '0':
+        if order_placement_return and order_placement_return.sCode != '0':
             print(f'{order_placement_return.sMsg = }')
-            cancel_all_orders()
+            cancel_all_orders(instId=instID)
             cancel_all_algo_orders_with_params(instId=instID)
             exit()
 
         if trailing_stop_loss_activated:
             activePx = None
-            if trailing_stop_activation_percentage:
-                activePx = reference_price * (1 + trailing_stop_activation_percentage) if order_side == 'buy' else \
-                    reference_price * (1 - trailing_stop_activation_percentage)
+            if trailing_stop_activation_price_offset:
+                activePx = reference_price + trailing_stop_activation_price_offset if order_side == 'buy' else \
+                    reference_price - trailing_stop_activation_price_offset
+
             # Create Trailing Stop Loss
             trailing_stop_order_placement_return = place_algo_trailing_stop_loss(
                 instId=instID,
@@ -1257,7 +1407,7 @@ async def okx_signal_handler(
                 sz=order_size,
                 activePx=activePx or reference_price,
                 posSide=POSSIDETYPE,
-                callbackRatio=trailing_stop_callback_ratio,
+                callbackRatio=trailing_stop_callback_offset,
                 reduceOnly='true',
                 algoClOrdId=f'{generated_client_order_id}TrailS',
                 cxlOnClosePos="true",
@@ -1273,8 +1423,6 @@ async def okx_signal_handler(
             if position_side is None:
                 print(f'Will Attempt to close all positions for {instID = } due to 0 net position')
                 close_all_positions(instId=instID)
-                # cancel_all_algo_orders_with_params(instId=instID)
-                # cancel_all_orders(instId=instID)
 
     print('\n\nFINAL REPORT')
     return fetch_status_report_for_instrument(instID, TD_MODE)
@@ -1308,7 +1456,7 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
         assert (time.time() - start_timestamp) < 259200, f'{time.time() - start_timestamp = }'
     else:
         assert (time.time() - start_timestamp) < 2592000, f'{time.time() - start_timestamp = }'
-    instType = 'FUTURES'
+
     limit = 100
     after = ''
     all_data = []
@@ -1456,7 +1604,7 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 
             assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
             okx_signal_input = indicator_input.OKXSignalInput
-            instrument_status_report: InstrumentStatusReport = okx_signal_handler(**okx_signal_input.model_dump())
+            instrument_status_report: InstrumentStatusReport = await okx_signal_handler(**okx_signal_input.model_dump())
             pprint(instrument_status_report)
             assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
             return {"detail": "okx signal received", "instrument_status_report": instrument_status_report}
@@ -1474,7 +1622,7 @@ if __name__ == '__main__':
 
     # Immediately execute the 'red button' functionality to clear all positions and orders
     # TODO: Ensure only relevant orders/positions are handled.
-    # await okx_signal_handler(red_button=True)
+    asyncio.run(okx_signal_handler(red_button=True))
 
     # Load environment variables from a .env file
     dotenv.load_dotenv(dotenv.find_dotenv())
@@ -1482,19 +1630,25 @@ if __name__ == '__main__':
     # Branching logic based on the test function chosen
     if TEST_FUNCTION == 'okx_signal_handler':
         # Execute the 'okx_signal_handler' with predefined parameters for testing
-        response = okx_signal_handler(
+        response = asyncio.run(okx_signal_handler(
             # Parameters for the 'okx_signal_handler'
             instID="BTC-USDT-240628",
-            order_size=1,
+            usd_order_size=1,
             leverage=0,
-            order_side="",
+            order_side="BUY",
             order_type="MARKET",
             max_orderbook_limit_price_offset=None,
             flip_position_if_opposite_side=True,
             clear_prior_to_new_order=False,
             red_button=False,
-            # More parameters...
-        )
+            # TP and SL
+            # tp_trigger_price_offset=100,
+            # tp_execution_price_offset=90,
+            # sl_trigger_price_offset=100,
+            # sl_execution_price_offset=90,
+            trailing_stop_activation_price_offset=100,
+            trailing_stop_callback_offset=10
+        ))
     elif TEST_FUNCTION == 'okx_premium_indicator':
         # Load a payload from a file for testing the 'okx_premium_indicator'
         with open('../debugging_payload.json', 'r') as f:
@@ -1512,7 +1666,7 @@ if __name__ == '__main__':
 
         # Prepare and send a message to a Redis stream for debugging
         redis_ready_message = serialize_for_redis(indicator_input.model_dump())
-        r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message)
+        r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message, maxlen=REDIS_STREAM_MAX_LEN)
 
         # Process the indicator input and store the result
         result = okx_premium_indicator(indicator_input)
@@ -1521,7 +1675,8 @@ if __name__ == '__main__':
         response = okx_premium_indicator(webhook_payload)
         if isinstance(result, dict):
             # Send the result to a Redis stream for debugging
-            r.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result))
+            r.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result),
+                   maxlen=REDIS_STREAM_MAX_LEN)
     else:
         # Handle invalid test function selection
         raise ValueError(f'Invalid test function {TEST_FUNCTION = }')

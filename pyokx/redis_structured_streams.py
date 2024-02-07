@@ -21,11 +21,28 @@ from typing import List
 
 import aioredis
 
+from pyokx import ENFORCED_INSTRUMENT_TYPE
+from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import FillHistoricalMetrics
 from pyokx.ws_data_structures import AccountChannel, PositionsChannel, OrdersChannel, available_channel_models
 from redis_tools.utils import _deserialize_from_redis
 
-'''Structured Websocket Streams'''
+
+async def get_instruments_searcher_from_redis(async_redis=None, instType=ENFORCED_INSTRUMENT_TYPE):
+    instrument_stream = await async_redis.xrevrange(f'okx:rest@{instType}-instruments', count=1)
+    if not instrument_stream:
+        okx_futures_instrument_searcher = InstrumentSearcher(instType=instType)
+    else:
+        message = instrument_stream[0]
+        redis_stream_id = message[0]
+        message_serialized = message[1].get("data")
+        if not message_serialized:
+            okx_futures_instrument_searcher = InstrumentSearcher(instType=instType)
+        else:
+            deserialized_message = _deserialize_from_redis(message_serialized)
+            okx_futures_instrument_searcher = InstrumentSearcher(
+                _instrument_map=deserialized_message)
+    return okx_futures_instrument_searcher
 
 
 async def get_stream_okx_all_messages(async_redis: aioredis.Redis, count: int = 10):
@@ -121,9 +138,6 @@ async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int 
         order_message: OrdersChannel = OrdersChannel(**order_message_deserialized)
         order_messages.append(order_message)
     return order_messages
-
-
-'''Structured Report Streams'''
 
 
 async def get_stream_okx_fill_metrics_report(async_redis: aioredis.Redis, count: int = 10):

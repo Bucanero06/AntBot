@@ -48,6 +48,12 @@ services:
 #      H2O_WAVE_NO_STORE: "1"
 #      H2O_WAVE_NO_LOG: "1"
       H2O_WAVE_PING_INTERVAL: "50s"
+      # TODO
+      OKX_API_KEY: ${OKX_API_KEY}
+      OKX_SECRET_KEY: ${OKX_SECRET_KEY}
+      OKX_PASSPHRASE: ${OKX_PASSPHRASE}
+      OKX_SANDBOX_MODE: ${OKX_SANDBOX_MODE}
+
     ports:
       - "10101:10101"
     healthcheck:

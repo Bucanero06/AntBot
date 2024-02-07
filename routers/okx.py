@@ -22,7 +22,6 @@ from pprint import pprint
 
 from fastapi import APIRouter, HTTPException
 from jose import JWTError
-from pydantic import BaseModel
 
 from firebase_tools.authenticate import check_token_validity
 from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, PremiumIndicatorSignalRequestForm
@@ -45,9 +44,9 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        valid = check_token_against_instrument(token=signal_input.InstIdAPIKey,
-                                               reference_instID=signal_input.OKXSignalInput.instID,
-                                               )
+        valid = await check_token_against_instrument(token=signal_input.InstIdAPIKey,
+                                                     reference_instID=signal_input.OKXSignalInput.instID,
+                                                     )
         assert valid == True, "InstIdAPIKey verification failed"
     except JWTError as e:
         print(f"JWTError in okx_antbot_webhook: {e}")
@@ -101,7 +100,6 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
         return {"detail": "okx signal received but no report returned"}
 
 
-
 @okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
 async def okx_premium_indicator_handler(indicator_input: PremiumIndicatorSignalRequestForm):
     from fastapi import HTTPException
@@ -114,9 +112,9 @@ async def okx_premium_indicator_handler(indicator_input: PremiumIndicatorSignalR
     from jose import JWTError
     try:
         from routers.okx_authentication import check_token_against_instrument
-        valid = check_token_against_instrument(token=indicator_input.InstIdAPIKey,
-                                               reference_instID=indicator_input.OKXSignalInput.instID
-                                               )
+        valid = await check_token_against_instrument(token=indicator_input.InstIdAPIKey,
+                                                     reference_instID=indicator_input.OKXSignalInput.instID
+                                                     )
         assert valid == True, "InstIdAPIKey verification failed"
     except JWTError as e:
         print(f"JWTError in okx_antbot_webhook: {e}")
@@ -136,12 +134,11 @@ async def okx_premium_indicator_handler(indicator_input: PremiumIndicatorSignalR
     await async_redis.xadd(f'okx:webhook@okx_premium_indicator@input@{instrument_id}',
                            {'data': serialize_for_redis(indicator_input)},
                            maxlen=REDIS_STREAM_MAX_LEN)
-    returning_message =  await okx_premium_indicator(indicator_input)
+    returning_message = await okx_premium_indicator(indicator_input)
     await async_redis.xadd(f'okx:webhook@okx_premium_indicator@response@{instrument_id}',
-                            {'data': serialize_for_redis(returning_message)},
-                            maxlen=REDIS_STREAM_MAX_LEN)
+                           {'data': serialize_for_redis(returning_message)},
+                           maxlen=REDIS_STREAM_MAX_LEN)
     return returning_message
-
 
 
 @okx_router.get(path="/okx/highest_volume_ticker/{symbol}", status_code=status.HTTP_200_OK)

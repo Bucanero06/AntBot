@@ -17,10 +17,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import pprint
 from datetime import datetime
 from typing import List
 
-from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
+from h2o_wave import Q, ui, on, data, run_on, AsyncSite, pack  # noqa F401
 
 from h2o_dashboard.util import add_card
 from pyokx.data_structures import AccountBalanceData, FillHistoricalMetrics, FillHistoricalMetricsEntry
@@ -300,121 +301,6 @@ class OKX_Fill_Report_StreamWidget:
         fill_metrics_report_card.items = items
         await self.q.page.save()
 
-
-class OKX_Manual_ControlsWidget:
-
-    def __init__(self, q: Q, card_name: str, box: str):
-        self.q = q
-        self.card_name = card_name
-        self.box = box
-        self._initialized = False
-
-    async def _is_initialized(self):
-        return self._initialized
-
-    async def get_manual_controls(self, box: str):
-        # # signal_response = okx_signal_handler(
-        # #                 red_button=True,
-        # #             )
-        # # signal_response = okx_signal_handler(
-        # #     instID="BTC-USDT-240628",
-        # #     order_size=1,
-        # #     leverage=5,
-        # #     order_side="BUY",
-        # #     order_type="POST_ONLY",
-        # #     max_orderbook_limit_price_offset=0.1,
-        # #     flip_position_if_opposite_side=True,
-        # #     clear_prior_to_new_order=False,
-        # #     red_button=False,
-        # #     # order_usd_amount=100,
-        # #     stop_loss_price_offset=None,
-        # #     tp_price_offset=None,
-        # #     trailing_stop_activation_percentage=None,
-        # #     trailing_stop_callback_ratio=None,
-        # #     stop_loss_trigger_percentage=None,
-        # #     take_profit_trigger_percentage=None,
-        # #     tp_trigger_price_type=None,
-        # #     sl_trigger_price_type=None,
-        # # )
-        # # print(f"{signal_response = }")
-
-        return ui.form_card(
-            box=box,
-            # Lets set up a form to send a signal to the okx_signal_handler
-            items=[
-                ui.label('MVP-Bot-Manual-Controls'),
-                ui.buttons([ui.button(name='ping_bot', label='Ping', primary=True),
-                            ui.button(name='send_signal', label='Send', primary=True)]),
-                # The input parameters so user can interact with the bot
-        ui.textbox(name='instID_textbox', label='instID'),
-        ui.textbox(name='order_size_textbox', label='order_size'),
-        ui.textbox(name='leverage_textbox', label='leverage'),
-        ui.textbox(name='order_side_textbox', label='order_side'),
-        ui.textbox(name='order_type_textbox', label='order_type'),
-        ui.textbox(name='max_orderbook_limit_price_offset_textbox', label='max_orderbook_limit_price_offset'),
-        ui.textbox(name='flip_position_if_opposite_side_textbox', label='flip_position_if_opposite_side'),
-        ui.textbox(name='clear_prior_to_new_order_textbox', label='clear_prior_to_new_order'),
-        ui.textbox(name='red_button_textbox', label='red_button'),
-        ui.textbox(name='order_usd_amount_textbox', label='order_usd_amount'),
-        ui.textbox(name='stop_loss_price_offset_textbox', label='stop_loss_price_offset'),
-        ui.textbox(name='tp_price_offset_textbox', label='tp_price_offset'),
-        ui.textbox(name='trailing_stop_activation_percentage_textbox', label='trailing_stop_activation_percentage'),
-        ui.textbox(name='trailing_stop_callback_ratio_textbox', label='trailing_stop_callback_ratio'),
-        ui.textbox(name='stop_loss_trigger_percentage_textbox', label='stop_loss_trigger_percentage'),
-        ui.textbox(name='take_profit_trigger_percentage_textbox', label='take_profit_trigger_percentage'),
-        ui.textbox(name='tp_trigger_price_type_textbox', label='tp_trigger_price_type'),
-        ui.textbox(name='sl_trigger_price_type_textbox', label='sl_trigger_price_type'),
-            ]
-        )
-
-    async def add_cards(self):
-        # await add_card(self.q, self.card_name + '_manual_controls', await self.get_manual_controls(box=self.box))
-        # Split get manual controls into two cards
-        mvp_bot_manual_controls_1  = ui.form_card(
-            box='mvp_bot_manual_controls_1',
-            # Lets set up a form to send a signal to the okx_signal_handler
-            items=[
-                ui.label('MVP-Bot-Manual-Controls'),
-                ui.buttons([ui.button(name='ping_bot', label='Ping', primary=True)]),
-                # The input parameters so user can interact with the bot
-        ui.textbox(name='instID_textbox', label='instID'),
-        ui.textbox(name='order_size_textbox', label='order_size'),
-        ui.textbox(name='leverage_textbox', label='leverage'),
-        ui.textbox(name='order_side_textbox', label='order_side'),
-        ui.textbox(name='order_type_textbox', label='order_type'),
-        ui.textbox(name='max_orderbook_limit_price_offset_textbox', label='max_orderbook_limit_price_offset'),
-        ui.textbox(name='flip_position_if_opposite_side_textbox', label='flip_position_if_opposite_side'),
-        ui.textbox(name='clear_prior_to_new_order_textbox', label='clear_prior_to_new_order'),
-                ui.textbox(name='red_button_textbox', label='red_button'),
-            ]
-        )
-        mvp_bot_manual_controls_2 =  ui.form_card(
-            box='mvp_bot_manual_controls_2',
-            # Lets set up a form to send a signal to the okx_signal_handler
-            items=[
-                ui.label('MVP-Bot-Manual-Controls'),
-                ui.buttons([ui.button(name='send_signal', label='Send', primary=True)]),
-                # The input parameters so user can interact with the bot
-                ui.textbox(name='order_usd_amount_textbox', label='order_usd_amount'),
-                ui.textbox(name='stop_loss_price_offset_textbox', label='stop_loss_price_offset'),
-                ui.textbox(name='tp_price_offset_textbox', label='tp_price_offset'),
-                ui.textbox(name='trailing_stop_activation_percentage_textbox',
-                           label='trailing_stop_activation_percentage'),
-                ui.textbox(name='trailing_stop_callback_ratio_textbox', label='trailing_stop_callback_ratio'),
-                ui.textbox(name='stop_loss_trigger_percentage_textbox', label='stop_loss_trigger_percentage'),
-                ui.textbox(name='take_profit_trigger_percentage_textbox', label='take_profit_trigger_percentage'),
-                ui.textbox(name='tp_trigger_price_type_textbox', label='tp_trigger_price_type'),
-                ui.textbox(name='sl_trigger_price_type_textbox', label='sl_trigger_price_type'),
-            ]
-        )
-        await add_card(self.q, self.card_name + '_manual_controls_1', mvp_bot_manual_controls_1)
-        await add_card(self.q, self.card_name + '_manual_controls_2', mvp_bot_manual_controls_2)
-
-        await self.q.page.save()
-        self._initialized = True
-
-    async def update_cards(self):
-        await self.q.page.save()
 
 
 class Overview_StreamWidget:  # TODO: Will connect to the account streams for all exchanges, rn it's just okx

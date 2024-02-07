@@ -537,24 +537,27 @@ class AccountStatusReport(BaseModel):
 
 
 class OKXSignalInput(BaseModel):
-    instID: str = ''
-    order_size: int = None
-    leverage: int = None
-    order_side: str = ''
-    order_type: str = ''
-    max_orderbook_limit_price_offset: float = None
-    flip_position_if_opposite_side: bool = False
-    clear_prior_to_new_order: bool = False
-    red_button: bool = False
-    order_usd_amount: float = None
-    stop_loss_trigger_percentage: float = None
-    take_profit_trigger_percentage: float = None
-    tp_trigger_price_type: str = ''
-    stop_loss_price_offset: float = None
-    tp_price_offset: float = None
-    sl_trigger_price_type: str = ''
-    trailing_stop_activation_percentage: float = None
-    trailing_stop_callback_ratio: float = None
+    instID: Optional[str] = ''
+    usd_order_size: Optional[float] = 0
+    leverage: Optional[int] = 0
+    order_side: Optional[str] = ''
+    order_type: Optional[str] = ''
+    max_orderbook_limit_price_offset: Optional[float] = 0
+    flip_position_if_opposite_side: Optional[bool] = False
+    clear_prior_to_new_order: Optional[bool] = False
+    red_button: Optional[bool] = False
+    tp_trigger_price_type: Optional[str] = ''
+    tp_trigger_price_offset: Optional[float] = 0
+    tp_execution_price_offset: Optional[float] = 0
+    sl_trigger_price_type: Optional[str] = ''
+    sl_trigger_price_offset: Optional[float] = 0
+    sl_execution_price_offset: Optional[float] = 0
+    trailing_stop_activation_price_offset: Optional[float] = 0
+    trailing_stop_callback_offset: Optional[float] = 0
+
+
+
+
 
 
 class PremiumIndicatorSignals(BaseModel):
@@ -588,66 +591,3 @@ class FillHistoricalMetrics(BaseModel):
     ONE_MONTH: FillHistoricalMetricsEntry
     THREE_MONTHS: FillHistoricalMetricsEntry
 
-# {
-#   "InstIdAPIKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJydWJlbkBjYXJib255bC5vcmciLCJpZCI6InFtc2d4c0Eza0taNHMwaml1bTQwOHFvbGJWOTIiLCJyb2xlIjoidHJhZGluZ19pbnN0cnVtZW50IiwiaW5zdElEIjoiQlRDLVVTRFQtMjQwNjI4In0.WyO3oNTT5loBnQzsTcjM8Lt13F8-nNS7DI6PxSEGeSc",
-#   "OKXSignalInput": {
-#     "instID": "BTC-USDT-240628",
-#     "order_size": 1,
-#     "leverage": 0,
-#     "order_side": "",
-#     "order_type": "limit",
-#     "max_orderbook_limit_price_offset": 0,
-#     "flip_position_if_opposite_side": true,
-#     "clear_prior_to_new_order": false,
-#     "red_button": false,
-#     "order_usd_amount": 0,
-#     "stop_loss_trigger_percentage": 0,
-#     "take_profit_trigger_percentage": 0,
-#     "tp_trigger_price_type": "",
-#     "stop_loss_price_offset": 0,
-#     "tp_price_offset": 0,
-#     "sl_trigger_price_type": "",
-#     "trailing_stop_activation_percentage": 0,
-#     "trailing_stop_callback_ratio": 0
-#   },
-#   "PremiumIndicatorSignals": {
-#     "Bullish": "{{plot('Bullish')}}",
-#     "Bearish": "{{plot('Bearish')}}",
-#     "Bullish_plus": "{{plot('Bullish+')}}",
-#     "Bearish_plus": "{{plot('Bearish+')}}",
-#     "Bullish_Exit": "{{plot('Bullish Exit')}}",
-#     "Bearish_Exit": "{{plot('Bearish Exit')}}"
-#   }
-# }
-
-# {
-#   "InstIdAPIKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJydWJlbkBjYXJib255bC5vcmciLCJpZCI6InFtc2d4c0Eza0taNHMwaml1bTQwOHFvbGJWOTIiLCJyb2xlIjoidHJhZGluZ19pbnN0cnVtZW50IiwiaW5zdElEIjoiQlRDLVVTRFQtMjQwNjI4In0.WyO3oNTT5loBnQzsTcjM8Lt13F8-nNS7DI6PxSEGeSc",
-#   "OKXSignalInput": {
-#     "instID": "BTC-USDT-240628",
-#     "order_size": 1,
-#     "leverage": 0,
-#     "order_side": "",
-#     "order_type": "limit",
-#     "max_orderbook_limit_price_offset": 0,
-#     "flip_position_if_opposite_side": true,
-#     "clear_prior_to_new_order": false,
-#     "red_button": false,
-#     "order_usd_amount": 0,
-#     "stop_loss_trigger_percentage": 0,
-#     "take_profit_trigger_percentage": 0,
-#     "tp_trigger_price_type": "",
-#     "stop_loss_price_offset": 0,
-#     "tp_price_offset": 0,
-#     "sl_trigger_price_type": "",
-#     "trailing_stop_activation_percentage": 0,
-#     "trailing_stop_callback_ratio": 0
-#   },
-#   "PremiumIndicatorSignals": {
-#     "Bullish": "{{plot("Bullish")}}",
-#     "Bearish": "{{plot("Bearish")}}",
-#     "Bullish_plus": "{{plot("Bullish+")}}",
-#     "Bearish_plus": "{{plot("Bearish+")}}",
-#     "Bullish_Exit": "{{plot("Bullish Exit")}}",
-#     "Bearish_Exit": "{{plot("Bearish Exit")}}"
-#   }
-# }

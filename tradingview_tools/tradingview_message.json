@@ -5,32 +5,27 @@
     "order_size": 1,
     "leverage": 0,
     "order_side": "",
-    "order_type": "market",
+    "order_type": "limit",
     "max_orderbook_limit_price_offset": 0,
     "flip_position_if_opposite_side": true,
     "clear_prior_to_new_order": false,
     "red_button": false,
-    "order_usd_amount": 0,
-    "stop_loss_trigger_percentage": 5,
-    "take_profit_trigger_percentage": 5,
+    "okx_signal_input_usd_mode": 0,
+    "sl_trigger_price_offset": 0,
+    "tp_trigger_price_offset": 0,
     "tp_trigger_price_type": "",
-    "stop_loss_price_offset": 0.01,
-    "tp_price_offset": 0.01,
+    "sl_execution_price_offset": 0,
+    "tp_execution_price_offset": 0,
     "sl_trigger_price_type": "",
-    "trailing_stop_activation_percentage": 0.5,
-    "trailing_stop_callback_ratio": 0.1
+    "trailing_stop_activation_price": 0,
+    "trailing_stop_callback": 0
   },
-"PremiumIndicatorSignals": {
-    "Bullish": "0",
-    "Bearish": "0",
-    "Bullish_plus": "0",
-    "Bearish_plus": "0",
-    "Bullish_Exit": "0",
-    "Bearish_Exit": "0"
+  "PremiumIndicatorSignals": {
+    "Bullish": "{{plot('Bullish')}}",
+    "Bearish": "{{plot('Bearish')}}",
+    "Bullish_plus": "{{plot('Bullish+')}}",
+    "Bearish_plus": "{{plot('Bearish+')}}",
+    "Bullish_Exit": "{{plot('Bullish Exit')}}",
+    "Bearish_Exit": "{{plot('Bearish Exit')}}"
   }
 }
-
-
-
-
-

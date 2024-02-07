@@ -22,24 +22,20 @@ import os
 import traceback
 from typing import List
 
-from pydantic import BaseModel
-
+from pyokx import ENFORCED_INSTRUMENT_TYPE
 from pyokx.data_structures import FillEntry, FillHistoricalMetricsEntry, FillHistoricalMetrics
 from pyokx.low_rest_api.exceptions import OkxAPIException, OkxParamsException, OkxRequestException
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
-from pyokx.rest_handling import fetch_fill_history
-from redis_tools.utils import init_async_redis, stop_async_redis, serialize_for_redis
+from pyokx.rest_handling import fetch_fill_history, InstrumentSearcher
+from redis_tools.utils import init_async_redis, serialize_for_redis
 from shared import logging
 from shared.tmp_shared import get_timestamp_from_days_ago
-
 
 logger = logging.setup_logger("okx_rest_messages_service")
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
 
-
-
-async def analyze_transaction_history(instType: InstType = 'FUTURES'):
+async def analyze_transaction_history(instType: InstType = ENFORCED_INSTRUMENT_TYPE):
     """
     Analyzes the transaction history for a given instrument type over the last 90 days.
 
@@ -105,6 +101,13 @@ async def analyze_transaction_history(instType: InstType = 'FUTURES'):
     await async_redis.xadd('okx:reports@fill_metrics', {'data': redis_ready_message}, maxlen=REDIS_STREAM_MAX_LEN)
 
 
+async def update_instruments(okx_futures_instrument_searcher: InstrumentSearcher,
+                             instType: InstType = ENFORCED_INSTRUMENT_TYPE):
+    instrument_map = await okx_futures_instrument_searcher.update_instruments()
+    redis_ready_message = serialize_for_redis(instrument_map)
+    await async_redis.xadd(f'okx:rest@{instType}-instruments', {'data': redis_ready_message}, maxlen=REDIS_STREAM_MAX_LEN)
+
+
 async def okx_rest_messages_services(reload_interval: int = 30):
     """
     Main service loop for processing OKX REST messages.
@@ -121,10 +124,12 @@ async def okx_rest_messages_services(reload_interval: int = 30):
     async_redis = await init_async_redis()
     assert async_redis, "async_redis is None, check the connection to the Redis server"
 
+    okx_futures_instrument_searcher = InstrumentSearcher(ENFORCED_INSTRUMENT_TYPE)
     while True:
         try:
             await asyncio.gather(
-                analyze_transaction_history()
+                analyze_transaction_history(),
+                update_instruments(okx_futures_instrument_searcher, ENFORCED_INSTRUMENT_TYPE)
                 # by default, analyze and store the last 90 days for futures
             )
         except KeyboardInterrupt:

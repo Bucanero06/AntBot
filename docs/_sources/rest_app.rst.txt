@@ -1,0 +1,11 @@
+rest_app
+========
+
+.. automodule:: rest_app
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: rest_app
+    :parts: 1
+

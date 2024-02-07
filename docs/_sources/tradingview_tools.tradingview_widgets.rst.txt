@@ -1,0 +1,11 @@
+tradingview_tools.tradingview_widgets
+=====================================
+
+.. automodule:: tradingview_tools.tradingview_widgets
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: tradingview_tools.tradingview_widgets
+    :parts: 1
+

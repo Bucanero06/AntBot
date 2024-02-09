@@ -72,11 +72,6 @@ async def stream_message(q: Q, page_name: str, message: str, delay: float = 0.3)
     q.page[page_name].generating = False
     await q.page.save()
 
-async def init_page_card_set(q: Q, page_name: str) -> None:
-    """
-    Initialize the page with a set of cards.
-    """
-    setattr(q.client, f'{page_name}_cards', set())
 
 async def remove_card(q: Q, name: str, page_name:str = None) -> None:
     """

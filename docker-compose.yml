@@ -3,20 +3,20 @@ version: '2.2'
 # sudo snap refresh docker --channel=latest/edge
 
 services:
-  #  nginx:
-  #    build:
-  #      context: .
-  #      dockerfile: .docker/nginx.dockerfile
-  #    restart: unless-stopped
-  #    networks:
-  #      - my-network
-  #    ports:
-  #      - ${NGINX_SERVICE_PORT}:${NGINX_SERVICE_PORT}
-  #    healthcheck:
-  #      test: [ "CMD", "curl", "--fail", "http://localhost:80" ]
-  #      interval: 10s
-  #      timeout: 3s
-  #      retries: 5
+  nginx:
+    build:
+      context: .
+      dockerfile: .docker/nginx.dockerfile
+    restart: unless-stopped
+    networks:
+      - my-network
+    ports:
+      - ${NGINX_SERVICE_PORT}:${NGINX_SERVICE_PORT}
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:80" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   dashboard:
     build:

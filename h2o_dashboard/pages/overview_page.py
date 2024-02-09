@@ -19,10 +19,12 @@
 # SOFTWARE.
 import asyncio
 
+import requests
 from h2o_wave import main, Q, app, ui, on, run_on, data  # noqa F401
 
 from h2o_dashboard.util import add_card
 from h2o_dashboard.widgets.okx_streams import Overview_StreamWidget
+from pyokx.data_structures import InstIdSignalRequestForm, OKXSignalInput
 
 
 async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
@@ -46,6 +48,7 @@ async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
               "allow_symbol_change": true,
               "details": true,
               "hotlist": true,
+              "theme": "dark",
               "calendar": true,
               "show_popup_button": true,
               "popup_width": "1000",
@@ -71,7 +74,17 @@ async def overview_page(q: Q):
                                   icon='Home',
                                   icon_color=None,
                                   ))
+
+
+
     await add_tradingview_advanced_chart(q, card_name='Overview_Page_TradingView_Advanced_Chart', box='grid_1')
+
+    # await add_card(q, 'Overview_Page_TradingView_Info', ui.form_card(box='grid_1', items=[
+    #     ui.frame(height="100px", width="300px",
+    #              content=str(get_info_widget("AAPL"))
+    #      )
+    # ]))
+
     '''Init Widgets'''
     overview_widget = Overview_StreamWidget(q=q, card_name='grid_2', box='grid_2', count=2)
 

@@ -42,13 +42,14 @@ async def okx_dashboard_page(q: Q):
 
     # Add the the
     '''Init Widgets'''
-    positions_stream_widget = OKX_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_1',
+    account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_1', count=900)
+    positions_stream_widget = OKX_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_2',
                                                          count=1)
-    fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_1',
+    fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_2',
                                                              count=1)
 
-    manual_controls_widget = OKX_Manual_ControlsWidget(q=q, card_name='OKXDEBUG_Manual_Controls', box='grid_2')
-    account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_3', count=900)
+    manual_controls_widget = OKX_Manual_ControlsWidget(q=q, card_name='OKXDEBUG_Manual_Controls', box='grid_3')
+
 
 
     '''Init RealTime Page Cards'''

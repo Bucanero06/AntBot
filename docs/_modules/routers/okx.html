@@ -57,8 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -145,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
@@ -215,7 +218,6 @@
 
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">HTTPException</span>
 <span class="kn">from</span> <span class="nn">jose</span> <span class="kn">import</span> <span class="n">JWTError</span>
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 
 <span class="kn">from</span> <span class="nn">firebase_tools.authenticate</span> <span class="kn">import</span> <span class="n">check_token_validity</span>
 <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">InstrumentStatusReport</span><span class="p">,</span> <span class="n">InstIdSignalRequestForm</span><span class="p">,</span> <span class="n">PremiumIndicatorSignalRequestForm</span>
@@ -240,9 +242,9 @@
         <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>
     <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">valid</span> <span class="o">=</span> <span class="n">check_token_against_instrument</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">signal_input</span><span class="o">.</span><span class="n">InstIdAPIKey</span><span class="p">,</span>
-                                               <span class="n">reference_instID</span><span class="o">=</span><span class="n">signal_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">instID</span><span class="p">,</span>
-                                               <span class="p">)</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="k">await</span> <span class="n">check_token_against_instrument</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">signal_input</span><span class="o">.</span><span class="n">InstIdAPIKey</span><span class="p">,</span>
+                                                     <span class="n">reference_instID</span><span class="o">=</span><span class="n">signal_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">instID</span><span class="p">,</span>
+                                                     <span class="p">)</span>
         <span class="k">assert</span> <span class="n">valid</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;InstIdAPIKey verification failed&quot;</span>
     <span class="k">except</span> <span class="n">JWTError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;JWTError in okx_antbot_webhook: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -297,7 +299,6 @@
 
 
 
-
 <div class="viewcode-block" id="okx_premium_indicator_handler">
 <a class="viewcode-back" href="../../routers.okx.html#routers.okx.okx_premium_indicator_handler">[docs]</a>
 <span class="nd">@okx_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/tradingview/premium_indicator&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
@@ -312,9 +313,9 @@
     <span class="kn">from</span> <span class="nn">jose</span> <span class="kn">import</span> <span class="n">JWTError</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">routers.okx_authentication</span> <span class="kn">import</span> <span class="n">check_token_against_instrument</span>
-        <span class="n">valid</span> <span class="o">=</span> <span class="n">check_token_against_instrument</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">InstIdAPIKey</span><span class="p">,</span>
-                                               <span class="n">reference_instID</span><span class="o">=</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">instID</span>
-                                               <span class="p">)</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="k">await</span> <span class="n">check_token_against_instrument</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">InstIdAPIKey</span><span class="p">,</span>
+                                                     <span class="n">reference_instID</span><span class="o">=</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">instID</span>
+                                                     <span class="p">)</span>
         <span class="k">assert</span> <span class="n">valid</span> <span class="o">==</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;InstIdAPIKey verification failed&quot;</span>
     <span class="k">except</span> <span class="n">JWTError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;JWTError in okx_antbot_webhook: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -334,12 +335,11 @@
     <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@okx_premium_indicator@input@</span><span class="si">{</span><span class="n">instrument_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                            <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">)},</span>
                            <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
-    <span class="n">returning_message</span> <span class="o">=</span>  <span class="k">await</span> <span class="n">okx_premium_indicator</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">)</span>
+    <span class="n">returning_message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">okx_premium_indicator</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@okx_premium_indicator@response@</span><span class="si">{</span><span class="n">instrument_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                            <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">returning_message</span><span class="p">)},</span>
-                            <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
+                           <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">returning_message</span><span class="p">)},</span>
+                           <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">returning_message</span></div>
-
 
 
 

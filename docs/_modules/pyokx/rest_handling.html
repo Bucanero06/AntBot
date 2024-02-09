@@ -57,8 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -145,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
@@ -218,35 +221,28 @@
 <span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">HTTPError</span>
 
-<span class="kn">import</span> <span class="nn">dotenv</span>
-
+<span class="kn">from</span> <span class="nn">pyokx.InstrumentSearcher</span> <span class="kn">import</span> <span class="n">InstrumentSearcher</span>
 <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Order</span><span class="p">,</span> <span class="n">Cancelled_Order</span><span class="p">,</span> <span class="n">Order_Placement_Return</span><span class="p">,</span>
                                    <span class="n">Position</span><span class="p">,</span> <span class="n">Closed_Position</span><span class="p">,</span> <span class="n">Ticker</span><span class="p">,</span>
                                    <span class="n">Algo_Order</span><span class="p">,</span> <span class="n">Algo_Order_Placement_Return</span><span class="p">,</span>
                                    <span class="n">AccountBalanceDetails</span><span class="p">,</span> <span class="n">AccountBalanceData</span><span class="p">,</span>
                                    <span class="n">AccountConfigData</span><span class="p">,</span> <span class="n">MaxOrderSizeData</span><span class="p">,</span> <span class="n">MaxAvailSizeData</span><span class="p">,</span> <span class="n">Cancelled_Algo_Order</span><span class="p">,</span>
-                                   <span class="n">Instrument</span><span class="p">,</span> <span class="n">Orderbook_Snapshot</span><span class="p">,</span> <span class="n">Bid</span><span class="p">,</span> <span class="n">Ask</span><span class="p">,</span>
+                                   <span class="n">Orderbook_Snapshot</span><span class="p">,</span> <span class="n">Bid</span><span class="p">,</span> <span class="n">Ask</span><span class="p">,</span>
                                    <span class="n">Simplified_Balance_Details</span><span class="p">,</span> <span class="n">InstrumentStatusReport</span><span class="p">,</span>
-                                   <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">,</span> <span class="n">FillEntry</span><span class="p">)</span>
+                                   <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">,</span> <span class="n">FillEntry</span><span class="p">,</span> <span class="n">OKXSignalInput</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
-<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">serialize_for_redis</span>
+<span class="kn">from</span> <span class="nn">pyokx.redis_structured_streams</span> <span class="kn">import</span> <span class="n">get_instruments_searcher_from_redis</span>
+<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">serialize_for_redis</span><span class="p">,</span> <span class="n">init_async_redis</span>
 <span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">logging</span>
-<span class="kn">from</span> <span class="nn">shared.tmp_shared</span> <span class="kn">import</span> <span class="n">calculate_tp_stop_prices</span><span class="p">,</span> <span class="n">calculate_sl_stop_prices</span><span class="p">,</span> <span class="n">FunctionCall</span><span class="p">,</span> <span class="n">execute_function_calls</span>
+<span class="kn">from</span> <span class="nn">shared.tmp_shared</span> <span class="kn">import</span> <span class="n">calculate_tp_stop_prices</span><span class="p">,</span> <span class="n">calculate_sl_stop_prices</span><span class="p">,</span> <span class="n">FunctionCall</span><span class="p">,</span> <span class="n">execute_function_calls</span><span class="p">,</span> \
+    <span class="n">calculate_tp_stop_prices_usd</span><span class="p">,</span> <span class="n">calculate_sl_stop_prices_usd</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">setup_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
-<span class="kn">from</span> <span class="nn">pyokx.Futures_Exchange_Client</span> <span class="kn">import</span> <span class="n">OKX_Futures_Exchange_Client</span> <span class="k">as</span> <span class="n">OKXClient</span>
-
-<span class="n">okx_client</span> <span class="o">=</span> <span class="n">OKXClient</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OKX_API_KEY&#39;</span><span class="p">),</span> <span class="n">api_secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OKX_SECRET_KEY&#39;</span><span class="p">),</span>
-                       <span class="n">passphrase</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OKX_PASSPHRASE&#39;</span><span class="p">),</span> <span class="n">sandbox_mode</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OKX_SANDBOX_MODE&#39;</span><span class="p">))</span>
-<span class="n">tradeAPI</span> <span class="o">=</span> <span class="n">okx_client</span><span class="o">.</span><span class="n">tradeAPI</span>
-<span class="n">marketAPI</span> <span class="o">=</span> <span class="n">okx_client</span><span class="o">.</span><span class="n">marketAPI</span>
-<span class="n">accountAPI</span> <span class="o">=</span> <span class="n">okx_client</span><span class="o">.</span><span class="n">accountAPI</span>
-<span class="n">publicAPI</span> <span class="o">=</span> <span class="n">okx_client</span><span class="o">.</span><span class="n">publicAPI</span>
+<span class="kn">from</span> <span class="nn">pyokx</span> <span class="kn">import</span> <span class="n">okx_client</span><span class="p">,</span> <span class="n">tradeAPI</span><span class="p">,</span> <span class="n">marketAPI</span><span class="p">,</span> <span class="n">accountAPI</span><span class="p">,</span> <span class="n">publicAPI</span><span class="p">,</span> <span class="n">ENFORCED_INSTRUMENT_TYPE</span>  <span class="c1"># noqa</span>
 
 <span class="n">REDIS_STREAM_MAX_LEN</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REDIS_STREAM_MAX_LEN&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
 
@@ -267,85 +263,16 @@
 <span class="sd">        List[Any]: A list of instances of the target data structure class, populated with the returned data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># print(f&#39;{returned_data = }&#39;)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">returned_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">returned_data</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">returned_data</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">returned_data</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">]</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">returned_data</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsuccessful </span><span class="si">{</span><span class="n">target_data_structure</span><span class="si">}</span><span class="s2"> request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">returned_data</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
+              <span class="n">returned_data</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
         <span class="k">return</span> <span class="p">[]</span>
+
     <span class="n">structured_data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">returned_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
         <span class="n">structured_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_data_structure</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">structured_data</span></div>
 
-
-
-<span class="n">all_futures_instruments</span> <span class="o">=</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">publicAPI</span><span class="o">.</span><span class="n">get_instruments</span><span class="p">(</span><span class="n">instType</span><span class="o">=</span><span class="s1">&#39;FUTURES&#39;</span><span class="p">),</span>
-                                           <span class="n">target_data_structure</span><span class="o">=</span><span class="n">Instrument</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="InstrumentSearcher">
-<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.InstrumentSearcher">[docs]</a>
-<span class="k">class</span> <span class="nc">InstrumentSearcher</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provides functionality to search for instruments within a provided list of instruments based on various criteria</span>
-<span class="sd">    such as instrument ID, type, or underlying asset.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        instruments (List[Instrument]): A list of instruments to search within.</span>
-
-<span class="sd">    Methods:</span>
-<span class="sd">        find_by_instId: Returns an instrument matching a specific instrument ID.</span>
-<span class="sd">        find_by_type: Returns all instruments of a specific type.</span>
-<span class="sd">        find_by_underlying: Returns all instruments with a specific underlying asset.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instrument</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        InstrumentSearcher is a class that allows you to search for instruments by instId, instType, or underlying</span>
-
-<span class="sd">        :param instruments:</span>
-
-<span class="sd">        Usage:</span>
-<span class="sd">        ```</span>
-<span class="sd">        instrument_searcher = InstrumentSearcher(all_futures_instruments)</span>
-<span class="sd">        print(f&#39;{instrument_searcher.find_by_instId(&quot;BTC-USDT-240329&quot;) = }&#39;)</span>
-<span class="sd">        print(f&#39;{instrument_searcher.find_by_type(InstType.FUTURES) = }&#39;)</span>
-<span class="sd">        print(f&#39;{instrument_searcher.find_by_underlying(&quot;BTC-USDT&quot;) = }&#39;)</span>
-<span class="sd">        print(f&#39;{&quot;BTC-USDT-240329&quot; in instrument_searcher._instrument_map = }&#39;)</span>
-<span class="sd">        ```</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">instruments</span> <span class="o">=</span> <span class="n">instruments</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_instrument_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_map</span><span class="p">(</span><span class="n">instruments</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_create_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instruments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instrument</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Instrument</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a map for quicker search by instId &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">instrument</span><span class="o">.</span><span class="n">instId</span><span class="p">:</span> <span class="n">instrument</span> <span class="k">for</span> <span class="n">instrument</span> <span class="ow">in</span> <span class="n">instruments</span><span class="p">}</span>
-
-<div class="viewcode-block" id="InstrumentSearcher.find_by_instId">
-<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.InstrumentSearcher.find_by_instId">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_by_instId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Instrument</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Find an instrument by its instId &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">instId</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="InstrumentSearcher.find_by_type">
-<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.InstrumentSearcher.find_by_type">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instType</span><span class="p">:</span> <span class="n">InstType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Instrument</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Find all instruments of a specific type &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">instrument</span> <span class="k">for</span> <span class="n">instrument</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruments</span> <span class="k">if</span> <span class="n">instrument</span><span class="o">.</span><span class="n">instType</span> <span class="o">==</span> <span class="n">instType</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="InstrumentSearcher.find_by_underlying">
-<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.InstrumentSearcher.find_by_underlying">[docs]</a>
-    <span class="k">def</span> <span class="nf">find_by_underlying</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">underlying</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Instrument</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Find all instruments of a specific underlying &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">instrument</span> <span class="k">for</span> <span class="n">instrument</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruments</span> <span class="k">if</span> <span class="n">instrument</span><span class="o">.</span><span class="n">uly</span> <span class="o">==</span> <span class="n">underlying</span><span class="p">]</span></div>
-</div>
-
-
-
-<span class="n">instrument_searcher</span> <span class="o">=</span> <span class="n">InstrumentSearcher</span><span class="p">(</span><span class="n">all_futures_instruments</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="get_ticker_with_higher_volume">
@@ -422,9 +349,7 @@
     <span class="c1"># Set account level</span>
     <span class="n">result_set_account_level</span> <span class="o">=</span> <span class="n">accountAPI</span><span class="o">.</span><span class="n">set_account_level</span><span class="p">(</span><span class="n">acctLv</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">result_set_account_level</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">result_set_account_level</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successful request，</span><span class="se">\n</span><span class="s2">  acctLv = &quot;</span><span class="p">,</span> <span class="n">result_set_account_level</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;acctLv&quot;</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">result_set_account_level</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result_set_account_level</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
               <span class="n">result_set_account_level</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
 
@@ -435,7 +360,7 @@
         <span class="n">acctLv</span> <span class="o">=</span> <span class="n">result_get_account_config</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;acctLv&quot;</span><span class="p">]</span>
         <span class="k">assert</span> <span class="n">acctLv</span> <span class="o">==</span> <span class="n">account_level</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Account level was not set to </span><span class="si">{</span><span class="n">ACCLV_MAPPING</span><span class="p">[</span><span class="n">account_level</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result_get_account_config</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful `assert_okx_account_level` request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result_get_account_config</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
               <span class="n">result_get_account_config</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span></div>
 
 
@@ -675,20 +600,20 @@
 
     <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successful order request，</span><span class="se">\n</span><span class="s2">  order_id = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;ordId&quot;</span><span class="p">])</span>
-
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful order request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
               <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
     <span class="k">return</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Order_Placement_Return</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
 
 
 
 <div class="viewcode-block" id="get_ticker">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_ticker">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retrieves the latest ticker information for a specified instrument.</span>
 
@@ -696,7 +621,12 @@
 <span class="sd">    :type instId: str</span>
 <span class="sd">    :returns: The latest ticker information for the specified instrument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">marketAPI</span><span class="o">.</span><span class="n">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">),</span> <span class="n">Ticker</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">marketAPI</span><span class="o">.</span><span class="n">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">),</span> <span class="n">Ticker</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 
 
@@ -730,7 +660,6 @@
         <span class="p">)</span>
     <span class="n">orders_fetched_list</span> <span class="o">=</span> <span class="n">execute_function_calls</span><span class="p">(</span><span class="n">algo_type_to_fetch</span><span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">orders_fetched_list</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">orders_fetched</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">order_types</span> <span class="ow">in</span> <span class="n">orders_fetched_list</span><span class="p">:</span>
         <span class="n">orders_fetched</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">get_request_data</span><span class="p">(</span><span class="n">order_types</span><span class="p">,</span> <span class="n">Algo_Order</span><span class="p">))</span>
@@ -844,12 +773,9 @@
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successful order request，</span><span class="se">\n</span><span class="s2">  order_id = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;algoId&quot;</span><span class="p">])</span>
-
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful order request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful algo order request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
               <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Algo_Order_Placement_Return</span><span class="p">)</span></div>
@@ -898,7 +824,13 @@
 <span class="sd">    :type tdMode: str</span>
 <span class="sd">    :returns: The maximum order size data, structured according to the MaxOrderSizeData class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">MaxOrderSizeData</span><span class="p">(</span><span class="o">**</span><span class="n">accountAPI</span><span class="o">.</span><span class="n">get_max_order_size</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">)[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
+    <span class="c1"># return MaxOrderSizeData(**accountAPI.get_max_order_size(instId=instId, tdMode=tdMode)[&#39;data&#39;][0])</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">accountAPI</span><span class="o">.</span><span class="n">get_max_order_size</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful get_max_order_size request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
+              <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">MaxOrderSizeData</span><span class="p">(</span><span class="o">**</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
 
 
 
@@ -914,7 +846,13 @@
 <span class="sd">    :type tdMode: str</span>
 <span class="sd">    :returns: The maximum available size data, structured according to the MaxAvailSizeData class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">MaxAvailSizeData</span><span class="p">(</span><span class="o">**</span><span class="n">accountAPI</span><span class="o">.</span><span class="n">get_max_avail_size</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">)[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
+    <span class="c1"># return MaxAvailSizeData(**accountAPI.get_max_avail_size(instId=instId, tdMode=tdMode)[&#39;data&#39;][0])</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">accountAPI</span><span class="o">.</span><span class="n">get_max_avail_size</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful get_max_avail_size request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
+              <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">return</span> <span class="n">MaxAvailSizeData</span><span class="p">(</span><span class="o">**</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span></div>
 
 
 
@@ -960,6 +898,10 @@
 <span class="sd">    :type TD_MODE: str</span>
 <span class="sd">    :returns: A status report for the instrument, structured according to the InstrumentStatusReport class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Handle the case where instId is None</span>
+    <span class="k">if</span> <span class="n">instId</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
     <span class="n">initial_data_pull</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">FunctionCall</span><span class="p">(</span><span class="n">get_max_order_size</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">TD_MODE</span><span class="p">),</span>
         <span class="n">FunctionCall</span><span class="p">(</span><span class="n">get_max_avail_size</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">tdMode</span><span class="o">=</span><span class="n">TD_MODE</span><span class="p">),</span>
@@ -1166,9 +1108,7 @@
 
 
 
-<div class="viewcode-block" id="clean_and_verify_instID">
-<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.clean_and_verify_instID">[docs]</a>
-<span class="k">def</span> <span class="nf">clean_and_verify_instID</span><span class="p">(</span><span class="n">instID</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_validate_instID_and_return_ticker_info</span><span class="p">(</span><span class="n">instID</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cleans and verifies an instrument ID to ensure it&#39;s in the correct format and exists within the list of instruments.</span>
 
@@ -1181,10 +1121,316 @@
     <span class="n">instID</span> <span class="o">=</span> <span class="n">instID</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="n">splitted</span> <span class="o">=</span> <span class="n">instID</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;The Futures instrument ID must be in the format of &quot;BTC-USDT-210326&quot;. </span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-    <span class="n">instrument</span> <span class="o">=</span> <span class="n">instrument_searcher</span><span class="o">.</span><span class="n">find_by_instId</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">instrument</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> not found in </span><span class="si">{</span><span class="n">all_futures_instruments</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-    <span class="c1"># assert instrument.instType == InstType.FUTURES, f&#39;{instrument.instType = }&#39;</span>
-    <span class="k">return</span> <span class="n">instID</span></div>
+    <span class="n">okx_futures_instrument_searcher</span><span class="p">:</span> <span class="n">InstrumentSearcher</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_instruments_searcher_from_redis</span><span class="p">(</span>
+        <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">(),</span>
+        <span class="n">instType</span><span class="o">=</span><span class="n">ENFORCED_INSTRUMENT_TYPE</span><span class="p">)</span>
+
+    <span class="n">instrument</span> <span class="o">=</span> <span class="n">okx_futures_instrument_searcher</span><span class="o">.</span><span class="n">find_by_instId</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">instrument</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument not found. </span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="n">instrument</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_validate_okx_signal_input_tp_sl_trail_params</span><span class="p">(</span><span class="n">sl_trigger_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                        <span class="n">tp_trigger_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                        <span class="n">sl_execution_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tp_execution_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                        <span class="n">trailing_stop_activation_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                        <span class="n">trailing_stop_callback_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                        <span class="n">max_orderbook_limit_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                        <span class="n">flip_position_if_opposite_side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                        <span class="n">tp_trigger_price_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sl_trigger_price_type</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tp_trigger_price_type</span><span class="p">:</span>
+        <span class="n">tp_trigger_price_type</span> <span class="o">=</span> <span class="s1">&#39;last&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sl_trigger_price_type</span><span class="p">:</span>
+        <span class="n">sl_trigger_price_type</span> <span class="o">=</span> <span class="s1">&#39;last&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sl_trigger_price_offset</span><span class="p">:</span>
+        <span class="n">sl_trigger_price_offset</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tp_trigger_price_offset</span><span class="p">:</span>
+        <span class="n">tp_trigger_price_offset</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sl_execution_price_offset</span><span class="p">:</span>
+        <span class="n">sl_execution_price_offset</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tp_execution_price_offset</span><span class="p">:</span>
+        <span class="n">tp_execution_price_offset</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">trailing_stop_activation_price_offset</span><span class="p">:</span>
+        <span class="n">trailing_stop_activation_price_offset</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">trailing_stop_callback_offset</span><span class="p">:</span>
+        <span class="n">trailing_stop_callback_offset</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">tp_trigger_price_type</span><span class="p">,</span> <span class="n">sl_trigger_price_type</span> <span class="o">=</span> <span class="n">tp_trigger_price_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">sl_trigger_price_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">sl_trigger_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="p">(</span>
+            <span class="n">sl_trigger_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sl_trigger_price_offset</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">sl_trigger_price_offset</span><span class="p">)</span>
+    <span class="n">tp_trigger_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">tp_trigger_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">tp_trigger_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">tp_trigger_price_offset</span><span class="p">)</span>
+    <span class="n">sl_execution_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">sl_execution_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sl_execution_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">sl_execution_price_offset</span><span class="p">)</span>
+    <span class="n">tp_execution_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">tp_execution_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">tp_execution_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">tp_execution_price_offset</span><span class="p">)</span>
+
+    <span class="n">trailing_stop_activation_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">trailing_stop_activation_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">trailing_stop_activation_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">trailing_stop_activation_price_offset</span><span class="p">)</span>
+    <span class="n">trailing_stop_callback_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">trailing_stop_callback_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">trailing_stop_callback_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">trailing_stop_callback_offset</span><span class="p">)</span>
+
+    <span class="n">max_orderbook_limit_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">max_orderbook_limit_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="n">max_orderbook_limit_price_offset</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">max_orderbook_limit_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">max_orderbook_limit_price_offset</span><span class="p">)</span>
+
+    <span class="n">flip_position_if_opposite_side</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">flip_position_if_opposite_side</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">flip_position_if_opposite_side</span> <span class="k">else</span> <span class="nb">bool</span><span class="p">(</span>
+        <span class="n">flip_position_if_opposite_side</span><span class="p">)</span>
+
+    <span class="n">take_profit_activated</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">stop_loss_activated</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">trailing_stop_loss_activated</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># TODO multiple_tp and amendPxOnTriggerType are commented out because they need multiple TP&#39;s to work and is not</span>
+    <span class="c1">#   developed yet downstream</span>
+    <span class="c1">#   multiple_tp = None</span>
+    <span class="c1">#   amendPxOnTriggerType = None</span>
+    <span class="k">if</span> <span class="n">tp_trigger_price_offset</span> <span class="ow">or</span> <span class="n">tp_execution_price_offset</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">tp_trigger_price_offset</span> <span class="ow">and</span> <span class="n">tp_execution_price_offset</span>
+        <span class="n">take_profit_activated</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">tp_trigger_price_type</span> <span class="o">=</span> <span class="n">tp_trigger_price_type</span> <span class="ow">or</span> <span class="s1">&#39;last&#39;</span>
+
+    <span class="k">if</span> <span class="n">sl_trigger_price_offset</span> <span class="ow">or</span> <span class="n">sl_execution_price_offset</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">sl_trigger_price_offset</span> <span class="ow">and</span> <span class="n">sl_execution_price_offset</span>
+        <span class="n">stop_loss_activated</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">sl_trigger_price_type</span> <span class="o">=</span> <span class="n">sl_trigger_price_type</span> <span class="ow">or</span> <span class="s1">&#39;last&#39;</span>
+
+    <span class="k">if</span> <span class="n">trailing_stop_activation_price_offset</span> <span class="ow">or</span> <span class="n">trailing_stop_callback_offset</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">trailing_stop_callback_offset</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;trailing_stop_callback_offset must be provided if trailing_stop_activation_price_offset is provided. </span><span class="si">{</span><span class="n">trailing_stop_callback_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+        <span class="n">trailing_stop_loss_activated</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">sl_trigger_price_offset</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sl_trigger_price_offset</span><span class="p">,</span>
+                                                          <span class="nb">float</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sl_trigger_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">tp_trigger_price_offset</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tp_trigger_price_offset</span><span class="p">,</span>
+                                                            <span class="nb">float</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tp_trigger_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">sl_execution_price_offset</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sl_execution_price_offset</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sl_execution_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">tp_execution_price_offset</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tp_execution_price_offset</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tp_execution_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">sl_trigger_price_offset</span> <span class="ow">or</span> <span class="n">sl_trigger_price_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sl_trigger_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">tp_trigger_price_offset</span> <span class="ow">or</span> <span class="n">tp_trigger_price_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tp_trigger_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">sl_execution_price_offset</span> <span class="ow">or</span> <span class="n">sl_execution_price_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sl_execution_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">tp_execution_price_offset</span> <span class="ow">or</span> <span class="n">tp_execution_price_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tp_execution_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">tp_trigger_price_type</span> <span class="ow">or</span> <span class="n">tp_trigger_price_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;mark&#39;</span><span class="p">,</span>
+                                                                  <span class="s1">&#39;last&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tp_trigger_price_type</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">sl_trigger_price_type</span> <span class="ow">or</span> <span class="n">sl_trigger_price_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;mark&#39;</span><span class="p">,</span>
+                                                                  <span class="s1">&#39;last&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sl_trigger_price_type</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+
+
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;sl_trigger_price_offset&#39;</span><span class="p">:</span> <span class="n">sl_trigger_price_offset</span><span class="p">,</span>
+        <span class="s1">&#39;tp_trigger_price_offset&#39;</span><span class="p">:</span> <span class="n">tp_trigger_price_offset</span><span class="p">,</span>
+        <span class="s1">&#39;sl_execution_price_offset&#39;</span><span class="p">:</span> <span class="n">sl_execution_price_offset</span><span class="p">,</span>
+        <span class="s1">&#39;tp_execution_price_offset&#39;</span><span class="p">:</span> <span class="n">tp_execution_price_offset</span><span class="p">,</span>
+        <span class="s1">&#39;trailing_stop_activation_price_offset&#39;</span><span class="p">:</span> <span class="n">trailing_stop_activation_price_offset</span><span class="p">,</span>
+        <span class="s1">&#39;trailing_stop_callback_offset&#39;</span><span class="p">:</span> <span class="n">trailing_stop_callback_offset</span><span class="p">,</span>
+        <span class="s1">&#39;max_orderbook_limit_price_offset&#39;</span><span class="p">:</span> <span class="n">max_orderbook_limit_price_offset</span><span class="p">,</span>
+        <span class="s1">&#39;flip_position_if_opposite_side&#39;</span><span class="p">:</span> <span class="n">flip_position_if_opposite_side</span><span class="p">,</span>
+        <span class="s1">&#39;tp_trigger_price_type&#39;</span><span class="p">:</span> <span class="n">tp_trigger_price_type</span><span class="p">,</span>
+        <span class="s1">&#39;sl_trigger_price_type&#39;</span><span class="p">:</span> <span class="n">sl_trigger_price_type</span><span class="p">,</span>
+        <span class="s1">&#39;take_profit_activated&#39;</span><span class="p">:</span> <span class="n">take_profit_activated</span><span class="p">,</span>
+        <span class="s1">&#39;stop_loss_activated&#39;</span><span class="p">:</span> <span class="n">stop_loss_activated</span><span class="p">,</span>
+        <span class="s1">&#39;trailing_stop_loss_activated&#39;</span><span class="p">:</span> <span class="n">trailing_stop_loss_activated</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_validate_okx_signal_order_params</span><span class="p">(</span><span class="n">order_type</span><span class="p">,</span> <span class="n">order_side</span><span class="p">,</span> <span class="n">order_size</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">order_type</span><span class="p">:</span>
+        <span class="n">order_type</span> <span class="o">=</span> <span class="s1">&#39;limit&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">order_side</span><span class="p">:</span>
+        <span class="n">order_side</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">order_size</span><span class="p">:</span>
+        <span class="n">order_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">order_type</span><span class="p">,</span> <span class="n">order_side</span> <span class="o">=</span> <span class="n">order_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">order_side</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+    <span class="n">order_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">order_size</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">order_side</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;buy&#39;</span><span class="p">,</span> <span class="s1">&#39;sell&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">order_side</span><span class="p">,</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;order_side must be either &quot;buy&quot; or &quot;sell&quot; or empty. </span><span class="se">\n</span><span class="s1"> &#39;</span>
+        <span class="sa">f</span><span class="s1">&#39;for maintenance mode </span><span class="se">\n</span><span class="s1">      </span><span class="si">{</span><span class="n">order_side</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">order_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;market&#39;</span><span class="p">,</span> <span class="s1">&#39;limit&#39;</span><span class="p">,</span> <span class="s1">&#39;post_only&#39;</span><span class="p">,</span> <span class="s1">&#39;fok&#39;</span><span class="p">,</span> <span class="s1">&#39;ioc&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">order_type</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;Order size must be an integer/multiple of a lot size. </span><span class="si">{</span><span class="n">order_size</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="n">order_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Order size must be greater than 0. </span><span class="si">{</span><span class="n">order_size</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="n">generated_client_order_id</span> <span class="o">=</span> <span class="n">generate_random_string</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;alphanumeric&#39;</span><span class="p">)</span>  <span class="c1"># 6 characters for type later</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;order_type&#39;</span><span class="p">:</span> <span class="n">order_type</span><span class="p">,</span>
+        <span class="s1">&#39;order_side&#39;</span><span class="p">:</span> <span class="n">order_side</span><span class="p">,</span>
+        <span class="s1">&#39;order_size&#39;</span><span class="p">:</span> <span class="n">order_size</span><span class="p">,</span>
+        <span class="s1">&#39;generated_client_order_id&#39;</span><span class="p">:</span> <span class="n">generated_client_order_id</span>
+    <span class="p">}</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_validate_okx_signal_additional_params</span><span class="p">(</span>
+        <span class="n">leverage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_orderbook_limit_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flip_position_if_opposite_side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">clear_prior_to_new_order</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
+    <span class="n">leverage</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">leverage</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">leverage</span><span class="p">)</span>
+    <span class="n">max_orderbook_limit_price_offset</span> <span class="o">=</span> <span class="mi">0</span> \
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">max_orderbook_limit_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">max_orderbook_limit_price_offset</span><span class="p">)</span>
+    <span class="n">flip_position_if_opposite_side</span> <span class="o">=</span> <span class="kc">False</span> \
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flip_position_if_opposite_side</span> <span class="k">else</span> <span class="nb">bool</span><span class="p">(</span><span class="n">flip_position_if_opposite_side</span><span class="p">)</span>
+    <span class="n">clear_prior_to_new_order</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">clear_prior_to_new_order</span> <span class="k">else</span> <span class="nb">bool</span><span class="p">(</span><span class="n">clear_prior_to_new_order</span><span class="p">)</span>
+
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;leverage&#39;</span><span class="p">:</span> <span class="n">leverage</span><span class="p">,</span>
+        <span class="s1">&#39;max_orderbook_limit_price_offset&#39;</span><span class="p">:</span> <span class="n">max_orderbook_limit_price_offset</span><span class="p">,</span>
+        <span class="s1">&#39;flip_position_if_opposite_side&#39;</span><span class="p">:</span> <span class="n">flip_position_if_opposite_side</span><span class="p">,</span>
+        <span class="s1">&#39;clear_prior_to_new_order&#39;</span><span class="p">:</span> <span class="n">clear_prior_to_new_order</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<div class="viewcode-block" id="ccy_contracts_to_usd">
+<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.ccy_contracts_to_usd">[docs]</a>
+<span class="k">def</span> <span class="nf">ccy_contracts_to_usd</span><span class="p">(</span><span class="n">contracts_amount</span><span class="p">,</span> <span class="n">ccy_contract_size</span><span class="p">,</span> <span class="n">ccy_last_price</span><span class="p">,</span> <span class="n">usd_base_ratio</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">base_cost_of_one_contract</span> <span class="o">=</span> <span class="n">ccy_contract_size</span> <span class="o">*</span> <span class="n">ccy_last_price</span>
+    <span class="n">base_total_cost</span> <span class="o">=</span> <span class="n">base_cost_of_one_contract</span> <span class="o">*</span> <span class="n">contracts_amount</span>
+    <span class="n">total_cost_usd</span> <span class="o">=</span> <span class="n">base_total_cost</span> <span class="o">/</span> <span class="n">usd_base_ratio</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">leverage</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">total_cost_usd</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">leverage</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># example leverage</span>
+        <span class="k">return</span> <span class="n">total_cost_usd</span> <span class="o">/</span> <span class="n">leverage</span></div>
+
+
+
+<div class="viewcode-block" id="ccy_usd_to_contracts">
+<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.ccy_usd_to_contracts">[docs]</a>
+<span class="k">def</span> <span class="nf">ccy_usd_to_contracts</span><span class="p">(</span><span class="n">usd_equivalent</span><span class="p">,</span> <span class="n">ccy_contract_size</span><span class="p">,</span> <span class="n">ccy_last_price</span><span class="p">,</span>
+                         <span class="n">min_order_quantity</span><span class="p">,</span>
+                         <span class="n">max_market_order_quantity</span><span class="p">,</span>
+                         <span class="n">usd_base_ratio</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">cost_of_one_contract_usdt</span> <span class="o">=</span> <span class="n">ccy_contract_size</span> <span class="o">*</span> <span class="n">ccy_last_price</span>
+    <span class="n">base_equivalent</span> <span class="o">=</span> <span class="n">usd_equivalent</span> <span class="o">*</span> <span class="n">usd_base_ratio</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">leverage</span><span class="p">:</span>
+        <span class="n">max_contracts</span> <span class="o">=</span> <span class="n">base_equivalent</span> <span class="o">/</span> <span class="n">cost_of_one_contract_usdt</span>
+        <span class="n">max_contracts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_contracts</span><span class="p">)</span>  <span class="c1"># round down to the nearest whole number</span>
+        <span class="n">order_contracts</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_order_quantity</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_contracts</span><span class="p">,</span> <span class="n">max_market_order_quantity</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">order_contracts</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cost_of_one_contract_with_leverage</span> <span class="o">=</span> <span class="n">cost_of_one_contract_usdt</span> <span class="o">/</span> <span class="n">leverage</span>
+        <span class="n">max_contracts_with_leverage</span> <span class="o">=</span> <span class="n">base_equivalent</span> <span class="o">/</span> <span class="n">cost_of_one_contract_with_leverage</span>
+        <span class="n">max_contracts_with_leverage</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_contracts_with_leverage</span><span class="p">)</span>  <span class="c1"># round down to the nearest whole number</span>
+        <span class="n">order_contracts_with_leverage</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">min_order_quantity</span><span class="p">,</span>
+                                            <span class="nb">min</span><span class="p">(</span><span class="n">max_contracts_with_leverage</span><span class="p">,</span> <span class="n">max_market_order_quantity</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">order_contracts_with_leverage</span></div>
+
+
+<div class="viewcode-block" id="get_leverage">
+<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_leverage">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_leverage</span><span class="p">(</span><span class="n">instId</span><span class="p">,</span> <span class="n">mgnMode</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">accountAPI</span><span class="o">.</span><span class="n">get_leverage</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">mgnMode</span><span class="o">=</span><span class="n">mgnMode</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful get_leverage request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span> <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
+              <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">leverage</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;lever&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">leverage</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="validate_okx_signal_params">
+<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.validate_okx_signal_params">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">validate_okx_signal_params</span><span class="p">(</span>
+        <span class="n">okx_signal</span><span class="p">:</span> <span class="n">OKXSignalInput</span>
+<span class="p">):</span>
+    <span class="n">generated_client_order_id</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">validated_order_params</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">validated_tp_sl_trail_params</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">if</span> <span class="n">okx_signal</span><span class="o">.</span><span class="n">red_button</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;red_button&#39;</span><span class="p">:</span> <span class="n">okx_signal</span><span class="o">.</span><span class="n">red_button</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">red_button</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">instId_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_instID_and_return_ticker_info</span><span class="p">(</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">instID</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">instId_info</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument not found. </span><span class="si">{</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+
+    <span class="n">validated_additional_params</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_okx_signal_additional_params</span><span class="p">(</span>
+        <span class="n">leverage</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">leverage</span><span class="p">,</span> <span class="n">max_orderbook_limit_price_offset</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">max_orderbook_limit_price_offset</span><span class="p">,</span>
+        <span class="n">flip_position_if_opposite_side</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">flip_position_if_opposite_side</span><span class="p">,</span>
+        <span class="n">clear_prior_to_new_order</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">clear_prior_to_new_order</span><span class="p">)</span>
+    <span class="n">passed_expiration_test</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">instId_info</span><span class="o">.</span><span class="n">expTime</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="k">else</span> <span class="kc">True</span>
+    <span class="n">passed_leverage_test</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">instId_info</span><span class="o">.</span><span class="n">lever</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">validated_additional_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;leverage&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">True</span>
+    <span class="k">assert</span> <span class="n">passed_expiration_test</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument has expired. </span><span class="si">{</span><span class="n">instId_info</span><span class="o">.</span><span class="n">expTime</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="n">passed_leverage_test</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument has a higher leverage than the one provided. </span><span class="si">{</span><span class="n">instId_info</span><span class="o">.</span><span class="n">lever</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+
+    <span class="k">if</span> <span class="n">okx_signal</span><span class="o">.</span><span class="n">usd_order_size</span><span class="p">:</span>
+        <span class="n">usd_amount</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">usd_order_size</span><span class="p">)</span>
+        <span class="n">usd_to_base_rate</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">min_order_quantity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">instId_info</span><span class="o">.</span><span class="n">minSz</span><span class="p">)</span>  <span class="c1"># contracts</span>
+        <span class="n">max_market_order_quantity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">instId_info</span><span class="o">.</span><span class="n">maxMktSz</span><span class="p">)</span>  <span class="c1"># contracts</span>
+        <span class="n">ccy_contract_size</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">instId_info</span><span class="o">.</span><span class="n">ctVal</span><span class="p">)</span>
+        <span class="n">instId_ticker</span><span class="p">:</span> <span class="n">Ticker</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId_info</span><span class="o">.</span><span class="n">instId</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">instId_ticker</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Could not fetch ticker for </span><span class="si">{</span><span class="n">instId_info</span><span class="o">.</span><span class="n">instId</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+        <span class="n">ccy_last_price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">instId_ticker</span><span class="o">.</span><span class="n">last</span><span class="p">)</span>
+        <span class="n">leverage</span> <span class="o">=</span> <span class="n">validated_additional_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;leverage&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="k">await</span> <span class="n">get_leverage</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instId_info</span><span class="o">.</span><span class="n">instId</span><span class="p">,</span> <span class="n">mgnMode</span><span class="o">=</span><span class="s1">&#39;isolated&#39;</span><span class="p">)</span>
+
+        <span class="c1"># convert USD to order size (contracts)</span>
+        <span class="n">order_contracts</span> <span class="o">=</span> <span class="n">ccy_usd_to_contracts</span><span class="p">(</span><span class="n">usd_equivalent</span><span class="o">=</span><span class="n">usd_amount</span><span class="p">,</span> <span class="n">ccy_contract_size</span><span class="o">=</span><span class="n">ccy_contract_size</span><span class="p">,</span>
+                                               <span class="n">ccy_last_price</span><span class="o">=</span><span class="n">ccy_last_price</span><span class="p">,</span> <span class="n">min_order_quantity</span><span class="o">=</span><span class="n">min_order_quantity</span><span class="p">,</span>
+                                               <span class="n">max_market_order_quantity</span><span class="o">=</span><span class="n">max_market_order_quantity</span><span class="p">,</span>
+                                               <span class="n">usd_base_ratio</span><span class="o">=</span><span class="n">usd_to_base_rate</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="n">leverage</span><span class="p">)</span>
+
+        <span class="c1"># Convert these into trailing_stop_callback_offset to trailing_stop_callback_ratio</span>
+        <span class="k">if</span> <span class="n">okx_signal</span><span class="o">.</span><span class="n">trailing_stop_callback_offset</span><span class="p">:</span>
+            <span class="n">trailing_stop_callback_offset</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">trailing_stop_callback_offset</span><span class="p">)</span>
+            <span class="n">trailing_stop_callback_ratio</span> <span class="o">=</span> <span class="n">trailing_stop_callback_offset</span> <span class="o">/</span> <span class="n">ccy_last_price</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">trailing_stop_callback_ratio</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># Min is 0,001 and max is 1</span>
+            <span class="k">if</span> <span class="n">trailing_stop_callback_ratio</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
+                <span class="n">trailing_stop_callback_ratio</span> <span class="o">=</span> <span class="mf">0.001</span>
+            <span class="k">if</span> <span class="n">trailing_stop_callback_ratio</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">trailing_stop_callback_ratio</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">trailing_stop_callback_offset</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">trailing_stop_callback_ratio</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trailing_stop_callback_offset</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of contracts you can buy: </span><span class="si">{</span><span class="n">order_contracts</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">instId_info</span><span class="o">.</span><span class="n">instId</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+
+
+        <span class="n">validated_order_params</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_okx_signal_order_params</span><span class="p">(</span>
+            <span class="n">order_type</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">order_type</span><span class="p">,</span> <span class="n">order_side</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">order_side</span><span class="p">,</span>
+            <span class="n">order_size</span><span class="o">=</span><span class="n">order_contracts</span><span class="p">)</span>
+
+        <span class="n">validated_tp_sl_trail_params</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_okx_signal_input_tp_sl_trail_params</span><span class="p">(</span>
+            <span class="n">sl_trigger_price_offset</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">sl_trigger_price_offset</span><span class="p">,</span>
+            <span class="n">tp_trigger_price_offset</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">tp_trigger_price_offset</span><span class="p">,</span>
+            <span class="n">sl_execution_price_offset</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">sl_execution_price_offset</span><span class="p">,</span> <span class="n">tp_execution_price_offset</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">tp_execution_price_offset</span><span class="p">,</span>
+            <span class="n">trailing_stop_activation_price_offset</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">trailing_stop_activation_price_offset</span><span class="p">,</span>
+            <span class="n">trailing_stop_callback_offset</span><span class="o">=</span><span class="n">trailing_stop_callback_offset</span><span class="p">,</span>
+            <span class="n">max_orderbook_limit_price_offset</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">max_orderbook_limit_price_offset</span><span class="p">,</span>
+            <span class="n">flip_position_if_opposite_side</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">flip_position_if_opposite_side</span><span class="p">,</span>
+            <span class="n">tp_trigger_price_type</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">tp_trigger_price_type</span><span class="p">,</span>
+            <span class="n">sl_trigger_price_type</span><span class="o">=</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">sl_trigger_price_type</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;instID&#39;</span><span class="p">:</span> <span class="n">instId_info</span><span class="o">.</span><span class="n">instId</span><span class="p">,</span>
+        <span class="s1">&#39;order_size&#39;</span><span class="p">:</span> <span class="n">validated_order_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order_size&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;leverage&#39;</span><span class="p">:</span> <span class="n">validated_additional_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;leverage&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;order_side&#39;</span><span class="p">:</span> <span class="n">validated_order_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order_side&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;order_type&#39;</span><span class="p">:</span> <span class="n">validated_order_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order_type&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;max_orderbook_limit_price_offset&#39;</span><span class="p">:</span> <span class="n">validated_additional_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_orderbook_limit_price_offset&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;flip_position_if_opposite_side&#39;</span><span class="p">:</span> <span class="n">validated_additional_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flip_position_if_opposite_side&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;clear_prior_to_new_order&#39;</span><span class="p">:</span> <span class="n">validated_additional_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;clear_prior_to_new_order&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;red_button&#39;</span><span class="p">:</span> <span class="n">red_button</span><span class="p">,</span>
+        <span class="s1">&#39;sl_trigger_price_offset&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sl_trigger_price_offset&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;tp_trigger_price_offset&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tp_trigger_price_offset&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;tp_trigger_price_type&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tp_trigger_price_type&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;sl_execution_price_offset&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sl_execution_price_offset&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;tp_execution_price_offset&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tp_execution_price_offset&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;sl_trigger_price_type&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sl_trigger_price_type&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;trailing_stop_activation_price_offset&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trailing_stop_activation_price_offset&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;trailing_stop_callback_offset&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trailing_stop_callback_offset&#39;</span><span class="p">),</span>
+        <span class="c1">#</span>
+        <span class="s1">&#39;generated_client_order_id&#39;</span><span class="p">:</span> <span class="n">validated_order_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;generated_client_order_id&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;take_profit_activated&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;take_profit_activated&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;stop_loss_activated&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stop_loss_activated&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;trailing_stop_loss_activated&#39;</span><span class="p">:</span> <span class="n">validated_tp_sl_trail_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trailing_stop_loss_activated&#39;</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">result</span></div>
 
 
 
@@ -1192,7 +1438,7 @@
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.okx_signal_handler">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">okx_signal_handler</span><span class="p">(</span>
         <span class="n">instID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">order_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">usd_order_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">leverage</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">order_side</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">order_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1200,56 +1446,17 @@
         <span class="n">flip_position_if_opposite_side</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">clear_prior_to_new_order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">red_button</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">order_usd_amount</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">stop_loss_trigger_percentage</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">take_profit_trigger_percentage</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sl_trigger_price_offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tp_trigger_price_offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tp_trigger_price_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">stop_loss_price_offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">tp_price_offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sl_execution_price_offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tp_execution_price_offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sl_trigger_price_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">trailing_stop_activation_percentage</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">trailing_stop_callback_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">trailing_stop_activation_price_offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">trailing_stop_callback_offset</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Handles trading signals for the OKX platform, executing trades based on the specified parameters and current market conditions.</span>
-
-<span class="sd">    :param instID: Instrument ID for trading.</span>
-<span class="sd">    :type instID: str, optional</span>
-<span class="sd">    :param order_size: Size of the order to execute.</span>
-<span class="sd">    :type order_size: int, optional</span>
-<span class="sd">    :param leverage: Leverage to apply for the trade.</span>
-<span class="sd">    :type leverage: int, optional</span>
-<span class="sd">    :param order_side: Side of the order (&#39;buy&#39; or &#39;sell&#39;).</span>
-<span class="sd">    :type order_side: str, optional</span>
-<span class="sd">    :param order_type: Type of the order (e.g., &#39;limit&#39;, &#39;market&#39;).</span>
-<span class="sd">    :type order_type: str, optional</span>
-<span class="sd">    :param max_orderbook_limit_price_offset: Maximum offset for the limit price from the order book.</span>
-<span class="sd">    :type max_orderbook_limit_price_offset: float, optional</span>
-<span class="sd">    :param flip_position_if_opposite_side: Flag to indicate if the position should be flipped if the current position is on the opposite side.</span>
-<span class="sd">    :type flip_position_if_opposite_side: bool, optional</span>
-<span class="sd">    :param clear_prior_to_new_order: Flag to clear existing orders before placing a new order.</span>
-<span class="sd">    :type clear_prior_to_new_order: bool, optional</span>
-<span class="sd">    :param red_button: Emergency stop flag to cancel all orders and close all positions.</span>
-<span class="sd">    :type red_button: bool, optional</span>
-<span class="sd">    :param order_usd_amount: Amount in USD for the order, used for calculations if specified.</span>
-<span class="sd">    :type order_usd_amount: float, optional</span>
-<span class="sd">    :param stop_loss_trigger_percentage: Percentage for triggering the stop loss.</span>
-<span class="sd">    :type stop_loss_trigger_percentage: float, optional</span>
-<span class="sd">    :param take_profit_trigger_percentage: Percentage for triggering take profit.</span>
-<span class="sd">    :type take_profit_trigger_percentage: float, optional</span>
-<span class="sd">    :param tp_trigger_price_type: Type of trigger price for take profit (&#39;index&#39;, &#39;mark&#39;, &#39;last&#39;).</span>
-<span class="sd">    :type tp_trigger_price_type: str, optional</span>
-<span class="sd">    :param stop_loss_price_offset: Offset price for stop loss.</span>
-<span class="sd">    :type stop_loss_price_offset: float, optional</span>
-<span class="sd">    :param tp_price_offset: Offset price for take profit.</span>
-<span class="sd">    :type tp_price_offset: float, optional</span>
-<span class="sd">    :param sl_trigger_price_type: Type of trigger price for stop loss (&#39;index&#39;, &#39;mark&#39;, &#39;last&#39;).</span>
-<span class="sd">    :type sl_trigger_price_type: str, optional</span>
-<span class="sd">    :param trailing_stop_activation_percentage: Activation percentage for the trailing stop loss.</span>
-<span class="sd">    :type trailing_stop_activation_percentage: float, optional</span>
-<span class="sd">    :param trailing_stop_callback_ratio: Callback ratio for the trailing stop loss.</span>
-<span class="sd">    :type trailing_stop_callback_ratio: float, optional</span>
-<span class="sd">    :returns: An object containing the status report of the instrument after processing the signal, detailing the positions, orders, and algo orders.</span>
 
 <span class="sd">    Process Flow:</span>
 <span class="sd">    1. Validates and processes input parameters, preparing the trading signal.</span>
@@ -1260,8 +1467,29 @@
 
 <span class="sd">    :raises Exception: Catches and logs any exceptions that occur during signal handling, providing detailed error information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">TD_MODE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;isolated&#39;</span>
+    <span class="n">okx_signal_input</span><span class="p">:</span> <span class="n">OKXSignalInput</span> <span class="o">=</span> <span class="n">OKXSignalInput</span><span class="p">(</span>
+        <span class="n">instID</span><span class="o">=</span><span class="n">instID</span><span class="p">,</span>
+        <span class="n">usd_order_size</span><span class="o">=</span><span class="n">usd_order_size</span><span class="p">,</span>
+        <span class="n">leverage</span><span class="o">=</span><span class="n">leverage</span><span class="p">,</span>
+        <span class="n">order_side</span><span class="o">=</span><span class="n">order_side</span><span class="p">,</span>
+        <span class="n">order_type</span><span class="o">=</span><span class="n">order_type</span><span class="p">,</span>
+        <span class="n">max_orderbook_limit_price_offset</span><span class="o">=</span><span class="n">max_orderbook_limit_price_offset</span><span class="p">,</span>
+        <span class="n">flip_position_if_opposite_side</span><span class="o">=</span><span class="n">flip_position_if_opposite_side</span><span class="p">,</span>
+        <span class="n">clear_prior_to_new_order</span><span class="o">=</span><span class="n">clear_prior_to_new_order</span><span class="p">,</span>
+        <span class="n">red_button</span><span class="o">=</span><span class="n">red_button</span><span class="p">,</span>
+        <span class="n">sl_trigger_price_offset</span><span class="o">=</span><span class="n">sl_trigger_price_offset</span><span class="p">,</span>
+        <span class="n">tp_trigger_price_offset</span><span class="o">=</span><span class="n">tp_trigger_price_offset</span><span class="p">,</span>
+        <span class="n">tp_trigger_price_type</span><span class="o">=</span><span class="n">tp_trigger_price_type</span><span class="p">,</span>
+        <span class="n">sl_execution_price_offset</span><span class="o">=</span><span class="n">sl_execution_price_offset</span><span class="p">,</span>
+        <span class="n">tp_execution_price_offset</span><span class="o">=</span><span class="n">tp_execution_price_offset</span><span class="p">,</span>
+        <span class="n">sl_trigger_price_type</span><span class="o">=</span><span class="n">sl_trigger_price_type</span><span class="p">,</span>
+        <span class="n">trailing_stop_activation_price_offset</span><span class="o">=</span><span class="n">trailing_stop_activation_price_offset</span><span class="p">,</span>
+        <span class="n">trailing_stop_callback_offset</span><span class="o">=</span><span class="n">trailing_stop_callback_offset</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">TD_MODE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;isolated&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>  <span class="c1"># here for completeness, but assumed to be isolated</span>
     <span class="n">POSSIDETYPE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;net&#39;</span>  <span class="c1"># net or long/short, need to cancel all orders/positions to change</span>
+    <span class="k">assert</span> <span class="n">TD_MODE</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;isolated&#39;</span><span class="p">,</span> <span class="s1">&#39;crossed&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">TD_MODE</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">assert</span> <span class="n">POSSIDETYPE</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;net&#39;</span><span class="p">,</span> <span class="s1">&#39;long&#39;</span><span class="p">,</span> <span class="s1">&#39;short&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">POSSIDETYPE</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
 
     <span class="k">if</span> <span class="n">red_button</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">close_all_positions</span><span class="p">()</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1270,120 +1498,39 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">get_all_positions</span><span class="p">()</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">get_all_orders</span><span class="p">()</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">get_all_algo_orders</span><span class="p">()</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">instID</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;red_button&#39;</span><span class="p">:</span> <span class="s1">&#39;ok&#39;</span><span class="p">}</span>
+
     <span class="c1"># Clean Input Data</span>
-    <span class="n">instID</span> <span class="o">=</span> <span class="n">clean_and_verify_instID</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">validated_params</span> <span class="o">=</span> <span class="k">await</span> <span class="n">validate_okx_signal_params</span><span class="p">(</span><span class="n">okx_signal_input</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">tp_trigger_price_type</span><span class="p">:</span>
-        <span class="n">tp_trigger_price_type</span> <span class="o">=</span> <span class="s1">&#39;last&#39;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">sl_trigger_price_type</span><span class="p">:</span>
-        <span class="n">sl_trigger_price_type</span> <span class="o">=</span> <span class="s1">&#39;last&#39;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">order_type</span><span class="p">:</span>
-        <span class="n">order_type</span> <span class="o">=</span> <span class="s1">&#39;limit&#39;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">order_side</span><span class="p">:</span>
-        <span class="n">order_side</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">order_size</span><span class="p">:</span>
-        <span class="n">order_size</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">leverage</span><span class="p">:</span>
-        <span class="n">leverage</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">max_orderbook_limit_price_offset</span><span class="p">:</span>
-        <span class="n">max_orderbook_limit_price_offset</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">stop_loss_trigger_percentage</span><span class="p">:</span>
-        <span class="n">stop_loss_trigger_percentage</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">take_profit_trigger_percentage</span><span class="p">:</span>
-        <span class="n">take_profit_trigger_percentage</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">stop_loss_price_offset</span><span class="p">:</span>
-        <span class="n">stop_loss_price_offset</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">tp_price_offset</span><span class="p">:</span>
-        <span class="n">tp_price_offset</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">trailing_stop_activation_percentage</span><span class="p">:</span>
-        <span class="n">trailing_stop_activation_percentage</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">trailing_stop_callback_ratio</span><span class="p">:</span>
-        <span class="n">trailing_stop_callback_ratio</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">flip_position_if_opposite_side</span><span class="p">:</span>
-        <span class="n">flip_position_if_opposite_side</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">clear_prior_to_new_order</span><span class="p">:</span>
-        <span class="n">clear_prior_to_new_order</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># Get back all the values validated</span>
+    <span class="n">instID</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;instID&#39;</span><span class="p">)</span>
+    <span class="n">order_size</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order_size&#39;</span><span class="p">)</span>
+    <span class="n">leverage</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;leverage&#39;</span><span class="p">)</span>
+    <span class="n">order_side</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order_side&#39;</span><span class="p">)</span>
+    <span class="n">order_type</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order_type&#39;</span><span class="p">)</span>
+    <span class="n">max_orderbook_limit_price_offset</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_orderbook_limit_price_offset&#39;</span><span class="p">)</span>
+    <span class="n">flip_position_if_opposite_side</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flip_position_if_opposite_side&#39;</span><span class="p">)</span>
+    <span class="n">clear_prior_to_new_order</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;clear_prior_to_new_order&#39;</span><span class="p">)</span>
+    <span class="n">red_button</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;red_button&#39;</span><span class="p">)</span>
+    <span class="n">sl_trigger_price_offset</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sl_trigger_price_offset&#39;</span><span class="p">)</span>
+    <span class="n">tp_trigger_price_offset</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tp_trigger_price_offset&#39;</span><span class="p">)</span>
+    <span class="n">tp_trigger_price_type</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tp_trigger_price_type&#39;</span><span class="p">)</span>
+    <span class="n">sl_execution_price_offset</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sl_execution_price_offset&#39;</span><span class="p">)</span>
+    <span class="n">tp_execution_price_offset</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tp_execution_price_offset&#39;</span><span class="p">)</span>
+    <span class="n">sl_trigger_price_type</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sl_trigger_price_type&#39;</span><span class="p">)</span>
+    <span class="n">trailing_stop_activation_price_offset</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trailing_stop_activation_price_offset&#39;</span><span class="p">)</span>
+    <span class="n">trailing_stop_callback_offset</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trailing_stop_callback_offset&#39;</span><span class="p">)</span>
+    <span class="n">generated_client_order_id</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;generated_client_order_id&#39;</span><span class="p">)</span>
+    <span class="n">take_profit_activated</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;take_profit_activated&#39;</span><span class="p">)</span>
+    <span class="n">stop_loss_activated</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;stop_loss_activated&#39;</span><span class="p">)</span>
+    <span class="n">trailing_stop_loss_activated</span> <span class="o">=</span> <span class="n">validated_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trailing_stop_loss_activated&#39;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">order_side</span><span class="p">:</span>
-        <span class="p">(</span><span class="n">order_type</span><span class="p">,</span> <span class="n">order_side</span><span class="p">,</span>
-         <span class="n">TD_MODE</span><span class="p">,</span>
-         <span class="n">tp_trigger_price_type</span><span class="p">,</span> <span class="n">sl_trigger_price_type</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">order_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">order_side</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
-                                                          <span class="n">TD_MODE</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">tp_trigger_price_type</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
-                                                          <span class="n">sl_trigger_price_type</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-        <span class="n">order_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">order_size</span><span class="p">)</span>
-        <span class="n">leverage</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">leverage</span><span class="p">)</span>
 
-        <span class="n">stop_loss_trigger_percentage</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="p">(</span>
-                <span class="n">stop_loss_trigger_percentage</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">stop_loss_trigger_percentage</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
-            <span class="n">stop_loss_trigger_percentage</span><span class="p">)</span>
-        <span class="n">take_profit_trigger_percentage</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">take_profit_trigger_percentage</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">take_profit_trigger_percentage</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
-            <span class="n">take_profit_trigger_percentage</span><span class="p">)</span>
-        <span class="n">stop_loss_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">stop_loss_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">stop_loss_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
-            <span class="n">stop_loss_price_offset</span><span class="p">)</span>
-        <span class="n">tp_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">tp_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">tp_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
-            <span class="n">tp_price_offset</span><span class="p">)</span>
-
-        <span class="n">trailing_stop_activation_percentage</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">trailing_stop_activation_percentage</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">trailing_stop_activation_percentage</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
-            <span class="n">trailing_stop_activation_percentage</span><span class="p">)</span>
-        <span class="n">trailing_stop_callback_ratio</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">trailing_stop_callback_ratio</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">trailing_stop_callback_ratio</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
-            <span class="n">trailing_stop_callback_ratio</span><span class="p">)</span>
-
-        <span class="n">max_orderbook_limit_price_offset</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">max_orderbook_limit_price_offset</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="n">max_orderbook_limit_price_offset</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">max_orderbook_limit_price_offset</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span>
-            <span class="n">max_orderbook_limit_price_offset</span><span class="p">)</span>
-
-        <span class="n">flip_position_if_opposite_side</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">flip_position_if_opposite_side</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">flip_position_if_opposite_side</span> <span class="k">else</span> <span class="nb">bool</span><span class="p">(</span>
-            <span class="n">flip_position_if_opposite_side</span><span class="p">)</span>
-
-        <span class="n">take_profit_activated</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">stop_loss_activated</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">trailing_stop_loss_activated</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="c1"># TODO multiple_tp and amendPxOnTriggerType are commented out because they need multiple TP&#39;s to work and is not</span>
-        <span class="c1">#   developed yet downstream</span>
-        <span class="c1">#   multiple_tp = None</span>
-        <span class="c1">#   amendPxOnTriggerType = None</span>
-        <span class="k">if</span> <span class="n">take_profit_trigger_percentage</span> <span class="ow">or</span> <span class="n">tp_price_offset</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">take_profit_trigger_percentage</span> <span class="ow">and</span> <span class="n">tp_price_offset</span>
-            <span class="n">take_profit_activated</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">tp_trigger_price_type</span> <span class="o">=</span> <span class="n">tp_trigger_price_type</span> <span class="ow">or</span> <span class="s1">&#39;last&#39;</span>
-
-        <span class="k">if</span> <span class="n">stop_loss_trigger_percentage</span> <span class="ow">or</span> <span class="n">stop_loss_price_offset</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">stop_loss_trigger_percentage</span> <span class="ow">and</span> <span class="n">stop_loss_price_offset</span>
-            <span class="n">stop_loss_activated</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">sl_trigger_price_type</span> <span class="o">=</span> <span class="n">sl_trigger_price_type</span> <span class="ow">or</span> <span class="s1">&#39;last&#39;</span>
-
-        <span class="k">if</span> <span class="n">trailing_stop_activation_percentage</span> <span class="ow">or</span> <span class="n">trailing_stop_callback_ratio</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">trailing_stop_callback_ratio</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;trailing_stop_callback_ratio must be provided if trailing_stop_activation_percentage is provided. </span><span class="si">{</span><span class="n">trailing_stop_callback_ratio</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-            <span class="n">trailing_stop_loss_activated</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="k">assert</span> <span class="n">TD_MODE</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;isolated&#39;</span><span class="p">,</span> <span class="s1">&#39;crossed&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">TD_MODE</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="n">order_side</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;buy&#39;</span><span class="p">,</span> <span class="s1">&#39;sell&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">order_side</span><span class="p">,</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;order_side must be either &quot;buy&quot; or &quot;sell&quot; or empty. </span><span class="se">\n</span><span class="s1"> &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;for maintenance mode </span><span class="se">\n</span><span class="s1">      </span><span class="si">{</span><span class="n">order_side</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">stop_loss_trigger_percentage</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stop_loss_trigger_percentage</span><span class="p">,</span>
-                                                              <span class="nb">float</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">stop_loss_trigger_percentage</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">take_profit_trigger_percentage</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">take_profit_trigger_percentage</span><span class="p">,</span>
-                                                                <span class="nb">float</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">take_profit_trigger_percentage</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">stop_loss_price_offset</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">stop_loss_price_offset</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">stop_loss_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">tp_price_offset</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tp_price_offset</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tp_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">stop_loss_trigger_percentage</span> <span class="ow">or</span> <span class="n">stop_loss_trigger_percentage</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">stop_loss_trigger_percentage</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">take_profit_trigger_percentage</span> <span class="ow">or</span> <span class="n">take_profit_trigger_percentage</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">take_profit_trigger_percentage</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">stop_loss_price_offset</span> <span class="ow">or</span> <span class="n">stop_loss_price_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">stop_loss_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">tp_price_offset</span> <span class="ow">or</span> <span class="n">tp_price_offset</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tp_price_offset</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">tp_trigger_price_type</span> <span class="ow">or</span> <span class="n">tp_trigger_price_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;mark&#39;</span><span class="p">,</span>
-                                                                      <span class="s1">&#39;last&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tp_trigger_price_type</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="n">sl_trigger_price_type</span> <span class="ow">or</span> <span class="n">sl_trigger_price_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;mark&#39;</span><span class="p">,</span>
-                                                                      <span class="s1">&#39;last&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sl_trigger_price_type</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-
-        <span class="k">assert</span> <span class="n">order_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;market&#39;</span><span class="p">,</span> <span class="s1">&#39;limit&#39;</span><span class="p">,</span> <span class="s1">&#39;post_only&#39;</span><span class="p">,</span> <span class="s1">&#39;fok&#39;</span><span class="p">,</span> <span class="s1">&#39;ioc&#39;</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">order_type</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;Order size must be an integer/multiple of a lot size. </span><span class="si">{</span><span class="n">order_size</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-        <span class="k">assert</span> <span class="n">order_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Order size must be greater than 0. </span><span class="si">{</span><span class="n">order_size</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-
-        <span class="n">generated_client_order_id</span> <span class="o">=</span> <span class="n">generate_random_string</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s1">&#39;alphanumeric&#39;</span><span class="p">)</span>  <span class="c1"># 6 characters for type later</span>
-
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instID</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
     <span class="k">if</span> <span class="n">clear_prior_to_new_order</span><span class="p">:</span>
         <span class="n">clear_orders_and_positions_for_instrument</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
 
@@ -1401,7 +1548,7 @@
         <span class="n">instrument_status_report</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>  <span class="c1"># we are only using net so only one position</span>
 
     <span class="k">if</span> <span class="n">order_side</span><span class="p">:</span>
-        <span class="n">ticker</span> <span class="o">=</span> <span class="n">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instID</span><span class="p">)</span>
+        <span class="n">ticker</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_ticker</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instID</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ticker</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">ask_price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">askPx</span><span class="p">)</span> <span class="k">if</span> <span class="n">ticker</span><span class="o">.</span><span class="n">askPx</span> <span class="k">else</span> <span class="n">ticker</span><span class="o">.</span><span class="n">bidPx</span>  <span class="c1"># fixme sometimes okx returns &#39;&#39; for askPx</span>
         <span class="n">bid_price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ticker</span><span class="o">.</span><span class="n">bidPx</span><span class="p">)</span>
@@ -1492,47 +1639,50 @@
             <span class="n">order_request_dict</span><span class="p">[</span><span class="s1">&#39;px&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit_price</span>
 
         <span class="k">if</span> <span class="n">take_profit_activated</span><span class="p">:</span>
-            <span class="n">stop_surplus_trigger_price</span><span class="p">,</span> <span class="n">stop_surplus_execute_price</span> <span class="o">=</span> <span class="n">calculate_tp_stop_prices</span><span class="p">(</span>
-                <span class="n">reference_price</span><span class="o">=</span><span class="n">reference_price</span><span class="p">,</span> <span class="n">order_side</span><span class="o">=</span><span class="n">order_side</span><span class="p">,</span>
-                <span class="n">tp_trigger_percentage</span><span class="o">=</span><span class="n">take_profit_trigger_percentage</span><span class="p">,</span>
-                <span class="n">tp_price_offset</span><span class="o">=</span><span class="n">tp_price_offset</span><span class="p">,</span>
+            <span class="n">stop_surplus_trigger_price</span><span class="p">,</span> <span class="n">stop_surplus_execute_price</span> <span class="o">=</span> <span class="n">calculate_tp_stop_prices_usd</span><span class="p">(</span>
+                <span class="n">order_side</span><span class="o">=</span><span class="n">order_side</span><span class="p">,</span>
+                <span class="n">reference_price</span><span class="o">=</span><span class="n">reference_price</span><span class="p">,</span>
+                <span class="n">tp_trigger_usd</span><span class="o">=</span><span class="n">tp_trigger_price_offset</span><span class="p">,</span>
+                <span class="n">tp_execute_usd</span><span class="o">=</span><span class="n">tp_execution_price_offset</span><span class="p">,</span>
             <span class="p">)</span>
-
-            <span class="n">tpTriggerPxType</span> <span class="o">=</span> <span class="n">tp_trigger_price_type</span>
             <span class="n">order_request_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="n">tpTriggerPx</span><span class="o">=</span><span class="n">stop_surplus_trigger_price</span><span class="p">,</span>
                 <span class="n">tpOrdPx</span><span class="o">=</span><span class="n">stop_surplus_execute_price</span><span class="p">,</span>
-                <span class="n">tpTriggerPxType</span><span class="o">=</span><span class="n">tpTriggerPxType</span><span class="p">,</span>
+                <span class="n">tpTriggerPxType</span><span class="o">=</span><span class="n">tp_trigger_price_type</span><span class="p">,</span>
                 <span class="n">algoClOrdId</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">generated_client_order_id</span><span class="si">}</span><span class="s1">TPORSL&#39;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">stop_loss_activated</span><span class="p">:</span>
-            <span class="n">stop_loss_trigger_price</span><span class="p">,</span> <span class="n">stop_loss_execute_price</span> <span class="o">=</span> <span class="n">calculate_sl_stop_prices</span><span class="p">(</span>
-                <span class="n">reference_price</span><span class="o">=</span><span class="n">reference_price</span><span class="p">,</span> <span class="n">order_side</span><span class="o">=</span><span class="n">order_side</span><span class="p">,</span>
-                <span class="n">sl_trigger_percentage</span><span class="o">=</span><span class="n">stop_loss_trigger_percentage</span><span class="p">,</span>
-                <span class="n">sl_price_offset</span><span class="o">=</span><span class="n">stop_loss_price_offset</span><span class="p">)</span>
-            <span class="n">slTriggerPxType</span> <span class="o">=</span> <span class="n">sl_trigger_price_type</span>
+            <span class="n">stop_loss_trigger_price</span><span class="p">,</span> <span class="n">stop_loss_execute_price</span> <span class="o">=</span> <span class="n">calculate_sl_stop_prices_usd</span><span class="p">(</span>
+                <span class="n">order_side</span><span class="o">=</span><span class="n">order_side</span><span class="p">,</span>
+                <span class="n">reference_price</span><span class="o">=</span><span class="n">reference_price</span><span class="p">,</span>
+                <span class="n">sl_trigger_usd</span><span class="o">=</span><span class="n">sl_trigger_price_offset</span><span class="p">,</span>
+                <span class="n">sl_execute_usd</span><span class="o">=</span><span class="n">sl_execution_price_offset</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">order_request_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="n">slTriggerPx</span><span class="o">=</span><span class="n">stop_loss_trigger_price</span><span class="p">,</span>
                 <span class="n">slOrdPx</span><span class="o">=</span><span class="n">stop_loss_execute_price</span><span class="p">,</span>
-                <span class="n">slTriggerPxType</span><span class="o">=</span><span class="n">slTriggerPxType</span><span class="p">,</span>
+                <span class="n">slTriggerPxType</span><span class="o">=</span><span class="n">sl_trigger_price_type</span><span class="p">,</span>
                 <span class="n">algoClOrdId</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">generated_client_order_id</span><span class="si">}</span><span class="s1">TPORSL&#39;</span>
             <span class="p">)</span>
+
+
         <span class="n">order_placement_return</span> <span class="o">=</span> <span class="n">place_order</span><span class="p">(</span><span class="o">**</span><span class="n">order_request_dict</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">order_placement_return</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># If error, cancel all orders and exit</span>
-        <span class="k">if</span> <span class="n">order_placement_return</span><span class="o">.</span><span class="n">sCode</span> <span class="o">!=</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">order_placement_return</span> <span class="ow">and</span> <span class="n">order_placement_return</span><span class="o">.</span><span class="n">sCode</span> <span class="o">!=</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">order_placement_return</span><span class="o">.</span><span class="n">sMsg</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">cancel_all_orders</span><span class="p">()</span>
+            <span class="n">cancel_all_orders</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instID</span><span class="p">)</span>
             <span class="n">cancel_all_algo_orders_with_params</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instID</span><span class="p">)</span>
             <span class="n">exit</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">trailing_stop_loss_activated</span><span class="p">:</span>
             <span class="n">activePx</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="n">trailing_stop_activation_percentage</span><span class="p">:</span>
-                <span class="n">activePx</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">trailing_stop_activation_percentage</span><span class="p">)</span> <span class="k">if</span> <span class="n">order_side</span> <span class="o">==</span> <span class="s1">&#39;buy&#39;</span> <span class="k">else</span> \
-                    <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">trailing_stop_activation_percentage</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">trailing_stop_activation_price_offset</span><span class="p">:</span>
+                <span class="n">activePx</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">+</span> <span class="n">trailing_stop_activation_price_offset</span> <span class="k">if</span> <span class="n">order_side</span> <span class="o">==</span> <span class="s1">&#39;buy&#39;</span> <span class="k">else</span> \
+                    <span class="n">reference_price</span> <span class="o">-</span> <span class="n">trailing_stop_activation_price_offset</span>
+
             <span class="c1"># Create Trailing Stop Loss</span>
             <span class="n">trailing_stop_order_placement_return</span> <span class="o">=</span> <span class="n">place_algo_trailing_stop_loss</span><span class="p">(</span>
                 <span class="n">instId</span><span class="o">=</span><span class="n">instID</span><span class="p">,</span>
@@ -1542,7 +1692,7 @@
                 <span class="n">sz</span><span class="o">=</span><span class="n">order_size</span><span class="p">,</span>
                 <span class="n">activePx</span><span class="o">=</span><span class="n">activePx</span> <span class="ow">or</span> <span class="n">reference_price</span><span class="p">,</span>
                 <span class="n">posSide</span><span class="o">=</span><span class="n">POSSIDETYPE</span><span class="p">,</span>
-                <span class="n">callbackRatio</span><span class="o">=</span><span class="n">trailing_stop_callback_ratio</span><span class="p">,</span>
+                <span class="n">callbackRatio</span><span class="o">=</span><span class="n">trailing_stop_callback_offset</span><span class="p">,</span>
                 <span class="n">reduceOnly</span><span class="o">=</span><span class="s1">&#39;true&#39;</span><span class="p">,</span>
                 <span class="n">algoClOrdId</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">generated_client_order_id</span><span class="si">}</span><span class="s1">TrailS&#39;</span><span class="p">,</span>
                 <span class="n">cxlOnClosePos</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
@@ -1558,8 +1708,6 @@
             <span class="k">if</span> <span class="n">position_side</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Will Attempt to close all positions for </span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1"> due to 0 net position&#39;</span><span class="p">)</span>
                 <span class="n">close_all_positions</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="n">instID</span><span class="p">)</span>
-                <span class="c1"># cancel_all_algo_orders_with_params(instId=instID)</span>
-                <span class="c1"># cancel_all_orders(instId=instID)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">FINAL REPORT&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">fetch_status_report_for_instrument</span><span class="p">(</span><span class="n">instID</span><span class="p">,</span> <span class="n">TD_MODE</span><span class="p">)</span></div>
@@ -1596,7 +1744,7 @@
         <span class="k">assert</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_timestamp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">259200</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_timestamp</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">assert</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_timestamp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2592000</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_timestamp</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-    <span class="n">instType</span> <span class="o">=</span> <span class="s1">&#39;FUTURES&#39;</span>
+
     <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">after</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1747,7 +1895,7 @@
 
             <span class="k">assert</span> <span class="n">indicator_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="p">,</span> <span class="s2">&quot;OKXSignalInput is None&quot;</span>
             <span class="n">okx_signal_input</span> <span class="o">=</span> <span class="n">indicator_input</span><span class="o">.</span><span class="n">OKXSignalInput</span>
-            <span class="n">instrument_status_report</span><span class="p">:</span> <span class="n">InstrumentStatusReport</span> <span class="o">=</span> <span class="n">okx_signal_handler</span><span class="p">(</span><span class="o">**</span><span class="n">okx_signal_input</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+            <span class="n">instrument_status_report</span><span class="p">:</span> <span class="n">InstrumentStatusReport</span> <span class="o">=</span> <span class="k">await</span> <span class="n">okx_signal_handler</span><span class="p">(</span><span class="o">**</span><span class="n">okx_signal_input</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
             <span class="n">pprint</span><span class="p">(</span><span class="n">instrument_status_report</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">instrument_status_report</span><span class="p">,</span> <span class="s2">&quot;Instrument Status Report is None, check the Instrument ID&quot;</span>
             <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx signal received&quot;</span><span class="p">,</span> <span class="s2">&quot;instrument_status_report&quot;</span><span class="p">:</span> <span class="n">instrument_status_report</span><span class="p">}</span>
@@ -1766,7 +1914,7 @@
 
     <span class="c1"># Immediately execute the &#39;red button&#39; functionality to clear all positions and orders</span>
     <span class="c1"># TODO: Ensure only relevant orders/positions are handled.</span>
-    <span class="c1"># await okx_signal_handler(red_button=True)</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">okx_signal_handler</span><span class="p">(</span><span class="n">red_button</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
     <span class="c1"># Load environment variables from a .env file</span>
     <span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
@@ -1774,19 +1922,25 @@
     <span class="c1"># Branching logic based on the test function chosen</span>
     <span class="k">if</span> <span class="n">TEST_FUNCTION</span> <span class="o">==</span> <span class="s1">&#39;okx_signal_handler&#39;</span><span class="p">:</span>
         <span class="c1"># Execute the &#39;okx_signal_handler&#39; with predefined parameters for testing</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">okx_signal_handler</span><span class="p">(</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">okx_signal_handler</span><span class="p">(</span>
             <span class="c1"># Parameters for the &#39;okx_signal_handler&#39;</span>
             <span class="n">instID</span><span class="o">=</span><span class="s2">&quot;BTC-USDT-240628&quot;</span><span class="p">,</span>
-            <span class="n">order_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">usd_order_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">leverage</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="n">order_side</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">order_side</span><span class="o">=</span><span class="s2">&quot;BUY&quot;</span><span class="p">,</span>
             <span class="n">order_type</span><span class="o">=</span><span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
             <span class="n">max_orderbook_limit_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">flip_position_if_opposite_side</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">clear_prior_to_new_order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">red_button</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="c1"># More parameters...</span>
-        <span class="p">)</span>
+            <span class="c1"># TP and SL</span>
+            <span class="c1"># tp_trigger_price_offset=100,</span>
+            <span class="c1"># tp_execution_price_offset=90,</span>
+            <span class="c1"># sl_trigger_price_offset=100,</span>
+            <span class="c1"># sl_execution_price_offset=90,</span>
+            <span class="n">trailing_stop_activation_price_offset</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">trailing_stop_callback_offset</span><span class="o">=</span><span class="mi">10</span>
+        <span class="p">))</span>
     <span class="k">elif</span> <span class="n">TEST_FUNCTION</span> <span class="o">==</span> <span class="s1">&#39;okx_premium_indicator&#39;</span><span class="p">:</span>
         <span class="c1"># Load a payload from a file for testing the &#39;okx_premium_indicator&#39;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../debugging_payload.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -1804,7 +1958,7 @@
 
         <span class="c1"># Prepare and send a message to a Redis stream for debugging</span>
         <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
-        <span class="n">r</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@premium_indicator@input&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">redis_ready_message</span><span class="p">)</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@premium_indicator@input&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">redis_ready_message</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
 
         <span class="c1"># Process the indicator input and store the result</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">okx_premium_indicator</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">)</span>
@@ -1813,7 +1967,8 @@
         <span class="n">response</span> <span class="o">=</span> <span class="n">okx_premium_indicator</span><span class="p">(</span><span class="n">webhook_payload</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="c1"># Send the result to a Redis stream for debugging</span>
-            <span class="n">r</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@premium_indicator@result&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@premium_indicator@result&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">result</span><span class="p">),</span>
+                   <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Handle invalid test function selection</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid test function </span><span class="si">{</span><span class="n">TEST_FUNCTION</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>

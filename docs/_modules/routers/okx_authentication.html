@@ -57,8 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -145,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
@@ -220,7 +223,7 @@
 
 <span class="kn">from</span> <span class="nn">firebase_tools.BaseClasses</span> <span class="kn">import</span> <span class="n">FirebaseAuthGoodResponse</span>
 <span class="kn">from</span> <span class="nn">firebase_tools.authenticate</span> <span class="kn">import</span> <span class="n">check_token_validity</span><span class="p">,</span> <span class="n">authenticate_with_firebase</span>
-<span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">clean_and_verify_instID</span><span class="p">,</span> <span class="n">instrument_searcher</span>
+<span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">_validate_instID_and_return_ticker_info</span>
 <span class="kn">from</span> <span class="nn">routers.api_keys</span> <span class="kn">import</span> <span class="n">create_access_token</span>
 <span class="kn">from</span> <span class="nn">shared.config</span> <span class="kn">import</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">ALGORITHM</span>
 
@@ -231,7 +234,7 @@
 
 <div class="viewcode-block" id="check_token_against_instrument">
 <a class="viewcode-back" href="../../routers.okx_authentication.html#routers.okx_authentication.check_token_against_instrument">[docs]</a>
-<span class="k">def</span> <span class="nf">check_token_against_instrument</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_instID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">check_token_against_instrument</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reference_instID</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                                    <span class="p">):</span>
     <span class="n">credentials_exception</span> <span class="o">=</span> <span class="n">HTTPException</span><span class="p">(</span>
         <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
@@ -239,7 +242,14 @@
         <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer&quot;</span><span class="p">},</span>
     <span class="p">)</span>
 
-    <span class="n">reference_instID</span> <span class="o">=</span> <span class="n">clean_and_verify_instID</span><span class="p">(</span><span class="n">reference_instID</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">reference_instID_ticker</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_instID_and_return_ticker_info</span><span class="p">(</span><span class="n">reference_instID</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">reference_instID_ticker</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">reference_instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+        <span class="n">reference_instID</span> <span class="o">=</span> <span class="n">reference_instID_ticker</span><span class="o">.</span><span class="n">instId</span>
+    <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">reference_instID</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AssertionError in check_token_against_instrument: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="n">ALGORITHM</span><span class="p">])</span>
@@ -255,7 +265,9 @@
 
     <span class="k">assert</span> <span class="n">role</span> <span class="o">==</span> <span class="s1">&#39;trading_instrument&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;role must be &quot;trading_instrument&quot;, </span><span class="si">{</span><span class="n">role</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
     <span class="k">assert</span> <span class="n">instID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-    <span class="n">instID</span> <span class="o">=</span> <span class="n">clean_and_verify_instID</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
+    <span class="n">instID_ticker</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_instID_and_return_ticker_info</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">instID_ticker</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="n">instID</span> <span class="o">=</span> <span class="n">instID_ticker</span><span class="o">.</span><span class="n">instId</span>
     <span class="k">assert</span> <span class="n">instID</span> <span class="o">==</span> <span class="n">reference_instID</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1"> != </span><span class="si">{</span><span class="n">reference_instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
 
     <span class="k">return</span> <span class="kc">True</span></div>
@@ -275,7 +287,7 @@
 <div class="viewcode-block" id="create_instrument_api_key">
 <a class="viewcode-back" href="../../routers.okx_authentication.html#routers.okx_authentication.create_instrument_api_key">[docs]</a>
 <span class="nd">@okx_authentication_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/create_okx_instrument_api_key&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_202_ACCEPTED</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">create_instrument_api_key</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">InstIdAPIKeyCreationRequestForm</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(),</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">create_instrument_api_key</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">InstIdAPIKeyCreationRequestForm</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(),</span>
                               <span class="n">current_user</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">check_token_validity</span><span class="p">),</span>
                               <span class="p">):</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">authenticate_with_firebase</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
@@ -291,8 +303,10 @@
     <span class="n">instID</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">instID</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="n">splitted</span> <span class="o">=</span> <span class="n">instID</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;The Futures instrument ID must be in the format of &quot;BTC-USDT-210326&quot;. </span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-    <span class="n">instrument</span> <span class="o">=</span> <span class="n">instrument_searcher</span><span class="o">.</span><span class="n">find_by_instId</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">instrument</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> not found in instrument_searcher&#39;</span>
+    <span class="n">instrument_ticker</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_instID_and_return_ticker_info</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">instrument_ticker</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> not found in instrument_searcher&#39;</span>
+    <span class="n">instrument</span> <span class="o">=</span> <span class="n">instrument_ticker</span><span class="p">[</span><span class="s1">&#39;instrument&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">instrument</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> not found in instrument_searcher&#39;</span>
     <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">InstType</span>
     <span class="k">assert</span> <span class="n">instrument</span><span class="o">.</span><span class="n">instType</span> <span class="o">==</span> <span class="n">InstType</span><span class="o">.</span><span class="n">FUTURES</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> is not a Futures instrument&#39;</span>
 

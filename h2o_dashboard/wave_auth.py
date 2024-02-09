@@ -152,9 +152,25 @@ async def init(q: Q) -> None:
                                           page='#F2F2F2',
                                           # page='#D91A1A',
 
+                                      ),
+                                      ui.theme(
+                                          name='my-awesome-theme1',
+                                          primary='#571305',  # Header and Sidebaer - Color Light Red
+                                          text='#E0E0E0',  #
+                                          card='#333333',
+                                          page='#121212',
+
+                                      ),
+                                      ui.theme(
+                                          name='my-awesome-theme2',
+                                          primary='#2979FF',  # Header and Sidebaer - Color Light Red
+                                          text='#E0E0E0',  #
+                                          card='#212121',
+                                          page='#000000',
+
                                       )
                                   ],
-                                  theme='my-awesome-theme'
+                                  theme='my-awesome-theme2'
                                   )
 
     q.client.initialized = False

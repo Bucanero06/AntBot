@@ -63,7 +63,7 @@ class InstrumentSearcher:
         """ Find an instrument by its instId """
         instrument=self._instrument_map.get(instId)
         if instrument:
-            return Instrument(**instrument)
+            return instrument if isinstance(instrument, Instrument) else Instrument(**instrument)
         else:
             return None
     def find_by_type(self, instType: InstType) -> List[Instrument]:

@@ -102,10 +102,11 @@ async def analyze_transaction_history(instType: InstType = ENFORCED_INSTRUMENT_T
 
 
 async def update_instruments(okx_futures_instrument_searcher: InstrumentSearcher,
-                             instType: InstType = ENFORCED_INSTRUMENT_TYPE):
+                             instrument_type: InstType = ENFORCED_INSTRUMENT_TYPE):
     instrument_map = await okx_futures_instrument_searcher.update_instruments()
     redis_ready_message = serialize_for_redis(instrument_map)
-    await async_redis.xadd(f'okx:rest@{instType}-instruments', {'data': redis_ready_message}, maxlen=REDIS_STREAM_MAX_LEN)
+    await async_redis.xadd(f'okx:rest@{instrument_type.name.lower()}-instruments', {'data': redis_ready_message},
+                           maxlen=REDIS_STREAM_MAX_LEN)
 
 
 async def okx_rest_messages_services(reload_interval: int = 30):
@@ -128,9 +129,9 @@ async def okx_rest_messages_services(reload_interval: int = 30):
     while True:
         try:
             await asyncio.gather(
-                analyze_transaction_history(),
+
+                analyze_transaction_history(),  # by default, analyze and store the last 90 days for futures
                 update_instruments(okx_futures_instrument_searcher, ENFORCED_INSTRUMENT_TYPE)
-                # by default, analyze and store the last 90 days for futures
             )
         except KeyboardInterrupt:
             break

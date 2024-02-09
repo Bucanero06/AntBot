@@ -75,6 +75,62 @@ performance and versatility:
 Each of these has many features yet to be fully integrated into the AntBot project, but the potential for expansion
 and enhancement is vast, many low-hanging fruits are available for the taking. 
 
+## Entry Waypoints
+dashboard
+```yaml
+port 10101 or behind a reverse proxy (e.g. Nginx) on port 80
+```
+
+okx_signal_handler:
+```json
+# Global 
+instID="BTC-USDT-240628",
+leverage=0,
+max_orderbook_limit_price_offset=None,
+clear_prior_to_new_order=False,
+red_button=False,
+# Principal Order 
+usd_order_size=0,
+order_side="BUY",
+order_type="MARKET",
+flip_position_if_opposite_side=True,
+# Principal Order's TP/SL/Trail
+tp_trigger_price_offset=100,
+tp_execution_price_offset=90,
+sl_trigger_price_offset=100,
+sl_execution_price_offset=90,
+trailing_stop_activation_price_offset=100,
+trailing_stop_callback_offset=10,
+# DCA Orders (are not linked to the principal order)
+dca_parameters=[
+    DCAInputParameters(
+        usd_amount=100,
+        order_type="LIMIT",
+        order_side="BUY",
+        trigger_price_offset=100,
+        execution_price_offset=90,
+        tp_trigger_price_offset=100,
+        tp_execution_price_offset=90,
+        sl_trigger_price_offset=100,
+        sl_execution_price_offset=90
+    ),
+    DCAInputParameters(
+        usd_amount=100,
+        order_type="LIMIT",
+        order_side="BUY",
+        trigger_price_offset=150,
+        execution_price_offset=149,
+        tp_trigger_price_offset=100,
+        tp_execution_price_offset=90,
+        sl_trigger_price_offset=100,
+        sl_execution_price_offset=90
+    )
+]
+
+```
+... more to be documented
+
+
 ## TradingView Alerts Configuration
 
 A forthcoming feature includes an automated alert creation and management page. Initial steps to set up alerts using the

@@ -57,8 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -145,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
@@ -280,9 +283,10 @@
 
     <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ui</span><span class="o">.</span><span class="n">meta_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                                   <span class="n">title</span><span class="o">=</span><span class="s1">&#39;AntBot&#39;</span><span class="p">,</span>
-                                  <span class="n">layouts</span><span class="o">=</span><span class="p">[</span><span class="n">ui</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="nb">breakpoint</span><span class="o">=</span><span class="s1">&#39;xs&#39;</span><span class="p">,</span> <span class="n">min_height</span><span class="o">=</span><span class="s1">&#39;100vh&#39;</span><span class="p">,</span> <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
+                                  <span class="n">layouts</span><span class="o">=</span><span class="p">[</span><span class="n">ui</span><span class="o">.</span><span class="n">layout</span><span class="p">(</span><span class="nb">breakpoint</span><span class="o">=</span><span class="s1">&#39;xs&#39;</span><span class="p">,</span> <span class="n">min_height</span><span class="o">=</span><span class="s1">&#39;100vh&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
+                                                     <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
                                       <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
-                                          <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;sidebar&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;208px&#39;</span><span class="p">),</span>
+                                          <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;sidebar&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;180px&#39;</span><span class="p">),</span>
                                           <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
                                               <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;header&#39;</span><span class="p">),</span>
                                               <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
@@ -325,12 +329,11 @@
                                                           <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">),</span>
                                                   <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;grid_6&#39;</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
                                                           <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">),</span>
-                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;mvp_bot_manual_controls&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 1 1 1&#39;</span><span class="p">,</span>
+                                                  <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;bot_manual_controls&#39;</span><span class="p">,</span>
                                                             <span class="n">direction</span><span class="o">=</span><span class="n">ui</span><span class="o">.</span><span class="n">ZoneDirection</span><span class="o">.</span><span class="n">ROW</span><span class="p">,</span>
-                                                          <span class="n">zones</span><span class="o">=</span><span class="p">[</span>
-                                                                <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;mvp_bot_manual_controls_1&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 1 1 1&#39;</span><span class="p">),</span>
-                                                                <span class="n">ui</span><span class="o">.</span><span class="n">zone</span><span class="p">(</span><span class="s1">&#39;mvp_bot_manual_controls_2&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;1 1 1 1&#39;</span><span class="p">)</span>
-                                                              <span class="p">]</span>
+                                                          <span class="c1"># Cover the entire card</span>
+                                                            <span class="n">wrap</span><span class="o">=</span><span class="s1">&#39;stretch&#39;</span><span class="p">,</span>
+
                                                             <span class="p">),</span>
                                               <span class="p">]),</span>
                                           <span class="p">]),</span>
@@ -493,41 +496,54 @@
 
 
 
+
 <div class="viewcode-block" id="render_hidden_content">
 <a class="viewcode-back" href="../../h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.render_hidden_content">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">render_hidden_content</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Render pages content e.g. overview_page or other pages get added here</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">await</span> <span class="n">clear_cards</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">add_application_sidebar</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="c1"># What path is the user at right now</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Path: </span><span class="si">{</span><span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
 
     <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;overview_page&#39;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Route to Overview Page&quot;</span><span class="p">)</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">overview_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
-        <span class="c1"># q.client.overview_page_task.cancel()</span>
-        <span class="c1"># await overview_page(q)</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="k">await</span> <span class="n">clear_cards</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">add_application_sidebar</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">overview_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
         <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
     <span class="k">elif</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;okx_dashboard_page&#39;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Route to OKX Dashboard Page&quot;</span><span class="p">)</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">okx_dashboard_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
-
-        <span class="c1"># q.client.okx_dashboard_page_task.cancel()</span>
-        <span class="c1"># await okx_dashboard_page(q)</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="k">await</span> <span class="n">clear_cards</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">add_application_sidebar</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">okx_dashboard_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
         <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">elif</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;documentation_page&#39;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Route to Documentation Page&quot;</span><span class="p">)</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
-        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">documentation_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
-        <span class="c1"># q.client.documentation_page_task.cancel()</span>
-        <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_task</span>
-        <span class="c1"># await documentation_page(q)</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="k">await</span> <span class="n">clear_cards</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">add_application_sidebar</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
+            <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">documentation_page</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
         <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: No route found&quot;</span><span class="p">)</span>

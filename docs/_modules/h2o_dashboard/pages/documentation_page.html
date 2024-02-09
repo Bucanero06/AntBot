@@ -57,8 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -145,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.utils.html">redis_tools.utils</a></li>
@@ -232,11 +235,20 @@
                                   <span class="n">icon_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="p">))</span>
 
+    <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;Documentation_Page_FASTAPIDOCS&#39;</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">form_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_1&#39;</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">ui</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;&lt;iframe src=&quot;http://localhost:8080/docs&quot; width=&quot;100%&quot; height=&quot;100%&quot;&gt;&lt;/iframe&gt;&quot;&quot;&quot;</span><span class="p">,</span>
+                 <span class="n">height</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span><span class="p">,</span>
+                 <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">)</span>
+    <span class="p">]))</span>
+
     <span class="c1"># embed https://bucanero06.github.io/AntBot</span>
-    <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;Documentation_Page_Documentation&#39;</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">markdown_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_1&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Documentation&#39;</span><span class="p">,</span>
+    <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;Documentation_Page_Documentation&#39;</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">markdown_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Documentation&#39;</span><span class="p">,</span>
                                                                            <span class="n">content</span><span class="o">=</span><span class="s1">&#39;&lt;div style=&quot;width: 100%; height: 480px; margin: 10px; position: relative;&quot;&gt;&lt;iframe allowfullscreen frameborder=&quot;0&quot; style=&quot;width:100%; height:100%&quot; src=&quot;https://bucanero06.github.io/AntBot&quot; id=&quot;ygM8fjvwnLkk&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;&#39;</span>
                                                                            <span class="p">))</span>
-    <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;Documentation_Page_Diagram&#39;</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">markdown_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Diagram&#39;</span><span class="p">,</span>
+
+
+
+    <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;Documentation_Page_Diagram&#39;</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">markdown_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_3&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Diagram&#39;</span><span class="p">,</span>
                                                                      <span class="n">content</span><span class="o">=</span><span class="s1">&#39;&lt;div style=&quot;width: 100%; height: 480px; margin: 10px; position: relative;&quot;&gt;&lt;iframe allowfullscreen frameborder=&quot;0&quot; style=&quot;width:100%; height:480px&quot; src=&quot;https://lucid.app/documents/embedded/e5260455-d74f-4d36-af21-5e018177e9f0&quot; id=&quot;ygM8fjvwnLkk&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;&#39;</span>
                                                                      <span class="p">))</span>
     <span class="c1"># q.client.documentation_page_running_event.set()</span>

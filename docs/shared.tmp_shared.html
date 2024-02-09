@@ -60,8 +60,10 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -148,6 +150,7 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.utils.html">redis_tools.utils</a></li>
@@ -170,8 +173,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#shared.tmp_shared.calculate_sl_stop_prices"><code class="docutils literal notranslate"><span class="pre">calculate_sl_stop_prices()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#shared.tmp_shared.calculate_sl_stop_prices_usd"><code class="docutils literal notranslate"><span class="pre">calculate_sl_stop_prices_usd()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shared.tmp_shared.calculate_stop_prices"><code class="docutils literal notranslate"><span class="pre">calculate_stop_prices()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shared.tmp_shared.calculate_tp_stop_prices"><code class="docutils literal notranslate"><span class="pre">calculate_tp_stop_prices()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#shared.tmp_shared.calculate_tp_stop_prices_usd"><code class="docutils literal notranslate"><span class="pre">calculate_tp_stop_prices_usd()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shared.tmp_shared.execute_function_calls"><code class="docutils literal notranslate"><span class="pre">execute_function_calls()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shared.tmp_shared.get_timestamp_from_days_ago"><code class="docutils literal notranslate"><span class="pre">get_timestamp_from_days_ago()</span></code></a></li>
 </ul>
@@ -240,17 +245,39 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="shared.tmp_shared.calculate_sl_stop_prices_usd">
+<span class="sig-prename descclassname"><span class="pre">shared.tmp_shared.</span></span><span class="sig-name descname"><span class="pre">calculate_sl_stop_prices_usd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sl_trigger_usd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sl_execute_usd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shared/tmp_shared.html#calculate_sl_stop_prices_usd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shared.tmp_shared.calculate_sl_stop_prices_usd" title="Link to this definition"></a></dt>
+<dd><p>Calculate stop loss trigger and execute prices based on the order side using USD values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order_side</strong> – Either ‘buy’ or ‘sell’.</p></li>
+<li><p><strong>reference_price</strong> – Current market price of the asset.</p></li>
+<li><p><strong>sl_trigger_usd</strong> – USD value for calculating the stop loss trigger price.</p></li>
+<li><p><strong>sl_execute_usd</strong> – USD value for calculating the stop loss execute price.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple containing sl_trigger_price, sl_execute_price.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If order_side is not ‘buy’ or ‘sell’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="shared.tmp_shared.calculate_stop_prices">
-<span class="sig-prename descclassname"><span class="pre">shared.tmp_shared.</span></span><span class="sig-name descname"><span class="pre">calculate_stop_prices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_trigger_percentage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_surplus_trigger_percentage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_loss_price_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_surplus_price_offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shared/tmp_shared.html#calculate_stop_prices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shared.tmp_shared.calculate_stop_prices" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">shared.tmp_shared.</span></span><span class="sig-name descname"><span class="pre">calculate_stop_prices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sl_trigger_price_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_surplus_trigger_percentage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sl_execution_price_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_surplus_price_offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shared/tmp_shared.html#calculate_stop_prices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shared.tmp_shared.calculate_stop_prices" title="Link to this definition"></a></dt>
 <dd><p>Calculate stop loss and stop surplus trigger and execute prices based on the order side.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>order_side</strong> – Either ‘buy’ or ‘sell’.</p></li>
 <li><p><strong>current_market_price</strong> – Current market price of the asset.</p></li>
-<li><p><strong>stop_loss_trigger_percentage</strong> – Percentage for calculating the stop loss trigger price.</p></li>
+<li><p><strong>sl_trigger_price_offset</strong> – Percentage for calculating the stop loss trigger price.</p></li>
 <li><p><strong>stop_surplus_trigger_percentage</strong> – Percentage for calculating the stop surplus trigger price.</p></li>
-<li><p><strong>stop_loss_price_offset</strong> – Offset for calculating the stop loss execute price.</p></li>
+<li><p><strong>sl_execution_price_offset</strong> – Offset for calculating the stop loss execute price.</p></li>
 <li><p><strong>stop_surplus_price_offset</strong> – Offset for calculating the stop surplus execute price.</p></li>
 </ul>
 </dd>
@@ -265,7 +292,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="shared.tmp_shared.calculate_tp_stop_prices">
-<span class="sig-prename descclassname"><span class="pre">shared.tmp_shared.</span></span><span class="sig-name descname"><span class="pre">calculate_tp_stop_prices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_trigger_percentage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_price_offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shared/tmp_shared.html#calculate_tp_stop_prices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shared.tmp_shared.calculate_tp_stop_prices" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">shared.tmp_shared.</span></span><span class="sig-name descname"><span class="pre">calculate_tp_stop_prices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_trigger_percentage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_execution_price_offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shared/tmp_shared.html#calculate_tp_stop_prices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shared.tmp_shared.calculate_tp_stop_prices" title="Link to this definition"></a></dt>
 <dd><p>Calculate take profit trigger and execute prices based on the order side.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -273,7 +300,29 @@
 <li><p><strong>order_side</strong> – Either ‘buy’ or ‘sell’.</p></li>
 <li><p><strong>current_market_price</strong> – Current market price of the asset.</p></li>
 <li><p><strong>tp_trigger_percentage</strong> – Percentage for calculating the take profit trigger price.</p></li>
-<li><p><strong>tp_price_offset</strong> – Offset for calculating the take profit execute price.</p></li>
+<li><p><strong>tp_execution_price_offset</strong> – Offset for calculating the take profit execute price.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple containing tp_trigger_price, tp_execute_price.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If order_side is not ‘buy’ or ‘sell’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shared.tmp_shared.calculate_tp_stop_prices_usd">
+<span class="sig-prename descclassname"><span class="pre">shared.tmp_shared.</span></span><span class="sig-name descname"><span class="pre">calculate_tp_stop_prices_usd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_side</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_trigger_usd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tp_execute_usd</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/shared/tmp_shared.html#calculate_tp_stop_prices_usd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shared.tmp_shared.calculate_tp_stop_prices_usd" title="Link to this definition"></a></dt>
+<dd><p>Calculate take profit trigger and execute prices based on the order side using USD values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order_side</strong> – Either ‘buy’ or ‘sell’.</p></li>
+<li><p><strong>reference_price</strong> – Current market price of the asset.</p></li>
+<li><p><strong>tp_trigger_usd</strong> – USD value for calculating the take profit trigger price.</p></li>
+<li><p><strong>tp_execute_usd</strong> – USD value for calculating the take profit execute price.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

@@ -60,8 +60,10 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -113,7 +115,13 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">pyokx.strategy_handling</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pyokx.strategy_handling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.strategy_handling.listen_account_stream"><code class="docutils literal notranslate"><span class="pre">listen_account_stream()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.strategy_handling.listen_fills_stream"><code class="docutils literal notranslate"><span class="pre">listen_fills_stream()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.strategy_handling.listen_orders_stream"><code class="docutils literal notranslate"><span class="pre">listen_orders_stream()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.strategy_handling.listen_position_stream"><code class="docutils literal notranslate"><span class="pre">listen_position_stream()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.test.AccountTest.html">pyokx.test.AccountTest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.test.BlockTradingTest.html">pyokx.test.BlockTradingTest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.test.BrokerTest.html">pyokx.test.BrokerTest</a></li>
@@ -148,6 +156,7 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.utils.html">redis_tools.utils</a></li>
@@ -197,6 +206,26 @@
 <span id="pyokx-strategy-handling"></span><h1>pyokx.strategy_handling<a class="headerlink" href="#module-pyokx.strategy_handling" title="Link to this heading"></a></h1>
 <p>PLEASE REFER TO OKX_MARKET_MAKER, THIS MODULE IS UNDER CONSTRUCTION BASED ON THAT EXAMPLE AND THE CURRENT
 IMPLEMENTATION OF ANTBOT WHICH HAS BEEN GENERATED FROM THE OKX_MARKET_MAKER EXAMPLE</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyokx.strategy_handling.listen_account_stream">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.strategy_handling.</span></span><span class="sig-name descname"><span class="pre">listen_account_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/strategy_handling.html#listen_account_stream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.strategy_handling.listen_account_stream" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyokx.strategy_handling.listen_fills_stream">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.strategy_handling.</span></span><span class="sig-name descname"><span class="pre">listen_fills_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/strategy_handling.html#listen_fills_stream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.strategy_handling.listen_fills_stream" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyokx.strategy_handling.listen_orders_stream">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.strategy_handling.</span></span><span class="sig-name descname"><span class="pre">listen_orders_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/strategy_handling.html#listen_orders_stream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.strategy_handling.listen_orders_stream" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyokx.strategy_handling.listen_position_stream">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.strategy_handling.</span></span><span class="sig-name descname"><span class="pre">listen_position_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/strategy_handling.html#listen_position_stream"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.strategy_handling.listen_position_stream" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 

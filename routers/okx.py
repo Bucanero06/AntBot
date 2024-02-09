@@ -35,9 +35,9 @@ from fastapi import Depends, status
 
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
-
 @okx_router.post(path="/okx_antbot_signal", status_code=status.HTTP_202_ACCEPTED)
 async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
+    print(f"Received signal from {signal_input.OKXSignalInput.instID}")
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="credentials invalid",

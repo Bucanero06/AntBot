@@ -60,8 +60,10 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -111,6 +113,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.okx_market_maker.utils.WsOrderUtil.html">pyokx.okx_market_maker.utils.WsOrderUtil</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pyokx.redis_structured_streams</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_instruments_searcher_from_redis"><code class="docutils literal notranslate"><span class="pre">get_instruments_searcher_from_redis()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_okx_account_messages"><code class="docutils literal notranslate"><span class="pre">get_stream_okx_account_messages()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_okx_all_messages"><code class="docutils literal notranslate"><span class="pre">get_stream_okx_all_messages()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_okx_fill_metrics_report"><code class="docutils literal notranslate"><span class="pre">get_stream_okx_fill_metrics_report()</span></code></a></li>
@@ -155,6 +158,7 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.utils.html">redis_tools.utils</a></li>
@@ -202,6 +206,11 @@
              
   <section id="module-pyokx.redis_structured_streams">
 <span id="pyokx-redis-structured-streams"></span><h1>pyokx.redis_structured_streams<a class="headerlink" href="#module-pyokx.redis_structured_streams" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyokx.redis_structured_streams.get_instruments_searcher_from_redis">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.redis_structured_streams.</span></span><span class="sig-name descname"><span class="pre">get_instruments_searcher_from_redis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_redis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FUTURES'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/redis_structured_streams.html#get_instruments_searcher_from_redis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.redis_structured_streams.get_instruments_searcher_from_redis" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.redis_structured_streams.get_stream_okx_account_messages">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.redis_structured_streams.</span></span><span class="sig-name descname"><span class="pre">get_stream_okx_account_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.AccountChannel" title="pyokx.ws_data_structures.AccountChannel"><span class="pre">AccountChannel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/redis_structured_streams.html#get_stream_okx_account_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.redis_structured_streams.get_stream_okx_account_messages" title="Link to this definition"></a></dt>

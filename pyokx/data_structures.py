@@ -18,7 +18,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from datetime import datetime
-from enum import Enum
 from typing import List, Optional, Union
 
 from pydantic import BaseModel, validator
@@ -160,7 +159,6 @@ class Position(BaseModel):
     usdPx: str
     vegaBS: str
     vegaPA: str
-
 
 
 class Closed_Position(BaseModel):
@@ -416,6 +414,8 @@ class AccountBalanceData(BaseModel):
     ordFroz: str
     totalEq: str
     uTime: str
+
+
 class PositionHistory(BaseModel):
     instType: InstType  # Instrument type
     instId: str  # Instrument ID
@@ -451,6 +451,8 @@ class PositionHistory(BaseModel):
 
     class Config:
         use_enum_values = True
+
+
 class FillEntry(BaseModel):
     side: str
     fillSz: str
@@ -475,7 +477,6 @@ class FillEntry(BaseModel):
     fillMarkPx: Optional[str] = None
     feeCcy: str
     ts: str
-
 
 
 class AccountConfigData(BaseModel):
@@ -536,6 +537,33 @@ class AccountStatusReport(BaseModel):
     simplified_balance: Simplified_Balance_Details
 
 
+class DCAInputParameters(BaseModel):
+    usd_amount: float
+    trigger_price_offset: float
+    order_type: str
+    order_side: str
+    execution_price_offset: Optional[float] = 0
+    tp_trigger_price_type: Optional[str] = ''
+    tp_trigger_price_offset: Optional[float] = 0
+    tp_execution_price_offset: Optional[float] = 0
+    sl_trigger_price_type: Optional[str] = ''
+    sl_trigger_price_offset: Optional[float] = 0
+    sl_execution_price_offset: Optional[float] = 0
+
+
+class DCAOrderParameters(BaseModel):
+    size: float
+    trigger_price: float
+    type: str
+    side: str
+    execution_price: Optional[float]
+    tp_trigger_price_type: Optional[str] = ''
+    tp_trigger_price_offset: Optional[float] = 0
+    tp_execution_price_offset: Optional[float] = 0
+    sl_trigger_price_type: Optional[str] = ''
+    sl_trigger_price_offset: Optional[float] = 0
+    sl_execution_price_offset: Optional[float] = 0
+
 class OKXSignalInput(BaseModel):
     instID: Optional[str] = ''
     usd_order_size: Optional[float] = 0
@@ -554,10 +582,7 @@ class OKXSignalInput(BaseModel):
     sl_execution_price_offset: Optional[float] = 0
     trailing_stop_activation_price_offset: Optional[float] = 0
     trailing_stop_callback_offset: Optional[float] = 0
-
-
-
-
+    dca_parameters: Optional[List[DCAInputParameters]] = []
 
 
 class PremiumIndicatorSignals(BaseModel):
@@ -579,6 +604,7 @@ class InstIdSignalRequestForm(BaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
 
+
 class FillHistoricalMetricsEntry(BaseModel):
     avg_fill_pnl: float
     total_fill_pnl: float
@@ -590,4 +616,3 @@ class FillHistoricalMetrics(BaseModel):
     ONE_WEEK: FillHistoricalMetricsEntry
     ONE_MONTH: FillHistoricalMetricsEntry
     THREE_MONTHS: FillHistoricalMetricsEntry
-

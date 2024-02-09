@@ -57,8 +57,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -145,6 +147,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.config.html">redis_tools.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../redis_tools.utils.html">redis_tools.utils</a></li>
@@ -215,16 +218,18 @@
 <span class="kn">from</span> <span class="nn">h2o_wave</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">run_on</span><span class="p">,</span> <span class="n">AsyncSite</span>  <span class="c1"># noqa F401</span>
 
 <span class="kn">from</span> <span class="nn">h2o_dashboard.util</span> <span class="kn">import</span> <span class="n">add_card</span>
+<span class="kn">from</span> <span class="nn">h2o_dashboard.widgets.okx_antbot_controls</span> <span class="kn">import</span> <span class="n">OKX_Manual_ControlsWidget</span>
 <span class="kn">from</span> <span class="nn">h2o_dashboard.widgets.okx_streams</span> <span class="kn">import</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">,</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">,</span> \
-    <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">,</span> <span class="n">OKX_Manual_ControlsWidget</span>
+    <span class="n">OKX_Fill_Report_StreamWidget</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">AsyncSite</span><span class="p">()</span>
+
 
 
 <div class="viewcode-block" id="okx_dashboard_page">
 <a class="viewcode-back" href="../../../h2o_dashboard.pages.okx_dashboard_page.html#h2o_dashboard.pages.okx_dashboard_page.okx_dashboard_page">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">okx_dashboard_page</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;&#39;&#39;&#39;</span>
+
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Header&#39;&#39;&#39;</span>
     <span class="k">await</span> <span class="n">add_card</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="s1">&#39;OKXDEBUG_Header&#39;</span><span class="p">,</span> <span class="n">ui</span><span class="o">.</span><span class="n">header_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="s1">&#39;header&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;OKX Dashboard&#39;</span><span class="p">,</span> <span class="n">subtitle</span><span class="o">=</span><span class="s1">&#39;DevPage&#39;</span><span class="p">,</span>
                                                         <span class="c1"># Color</span>
@@ -233,22 +238,22 @@
                                                         <span class="n">icon_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                                         <span class="p">))</span>
 
-    <span class="c1"># await add_tradingview_advanced_chart(q, card_name=&#39;OKXDEBUG_TradingView_Advanced_Chart&#39;, box=&#39;grid_1&#39;)</span>
-
+    <span class="c1"># Add the the</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Init Widgets&#39;&#39;&#39;</span>
-    <span class="n">account_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Account_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>
-    <span class="n">positions_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Positions_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_3&#39;</span><span class="p">,</span>
+    <span class="n">positions_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Positions_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_1&#39;</span><span class="p">,</span>
                                                          <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">fill_report_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Fill_Report_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_4&#39;</span><span class="p">,</span>
+    <span class="n">fill_report_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Fill_Report_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_1&#39;</span><span class="p">,</span>
                                                              <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">manual_controls_widget</span> <span class="o">=</span> <span class="n">OKX_Manual_ControlsWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Manual_Controls&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;mvp_bot_manual_controls_1&#39;</span><span class="p">)</span>
+
+    <span class="n">manual_controls_widget</span> <span class="o">=</span> <span class="n">OKX_Manual_ControlsWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Manual_Controls&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">)</span>
+    <span class="n">account_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Account_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_3&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>
+
 
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Init RealTime Page Cards&#39;&#39;&#39;</span>
     <span class="k">await</span> <span class="n">add_page_cards</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">account_stream_widget</span><span class="p">,</span> <span class="n">positions_stream_widget</span><span class="p">,</span> <span class="n">fill_report_stream_widget</span><span class="p">,</span>
                          <span class="n">manual_controls_widget</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
-    <span class="c1"># q.client.okx_dashboard_page_running_event.set()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
@@ -274,14 +279,14 @@
                          <span class="n">positions_stream_widget</span><span class="p">:</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">,</span>
                          <span class="n">fill_report_stream_widget</span><span class="p">:</span> <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">,</span>
                          <span class="n">manual_controls_widget</span><span class="p">:</span> <span class="n">OKX_Manual_ControlsWidget</span><span class="p">):</span>
-    <span class="c1"># &#39;&#39;&#39;Account Stream Metrics&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Account Stream Metrics&#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="k">await</span> <span class="n">account_stream_widget</span><span class="o">.</span><span class="n">_is_initialized</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updating Account Stream Metrics card&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">account_stream_widget</span><span class="o">.</span><span class="n">update_cards</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Adding Account Stream Metrics card&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">account_stream_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
-
+    <span class="c1">#</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Positions Stream Metrics&#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="k">await</span> <span class="n">positions_stream_widget</span><span class="o">.</span><span class="n">_is_initialized</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updating Positions Stream Metrics card&quot;</span><span class="p">)</span>
@@ -290,6 +295,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Adding Positions Stream Metrics card&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">positions_stream_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
 
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Fills Report Stream Metrics&#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="k">await</span> <span class="n">fill_report_stream_widget</span><span class="o">.</span><span class="n">_is_initialized</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updating Fills Report Stream Metrics card&quot;</span><span class="p">)</span>
         <span class="k">await</span> <span class="n">fill_report_stream_widget</span><span class="o">.</span><span class="n">update_cards</span><span class="p">()</span>
@@ -307,30 +313,6 @@
     <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 
 
-<span class="c1"># signal_response = okx_signal_handler(</span>
-<span class="c1">#                 red_button=True,</span>
-<span class="c1">#             )</span>
-<span class="c1"># signal_response = okx_signal_handler(</span>
-<span class="c1">#     instID=&quot;BTC-USDT-240628&quot;,</span>
-<span class="c1">#     order_size=1,</span>
-<span class="c1">#     leverage=5,</span>
-<span class="c1">#     order_side=&quot;BUY&quot;,</span>
-<span class="c1">#     order_type=&quot;POST_ONLY&quot;,</span>
-<span class="c1">#     max_orderbook_limit_price_offset=0.1,</span>
-<span class="c1">#     flip_position_if_opposite_side=True,</span>
-<span class="c1">#     clear_prior_to_new_order=False,</span>
-<span class="c1">#     red_button=False,</span>
-<span class="c1">#     # order_usd_amount=100,</span>
-<span class="c1">#     stop_loss_price_offset=None,</span>
-<span class="c1">#     tp_price_offset=None,</span>
-<span class="c1">#     trailing_stop_activation_percentage=None,</span>
-<span class="c1">#     trailing_stop_callback_ratio=None,</span>
-<span class="c1">#     stop_loss_trigger_percentage=None,</span>
-<span class="c1">#     take_profit_trigger_percentage=None,</span>
-<span class="c1">#     tp_trigger_price_type=None,</span>
-<span class="c1">#     sl_trigger_price_type=None,</span>
-<span class="c1"># )</span>
-<span class="c1"># print(f&quot;{signal_response = }&quot;)</span>
 </pre></div>
 
            </div>

@@ -36,13 +36,13 @@ from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Retur
                                    AccountConfigData, MaxOrderSizeData, MaxAvailSizeData, Cancelled_Algo_Order,
                                    Orderbook_Snapshot, Bid, Ask,
                                    Simplified_Balance_Details, InstrumentStatusReport,
-                                   PremiumIndicatorSignalRequestForm, FillEntry, OKXSignalInput)
+                                   PremiumIndicatorSignalRequestForm, FillEntry, OKXSignalInput, DCAInputParameters,
+                                   DCAOrderParameters)
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
-from redis_tools.utils import serialize_for_redis, init_async_redis
+from redis_tools.utils import init_async_redis, serialize_for_redis
 from shared import logging
-from shared.tmp_shared import calculate_tp_stop_prices, calculate_sl_stop_prices, FunctionCall, execute_function_calls, \
-    calculate_tp_stop_prices_usd, calculate_sl_stop_prices_usd
+from shared.tmp_shared import calculate_tp_stop_prices_usd, calculate_sl_stop_prices_usd, ccy_usd_to_contracts
 
 logger = logging.setup_logger(__name__)
 
@@ -53,7 +53,7 @@ REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 """NOTE: THE MODULE NEEDS TO BE UPDATED WITH ENUMS AND STRUCTURED DATA TYPES WHERE APPLICABLE"""
 
 
-def get_request_data(returned_data, target_data_structure):
+async def get_request_data(returned_data, target_data_structure):
     """
     Processes the returned data from an API call, mapping it to the specified data structure.
 
@@ -66,7 +66,8 @@ def get_request_data(returned_data, target_data_structure):
     """
     # print(f'{returned_data = }')
     if returned_data["code"] != "0":
-        print(f"Unsuccessful {target_data_structure} request，\n  error_code = ", returned_data["code"], ", \n  Error_message = ",
+        print(f"Unsuccessful {target_data_structure} request，\n  error_code = ", returned_data["code"],
+              ", \n  Error_message = ",
               returned_data["msg"])
         return []
 
@@ -76,7 +77,7 @@ def get_request_data(returned_data, target_data_structure):
     return structured_data
 
 
-def get_ticker_with_higher_volume(seed_symbol_name, instrument_type="FUTURES", top_n=1):
+async def get_ticker_with_higher_volume(seed_symbol_name, instrument_type="FUTURES", top_n=1):
     """
     Retrieves the ticker(s) with the highest trading volume for a given seed symbol and instrument type.
     Optionally, returns the top N tickers sorted by volume.
@@ -122,7 +123,7 @@ def get_ticker_with_higher_volume(seed_symbol_name, instrument_type="FUTURES", t
     # get the tickers for the top 5 volumes
 
 
-def assert_okx_account_level(account_level: [1, 2, 3, 4]):
+async def assert_okx_account_level(account_level: [1, 2, 3, 4]):
     """
     Validates and sets the OKX account level, ensuring it is one of the acceptable levels.
 
@@ -156,11 +157,12 @@ def assert_okx_account_level(account_level: [1, 2, 3, 4]):
         acctLv = result_get_account_config["data"][0]["acctLv"]
         assert acctLv == account_level, f"Account level was not set to {ACCLV_MAPPING[account_level]}"
     else:
-        print("Unsuccessful `assert_okx_account_level` request，\n  error_code = ", result_get_account_config['code'], ", \n  Error_message = ",
+        print("Unsuccessful `assert_okx_account_level` request，\n  error_code = ", result_get_account_config['code'],
+              ", \n  Error_message = ",
               result_get_account_config["msg"])
 
 
-def is_valid_alphanumeric(string, max_length):
+async def is_valid_alphanumeric(string, max_length):
     """
     Validates if the input string is alphanumeric and conforms to the specified maximum length.
 
@@ -175,7 +177,7 @@ def is_valid_alphanumeric(string, max_length):
     return bool(re.match('^[a-zA-Z0-9]{1,' + str(max_length) + '}$', string))
 
 
-def get_all_orders(instType: str = None, instId: str = None):
+async def get_all_orders(instType: str = None, instId: str = None):
     """
     Fetches all orders matching the given criteria from the trading API.
 
@@ -191,10 +193,10 @@ def get_all_orders(instType: str = None, instId: str = None):
         params['instType'] = instType
     if instId is not None:
         params['instId'] = instId
-    return get_request_data(tradeAPI.get_order_list(**params), Order)
+    return await get_request_data(tradeAPI.get_order_list(**params), Order)
 
 
-def cancel_all_orders(orders_list: List[Order] = None, instType: InstType = None, instId: str = None):
+async def cancel_all_orders(orders_list: List[Order] = None, instType: InstType = None, instId: str = None):
     """
     Cancels all or specific orders based on the provided parameters.
 
@@ -212,14 +214,14 @@ def cancel_all_orders(orders_list: List[Order] = None, instType: InstType = None
             params['instType'] = instType
         if instId is not None:
             params['instId'] = instId
-        orders_list = get_all_orders(**params)
+        orders_list = await get_all_orders(**params)
     # cancelled_orders = []
     orders_to_cancel = []
     for order in orders_list:
         orders_to_cancel.append(order)
 
     # Batch Cancel Orders
-    cancelled_orders = get_request_data(tradeAPI.cancel_multiple_orders(
+    cancelled_orders = await get_request_data(tradeAPI.cancel_multiple_orders(
         orders_data=[
             {'instId': order.instId,
              'ordId': order.ordId,
@@ -231,7 +233,7 @@ def cancel_all_orders(orders_list: List[Order] = None, instType: InstType = None
     return cancelled_orders
 
 
-def close_position(instId, mgnMode, posSide='', ccy='', autoCxl='', clOrdId='', tag=''):
+async def close_position(instId, mgnMode, posSide='', ccy='', autoCxl='', clOrdId='', tag=''):
     """
     Closes a position based on the given parameters.
 
@@ -259,7 +261,7 @@ def close_position(instId, mgnMode, posSide='', ccy='', autoCxl='', clOrdId='', 
     return closed_position_return
 
 
-def close_all_positions(positions_list: List[Position] = None, instType: InstType = None, instId: str = None):
+async def close_all_positions(positions_list: List[Position] = None, instType: InstType = None, instId: str = None):
     """
     Closes all or specific positions based on the provided parameters.
 
@@ -277,30 +279,28 @@ def close_all_positions(positions_list: List[Position] = None, instType: InstTyp
             params['instType'] = instType
         if instId is not None:
             params['instId'] = instId
-        positions_list = get_all_positions(**params)
+        positions_list = await get_all_positions(**params)
 
-    functions_to_execute = []
-    for position in positions_list:
-        functions_to_execute.append(
-            FunctionCall(close_position, instId=position.instId, mgnMode=position.mgnMode,
+    closed_positions_return = await asyncio.gather(
+        *[close_position(instId=position.instId, mgnMode=position.mgnMode,
                          posSide=position.posSide, ccy=position.ccy,
                          autoCxl='true', clOrdId=f'{position.posId}CLOSED',
-                         tag='')
-        )
-    closed_positions_return = execute_function_calls(functions_to_execute)
+                         tag='') for position in positions_list]
+    )
 
     closed_positions = []
     for closed_position in closed_positions_return:
         try:
             assert closed_position['code'] == '0', f' {closed_position = }'
-            closed_positions.append(get_request_data(closed_position, Closed_Position)[0])
+            closed_position = await get_request_data(closed_position, Closed_Position)
+            closed_positions.append(closed_position[0])
         except AssertionError as e:
             print(e)
 
     return closed_positions
 
 
-def get_all_positions(instType: InstType = None, instId: str = None):
+async def get_all_positions(instType: InstType = None, instId: str = None):
     """
     Fetches all positions matching the given criteria from the account API.
 
@@ -315,35 +315,35 @@ def get_all_positions(instType: InstType = None, instId: str = None):
         params['instType'] = instType
     if instId is not None:
         params['instId'] = instId
-    return get_request_data(accountAPI.get_positions(**params), Position)
+    return await get_request_data(accountAPI.get_positions(**params), Position)
 
 
-def place_order(instId: Any,
-                tdMode: Any,
-                side: Any,
-                ordType: Any,
-                sz: Any,
-                ccy: str = '',
-                clOrdId: str = '',
-                tag: str = '',
-                posSide: str = '',
-                px: str = '',
-                reduceOnly: str = '',
-                tgtCcy: str = '',
-                tpTriggerPx: str = '',
-                tpOrdPx: str = '',
-                slTriggerPx: str = '',
-                slOrdPx: str = '',
-                tpTriggerPxType: str = '',
-                slTriggerPxType: str = '',
-                quickMgnType: str = '',
-                stpId: str = '',
-                stpMode: str = '',
-                algoClOrdId: str = '',
-                # This one is commented out because it needs multiple TP's to work and is not
-                # developed yet downstream
-                # amendPxOnTriggerType: str = ''
-                ):
+async def place_order(instId: Any,
+                      tdMode: Any,
+                      side: Any,
+                      ordType: Any,
+                      sz: Any,
+                      ccy: str = '',
+                      clOrdId: str = '',
+                      tag: str = '',
+                      posSide: str = '',
+                      px: str = '',
+                      reduceOnly: str = '',
+                      tgtCcy: str = '',
+                      tpTriggerPx: str = '',
+                      tpOrdPx: str = '',
+                      slTriggerPx: str = '',
+                      slOrdPx: str = '',
+                      tpTriggerPxType: str = '',
+                      slTriggerPxType: str = '',
+                      quickMgnType: str = '',
+                      stpId: str = '',
+                      stpMode: str = '',
+                      algoClOrdId: str = '',
+                      # This one is commented out because it needs multiple TP's to work and is not
+                      # developed yet downstream
+                      # amendPxOnTriggerType: str = ''
+                      ):
     """
     Places an order with the specified parameters.
 
@@ -381,8 +381,8 @@ def place_order(instId: Any,
               result["msg"])
         return None
 
-    return get_request_data(result, Order_Placement_Return)[0]
-
+    result = await get_request_data(result, Order_Placement_Return)
+    return result[0]
 
 
 async def get_ticker(instId):
@@ -393,7 +393,7 @@ async def get_ticker(instId):
     :type instId: str
     :returns: The latest ticker information for the specified instrument.
     """
-    result = get_request_data(marketAPI.get_ticker(instId=instId), Ticker)
+    result = await get_request_data(marketAPI.get_ticker(instId=instId), Ticker)
 
     if result:
         return result[0]
@@ -401,7 +401,7 @@ async def get_ticker(instId):
         return None
 
 
-def get_all_algo_orders(instId=None, ordType=None):
+async def get_all_algo_orders(instId=None, ordType=None):
     """
     Fetches all algorithmic orders matching the given criteria from the trading API.
 
@@ -418,25 +418,27 @@ def get_all_algo_orders(instId=None, ordType=None):
 
     # orders_fetched = []
 
-    algo_type_to_fetch = []
+    algo_type_to_fetch_params = []
     for ordType in ORDER_TYPES_TO_TRY:
         params = {'ordType': ordType}
         if instId is not None:
             params['instId'] = instId
 
-        algo_type_to_fetch.append(
-            FunctionCall(tradeAPI.order_algos_list, **params)
-        )
-    orders_fetched_list = execute_function_calls(algo_type_to_fetch)
+        algo_type_to_fetch_params.append(params)
+
+    orders_fetched_list = await asyncio.gather(
+        *[get_request_data(
+            tradeAPI.order_algos_list(**params), Algo_Order) for params in algo_type_to_fetch_params]
+    )
 
     orders_fetched = []
     for order_types in orders_fetched_list:
-        orders_fetched.extend(get_request_data(order_types, Algo_Order))
+        orders_fetched.extend(order_types)
 
     return orders_fetched
 
 
-def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] = None, instId=None, ordType=None):
+async def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] = None, instId=None, ordType=None):
     """
     Cancels all or specific algorithmic orders based on the provided parameters.
 
@@ -457,7 +459,7 @@ def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] = None
             params['instId'] = instId
         if ordType is not None:
             params['ordType'] = ordType
-        algo_orders_list = get_all_algo_orders(**params)
+        algo_orders_list = await get_all_algo_orders(**params)
 
     if algo_orders_list is None or len(algo_orders_list) == 0:
         return []
@@ -470,10 +472,10 @@ def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] = None
         ]
     )
     print(f'{result = }')
-    return get_request_data(result, Cancelled_Algo_Order)
+    return await get_request_data(result, Cancelled_Algo_Order)
 
 
-def place_algo_order(
+async def place_algo_order(
         instId: str = '',
         tdMode: str = '',
         side: str = '',
@@ -541,10 +543,10 @@ def place_algo_order(
         print("Unsuccessful algo order request，\n  error_code = ", result["msg"], ", \n  Error_message = ",
               result["msg"])
 
-    return get_request_data(result, Algo_Order_Placement_Return)
+    return await get_request_data(result, Algo_Order_Placement_Return)
 
 
-def get_account_balance():
+async def get_account_balance():
     """
     Retrieves the account balance details.
 
@@ -559,7 +561,7 @@ def get_account_balance():
     return AccountBalanceData(**account_balance)
 
 
-def get_account_config():
+async def get_account_config():
     """
     Retrieves the account configuration details.
 
@@ -568,7 +570,7 @@ def get_account_config():
     return AccountConfigData(**accountAPI.get_account_config()['data'][0])
 
 
-def get_max_order_size(instId, tdMode):
+async def get_max_order_size(instId, tdMode):
     """
     Retrieves the maximum order size for a specific instrument and trade mode.
 
@@ -587,7 +589,7 @@ def get_max_order_size(instId, tdMode):
     return MaxOrderSizeData(**result['data'][0])
 
 
-def get_max_avail_size(instId, tdMode):
+async def get_max_avail_size(instId, tdMode):
     """
     Retrieves the maximum available size for trading a specific instrument in a specific trade mode.
 
@@ -633,7 +635,7 @@ def generate_random_string(length, char_type='alphanumeric'):
     return ''.join(random.choices(char_set, k=length))
 
 
-def fetch_status_report_for_instrument(instId, TD_MODE):
+async def fetch_status_report_for_instrument(instId, TD_MODE):
     """
     Fetches a comprehensive status report for a specific instrument.
 
@@ -647,16 +649,14 @@ def fetch_status_report_for_instrument(instId, TD_MODE):
     if instId is None:
         return None
 
-    initial_data_pull = [
-        FunctionCall(get_max_order_size, instId=instId, tdMode=TD_MODE),
-        FunctionCall(get_max_avail_size, instId=instId, tdMode=TD_MODE),
-        FunctionCall(get_all_positions, instId=instId),
-        FunctionCall(get_all_orders, instId=instId),
-        FunctionCall(get_all_algo_orders, instId=instId),
-    ]
     (max_order_size, max_avail_size,
-     all_positions, all_orders, all_algo_orders) = execute_function_calls(initial_data_pull)
-
+     all_positions, all_orders, all_algo_orders) = await asyncio.gather(
+        get_max_order_size(instId=instId, tdMode=TD_MODE),
+        get_max_avail_size(instId=instId, tdMode=TD_MODE),
+        get_all_positions(instId=instId),
+        get_all_orders(instId=instId),
+        get_all_algo_orders(instId=instId)
+    )
     return InstrumentStatusReport(
         instId=instId,
         max_order_size=max_order_size,
@@ -667,7 +667,7 @@ def fetch_status_report_for_instrument(instId, TD_MODE):
     )
 
 
-def fetch_initial_data(TD_MODE, instId=None):
+async def fetch_initial_data(TD_MODE, instId=None):
     """
     Fetches initial data including account balance, account configuration, and instrument status.
 
@@ -677,11 +677,7 @@ def fetch_initial_data(TD_MODE, instId=None):
     :type instId: str, optional
     :returns: A tuple containing simplified balance details, account configuration data, and instrument status report.
     """
-    initial_data_pull = [
-        FunctionCall(get_account_balance),
-        FunctionCall(get_account_config),
-    ]
-    (account_balance, account_config) = execute_function_calls(initial_data_pull)
+    account_balance, account_config = await asyncio.gather(get_account_balance(), get_account_config())
 
     simplified_balance_details = [
         Simplified_Balance_Details(
@@ -694,12 +690,12 @@ def fetch_initial_data(TD_MODE, instId=None):
         for detail in account_balance.details
     ]
 
-    instrument_status_report = fetch_status_report_for_instrument(instId, TD_MODE)
+    instrument_status_report = await fetch_status_report_for_instrument(instId, TD_MODE)
 
     return simplified_balance_details, account_config, instrument_status_report
 
 
-def clear_orders_and_positions_for_instrument(instId):
+async def clear_orders_and_positions_for_instrument(instId):
     """
     Clears all orders and positions for a specific instrument.
 
@@ -711,7 +707,7 @@ def clear_orders_and_positions_for_instrument(instId):
     print(f'{ cancel_all_algo_orders_with_params(instId=instId) = }')
 
 
-def get_order_book(instId, depth):
+async def get_order_book(instId, depth):
     """
     Fetches the order book for a specific instrument.
 
@@ -740,9 +736,9 @@ def get_order_book(instId, depth):
     return Orderbook_Snapshot(instId=instId, depth=str(depth), ts=ts, asks=structured_asks, bids=structured_bids)
 
 
-def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[int, float], side, reference_price: float,
-                        max_orderbook_price_offset=None,
-                        ):
+async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[int, float], side, reference_price: float,
+                              max_orderbook_price_offset=None,
+                              ):
     """
     Prepares a limit price based on the order book, quantity, side, reference price, and maximum order book price offset.
 
@@ -759,7 +755,7 @@ def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[int, flo
     :returns: The prepared limit price.
     :raises Exception: If a price in the order book that has enough volume to cover the quantity cannot be found.
     """
-    assert side in ['buy', 'sell']
+    assert side.lower() in ['buy', 'sell']
     limit_price = None
 
     reference_side = 'asks' if side == 'buy' else 'bids'
@@ -799,7 +795,7 @@ def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[int, flo
     return round(limit_price, 2)
 
 
-def place_algo_trailing_stop_loss(
+async def place_algo_trailing_stop_loss(
         instId: str = '',
         tdMode: str = '',
         ordType: str = '',
@@ -929,11 +925,13 @@ async def _validate_okx_signal_input_tp_sl_trail_params(sl_trigger_price_offset=
         trailing_stop_loss_activated = True
 
     assert not sl_trigger_price_offset or isinstance(sl_trigger_price_offset,
-                                                          float), f'{sl_trigger_price_offset = }'
+                                                     float), f'{sl_trigger_price_offset = }'
     assert not tp_trigger_price_offset or isinstance(tp_trigger_price_offset,
-                                                            float), f'{tp_trigger_price_offset = }'
-    assert not sl_execution_price_offset or isinstance(sl_execution_price_offset, float), f'{sl_execution_price_offset = }'
-    assert not tp_execution_price_offset or isinstance(tp_execution_price_offset, float), f'{tp_execution_price_offset = }'
+                                                     float), f'{tp_trigger_price_offset = }'
+    assert not sl_execution_price_offset or isinstance(sl_execution_price_offset,
+                                                       float), f'{sl_execution_price_offset = }'
+    assert not tp_execution_price_offset or isinstance(tp_execution_price_offset,
+                                                       float), f'{tp_execution_price_offset = }'
     assert not sl_trigger_price_offset or sl_trigger_price_offset >= 0, f'{sl_trigger_price_offset = }'
     assert not tp_trigger_price_offset or tp_trigger_price_offset >= 0, f'{tp_trigger_price_offset = }'
     assert not sl_execution_price_offset or sl_execution_price_offset >= 0, f'{sl_execution_price_offset = }'
@@ -942,8 +940,6 @@ async def _validate_okx_signal_input_tp_sl_trail_params(sl_trigger_price_offset=
                                                                   'last'], f'{tp_trigger_price_type = }'
     assert not sl_trigger_price_type or sl_trigger_price_type in ['index', 'mark',
                                                                   'last'], f'{sl_trigger_price_type = }'
-
-
 
     return {
         'sl_trigger_price_offset': sl_trigger_price_offset,
@@ -978,13 +974,11 @@ async def _validate_okx_signal_order_params(order_type, order_side, order_size):
     assert order_type in ['market', 'limit', 'post_only', 'fok', 'ioc'], f'{order_type = }'
     assert isinstance(order_size, int), f'Order size must be an integer/multiple of a lot size. {order_size = }'
     assert order_size > 0, f'Order size must be greater than 0. {order_size = }'
-    generated_client_order_id = generate_random_string(20, 'alphanumeric')  # 6 characters for type later
 
     return {
         'order_type': order_type,
         'order_side': order_side,
         'order_size': order_size,
-        'generated_client_order_id': generated_client_order_id
     }
 
 
@@ -999,7 +993,6 @@ async def _validate_okx_signal_additional_params(
         if not flip_position_if_opposite_side else bool(flip_position_if_opposite_side)
     clear_prior_to_new_order = False if not clear_prior_to_new_order else bool(clear_prior_to_new_order)
 
-
     return {
         'leverage': leverage,
         'max_orderbook_limit_price_offset': max_orderbook_limit_price_offset,
@@ -1008,50 +1001,60 @@ async def _validate_okx_signal_additional_params(
     }
 
 
-def ccy_contracts_to_usd(contracts_amount, ccy_contract_size, ccy_last_price, usd_base_ratio, leverage=None):
-    base_cost_of_one_contract = ccy_contract_size * ccy_last_price
-    base_total_cost = base_cost_of_one_contract * contracts_amount
-    total_cost_usd = base_total_cost / usd_base_ratio
-    if not leverage:
-        return total_cost_usd
-    else:
-        leverage = 10  # example leverage
-        return total_cost_usd / leverage
-
-
-def ccy_usd_to_contracts(usd_equivalent, ccy_contract_size, ccy_last_price,
-                         min_order_quantity,
-                         max_market_order_quantity,
-                         usd_base_ratio, leverage=None):
-    cost_of_one_contract_usdt = ccy_contract_size * ccy_last_price
-    base_equivalent = usd_equivalent * usd_base_ratio
-
-    if not leverage:
-        max_contracts = base_equivalent / cost_of_one_contract_usdt
-        max_contracts = int(max_contracts)  # round down to the nearest whole number
-        order_contracts = max(min_order_quantity, min(max_contracts, max_market_order_quantity))
-        return order_contracts
-    else:
-        cost_of_one_contract_with_leverage = cost_of_one_contract_usdt / leverage
-        max_contracts_with_leverage = base_equivalent / cost_of_one_contract_with_leverage
-        max_contracts_with_leverage = int(max_contracts_with_leverage)  # round down to the nearest whole number
-        order_contracts_with_leverage = max(min_order_quantity,
-                                            min(max_contracts_with_leverage, max_market_order_quantity))
-        return order_contracts_with_leverage
-
 async def get_leverage(instId, mgnMode):
     result = accountAPI.get_leverage(instId=instId, mgnMode=mgnMode)
     if result["code"] != "0":
         print("Unsuccessful get_leverage request，\n  error_code = ", result["code"], ", \n  Error_message = ",
               result["msg"])
         return []
-    if len(result['data'])!=0:
+    if len(result['data']) != 0:
         leverage = result['data'][0]['lever']
         return int(leverage)
+
+
+async def prepare_dca(dca_parameters: List[DCAInputParameters], side: str, reference_price: float,
+                      ccy_contract_size: float, ccy_last_price: float, usd_to_base_rate: float, leverage: int,
+                      min_order_quantity: int, max_market_order_quantity: int):
+    # Assert the correct input parameters for dca
+    assert all([isinstance(param, DCAInputParameters) for param in
+                dca_parameters]), f'The dca_parameters must be a list of DCAInputParameters. {dca_parameters = }'
+
+    orders = []
+
+    for params in dca_parameters:
+        order_trigger_price = reference_price + params.trigger_price_offset if side == 'BUY' else reference_price - params.trigger_price_offset
+        order_exec_price = reference_price + params.execution_price_offset if side == 'BUY' else reference_price - params.execution_price_offset
+        usd_amount = params.usd_amount
+
+        order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount,
+                                               ccy_contract_size=ccy_contract_size,
+                                               ccy_last_price=ccy_last_price,
+                                               min_order_quantity=min_order_quantity,
+                                               max_market_order_quantity=max_market_order_quantity,
+                                               usd_base_ratio=usd_to_base_rate,
+                                               leverage=leverage)
+        orders.append(DCAOrderParameters(
+            size=order_contracts,
+            trigger_price=order_trigger_price,
+            execution_price=order_exec_price,
+            type=params.order_type,
+            side=params.order_side,
+            tp_trigger_price_type=params.tp_trigger_price_type,
+            tp_trigger_price_offset=params.tp_trigger_price_offset,
+            tp_execution_price_offset=params.tp_execution_price_offset,
+            sl_trigger_price_type=params.sl_trigger_price_type,
+            sl_trigger_price_offset=params.sl_trigger_price_offset,
+            sl_execution_price_offset=params.sl_execution_price_offset
+        ))
+
+    return orders
+
+
 async def validate_okx_signal_params(
         okx_signal: OKXSignalInput
 ):
-    generated_client_order_id = None
+    generated_client_order_id = generate_random_string(16, 'alphanumeric')
+    dca_parameters = None
     validated_order_params = {}
     validated_tp_sl_trail_params = {}
 
@@ -1072,8 +1075,10 @@ async def validate_okx_signal_params(
     assert passed_expiration_test, f'Instrument has expired. {instId_info.expTime = }'
     assert passed_leverage_test, f'Instrument has a higher leverage than the one provided. {instId_info.lever = }'
 
-    if okx_signal.usd_order_size:
-        usd_amount = float(okx_signal.usd_order_size)
+
+    _main_order_flag = okx_signal.usd_order_size and okx_signal.order_size
+
+    if _main_order_flag or okx_signal.dca_parameters:
         usd_to_base_rate = 1
         min_order_quantity = int(instId_info.minSz)  # contracts
         max_market_order_quantity = int(instId_info.maxMktSz)  # contracts
@@ -1081,13 +1086,30 @@ async def validate_okx_signal_params(
         instId_ticker: Ticker = await get_ticker(instId=instId_info.instId)
         assert instId_ticker, f'Could not fetch ticker for {instId_info.instId = }'
         ccy_last_price = float(instId_ticker.last)
-        leverage = validated_additional_params.get('leverage') or await get_leverage(instId=instId_info.instId, mgnMode='isolated')
+        leverage = validated_additional_params.get('leverage') or await get_leverage(instId=instId_info.instId,
+                                                                                     mgnMode='isolated')
+
+        if okx_signal.dca_parameters:
+            dca_parameters: [DCAOrderParameters] = await prepare_dca(
+                dca_parameters=okx_signal.dca_parameters,
+                side=validated_order_params.get('order_side'),
+                reference_price=ccy_last_price,
+                ccy_contract_size=ccy_contract_size, ccy_last_price=ccy_last_price,
+                usd_to_base_rate=usd_to_base_rate, leverage=leverage,
+                min_order_quantity=min_order_quantity,
+                max_market_order_quantity=max_market_order_quantity)
+
+    if _main_order_flag:
+
+        usd_amount = float(okx_signal.usd_order_size)
+
 
         # convert USD to order size (contracts)
         order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount, ccy_contract_size=ccy_contract_size,
                                                ccy_last_price=ccy_last_price, min_order_quantity=min_order_quantity,
                                                max_market_order_quantity=max_market_order_quantity,
                                                usd_base_ratio=usd_to_base_rate, leverage=leverage)
+        print(f"Number of contracts you can buy: {order_contracts} {instId_info.instId}")
 
         # Convert these into trailing_stop_callback_offset to trailing_stop_callback_ratio
         if okx_signal.trailing_stop_callback_offset:
@@ -1100,23 +1122,21 @@ async def validate_okx_signal_params(
             if trailing_stop_callback_ratio > 1:
                 trailing_stop_callback_ratio = 1
 
-            trailing_stop_callback_offset = round(trailing_stop_callback_ratio,3)
+            trailing_stop_callback_offset = round(trailing_stop_callback_ratio, 3)
         else:
             trailing_stop_callback_offset = 0.0
-
-        print(f"Number of contracts you can buy: {order_contracts} {instId_info.instId}")
-
-
-
 
         validated_order_params = await _validate_okx_signal_order_params(
             order_type=okx_signal.order_type, order_side=okx_signal.order_side,
             order_size=order_contracts)
 
+
+
         validated_tp_sl_trail_params = await _validate_okx_signal_input_tp_sl_trail_params(
             sl_trigger_price_offset=okx_signal.sl_trigger_price_offset,
             tp_trigger_price_offset=okx_signal.tp_trigger_price_offset,
-            sl_execution_price_offset=okx_signal.sl_execution_price_offset, tp_execution_price_offset=okx_signal.tp_execution_price_offset,
+            sl_execution_price_offset=okx_signal.sl_execution_price_offset,
+            tp_execution_price_offset=okx_signal.tp_execution_price_offset,
             trailing_stop_activation_price_offset=okx_signal.trailing_stop_activation_price_offset,
             trailing_stop_callback_offset=trailing_stop_callback_offset,
             max_orderbook_limit_price_offset=okx_signal.max_orderbook_limit_price_offset,
@@ -1140,13 +1160,15 @@ async def validate_okx_signal_params(
         'sl_execution_price_offset': validated_tp_sl_trail_params.get('sl_execution_price_offset'),
         'tp_execution_price_offset': validated_tp_sl_trail_params.get('tp_execution_price_offset'),
         'sl_trigger_price_type': validated_tp_sl_trail_params.get('sl_trigger_price_type'),
-        'trailing_stop_activation_price_offset': validated_tp_sl_trail_params.get('trailing_stop_activation_price_offset'),
+        'trailing_stop_activation_price_offset': validated_tp_sl_trail_params.get(
+            'trailing_stop_activation_price_offset'),
         'trailing_stop_callback_offset': validated_tp_sl_trail_params.get('trailing_stop_callback_offset'),
         #
-        'generated_client_order_id': validated_order_params.get('generated_client_order_id'),
+        'generated_client_order_id': generated_client_order_id,
         'take_profit_activated': validated_tp_sl_trail_params.get('take_profit_activated'),
         'stop_loss_activated': validated_tp_sl_trail_params.get('stop_loss_activated'),
         'trailing_stop_loss_activated': validated_tp_sl_trail_params.get('trailing_stop_loss_activated'),
+        'dca_parameters': dca_parameters
     }
     return result
 
@@ -1169,6 +1191,7 @@ async def okx_signal_handler(
         sl_trigger_price_type: str = None,
         trailing_stop_activation_price_offset: float = None,
         trailing_stop_callback_offset: float = None,
+        dca_parameters: List[DCAInputParameters] = None
 ):
     """
     Handles trading signals for the OKX platform, executing trades based on the specified parameters and current market conditions.
@@ -1200,6 +1223,7 @@ async def okx_signal_handler(
         sl_trigger_price_type=sl_trigger_price_type,
         trailing_stop_activation_price_offset=trailing_stop_activation_price_offset,
         trailing_stop_callback_offset=trailing_stop_callback_offset,
+        dca_parameters=dca_parameters
     )
     TD_MODE: str = 'isolated'.lower()  # here for completeness, but assumed to be isolated
     POSSIDETYPE: str = 'net'  # net or long/short, need to cancel all orders/positions to change
@@ -1207,13 +1231,26 @@ async def okx_signal_handler(
     assert POSSIDETYPE in ['net', 'long', 'short'], f'{POSSIDETYPE = }'
 
     if red_button:
-        print(f'{close_all_positions() = }')
-        print(f'{cancel_all_orders() = }')
-        print(f'{cancel_all_algo_orders_with_params() = }')
-        print(f'{get_all_positions() = }')
-        print(f'{get_all_orders() = }')
-        print(f'{get_all_algo_orders() = }')
-        return {'red_button': 'ok'}
+        all_closed_positions = await close_all_positions()
+        all_cancelled_orders = await cancel_all_orders()
+        all_cancelled_algo_orders = await cancel_all_algo_orders_with_params()
+        all_positions = await get_all_positions()
+        all_orders = await get_all_orders()
+        all_algo_orders = await get_all_algo_orders()
+        print(f'{all_closed_positions = }')
+        print(f'{all_cancelled_orders = }')
+        print(f'{all_cancelled_algo_orders = }')
+        print(f'{all_positions = }')
+        print(f'{all_orders = }')
+        print(f'{all_algo_orders = }')
+        return {'red_button': 'ok',
+                'all_closed_positions': all_closed_positions,
+                'all_cancelled_orders': all_cancelled_orders,
+                'all_cancelled_algo_orders': all_cancelled_algo_orders,
+                'all_positions': all_positions,
+                'all_orders': all_orders,
+                'all_algo_orders': all_algo_orders
+                }
 
     # Clean Input Data
     try:
@@ -1243,13 +1280,14 @@ async def okx_signal_handler(
     take_profit_activated = validated_params.get('take_profit_activated')
     stop_loss_activated = validated_params.get('stop_loss_activated')
     trailing_stop_loss_activated = validated_params.get('trailing_stop_loss_activated')
-
+    dca_parameters: List[DCAOrderParameters] or None = validated_params.get('dca_parameters')
 
     assert isinstance(instID, str), f'{instID = }'
     if clear_prior_to_new_order:
-        clear_orders_and_positions_for_instrument(instID)
+        await clear_orders_and_positions_for_instrument(instID)
 
-    (simplified_balance_details, account_config, instrument_status_report) = fetch_initial_data(TD_MODE, instId=instID)
+    (simplified_balance_details, account_config, instrument_status_report) = await fetch_initial_data(TD_MODE,
+                                                                                                      instId=instID)
 
     if leverage and leverage > 0:
         accountAPI.set_leverage(
@@ -1262,7 +1300,70 @@ async def okx_signal_handler(
     position = instrument_status_report.positions[0] if len(
         instrument_status_report.positions) > 0 else None  # we are only using net so only one position
 
-    if order_side:
+
+    if dca_parameters and isinstance(dca_parameters, list):
+        dca_orders_to_call = []
+        _order_book = None
+        for dca_order in dca_parameters:
+            if dca_order.size <= 0:
+                print(f'Ignoring DCA order with size {dca_order.size = }')
+                continue
+
+            dca_order_request_dict = dict(
+                instId=instID,
+                side=str(dca_order.side).lower(),
+                tdMode=TD_MODE,
+                posSide=POSSIDETYPE,
+                sz=dca_order.size,
+                ordType='trigger',
+                triggerPx=dca_order.trigger_price,
+                triggerPxType='last',
+                orderPx=-1,  # Default to market order, update downstream if not
+                algoClOrdId=f'{generate_random_string(16, "alphanumeric") + "DCA"}'
+            )
+
+            if not _order_book and dca_order.type != 'market':
+                _order_book = await get_order_book(instID, 400)
+            if dca_order.type != 'market':
+                dca_order_request_dict['orderPx'] = await prepare_limit_price(
+                    _order_book, dca_order.size,
+                    str(dca_order.side).lower(),
+                    dca_order.execution_price,
+                    max_orderbook_price_offset=max_orderbook_limit_price_offset)
+
+            if dca_order.tp_trigger_price_offset and dca_order.tp_execution_price_offset:
+                stop_surplus_trigger_price, stop_surplus_execute_price = calculate_tp_stop_prices_usd(
+                    order_side=str(dca_order.side).lower(),
+                    reference_price=dca_order.execution_price,
+                    tp_trigger_usd=dca_order.tp_trigger_price_offset,
+                    tp_execute_usd=dca_order.tp_execution_price_offset,
+                )
+                dca_order_request_dict.update(
+                    tpTriggerPx=stop_surplus_trigger_price,
+                    tpOrdPx=stop_surplus_execute_price,
+                    tpTriggerPxType=dca_order.tp_trigger_price_type,
+                )
+            if dca_order.sl_trigger_price_offset and dca_order.sl_execution_price_offset:
+                stop_loss_trigger_price, stop_loss_execute_price = calculate_sl_stop_prices_usd(
+                    order_side=str(dca_order.side).lower(),
+                    reference_price=dca_order.execution_price,
+                    sl_trigger_usd=dca_order.sl_trigger_price_offset,
+                    sl_execute_usd=dca_order.sl_execution_price_offset,
+                )
+                dca_order_request_dict.update(
+                    slTriggerPx=stop_loss_trigger_price,
+                    slOrdPx=stop_loss_execute_price,
+                    slTriggerPxType=dca_order.sl_trigger_price_type,
+                )
+
+            dca_orders_to_call.append(dca_order_request_dict)
+
+        dca_orders_placement_return = await asyncio.gather(
+            *[place_algo_order(**dca_order) for dca_order in dca_orders_to_call]
+        )
+        print(f'{dca_orders_placement_return = }')
+
+    if order_side and order_size:
         ticker = await get_ticker(instId=instID)
         print(f'{ticker = }')
         ask_price = float(ticker.askPx) if ticker.askPx else ticker.bidPx  # fixme sometimes okx returns '' for askPx
@@ -1273,19 +1374,19 @@ async def okx_signal_handler(
                 position.pos) < 0 else None  # we are only using net so only one position
             if position_side is None:
                 print(f'Closing all positions for {instID = } due to 0 net position')
-                close_all_positions(instId=instID)
-                cancel_all_algo_orders_with_params(instId=instID)
-                cancel_all_orders(instId=instID)
+                await close_all_positions(instId=instID)
+                await cancel_all_algo_orders_with_params(instId=instID)
+                await cancel_all_orders(instId=instID)
             elif order_side and position_side != order_side:
                 if flip_position_if_opposite_side:
                     print(f'Flipping position from {position_side = } to {order_side = }')
-                    close_all_positions(instId=instID)
+                    await close_all_positions(instId=instID)
                     print(f'Closed all positions for {instID = }')
 
-                    cancelled_orders = cancel_all_orders(instId=instID)
+                    cancelled_orders = await cancel_all_orders(instId=instID)
                     print(f"Cancelling orders to flip position: \n"
                           f"    {cancelled_orders = }")
-                    cancelled_algo_orders = cancel_all_algo_orders_with_params(instId=instID)
+                    cancelled_algo_orders = await cancel_all_algo_orders_with_params(instId=instID)
                     print(f"Cancelling Algo orders to flip position: \n"
                           f"    {cancelled_algo_orders = }")
                 else:
@@ -1332,8 +1433,8 @@ async def okx_signal_handler(
                         print(f'The new position will result in a net 0 after the incoming orders'
                               f' {position_side = } and the order side is {order_side = }'
                               f' with {position.pos = } and {order_size = }')
-                        cancel_all_orders(instId=instID)
-                        cancel_all_algo_orders_with_params(instId=instID)
+                        await cancel_all_orders(instId=instID)
+                        await cancel_all_algo_orders_with_params(instId=instID)
 
         order_request_dict = dict(
             instId=instID,
@@ -1346,7 +1447,7 @@ async def okx_signal_handler(
         )
 
         if order_type != 'market':
-            order_book = get_order_book(instID, 400)
+            order_book = await get_order_book(instID, 400)
             limit_price = prepare_limit_price(order_book, order_size, order_side, reference_price,
                                               max_orderbook_price_offset=max_orderbook_limit_price_offset)
             print(f'Setting New Target Limit Price to {limit_price = }')
@@ -1380,16 +1481,15 @@ async def okx_signal_handler(
                 algoClOrdId=f'{generated_client_order_id}TPORSL'
             )
 
-
-        order_placement_return = place_order(**order_request_dict)
+        order_placement_return = await place_order(**order_request_dict)
 
         print(f'{order_placement_return = }')
 
         # If error, cancel all orders and exit
         if order_placement_return and order_placement_return.sCode != '0':
             print(f'{order_placement_return.sMsg = }')
-            cancel_all_orders(instId=instID)
-            cancel_all_algo_orders_with_params(instId=instID)
+            await cancel_all_orders(instId=instID)
+            await cancel_all_algo_orders_with_params(instId=instID)
             exit()
 
         if trailing_stop_loss_activated:
@@ -1399,7 +1499,7 @@ async def okx_signal_handler(
                     reference_price - trailing_stop_activation_price_offset
 
             # Create Trailing Stop Loss
-            trailing_stop_order_placement_return = place_algo_trailing_stop_loss(
+            trailing_stop_order_placement_return = await place_algo_trailing_stop_loss(
                 instId=instID,
                 tdMode=TD_MODE,
                 ordType="move_order_stop",
@@ -1413,19 +1513,12 @@ async def okx_signal_handler(
                 cxlOnClosePos="true",
             )
             print(f'{trailing_stop_order_placement_return = }')
-    else:
-        """
-        Maintainence
-        """
-        if position:
-            position_side = 'buy' if float(position.pos) > 0 else 'sell' if float(
-                position.pos) < 0 else None  # we are only using net so only one position
-            if position_side is None:
-                print(f'Will Attempt to close all positions for {instID = } due to 0 net position')
-                close_all_positions(instId=instID)
+
+
+
 
     print('\n\nFINAL REPORT')
-    return fetch_status_report_for_instrument(instID, TD_MODE)
+    return await fetch_status_report_for_instrument(instID, TD_MODE)
 
 
 async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
@@ -1574,7 +1667,7 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
         elif premium_indicator.Bullish_Exit:
             _close_signal = 'exit_sell'
 
-        instId_positions = get_all_positions(instId=indicator_input.OKXSignalInput.instID)
+        instId_positions = await get_all_positions(instId=indicator_input.OKXSignalInput.instID)
         if len(instId_positions) > 0:
             current_position = instId_positions[0]
             current_position_side = 'buy' if float(current_position.pos) > 0 else 'sell' if float(
@@ -1617,6 +1710,8 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
 if __name__ == '__main__':
     import dotenv
 
+    dotenv.load_dotenv(dotenv.find_dotenv())
+
     # Define the test function to be used
     TEST_FUNCTION = 'okx_signal_handler'
 
@@ -1624,30 +1719,53 @@ if __name__ == '__main__':
     # TODO: Ensure only relevant orders/positions are handled.
     asyncio.run(okx_signal_handler(red_button=True))
 
-    # Load environment variables from a .env file
-    dotenv.load_dotenv(dotenv.find_dotenv())
-
     # Branching logic based on the test function chosen
     if TEST_FUNCTION == 'okx_signal_handler':
         # Execute the 'okx_signal_handler' with predefined parameters for testing
         response = asyncio.run(okx_signal_handler(
-            # Parameters for the 'okx_signal_handler'
+            # Global
             instID="BTC-USDT-240628",
-            usd_order_size=1,
             leverage=0,
-            order_side="BUY",
-            order_type="MARKET",
             max_orderbook_limit_price_offset=None,
-            flip_position_if_opposite_side=True,
             clear_prior_to_new_order=False,
             red_button=False,
-            # TP and SL
-            # tp_trigger_price_offset=100,
-            # tp_execution_price_offset=90,
-            # sl_trigger_price_offset=100,
-            # sl_execution_price_offset=90,
+            # Principal Order
+            usd_order_size=0,
+            order_side="BUY",
+            order_type="MARKET",
+            flip_position_if_opposite_side=True,
+            # Principal Order's TP/SL/Trail
+            tp_trigger_price_offset=100,
+            tp_execution_price_offset=90,
+            sl_trigger_price_offset=100,
+            sl_execution_price_offset=90,
             trailing_stop_activation_price_offset=100,
-            trailing_stop_callback_offset=10
+            trailing_stop_callback_offset=10,
+            # DCA Orders (are not linked to the principal order)
+            dca_parameters=[
+                DCAInputParameters(
+                    usd_amount=100,
+                    order_type="LIMIT",
+                    order_side="BUY",
+                    trigger_price_offset=100,
+                    execution_price_offset=90,
+                    tp_trigger_price_offset=100,
+                    tp_execution_price_offset=90,
+                    sl_trigger_price_offset=100,
+                    sl_execution_price_offset=90
+                ),
+                DCAInputParameters(
+                    usd_amount=100,
+                    order_type="LIMIT",
+                    order_side="BUY",
+                    trigger_price_offset=150,
+                    execution_price_offset=149,
+                    tp_trigger_price_offset=100,
+                    tp_execution_price_offset=90,
+                    sl_trigger_price_offset=100,
+                    sl_execution_price_offset=90
+                )
+            ]
         ))
     elif TEST_FUNCTION == 'okx_premium_indicator':
         # Load a payload from a file for testing the 'okx_premium_indicator'

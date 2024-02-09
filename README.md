@@ -82,7 +82,7 @@ port 10101 or behind a reverse proxy (e.g. Nginx) on port 80
 ```
 
 okx_signal_handler:
-```json
+```yaml
 # Global 
 instID="BTC-USDT-240628",
 leverage=0,

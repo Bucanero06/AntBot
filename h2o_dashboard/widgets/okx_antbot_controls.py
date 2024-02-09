@@ -28,7 +28,7 @@ from pyokx import ENFORCED_INSTRUMENT_TYPE
 from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import OKXSignalInput, InstrumentStatusReport
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
-from pyokx.rest_handling import okx_signal_handler, validate_okx_signal_params
+from pyokx.rest_handling import okx_signal_handler, validate_okx_signal_params, _validate_instID_and_return_ticker_info
 
 
 class OKX_Manual_ControlsWidget:
@@ -89,17 +89,18 @@ class OKX_Manual_ControlsWidget:
                                                           label='Clear Prior To New Order'),
                                                 ui.textbox(
                                                     name='okx_dashboard_page_okx_signal_max_orderbook_limit_price_offset',
-                                                    label='Max Orderbook Limit Price Offset',
+                                                    label='Max Orderbook Limit Price Offset (USD)',
                                                     placeholder='float: 0.0'),
                                             ]),
                                 ui.expander(name='okx_dashboard_page_okx_signal_order_parameters_expander',
                                             label='Order Parameters', items=[
                                         ui.textbox(name='okx_dashboard_page_okx_signal_usd_order_size',
-                                                   label='Order Size', placeholder='float: 0 USD'),
+                                                   label='Order Size (USD)', placeholder='float: 0 USD'),
                                         ui.textbox(name='okx_dashboard_page_okx_signal_leverage', label='Leverage',
                                                    placeholder='int: 0'),
                                         ui.textbox(name='okx_dashboard_page_okx_signal_order_side', label='Order Side',
                                                    placeholder='BUY or SELL or ""'),
+
                                         ui.dropdown(name='okx_dashboard_page_okx_signal_order_type', label='Order Type',
                                                     placeholder='MARKET or LIMIT or POST_ONLY',
                                                     choices=[ui.choice(name='MARKET', label='MARKET'),
@@ -119,10 +120,10 @@ class OKX_Manual_ControlsWidget:
                                                 ],
                                                 ),
                                     ui.textbox(name='okx_dashboard_page_okx_signal_tp_execution_price_offset',
-                                               label='TP Execution Price Offset',
+                                               label='TP Execution Price Offset (USD)',
                                                placeholder='float: 0.0 USD'),
                                     ui.textbox(name='okx_dashboard_page_okx_signal_tp_trigger_price_offset',
-                                               label='Take Profit Trigger Offset',
+                                               label='Take Profit Trigger Offset (USD)',
                                                placeholder='float: 0.0 USD'),
                                     ui.dropdown(name='okx_dashboard_page_okx_signal_sl_trigger_price_type',
                                                 label='SL Trigger Price Type',
@@ -136,10 +137,10 @@ class OKX_Manual_ControlsWidget:
                                                 ],
                                                 ),
                                     ui.textbox(name='okx_dashboard_page_okx_signal_sl_execution_price_offset',
-                                               label='SL Execution Price Offset',
+                                               label='SL Execution Price Offset (USD)',
                                                placeholder='float: 0.0 USD'),
                                     ui.textbox(name='okx_dashboard_page_okx_signal_sl_trigger_price_offset',
-                                               label='Stop Loss Trigger Offset',
+                                               label='Stop Loss Trigger Offset (USD)',
                                                placeholder='float: 0.0 USD'),
 
                                 ]),
@@ -147,10 +148,10 @@ class OKX_Manual_ControlsWidget:
                                             label='Trailing Stop', items=[
                                         ui.textbox(
                                             name='okx_dashboard_page_okx_signal_trailing_stop_activation_price_offset',
-                                            label='Trailing Stop Activation Offset',
+                                            label='Trailing Stop Activation Offset (USD)',
                                             placeholder='float: 0.0 (USD)'),
                                         ui.textbox(name='okx_dashboard_page_okx_signal_trailing_stop_callback_offset',
-                                                   label='Trailing Stop Callback Offset',
+                                                   label='Trailing Stop Callback Offset (USD)',
                                                    placeholder='float: 0.0 (USD)'),
                                     ])
                             ])])

@@ -1026,13 +1026,10 @@ async def prepare_dca(dca_parameters: List[DCAInputParameters], side: str, refer
         order_exec_price = reference_price + params.execution_price_offset if side == 'BUY' else reference_price - params.execution_price_offset
         usd_amount = params.usd_amount
 
-        order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount,
-                                               ccy_contract_size=ccy_contract_size,
-                                               ccy_last_price=ccy_last_price,
-                                               min_order_quantity=min_order_quantity,
-                                               max_market_order_quantity=max_market_order_quantity,
-                                               usd_base_ratio=usd_to_base_rate,
-                                               leverage=leverage)
+        order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount, ccy_contract_size=ccy_contract_size,
+                                               ccy_last_price=ccy_last_price, minimum_contract_size=min_order_quantity,
+                                               max_market_contract_size=max_market_order_quantity,
+                                               usd_base_ratio=usd_to_base_rate, leverage=leverage)
         orders.append(DCAOrderParameters(
             size=order_contracts,
             trigger_price=order_trigger_price,
@@ -1075,8 +1072,7 @@ async def validate_okx_signal_params(
     assert passed_expiration_test, f'Instrument has expired. {instId_info.expTime = }'
     assert passed_leverage_test, f'Instrument has a higher leverage than the one provided. {instId_info.lever = }'
 
-
-    _main_order_flag = okx_signal.usd_order_size and okx_signal.order_size
+    _main_order_flag = okx_signal.usd_order_size and okx_signal.order_side
 
     if _main_order_flag or okx_signal.dca_parameters:
         usd_to_base_rate = 1
@@ -1103,11 +1099,10 @@ async def validate_okx_signal_params(
 
         usd_amount = float(okx_signal.usd_order_size)
 
-
         # convert USD to order size (contracts)
         order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount, ccy_contract_size=ccy_contract_size,
-                                               ccy_last_price=ccy_last_price, min_order_quantity=min_order_quantity,
-                                               max_market_order_quantity=max_market_order_quantity,
+                                               ccy_last_price=ccy_last_price, minimum_contract_size=min_order_quantity,
+                                               max_market_contract_size=max_market_order_quantity,
                                                usd_base_ratio=usd_to_base_rate, leverage=leverage)
         print(f"Number of contracts you can buy: {order_contracts} {instId_info.instId}")
 
@@ -1129,8 +1124,6 @@ async def validate_okx_signal_params(
         validated_order_params = await _validate_okx_signal_order_params(
             order_type=okx_signal.order_type, order_side=okx_signal.order_side,
             order_size=order_contracts)
-
-
 
         validated_tp_sl_trail_params = await _validate_okx_signal_input_tp_sl_trail_params(
             sl_trigger_price_offset=okx_signal.sl_trigger_price_offset,
@@ -1301,67 +1294,6 @@ async def okx_signal_handler(
         instrument_status_report.positions) > 0 else None  # we are only using net so only one position
 
 
-    if dca_parameters and isinstance(dca_parameters, list):
-        dca_orders_to_call = []
-        _order_book = None
-        for dca_order in dca_parameters:
-            if dca_order.size <= 0:
-                print(f'Ignoring DCA order with size {dca_order.size = }')
-                continue
-
-            dca_order_request_dict = dict(
-                instId=instID,
-                side=str(dca_order.side).lower(),
-                tdMode=TD_MODE,
-                posSide=POSSIDETYPE,
-                sz=dca_order.size,
-                ordType='trigger',
-                triggerPx=dca_order.trigger_price,
-                triggerPxType='last',
-                orderPx=-1,  # Default to market order, update downstream if not
-                algoClOrdId=f'{generate_random_string(16, "alphanumeric") + "DCA"}'
-            )
-
-            if not _order_book and dca_order.type != 'market':
-                _order_book = await get_order_book(instID, 400)
-            if dca_order.type != 'market':
-                dca_order_request_dict['orderPx'] = await prepare_limit_price(
-                    _order_book, dca_order.size,
-                    str(dca_order.side).lower(),
-                    dca_order.execution_price,
-                    max_orderbook_price_offset=max_orderbook_limit_price_offset)
-
-            if dca_order.tp_trigger_price_offset and dca_order.tp_execution_price_offset:
-                stop_surplus_trigger_price, stop_surplus_execute_price = calculate_tp_stop_prices_usd(
-                    order_side=str(dca_order.side).lower(),
-                    reference_price=dca_order.execution_price,
-                    tp_trigger_usd=dca_order.tp_trigger_price_offset,
-                    tp_execute_usd=dca_order.tp_execution_price_offset,
-                )
-                dca_order_request_dict.update(
-                    tpTriggerPx=stop_surplus_trigger_price,
-                    tpOrdPx=stop_surplus_execute_price,
-                    tpTriggerPxType=dca_order.tp_trigger_price_type,
-                )
-            if dca_order.sl_trigger_price_offset and dca_order.sl_execution_price_offset:
-                stop_loss_trigger_price, stop_loss_execute_price = calculate_sl_stop_prices_usd(
-                    order_side=str(dca_order.side).lower(),
-                    reference_price=dca_order.execution_price,
-                    sl_trigger_usd=dca_order.sl_trigger_price_offset,
-                    sl_execute_usd=dca_order.sl_execution_price_offset,
-                )
-                dca_order_request_dict.update(
-                    slTriggerPx=stop_loss_trigger_price,
-                    slOrdPx=stop_loss_execute_price,
-                    slTriggerPxType=dca_order.sl_trigger_price_type,
-                )
-
-            dca_orders_to_call.append(dca_order_request_dict)
-
-        dca_orders_placement_return = await asyncio.gather(
-            *[place_algo_order(**dca_order) for dca_order in dca_orders_to_call]
-        )
-        print(f'{dca_orders_placement_return = }')
 
     if order_side and order_size:
         ticker = await get_ticker(instId=instID)
@@ -1514,9 +1446,67 @@ async def okx_signal_handler(
             )
             print(f'{trailing_stop_order_placement_return = }')
 
+    if dca_parameters and isinstance(dca_parameters, list):
+        dca_orders_to_call = []
+        _order_book = None
+        for dca_order in dca_parameters:
+            if dca_order.size <= 0:
+                print(f'Ignoring DCA order with size {dca_order.size = }')
+                continue
 
+            dca_order_request_dict = dict(
+                instId=instID,
+                side=str(dca_order.side).lower(),
+                tdMode=TD_MODE,
+                posSide=POSSIDETYPE,
+                sz=dca_order.size,
+                ordType='trigger',
+                triggerPx=dca_order.trigger_price,
+                triggerPxType='last',
+                orderPx=-1,  # Default to market order, update downstream if not
+                algoClOrdId=f'{generate_random_string(16, "alphanumeric") + "DCA"}'
+            )
 
+            if not _order_book and dca_order.type != 'market':
+                _order_book = await get_order_book(instID, 400)
+            if dca_order.type != 'market':
+                dca_order_request_dict['orderPx'] = await prepare_limit_price(
+                    _order_book, dca_order.size,
+                    str(dca_order.side).lower(),
+                    dca_order.execution_price,
+                    max_orderbook_price_offset=max_orderbook_limit_price_offset)
 
+            if dca_order.tp_trigger_price_offset and dca_order.tp_execution_price_offset:
+                stop_surplus_trigger_price, stop_surplus_execute_price = calculate_tp_stop_prices_usd(
+                    order_side=str(dca_order.side).lower(),
+                    reference_price=dca_order.execution_price,
+                    tp_trigger_usd=dca_order.tp_trigger_price_offset,
+                    tp_execute_usd=dca_order.tp_execution_price_offset,
+                )
+                dca_order_request_dict.update(
+                    tpTriggerPx=stop_surplus_trigger_price,
+                    tpOrdPx=stop_surplus_execute_price,
+                    tpTriggerPxType=dca_order.tp_trigger_price_type,
+                )
+            if dca_order.sl_trigger_price_offset and dca_order.sl_execution_price_offset:
+                stop_loss_trigger_price, stop_loss_execute_price = calculate_sl_stop_prices_usd(
+                    order_side=str(dca_order.side).lower(),
+                    reference_price=dca_order.execution_price,
+                    sl_trigger_usd=dca_order.sl_trigger_price_offset,
+                    sl_execute_usd=dca_order.sl_execution_price_offset,
+                )
+                dca_order_request_dict.update(
+                    slTriggerPx=stop_loss_trigger_price,
+                    slOrdPx=stop_loss_execute_price,
+                    slTriggerPxType=dca_order.sl_trigger_price_type,
+                )
+
+            dca_orders_to_call.append(dca_order_request_dict)
+
+        dca_orders_placement_return = await asyncio.gather(
+            *[place_algo_order(**dca_order) for dca_order in dca_orders_to_call]
+        )
+        print(f'{dca_orders_placement_return = }')
     print('\n\nFINAL REPORT')
     return await fetch_status_report_for_instrument(instID, TD_MODE)
 
@@ -1630,6 +1620,11 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
     7. Returns a success message with the 'instrument_status_report' or an error message in case of an exception.
 
     :raises Exception: Catches and logs any exceptions that occur during the processing of the signal, returning a detailed error message.
+
+    Note:
+    The major difference between the `okx_signal_handler` and `okx_premium_indicator` is that the latter is
+    specifically designed to handle premium indicator signals (TV), and it includes additional processing
+    steps for interpreting the signals and aligning them with the current positions.
     """
     if isinstance(indicator_input, PremiumIndicatorSignalRequestForm):
         input_to_pass = indicator_input
@@ -1717,7 +1712,7 @@ if __name__ == '__main__':
 
     # Immediately execute the 'red button' functionality to clear all positions and orders
     # TODO: Ensure only relevant orders/positions are handled.
-    asyncio.run(okx_signal_handler(red_button=True))
+    # asyncio.run(okx_signal_handler(red_button=True))
 
     # Branching logic based on the test function chosen
     if TEST_FUNCTION == 'okx_signal_handler':
@@ -1725,47 +1720,47 @@ if __name__ == '__main__':
         response = asyncio.run(okx_signal_handler(
             # Global
             instID="BTC-USDT-240628",
-            leverage=0,
+            leverage=5,
             max_orderbook_limit_price_offset=None,
             clear_prior_to_new_order=False,
             red_button=False,
             # Principal Order
-            usd_order_size=0,
+            usd_order_size=100,
             order_side="BUY",
             order_type="MARKET",
             flip_position_if_opposite_side=True,
             # Principal Order's TP/SL/Trail
-            tp_trigger_price_offset=100,
-            tp_execution_price_offset=90,
-            sl_trigger_price_offset=100,
-            sl_execution_price_offset=90,
-            trailing_stop_activation_price_offset=100,
-            trailing_stop_callback_offset=10,
+            # tp_trigger_price_offset=100,
+            # tp_execution_price_offset=90,
+            # sl_trigger_price_offset=100,
+            # sl_execution_price_offset=90,
+            # trailing_stop_activation_price_offset=100,
+            # trailing_stop_callback_offset=10,
             # DCA Orders (are not linked to the principal order)
-            dca_parameters=[
-                DCAInputParameters(
-                    usd_amount=100,
-                    order_type="LIMIT",
-                    order_side="BUY",
-                    trigger_price_offset=100,
-                    execution_price_offset=90,
-                    tp_trigger_price_offset=100,
-                    tp_execution_price_offset=90,
-                    sl_trigger_price_offset=100,
-                    sl_execution_price_offset=90
-                ),
-                DCAInputParameters(
-                    usd_amount=100,
-                    order_type="LIMIT",
-                    order_side="BUY",
-                    trigger_price_offset=150,
-                    execution_price_offset=149,
-                    tp_trigger_price_offset=100,
-                    tp_execution_price_offset=90,
-                    sl_trigger_price_offset=100,
-                    sl_execution_price_offset=90
-                )
-            ]
+            # dca_parameters=[
+            #     DCAInputParameters(
+            #         usd_amount=100,
+            #         order_type="LIMIT",
+            #         order_side="BUY",
+            #         trigger_price_offset=100,
+            #         execution_price_offset=90,
+            #         tp_trigger_price_offset=100,
+            #         tp_execution_price_offset=90,
+            #         sl_trigger_price_offset=100,
+            #         sl_execution_price_offset=90
+            #     ),
+            #     DCAInputParameters(
+            #         usd_amount=100,
+            #         order_type="LIMIT",
+            #         order_side="BUY",
+            #         trigger_price_offset=150,
+            #         execution_price_offset=149,
+            #         tp_trigger_price_offset=100,
+            #         tp_execution_price_offset=90,
+            #         sl_trigger_price_offset=100,
+            #         sl_execution_price_offset=90
+            #     )
+            # ]
         ))
     elif TEST_FUNCTION == 'okx_premium_indicator':
         # Load a payload from a file for testing the 'okx_premium_indicator'

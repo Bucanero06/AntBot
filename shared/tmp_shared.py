@@ -32,24 +32,37 @@ def ccy_contracts_to_usd(contracts_amount, ccy_contract_size, ccy_last_price, us
 
 
 def ccy_usd_to_contracts(usd_equivalent, ccy_contract_size, ccy_last_price,
-                         min_order_quantity,
-                         max_market_order_quantity,
-                         usd_base_ratio, leverage=None):
-    cost_of_one_contract_usdt = ccy_contract_size * ccy_last_price
-    base_equivalent = usd_equivalent * usd_base_ratio
+                         minimum_contract_size,
+                         max_market_contract_size,
+                         usd_base_ratio, leverage=None, ctValCcy='USD'):
+
+    if ctValCcy != 'USD':
+        cost_of_one_contract_usdt = ccy_contract_size * ccy_last_price
+        base_equivalent = usd_equivalent * usd_base_ratio
+    else:
+        cost_of_one_contract_usdt = ccy_contract_size
+        base_equivalent = usd_equivalent
 
     if leverage:
         cost_of_one_contract_usdt = cost_of_one_contract_usdt / leverage
+    else:
+        leverage = 1
 
     max_contracts = base_equivalent / cost_of_one_contract_usdt
     max_contracts = int(max_contracts)  # round down to the nearest whole number
     # Raise error if max_contracts is less than min_order_quantity or greater than max_market_order_quantity
-    if max_contracts < min_order_quantity:
-        raise ValueError(f"max_contracts must be greater than or equal to min_order_quantity")
-    if max_contracts > max_market_order_quantity:
-        raise ValueError(f"max_contracts must be less than or equal to max_market_order_quantity")
+    if max_contracts < minimum_contract_size:
+        minimum_cost = minimum_contract_size * cost_of_one_contract_usdt
+        raise ValueError(f"USD equivalent of {usd_equivalent} is not enough to buy the \n"
+                         f"minimum quantity of {minimum_contract_size} contracts for {ccy_contract_size} at \n"
+                         f"{ccy_last_price} with {leverage} leverage. The minimum cost is {minimum_cost} USDT")
+    if max_contracts > max_market_contract_size:
+        max_cost = max_market_contract_size * cost_of_one_contract_usdt
+        raise ValueError(f"USD equivalent of {usd_equivalent} is too much to buy the \n"
+                         f"maximum quantity of {max_market_contract_size} contracts for {ccy_contract_size} at \n"
+                         f"{ccy_last_price} with {leverage} leverage. The maximum cost is "
+                         f"{max_cost} USDT")
     return max_contracts
-
 
 def calculate_stop_prices(order_side, reference_price, sl_trigger_price_offset,
                           stop_surplus_trigger_percentage, sl_execution_price_offset, stop_surplus_price_offset):

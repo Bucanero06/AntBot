@@ -1,0 +1,11 @@
+pyokx.InstrumentSearcher
+========================
+
+.. automodule:: pyokx.InstrumentSearcher
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.InstrumentSearcher
+    :parts: 1
+

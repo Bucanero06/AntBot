@@ -647,14 +647,14 @@ Optionally, returns the top N tickers sorted by volume.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_handling.okx_premium_indicator">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">okx_premium_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignalRequestForm" title="pyokx.data_structures.PremiumIndicatorSignalRequestForm"><span class="pre">PremiumIndicatorSignalRequestForm</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#okx_premium_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.okx_premium_indicator" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.rest_handling.</span></span><span class="sig-name descname"><span class="pre">okx_premium_indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indicator_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignalRequestForm" title="pyokx.data_structures.OKXPremiumIndicatorSignalRequestForm"><span class="pre">OKXPremiumIndicatorSignalRequestForm</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_handling.html#okx_premium_indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_handling.okx_premium_indicator" title="Link to this definition"></a></dt>
 <dd><p>Handles incoming premium indicator signals for trading on the OKX platform. It processes the signals,
 interprets the trading instructions, manages positions based on the received signals, and executes trading actions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>indicator_input</strong> (<a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignalRequestForm" title="pyokx.data_structures.PremiumIndicatorSignalRequestForm"><em>PremiumIndicatorSignalRequestForm</em></a><em> or </em><em>dict</em>) – The input containing the signals and parameters from the premium indicator.
-This can be an instance of PremiumIndicatorSignalRequestForm or a dictionary
-that corresponds to the structure of PremiumIndicatorSignalRequestForm.</p>
+<dd class="field-odd"><p><strong>indicator_input</strong> (<a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignalRequestForm" title="pyokx.data_structures.OKXPremiumIndicatorSignalRequestForm"><em>OKXPremiumIndicatorSignalRequestForm</em></a><em> or </em><em>dict</em>) – The input containing the signals and parameters from the premium indicator.
+This can be an instance of OKXPremiumIndicatorSignalRequestForm or a dictionary
+that corresponds to the structure of OKXPremiumIndicatorSignalRequestForm.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary detailing the outcome of the signal processing. If the processing is successful, it includes
@@ -663,7 +663,7 @@ In case of an error, it returns a message detailing the issue.</p>
 </dd>
 </dl>
 <p>Process Flow:
-1. Validates the input type and converts it into PremiumIndicatorSignalRequestForm if necessary.
+1. Validates the input type and converts it into OKXPremiumIndicatorSignalRequestForm if necessary.
 2. Extracts and processes trading signals (like Bearish, Bullish, and their respective exit signals) from the input.
 3. Determines the trading action (buy/sell) based on the processed signals.
 4. Fetches the current positions for the given instrument ID and aligns them with the received signals.

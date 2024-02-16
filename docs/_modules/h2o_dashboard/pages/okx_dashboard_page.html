@@ -218,7 +218,7 @@
 <span class="kn">from</span> <span class="nn">h2o_wave</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">run_on</span><span class="p">,</span> <span class="n">AsyncSite</span>  <span class="c1"># noqa F401</span>
 
 <span class="kn">from</span> <span class="nn">h2o_dashboard.util</span> <span class="kn">import</span> <span class="n">add_card</span>
-<span class="kn">from</span> <span class="nn">h2o_dashboard.widgets.okx_antbot_controls</span> <span class="kn">import</span> <span class="n">OKX_Manual_ControlsWidget</span>
+<span class="kn">from</span> <span class="nn">h2o_dashboard.widgets.okx_antbot_controls</span> <span class="kn">import</span> <span class="n">OKX_Signal_Handler_Widget</span>
 <span class="kn">from</span> <span class="nn">h2o_dashboard.widgets.okx_streams</span> <span class="kn">import</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">,</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">,</span> \
     <span class="n">OKX_Fill_Report_StreamWidget</span>
 
@@ -245,7 +245,7 @@
     <span class="n">fill_report_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Fill_Report_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_1&#39;</span><span class="p">,</span>
                                                              <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">manual_controls_widget</span> <span class="o">=</span> <span class="n">OKX_Manual_ControlsWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Manual_Controls&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">)</span>
+    <span class="n">manual_controls_widget</span> <span class="o">=</span> <span class="n">OKX_Signal_Handler_Widget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Manual_Controls&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">)</span>
     <span class="n">account_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Account_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_3&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>
 
 
@@ -278,7 +278,7 @@
 <span class="k">async</span> <span class="k">def</span> <span class="nf">add_page_cards</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span> <span class="n">account_stream_widget</span><span class="p">:</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">,</span>
                          <span class="n">positions_stream_widget</span><span class="p">:</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">,</span>
                          <span class="n">fill_report_stream_widget</span><span class="p">:</span> <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">,</span>
-                         <span class="n">manual_controls_widget</span><span class="p">:</span> <span class="n">OKX_Manual_ControlsWidget</span><span class="p">):</span>
+                         <span class="n">manual_controls_widget</span><span class="p">:</span> <span class="n">OKX_Signal_Handler_Widget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Account Stream Metrics&#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="k">await</span> <span class="n">account_stream_widget</span><span class="o">.</span><span class="n">_is_initialized</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updating Account Stream Metrics card&quot;</span><span class="p">)</span>

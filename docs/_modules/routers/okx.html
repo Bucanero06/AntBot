@@ -220,7 +220,7 @@
 <span class="kn">from</span> <span class="nn">jose</span> <span class="kn">import</span> <span class="n">JWTError</span>
 
 <span class="kn">from</span> <span class="nn">firebase_tools.authenticate</span> <span class="kn">import</span> <span class="n">check_token_validity</span>
-<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">InstrumentStatusReport</span><span class="p">,</span> <span class="n">InstIdSignalRequestForm</span><span class="p">,</span> <span class="n">PremiumIndicatorSignalRequestForm</span>
+<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">InstrumentStatusReport</span><span class="p">,</span> <span class="n">InstIdSignalRequestForm</span><span class="p">,</span> <span class="n">OKXPremiumIndicatorSignalRequestForm</span>
 <span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">okx_premium_indicator</span>
 <span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">serialize_for_redis</span><span class="p">,</span> <span class="n">init_async_redis</span>
 <span class="kn">from</span> <span class="nn">routers.okx_authentication</span> <span class="kn">import</span> <span class="n">check_token_against_instrument</span>
@@ -302,7 +302,7 @@
 <div class="viewcode-block" id="okx_premium_indicator_handler">
 <a class="viewcode-back" href="../../routers.okx.html#routers.okx.okx_premium_indicator_handler">[docs]</a>
 <span class="nd">@okx_router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/tradingview/premium_indicator&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">okx_premium_indicator_handler</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">:</span> <span class="n">PremiumIndicatorSignalRequestForm</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">okx_premium_indicator_handler</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">:</span> <span class="n">OKXPremiumIndicatorSignalRequestForm</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">HTTPException</span>
     <span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
     <span class="n">credentials_exception</span> <span class="o">=</span> <span class="n">HTTPException</span><span class="p">(</span>

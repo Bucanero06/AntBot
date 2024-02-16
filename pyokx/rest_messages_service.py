@@ -102,10 +102,10 @@ async def analyze_transaction_history(instType: InstType = ENFORCED_INSTRUMENT_T
 
 
 async def update_instruments(okx_futures_instrument_searcher: InstrumentSearcher,
-                             instrument_type: InstType = ENFORCED_INSTRUMENT_TYPE):
+                             instrument_type: str = ENFORCED_INSTRUMENT_TYPE):
     instrument_map = await okx_futures_instrument_searcher.update_instruments()
     redis_ready_message = serialize_for_redis(instrument_map)
-    await async_redis.xadd(f'okx:rest@{instrument_type.name.lower()}-instruments', {'data': redis_ready_message},
+    await async_redis.xadd(f'okx:rest@{instrument_type.lower()}-instruments', {'data': redis_ready_message},
                            maxlen=REDIS_STREAM_MAX_LEN)
 
 

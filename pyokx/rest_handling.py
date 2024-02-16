@@ -36,7 +36,7 @@ from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Retur
                                    AccountConfigData, MaxOrderSizeData, MaxAvailSizeData, Cancelled_Algo_Order,
                                    Orderbook_Snapshot, Bid, Ask,
                                    Simplified_Balance_Details, InstrumentStatusReport,
-                                   PremiumIndicatorSignalRequestForm, FillEntry, OKXSignalInput, DCAInputParameters,
+                                   OKXPremiumIndicatorSignalRequestForm, FillEntry, OKXSignalInput, DCAInputParameters,
                                    DCAOrderParameters)
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
@@ -702,9 +702,13 @@ async def clear_orders_and_positions_for_instrument(instId):
     :param instId: The instrument ID for which to clear orders and positions.
     :type instId: str
     """
-    print(f'{ close_all_positions(instId=instId) = }')
-    print(f'{ cancel_all_orders(instId=instId) = }')
-    print(f'{ cancel_all_algo_orders_with_params(instId=instId) = }')
+    closed_positions = await close_all_positions(instId=instId)
+    cancelled_orders = await cancel_all_orders(instId=instId)
+    cancelled_algo_orders = await cancel_all_algo_orders_with_params(instId=instId)
+    print(f'{closed_positions = }')
+    print(f'{cancelled_orders = }')
+    print(f'{cancelled_algo_orders = }')
+
 
 
 async def get_order_book(instId, depth):
@@ -1596,7 +1600,7 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
     return [FillEntry(**fill) for fill in all_data]
 
 
-async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestForm):
+async def okx_premium_indicator_handler(indicator_input: OKXPremiumIndicatorSignalRequestForm):
     """
     Handles incoming premium indicator signals for trading on the OKX platform. It processes the signals,
     interprets the trading instructions, manages positions based on the received signals, and executes trading actions.
@@ -1604,7 +1608,7 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
     :param indicator_input: The input containing the signals and parameters from the premium indicator.
                             This can be an instance of PremiumIndicatorSignalRequestForm or a dictionary
                             that corresponds to the structure of PremiumIndicatorSignalRequestForm.
-    :type indicator_input: PremiumIndicatorSignalRequestForm or dict
+    :type indicator_input: OKXPremiumIndicatorSignalRequestForm or dict
 
     :returns: A dictionary detailing the outcome of the signal processing. If the processing is successful, it includes
               the 'instrument_status_report' which is a comprehensive status report of the instrument after handling the signal.
@@ -1626,13 +1630,13 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
     specifically designed to handle premium indicator signals (TV), and it includes additional processing
     steps for interpreting the signals and aligning them with the current positions.
     """
-    if isinstance(indicator_input, PremiumIndicatorSignalRequestForm):
-        input_to_pass = indicator_input
+    if isinstance(indicator_input, OKXPremiumIndicatorSignalRequestForm):
+        input_to_pass = indicator_input.model_dump()
     elif isinstance(indicator_input, dict):
         input_to_pass = indicator_input
     else:
         return {"detail": f"Invalid input type {type(indicator_input)}"}
-    indicator_input = PremiumIndicatorSignalRequestForm(**input_to_pass)
+    indicator_input = OKXPremiumIndicatorSignalRequestForm(**input_to_pass)
 
     try:
         pprint(f'{indicator_input.OKXSignalInput = }')
@@ -1645,22 +1649,22 @@ async def okx_premium_indicator(indicator_input: PremiumIndicatorSignalRequestFo
         premium_indicator.Bearish_plus = int(premium_indicator.Bearish_plus)
         premium_indicator.Bullish = int(premium_indicator.Bullish)
         premium_indicator.Bullish_plus = int(premium_indicator.Bullish_plus)
-        premium_indicator.Bearish_Exit = 0 if premium_indicator.Bearish_Exit == 'null' else float(
+        premium_indicator.Bearish_Exit = 0 if (premium_indicator.Bearish_Exit == 'null' or 0) else float(
             premium_indicator.Bearish_Exit)
-        premium_indicator.Bullish_Exit = 0 if premium_indicator.Bullish_Exit == 'null' else float(
+        premium_indicator.Bullish_Exit = 0 if (premium_indicator.Bullish_Exit == 'null' or 0)else float(
             premium_indicator.Bullish_Exit)
 
         _order_side = None
         _close_signal = None
         _red_button = indicator_input.OKXSignalInput.red_button
         if premium_indicator.Bearish or premium_indicator.Bearish_plus:
-            _order_side = 'buy'
-        elif premium_indicator.Bullish or premium_indicator.Bullish_plus:
             _order_side = 'sell'
+        elif premium_indicator.Bullish or premium_indicator.Bullish_plus:
+            _order_side = 'buy'
         if premium_indicator.Bearish_Exit:
-            _close_signal = 'exit_buy'
-        elif premium_indicator.Bullish_Exit:
             _close_signal = 'exit_sell'
+        elif premium_indicator.Bullish_Exit:
+            _close_signal = 'exit_buy'
 
         instId_positions = await get_all_positions(instId=indicator_input.OKXSignalInput.instID)
         if len(instId_positions) > 0:
@@ -1771,7 +1775,7 @@ if __name__ == '__main__':
         pprint(f'{webhook_payload = }')
 
         # Construct the signal request form
-        indicator_input = PremiumIndicatorSignalRequestForm(**webhook_payload)
+        indicator_input = OKXPremiumIndicatorSignalRequestForm(**webhook_payload)
         import redis
 
         # Connect to Redis server
@@ -1782,10 +1786,10 @@ if __name__ == '__main__':
         r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message, maxlen=REDIS_STREAM_MAX_LEN)
 
         # Process the indicator input and store the result
-        result = okx_premium_indicator(indicator_input)
+        result = okx_premium_indicator_handler(indicator_input)
 
         # Get the response from the 'okx_premium_indicator' function
-        response = okx_premium_indicator(webhook_payload)
+        response = okx_premium_indicator_handler(webhook_payload)
         if isinstance(result, dict):
             # Send the result to a Redis stream for debugging
             r.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result),

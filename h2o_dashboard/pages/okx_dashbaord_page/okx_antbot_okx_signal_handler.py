@@ -28,10 +28,12 @@ from pyokx import ENFORCED_INSTRUMENT_TYPE
 from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import OKXSignalInput, InstrumentStatusReport
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
-from pyokx.rest_handling import okx_signal_handler, validate_okx_signal_params, _validate_instID_and_return_ticker_info
+from pyokx.rest_handling import okx_signal_handler, validate_okx_signal_params
+
+OKX_SIGNAL_INPUT_KEYS = OKXSignalInput.model_fields.keys()
 
 
-class OKX_Manual_ControlsWidget:
+class OKX_Signal_Handler_Widget:
 
     def __init__(self, q: Q, card_name: str, box: str, minimum_update_delay: int = 2 * 60):
         self.q = q
@@ -66,93 +68,110 @@ class OKX_Manual_ControlsWidget:
             box=self.box,
             items=[
                 ui.mini_buttons(items=[
-                    ui.mini_button(name='okx_dashboard_page_okx_signal_validate_inputs', label='Validate Input Model',
+                    ui.mini_button(name=f'okx_dashboard_page_okx_signal_validate_inputs', label='Validate Input Model',
                                    icon='CheckMark'),
                     ui.mini_button(name='okx_dashboard_page_okx_signal_submit_okx_signal', label='Submit', icon='Send')
                 ]),
 
                 ui.expander(name='okx_dashboard_page_okx_signal_expander', label='OKX Signal', expanded=True,
                             items=[
-                                ui.dropdown(name='okx_dashboard_page_okx_signal_instID', label='Instrument ID',
-                                            choices=instrument_id_choices,
-                                            trigger=True
-                                            ),
+                                ui.dropdown(
+                                    name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.instID}',
+                                    label='Instrument ID',
+                                    choices=instrument_id_choices,
+                                    trigger=True
+                                ),
 
-                                ui.toggle(name='okx_dashboard_page_okx_signal_flip_position_if_opposite_side',
-                                          label='Flip Position If Opposite Side',
-                                          value=True),
+                                ui.toggle(
+                                    name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.flip_position_if_opposite_side}',
+                                    label='Flip Position If Opposite Side',
+                                    value=True),
                                 ui.expander(name='okx_dashboard_page_okx_signal_advanced_expander', label='Advanced',
                                             items=[
-                                                ui.toggle(name='okx_dashboard_page_okx_signal_red_button',
-                                                          label='Red Button'),
-                                                ui.toggle(name='okx_dashboard_page_okx_signal_clear_prior_to_new_order',
-                                                          label='Clear Prior To New Order'),
+                                                ui.toggle(
+                                                    name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.red_button}',
+                                                    label='Red Button'),
+                                                ui.toggle(
+                                                    name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.clear_prior_to_new_order}',
+                                                    label='Clear Prior To New Order'),
                                                 ui.textbox(
-                                                    name='okx_dashboard_page_okx_signal_max_orderbook_limit_price_offset',
+                                                    name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.max_orderbook_limit_price_offset}',
                                                     label='Max Orderbook Limit Price Offset (USD)',
                                                     placeholder='float: 0.0'),
                                             ]),
-                                ui.expander(name='okx_dashboard_page_okx_signal_order_parameters_expander',
+                                ui.expander(name=f'okx_dashboard_page_okx_signal_order_parameters_expander',
                                             label='Order Parameters', items=[
-                                        ui.textbox(name='okx_dashboard_page_okx_signal_usd_order_size',
-                                                   label='Order Size (USD)', placeholder='float: 0 USD'),
-                                        ui.textbox(name='okx_dashboard_page_okx_signal_leverage', label='Leverage',
+                                        ui.textbox(
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.usd_order_size}',
+                                            label='Order Size (USD)', placeholder='float: 0 USD'),
+                                        ui.textbox(name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.leverage}',
+                                                   label='Leverage',
                                                    placeholder='int: 0'),
-                                        ui.textbox(name='okx_dashboard_page_okx_signal_order_side', label='Order Side',
+                                        ui.textbox(name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.order_side}',
+                                                   label='Order Side',
                                                    placeholder='BUY or SELL or ""'),
 
-                                        ui.dropdown(name='okx_dashboard_page_okx_signal_order_type', label='Order Type',
+                                        ui.dropdown(name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.order_type}',
+                                                    label='Order Type',
                                                     placeholder='MARKET or LIMIT or POST_ONLY',
                                                     choices=[ui.choice(name='MARKET', label='MARKET'),
                                                              ui.choice(name='LIMIT', label='LIMIT'),
                                                              ui.choice(name='POST_ONLY', label='POST_ONLY')]),
                                     ]),
-                                ui.expander(name='okx_dashboard_page_okx_signal_tp_sl_expander', label='TP/SL', items=[
-                                    ui.dropdown(name='okx_dashboard_page_okx_signal_tp_trigger_price_type',
-                                                label='TP Trigger Price Type',
-                                                placeholder='index or mark or last',
-                                                value='last',
-                                                choices=[
-                                                    # 'index', 'mark', 'last'
-                                                    ui.choice(name='index', label='index'),
-                                                    ui.choice(name='mark', label='mark'),
-                                                    ui.choice(name='last', label='last')
-                                                ],
-                                                ),
-                                    ui.textbox(name='okx_dashboard_page_okx_signal_tp_execution_price_offset',
-                                               label='TP Execution Price Offset (USD)',
-                                               placeholder='float: 0.0 USD'),
-                                    ui.textbox(name='okx_dashboard_page_okx_signal_tp_trigger_price_offset',
-                                               label='Take Profit Trigger Offset (USD)',
-                                               placeholder='float: 0.0 USD'),
-                                    ui.dropdown(name='okx_dashboard_page_okx_signal_sl_trigger_price_type',
-                                                label='SL Trigger Price Type',
-                                                placeholder='index or mark or last',
-                                                value='last',
-                                                choices=[
-                                                    # 'index', 'mark', 'last'
-                                                    ui.choice(name='index', label='index'),
-                                                    ui.choice(name='mark', label='mark'),
-                                                    ui.choice(name='last', label='last')
-                                                ],
-                                                ),
-                                    ui.textbox(name='okx_dashboard_page_okx_signal_sl_execution_price_offset',
-                                               label='SL Execution Price Offset (USD)',
-                                               placeholder='float: 0.0 USD'),
-                                    ui.textbox(name='okx_dashboard_page_okx_signal_sl_trigger_price_offset',
-                                               label='Stop Loss Trigger Offset (USD)',
-                                               placeholder='float: 0.0 USD'),
+                                ui.expander(name='okx_dashboard_page_okx_signal_tp_sl_expander',
+                                            label='TP/SL', items=[
+                                        ui.dropdown(
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.tp_trigger_price_type}',
+                                            label='TP Trigger Price Type',
+                                            placeholder='index or mark or last',
+                                            value='last',
+                                            choices=[
+                                                # 'index', 'mark', 'last'
+                                                ui.choice(name='index', label='index'),
+                                                ui.choice(name='mark', label='mark'),
+                                                ui.choice(name='last', label='last')
+                                            ],
+                                            ),
+                                        ui.textbox(
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.tp_execution_price_offset}',
+                                            label='TP Execution Price Offset (USD)',
+                                            placeholder='float: 0.0 USD'),
+                                        ui.textbox(
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.tp_trigger_price_offset}',
+                                            label='Take Profit Trigger Offset (USD)',
+                                            placeholder='float: 0.0 USD'),
+                                        ui.dropdown(
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.sl_trigger_price_type}',
+                                            label='SL Trigger Price Type',
+                                            placeholder='index or mark or last',
+                                            value='last',
+                                            choices=[
+                                                # 'index', 'mark', 'last'
+                                                ui.choice(name='index', label='index'),
+                                                ui.choice(name='mark', label='mark'),
+                                                ui.choice(name='last', label='last')
+                                            ],
+                                            ),
+                                        ui.textbox(
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.sl_execution_price_offset}',
+                                            label='SL Execution Price Offset (USD)',
+                                            placeholder='float: 0.0 USD'),
+                                        ui.textbox(
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.sl_trigger_price_offset}',
+                                            label='Stop Loss Trigger Offset (USD)',
+                                            placeholder='float: 0.0 USD'),
 
-                                ]),
+                                    ]),
                                 ui.expander(name='okx_dashboard_page_okx_signal_trailing_stop_expander',
                                             label='Trailing Stop', items=[
                                         ui.textbox(
-                                            name='okx_dashboard_page_okx_signal_trailing_stop_activation_price_offset',
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.trailing_stop_activation_price_offset}',
                                             label='Trailing Stop Activation Offset (USD)',
                                             placeholder='float: 0.0 (USD)'),
-                                        ui.textbox(name='okx_dashboard_page_okx_signal_trailing_stop_callback_offset',
-                                                   label='Trailing Stop Callback Offset (USD)',
-                                                   placeholder='float: 0.0 (USD)'),
+                                        ui.textbox(
+                                            name=f'okx_dashboard_page_okx_signal_{OKXSignalInput.trailing_stop_callback_offset}',
+                                            label='Trailing Stop Callback Offset (USD)',
+                                            placeholder='float: 0.0 (USD)'),
                                     ])
                             ])])
 
@@ -285,9 +304,7 @@ async def on_instID_selection(q: Q):
 async def okx_signal_validate_inputs(q: Q):
     # Copy the inputs from the args if found to the client
     copy_expando(q.args, q.client)
-    okx_signal_input_keys = OKXSignalInput.__annotations__.keys()
-    params = {att: q.client[f'okx_dashboard_page_okx_signal_{att}'] for att in okx_signal_input_keys}
-
+    params = {att: q.client[f'okx_dashboard_page_okx_signal_{att}'] for att in OKX_SIGNAL_INPUT_KEYS}
 
     try:
         # Clean the params

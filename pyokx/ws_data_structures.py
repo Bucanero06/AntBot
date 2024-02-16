@@ -19,9 +19,8 @@
 # SOFTWARE.
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pyokx.data_structures import OKXBaseModel, Instrument, AccountBalanceData, Ask, Bid, Ticker
 
-from pyokx.data_structures import Instrument, AccountBalanceData, Ask, Bid, Ticker
 """The data structures used to represent the data received from the OKX Websocket API.""
 The channels are split into three categories: public, business, and private. The public channels are available to all
 users, the business channels are typically for market makers, and the private channels are for the user's account data.
@@ -37,22 +36,23 @@ The websocket paths are
 - wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999
 """
 
-class TickersChannelInputArgs(BaseModel):
+
+class TickersChannelInputArgs(OKXBaseModel):
     channel: str
     instId: str
 
 
-class TickersChannelReturnArgs(BaseModel):
+class TickersChannelReturnArgs(OKXBaseModel):
     channel: str
     instId: str
 
 
-class TickersChannel(BaseModel):
+class TickersChannel(OKXBaseModel):
     arg: TickersChannelReturnArgs
     data: List[Ticker]
 
 
-class CandleStick(BaseModel):
+class CandleStick(OKXBaseModel):
     _primary_key_field = 'timestamp'
     timestamp: str
     open: str
@@ -62,7 +62,7 @@ class CandleStick(BaseModel):
     is_closed: str
 
 
-class PriceLimit(BaseModel):
+class PriceLimit(OKXBaseModel):
     _primary_key_field = 'instId'
     instId: str
     buyLmt: str
@@ -71,35 +71,35 @@ class PriceLimit(BaseModel):
     enabled: bool
 
 
-class InstrumentsChannelInputArgs(BaseModel):
+class InstrumentsChannelInputArgs(OKXBaseModel):
     _primary_key_field = 'instType'
     channel: str
     instType: str
 
 
-class InstrumentsChannel(BaseModel):
+class InstrumentsChannel(OKXBaseModel):
     arg: InstrumentsChannelInputArgs
     data: List[Instrument]
 
 
-class PriceLimitChannelInputArgs(BaseModel):
+class PriceLimitChannelInputArgs(OKXBaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
-class PriceLimitChannel(BaseModel):
+class PriceLimitChannel(OKXBaseModel):
     arg: PriceLimitChannelInputArgs
     data: List[PriceLimit]
 
 
-class MarkPriceChannelInputArgs(BaseModel):
+class MarkPriceChannelInputArgs(OKXBaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
-class MarkPrice(BaseModel):
+class MarkPrice(OKXBaseModel):
     _primary_key_field = 'instId'
     instType: str
     instId: str
@@ -107,18 +107,18 @@ class MarkPrice(BaseModel):
     ts: str
 
 
-class MarkPriceChannel(BaseModel):
+class MarkPriceChannel(OKXBaseModel):
     arg: MarkPriceChannelInputArgs
     data: List[MarkPrice]
 
 
-class MarkPriceCandleSticksChannelInputArgs(BaseModel):
+class MarkPriceCandleSticksChannelInputArgs(OKXBaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
-class MarkPriceCandleSticksChannel(BaseModel):
+class MarkPriceCandleSticksChannel(OKXBaseModel):
     arg: MarkPriceChannelInputArgs
     data: List[CandleStick]
 
@@ -139,13 +139,13 @@ class MarkPriceCandleSticksChannel(BaseModel):
     # B
 
 
-class IndexTickersChannelInputArgs(BaseModel):
+class IndexTickersChannelInputArgs(OKXBaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
-class IndexTickers(BaseModel):
+class IndexTickers(OKXBaseModel):
     instId: str
     idxPx: str
     high24h: str
@@ -156,18 +156,18 @@ class IndexTickers(BaseModel):
     ts: str
 
 
-class IndexTickersChannel(BaseModel):
+class IndexTickersChannel(OKXBaseModel):
     arg: IndexTickersChannelInputArgs
     data: List[IndexTickers]
 
 
-class IndexCandleSticksChannelInputArgs(BaseModel):
+class IndexCandleSticksChannelInputArgs(OKXBaseModel):
     _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
-class IndexCandleSticksChannel(BaseModel):
+class IndexCandleSticksChannel(OKXBaseModel):
     arg: IndexCandleSticksChannelInputArgs
     data: List[CandleStick]
 
@@ -186,23 +186,23 @@ class IndexCandleSticksChannel(BaseModel):
         return IndexCandleSticksChannel(arg=arg, data=data)
 
 
-class AccountChannelInputArgs(BaseModel):
+class AccountChannelInputArgs(OKXBaseModel):
     channel: str
     ccy: Optional[str] = None
     extraParams: Optional[str] = None
 
 
-class AccountChannelReturnArgs(BaseModel):
+class AccountChannelReturnArgs(OKXBaseModel):
     channel: str
     uid: str
 
 
-class AccountChannel(BaseModel):
+class AccountChannel(OKXBaseModel):
     arg: AccountChannelReturnArgs
     data: List[AccountBalanceData]
 
 
-class WSPosition(BaseModel):
+class WSPosition(OKXBaseModel):
     instType: str
     mgnMode: str
     posId: str
@@ -264,7 +264,7 @@ class WSPosition(BaseModel):
     pTime: str
 
 
-class PositionsChannelInputArgs(BaseModel):
+class PositionsChannelInputArgs(OKXBaseModel):
     # {
     #       "channel": "positions",
     #       "instType": "ANY",
@@ -280,7 +280,8 @@ class PositionsChannelInputArgs(BaseModel):
     instId: Optional[str] = None
     extraParams: Optional[str] = None
 
-class PositionsChannelReturnArgs(BaseModel):
+
+class PositionsChannelReturnArgs(OKXBaseModel):
     channel: str
     uid: str
     instType: str
@@ -288,21 +289,21 @@ class PositionsChannelReturnArgs(BaseModel):
     instId: Optional[str] = None
 
 
-class PositionsChannel(BaseModel):
+class PositionsChannel(OKXBaseModel):
     arg: PositionsChannelReturnArgs
     data: List[WSPosition]
 
 
-class BalanceAndPositionsChannelInputArgs(BaseModel):
+class BalanceAndPositionsChannelInputArgs(OKXBaseModel):
     channel: str
 
 
-class BalanceAndPositionsChannelReturnArgs(BaseModel):
+class BalanceAndPositionsChannelReturnArgs(OKXBaseModel):
     channel: str
     uid: str
 
 
-class ws_balData_element(BaseModel):
+class ws_balData_element(OKXBaseModel):
     _primary_key_field: str = "ccy"
 
     ccy: str
@@ -310,7 +311,7 @@ class ws_balData_element(BaseModel):
     uTime: str
 
 
-class ws_posData_element(BaseModel):
+class ws_posData_element(OKXBaseModel):
     _primary_key_field: str = "posId"
 
     posId: str
@@ -326,14 +327,14 @@ class ws_posData_element(BaseModel):
     uTime: str
 
 
-class ws_trades_element(BaseModel):
+class ws_trades_element(OKXBaseModel):
     _primary_key_field: str = "tradeId"
 
     instId: str
     tradeId: str
 
 
-class BalanceAndPositionData(BaseModel):
+class BalanceAndPositionData(OKXBaseModel):
     pTime: str
     eventType: str
     balData: List[ws_balData_element]
@@ -341,26 +342,26 @@ class BalanceAndPositionData(BaseModel):
     trades: List[ws_trades_element]
 
 
-class BalanceAndPositionsChannel(BaseModel):
+class BalanceAndPositionsChannel(OKXBaseModel):
     arg: BalanceAndPositionsChannelReturnArgs
     data: List[BalanceAndPositionData]
 
 
-class WebSocketConnectionConfig(BaseModel):
+class WebSocketConnectionConfig(OKXBaseModel):
     _primary_key_field: str = 'name'
     name: str
     channels: dict = {}
     wss_url: str
 
 
-class OrdersChannelInputArgs(BaseModel):
+class OrdersChannelInputArgs(OKXBaseModel):
     channel: str
     instType: str
     instFamily: Optional[str] = None
     instId: Optional[str] = None
 
 
-class OrdersChannelReturnArgs(BaseModel):
+class OrdersChannelReturnArgs(OKXBaseModel):
     channel: str
     instType: str
     uid: str
@@ -368,7 +369,7 @@ class OrdersChannelReturnArgs(BaseModel):
     instId: Optional[str] = None
 
 
-class WSOrder(BaseModel):
+class WSOrder(OKXBaseModel):
     accFillSz: str
     algoClOrdId: str
     algoId: str
@@ -436,22 +437,22 @@ class WSOrder(BaseModel):
     uTime: str
 
 
-class OrdersChannel(BaseModel):
+class OrdersChannel(OKXBaseModel):
     arg: OrdersChannelReturnArgs
     data: List[WSOrder]
 
 
-class OrderBookInputArgs(BaseModel):
+class OrderBookInputArgs(OKXBaseModel):
     channel: str
     instId: str
 
 
-class OrderBookReturnArgs(BaseModel):
+class OrderBookReturnArgs(OKXBaseModel):
     channel: str
     instId: str
 
 
-class OrderBookData(BaseModel):
+class OrderBookData(OKXBaseModel):
     asks: List[Ask]
     bids: List[Bid]
     ts: str
@@ -461,7 +462,7 @@ class OrderBookData(BaseModel):
     prevSeqId: Optional[int] = None
 
 
-class OrderBookChannel(BaseModel):
+class OrderBookChannel(OKXBaseModel):
     arg: OrderBookReturnArgs
     data: List[OrderBookData]
     action: Optional[str] = None

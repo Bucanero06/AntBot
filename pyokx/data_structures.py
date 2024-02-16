@@ -25,7 +25,18 @@ from pydantic import BaseModel, validator
 from pyokx.okx_market_maker.utils.OkxEnum import MgnMode, PosSide, InstType
 
 
-class Order(BaseModel):
+class OKXBaseModelModelMeta(type(BaseModel)):
+    def __getattr__(cls, item):
+        if item in cls.model_fields:
+            return item
+        return super().__getattr__(item)
+
+
+class OKXBaseModel(BaseModel, metaclass=OKXBaseModelModelMeta):
+    pass
+
+
+class Order(OKXBaseModel):
     accFillSz: str
     algoClOrdId: str
     algoId: str
@@ -77,14 +88,14 @@ class Order(BaseModel):
     uTime: str
 
 
-class Cancelled_Order(BaseModel):
+class Cancelled_Order(OKXBaseModel):
     clOrdId: str
     ordId: str
     sCode: str
     sMsg: str
 
 
-class Cancelled_Algo_Order(BaseModel):
+class Cancelled_Algo_Order(OKXBaseModel):
     """
     e.g. {'algoClOrdId': '', 'algoId': '661126556584251392', 'clOrdId': '', 'sCode': '0', 'sMsg': '', 'tag': ''}
     """
@@ -96,7 +107,7 @@ class Cancelled_Algo_Order(BaseModel):
     tag: str
 
 
-class Position(BaseModel):
+class Position(OKXBaseModel):
     """
     e.g. {'adl': '1', 'availPos': '', 'avgPx': '45075.3000000000000001', 'baseBal': '', 'baseBorrowed': '', 'baseInterest': '', 'bePx': '45120.39784892446', 'bizRefId': '', 'bizRefType': '', 'cTime': '1703728631744', 'ccy': 'USDT', 'closeOrderAlgo': [], 'deltaBS': '', 'deltaPA': '', 'fee': '-0.901506', 'fundingFee': '0', 'gammaBS': '', 'gammaPA': '', 'idxPx': '43474.0', 'imr': '', 'instId': 'BTC-USDT-240329', 'instType': 'FUTURES', 'interest': '', 'last': '45070.1', 'lever': '3', 'liab': '', 'liabCcy': '', 'liqPenalty': '0', 'liqPx': '30186.137167252637', 'margin': '601.004', 'markPx': '45068', 'mgnMode': 'isolated', 'mgnRatio': '74.05007741388319', 'mmr': '7.21088', 'notionalUsd': '1804.4145568', 'optVal': '', 'pendingCloseOrdLiabVal': '', 'pnl': '0', 'pos': '4', 'posCcy': '', 'posId': '660420980350771429', 'posSide': 'net', 'quoteBal': '', 'quoteBorrowed': '', 'quoteInterest': '', 'realizedPnl': '-0.901506', 'spotInUseAmt': '', 'spotInUseCcy': '', 'thetaBS': '', 'thetaPA': '', 'tradeId': '3014208', 'uTime': '1703728655219', 'upl': '-0.2920000000001164', 'uplLastPx': '-0.2080000000001746', 'uplRatio': '-0.0004858536715233', 'uplRatioLastPx': '-0.0003460875468385', 'usdPx': '', 'vegaBS': '', 'vegaPA': ''}
     """
@@ -161,7 +172,7 @@ class Position(BaseModel):
     vegaPA: str
 
 
-class Closed_Position(BaseModel):
+class Closed_Position(OKXBaseModel):
     """
     e.g. {'clOrdId': '', 'instId': 'BTC-USDT-240329', 'posSide': 'net', 'tag': ''}
     """
@@ -171,7 +182,7 @@ class Closed_Position(BaseModel):
     tag: str
 
 
-class Ticker(BaseModel):
+class Ticker(OKXBaseModel):
     """
     e.g {'instType': 'FUTURES', 'instId': 'BTC-USDT-240329', 'last': '44725.3', 'lastSz': '11', 'askPx': '44727', 'askSz': '147', 'bidPx': '44724.5', 'bidSz': '170', 'open24h': '43854.9', 'high24h': '45406.2', 'low24h': '38196.8', 'volCcy24h': '14025.4', 'vol24h': '1402540', 'ts': '1703741214308', 'sodUtc0': '44977.8', 'sodUtc8': '44452.3'}]}
     """
@@ -193,7 +204,7 @@ class Ticker(BaseModel):
     sodUtc8: str
 
 
-class Order_Placement_Return(BaseModel):
+class Order_Placement_Return(OKXBaseModel):
     """
     e.g. {'clOrdId': '', 'ordId': '660478634888654848', 'sCode': '0', 'sMsg': 'Order placed', 'tag': ''}
     """
@@ -204,7 +215,7 @@ class Order_Placement_Return(BaseModel):
     tag: str
 
 
-class Algo_Order(BaseModel):
+class Algo_Order(OKXBaseModel):
     """
     e.g. {'activePx': '', 'actualPx': '', 'actualSide': '', 'actualSz': '0', 'algoClOrdId': '', 'algoId': '660707839958183936', 'amendPxOnTriggerType': '0', 'attachAlgoOrds': [], 'cTime': '1703797024404', 'callbackRatio': '', 'callbackSpread': '', 'ccy': '', 'clOrdId': '', 'closeFraction': '', 'failCode': '', 'instId': 'BTC-USDT-240329', 'instType': 'FUTURES', 'last': '44080', 'lever': '3', 'moveTriggerPx': '', 'ordId': '', 'ordIdList': [], 'ordPx': '', 'ordType': 'conditional', 'posSide': 'net', 'pxLimit': '', 'pxSpread': '', 'pxVar': '', 'quickMgnType': '', 'reduceOnly': 'false', 'side': 'buy', 'slOrdPx': '', 'slTriggerPx': '', 'slTriggerPxType': '', 'state': 'live', 'sz': '1', 'szLimit': '', 'tag': '', 'tdMode': 'isolated', 'tgtCcy': '', 'timeInterval': '', 'tpOrdPx': '-1', 'tpTriggerPx': '44075', 'tpTriggerPxType': 'last', 'triggerPx': '', 'triggerPxType': '', 'triggerTime': ''}, {'activePx': '', 'actualPx': '', 'actualSide': '', 'actualSz': '0', 'algoClOrdId': '', 'algoId': '660707810421895170', 'amendPxOnTriggerType': '0', 'attachAlgoOrds': [], 'cTime': '1703797017362', 'callbackRatio': '', 'callbackSpread': '', 'ccy': '', 'clOrdId': '', 'closeFraction': '', 'failCode': '', 'instId': 'BTC-USDT-240329', 'instType': 'FUTURES', 'last': '44079.5', 'lever': '3', 'moveTriggerPx': '', 'ordId': '', 'ordIdList': [], 'ordPx': '', 'ordType': 'conditional', 'posSide': 'net', 'pxLimit': '', 'pxSpread': '', 'pxVar': '', 'quickMgnType': '', 'reduceOnly': 'false', 'side': 'buy', 'slOrdPx': '', 'slTriggerPx': '', 'slTriggerPxType': '', 'state': 'live', 'sz': '1', 'szLimit': '', 'tag': '', 'tdMode': 'isolated', 'tgtCcy': '', 'timeInterval': '', 'tpOrdPx': '-1', 'tpTriggerPx': '44074.5', 'tpTriggerPxType': 'last', 'triggerPx': '', 'triggerPxType': '', 'triggerTime': ''}
     """
@@ -257,7 +268,7 @@ class Algo_Order(BaseModel):
     triggerTime: str
 
 
-class Algo_Order_Placement_Return(BaseModel):
+class Algo_Order_Placement_Return(OKXBaseModel):
     """
     e.g. {'algoClOrdId': '', 'algoId': '660710963351515145', 'clOrdId': '', 'sCode': '0', 'sMsg': '', 'tag': ''}
     """
@@ -269,7 +280,7 @@ class Algo_Order_Placement_Return(BaseModel):
     tag: str
 
 
-class Instrument(BaseModel):
+class Instrument(OKXBaseModel):
     """
     e.g. {'alias': 'next_month', 'baseCcy': '', 'category': '1', 'ctMult': '1', 'ctType': 'inverse', 'ctVal': '100',
          'ctValCcy': 'USD', 'expTime': '1708675200000', 'instFamily': 'BTC-USD', 'instId': 'BTC-USD-240223',
@@ -311,7 +322,7 @@ class Instrument(BaseModel):
     uly: str
 
 
-class Bid(BaseModel):
+class Bid(OKXBaseModel):
     """
     e.g. '43752.4', '156', '0', '1'
     """
@@ -321,7 +332,7 @@ class Bid(BaseModel):
     number_of_orders: str
 
 
-class Ask(BaseModel):
+class Ask(OKXBaseModel):
     """
     e.g. '43752.4', '156', '0', '1'
     """
@@ -331,7 +342,7 @@ class Ask(BaseModel):
     number_of_orders: str
 
 
-class Orderbook_Snapshot(BaseModel):
+class Orderbook_Snapshot(OKXBaseModel):
     """
     e.g. {'asks': [['43746.5', '106', '0', '1'], ['43751.1', '171', '0', '1'], ['43751.2', '118', '0', '1'],
           ['43752.4', '156', '0', '1'], ['43753.5', '151', '0', '1'], ['43753.7', '126', '0', '1'],
@@ -355,7 +366,7 @@ class Orderbook_Snapshot(BaseModel):
     ts: str
 
 
-class Simplified_Balance_Details(BaseModel):
+class Simplified_Balance_Details(OKXBaseModel):
     Currency: str
     Available_Balance: str
     Equity: str
@@ -363,7 +374,7 @@ class Simplified_Balance_Details(BaseModel):
     Frozen_Balance: str
 
 
-class AccountBalanceDetails(BaseModel):
+class AccountBalanceDetails(OKXBaseModel):
     """
     e.g. {'availBal': '1', 'availEq': '1', 'borrowFroz': '', 'cashBal': '1', 'ccy': 'BTC', 'crossLiab': '', 'disEq': '42219',
           'eq': '1', 'eqUsd': '42219', 'fixedBal': '0', 'frozenBal': '0', 'interest': '', 'isoEq': '0', 'isoLiab': '',
@@ -399,7 +410,7 @@ class AccountBalanceDetails(BaseModel):
     uplLiab: str
 
 
-class AccountBalanceData(BaseModel):
+class AccountBalanceData(OKXBaseModel):
     """
     e.g. {'adjEq': '', 'borrowFroz': '', 'details': [{'availBal': '1', 'availEq': '1', 'borrowFroz': '', 'cashBal': '1', 'ccy': 'BTC', 'crossLiab': '', 'disEq': '42219', 'eq': '1', 'eqUsd': '42219', 'fixedBal': '0', 'frozenBal': '0', 'interest': '', 'isoEq': '0', 'isoLiab': '', 'isoUpl': '0', 'liab': '', 'maxLoan': '', 'mgnRatio': '', 'notionalLever': '0', 'ordFrozen': '0', 'spotInUseAmt': '', 'spotIsoBal': '0', 'stgyEq': '0', 'twap': '0', 'uTime': '1703639691142', 'upl': '0', 'uplLiab': ''}, {'availBal': '100', 'availEq': '100', 'borrowFroz': '', 'cashBal': '100', 'ccy': 'OKB', 'crossLiab': '', 'disEq': '5207.329999999999', 'eq': '100', 'eqUsd': '5481.4', 'fixedBal': '0', 'frozenBal': '0', 'interest': '', 'isoEq': '0', 'isoLiab': '', 'isoUpl': '0', 'liab': '', 'maxLoan': '', 'mgnRatio': '', 'notionalLever': '0', 'ordFrozen': '0', 'spotInUseAmt': '', 'spotIsoBal': '0', 'stgyEq': '0', 'twap': '0', 'uTime': '1703639691152', 'upl': '0', 'uplLiab': ''}, {'availBal': '5069.205129833334', 'availEq': '5069.205129833334', 'borrowFroz': '', 'cashBal': '5069.205129833334', 'ccy': 'USDT', 'crossLiab': '', 'disEq': '5218.680085966916', 'eq': '5217.0627965', 'eqUsd': '5218.680085966916', 'fixedBal': '0', 'frozenBal': '147.85766666666666', 'interest': '', 'isoEq': '147.85766666666666', 'isoLiab': '', 'isoUpl': '2.5', 'liab': '', 'maxLoan': '', 'mgnRatio': '', 'notionalLever': '0', 'ordFrozen': '0', 'spotInUseAmt': '', 'spotIsoBal': '0', 'stgyEq': '0', 'twap': '0', 'uTime': '1703877105585', 'upl': '2.5', 'uplLiab': ''}, {'availBal': '1', 'availEq': '1', 'borrowFroz': '', 'cashBal': '1', 'ccy': 'ETH', 'crossLiab': '', 'disEq': '2310.18', 'eq': '1', 'eqUsd': '2310.18', 'fixedBal': '0', 'frozenBal': '0', 'interest': '', 'isoEq': '0', 'isoLiab': '', 'isoUpl': '0', 'liab': '', 'maxLoan': '', 'mgnRatio': '', 'notionalLever': '0', 'ordFrozen': '0', 'spotInUseAmt': '', 'spotIsoBal': '0', 'stgyEq': '0', 'twap': '0', 'uTime': '1703639691162', 'upl': '0', 'uplLiab': ''}], 'imr': '', 'isoEq': '147.90350254333333', 'mgnRatio': '', 'mmr': '', 'notionalUsd': '', 'ordFroz': '', 'totalEq': '55229.26008596692', 'uTime': '1703884466962'}
     """
@@ -416,7 +427,7 @@ class AccountBalanceData(BaseModel):
     uTime: str
 
 
-class PositionHistory(BaseModel):
+class PositionHistory(OKXBaseModel):
     instType: InstType  # Instrument type
     instId: str  # Instrument ID
     mgnMode: MgnMode  # Margin mode
@@ -453,7 +464,7 @@ class PositionHistory(BaseModel):
         use_enum_values = True
 
 
-class FillEntry(BaseModel):
+class FillEntry(OKXBaseModel):
     side: str
     fillSz: str
     fillPx: str
@@ -479,7 +490,7 @@ class FillEntry(BaseModel):
     ts: str
 
 
-class AccountConfigData(BaseModel):
+class AccountConfigData(OKXBaseModel):
     acctLv: str
     autoLoan: bool
     ctIsoMode: str
@@ -503,21 +514,21 @@ class AccountConfigData(BaseModel):
     uid: str
 
 
-class MaxOrderSizeData(BaseModel):
+class MaxOrderSizeData(OKXBaseModel):
     ccy: str
     instId: str
     maxBuy: str
     maxSell: str
 
 
-class MaxAvailSizeData(BaseModel):
+class MaxAvailSizeData(OKXBaseModel):
     availBuy: str
     availSell: str
     instId: str
 
 
 #
-class InstrumentStatusReport(BaseModel):
+class InstrumentStatusReport(OKXBaseModel):
     timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
     instId: str
     max_order_size: MaxOrderSizeData
@@ -527,7 +538,7 @@ class InstrumentStatusReport(BaseModel):
     algo_orders: List[Algo_Order]
 
 
-class AccountStatusReport(BaseModel):
+class AccountStatusReport(OKXBaseModel):
     timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
     account_balance: AccountBalanceData
     account_config: AccountConfigData
@@ -537,7 +548,7 @@ class AccountStatusReport(BaseModel):
     simplified_balance: Simplified_Balance_Details
 
 
-class DCAInputParameters(BaseModel):
+class DCAInputParameters(OKXBaseModel):
     usd_amount: float
     trigger_price_offset: float
     order_type: str
@@ -551,7 +562,7 @@ class DCAInputParameters(BaseModel):
     sl_execution_price_offset: Optional[float] = 0
 
 
-class DCAOrderParameters(BaseModel):
+class DCAOrderParameters(OKXBaseModel):
     size: float
     trigger_price: float
     type: str
@@ -564,7 +575,7 @@ class DCAOrderParameters(BaseModel):
     sl_trigger_price_offset: Optional[float] = 0
     sl_execution_price_offset: Optional[float] = 0
 
-class OKXSignalInput(BaseModel):
+class OKXSignalInput(OKXBaseModel):
     instID: Optional[str] = ''
     usd_order_size: Optional[float] = 0
     leverage: Optional[int] = 0
@@ -585,7 +596,7 @@ class OKXSignalInput(BaseModel):
     dca_parameters: Optional[List[DCAInputParameters]] = []
 
 
-class PremiumIndicatorSignals(BaseModel):
+class PremiumIndicatorSignals(OKXBaseModel):
     Bullish: Optional[Union[int, str]]
     Bearish: Optional[Union[int, str]]
     Bullish_plus: Optional[Union[int, str]]
@@ -594,24 +605,24 @@ class PremiumIndicatorSignals(BaseModel):
     Bearish_Exit: Optional[Union[int, str]]
 
 
-class PremiumIndicatorSignalRequestForm(BaseModel):
+class OKXPremiumIndicatorSignalRequestForm(OKXBaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
     PremiumIndicatorSignals: PremiumIndicatorSignals
 
 
-class InstIdSignalRequestForm(BaseModel):
+class InstIdSignalRequestForm(OKXBaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
 
 
-class FillHistoricalMetricsEntry(BaseModel):
+class FillHistoricalMetricsEntry(OKXBaseModel):
     avg_fill_pnl: float
     total_fill_pnl: float
     total_fill_fee: float
 
 
-class FillHistoricalMetrics(BaseModel):
+class FillHistoricalMetrics(OKXBaseModel):
     ONE_DAY: FillHistoricalMetricsEntry
     ONE_WEEK: FillHistoricalMetricsEntry
     ONE_MONTH: FillHistoricalMetricsEntry

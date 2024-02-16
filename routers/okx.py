@@ -24,8 +24,8 @@ from fastapi import APIRouter, HTTPException
 from jose import JWTError
 
 from firebase_tools.authenticate import check_token_validity
-from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, PremiumIndicatorSignalRequestForm
-from pyokx.rest_handling import okx_premium_indicator
+from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, OKXPremiumIndicatorSignalRequestForm
+from pyokx.rest_handling import okx_premium_indicator_handler
 from redis_tools.utils import serialize_for_redis, init_async_redis
 from routers.okx_authentication import check_token_against_instrument
 
@@ -101,7 +101,7 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
 
 
 @okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
-async def okx_premium_indicator_handler(indicator_input: PremiumIndicatorSignalRequestForm):
+async def okx_premium_indicator_handler(indicator_input: OKXPremiumIndicatorSignalRequestForm):
     from fastapi import HTTPException
     from starlette import status
     credentials_exception = HTTPException(
@@ -134,7 +134,7 @@ async def okx_premium_indicator_handler(indicator_input: PremiumIndicatorSignalR
     await async_redis.xadd(f'okx:webhook@okx_premium_indicator@input@{instrument_id}',
                            {'data': serialize_for_redis(indicator_input)},
                            maxlen=REDIS_STREAM_MAX_LEN)
-    returning_message = await okx_premium_indicator(indicator_input)
+    returning_message = await okx_premium_indicator_handler(indicator_input)
     await async_redis.xadd(f'okx:webhook@okx_premium_indicator@response@{instrument_id}',
                            {'data': serialize_for_redis(returning_message)},
                            maxlen=REDIS_STREAM_MAX_LEN)

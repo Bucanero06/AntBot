@@ -19,12 +19,10 @@
 # SOFTWARE.
 import asyncio
 
-import requests
 from h2o_wave import main, Q, app, ui, on, run_on, data  # noqa F401
 
 from h2o_dashboard.util import add_card
-from h2o_dashboard.widgets.okx_streams import Overview_StreamWidget
-from pyokx.data_structures import InstIdSignalRequestForm, OKXSignalInput
+from h2o_dashboard.pages.okx_streams import Overview_StreamWidget
 
 
 async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):

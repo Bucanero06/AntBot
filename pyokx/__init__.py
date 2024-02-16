@@ -2,6 +2,8 @@ import os
 
 import dotenv
 
+from pyokx.okx_market_maker.utils.OkxEnum import InstType
+
 dotenv.load_dotenv(dotenv.find_dotenv())
 from pyokx.Futures_Exchange_Client import OKX_Futures_Exchange_Client as OKXClient
 
@@ -12,4 +14,4 @@ marketAPI = okx_client.marketAPI
 accountAPI = okx_client.accountAPI
 publicAPI = okx_client.publicAPI
 
-ENFORCED_INSTRUMENT_TYPE = 'FUTURES'
+ENFORCED_INSTRUMENT_TYPE = InstType.FUTURES.name

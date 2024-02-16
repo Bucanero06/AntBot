@@ -83,29 +83,29 @@ async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
                          oks_signal_handler_widget: OKX_Signal_Handler_Widget,
 okx_premium_indicator_handler_widget: OKX_Premium_Indicator_Handler_Widget
                          ):
-    # '''Account Stream Metrics'''
-    # if await account_stream_widget._is_initialized():
-    #     print("Updating Account Stream Metrics card")
-    #     await account_stream_widget.update_cards()
-    # else:
-    #     print("Adding Account Stream Metrics card")
-    #     await account_stream_widget.add_cards()
-    # #
-    # '''Positions Stream Metrics'''
-    # if await positions_stream_widget._is_initialized():
-    #     print("Updating Positions Stream Metrics card")
-    #     await positions_stream_widget.update_cards()
-    # else:
-    #     print("Adding Positions Stream Metrics card")
-    #     await positions_stream_widget.add_cards()
+    '''Account Stream Metrics'''
+    if await account_stream_widget._is_initialized():
+        print("Updating Account Stream Metrics card")
+        await account_stream_widget.update_cards()
+    else:
+        print("Adding Account Stream Metrics card")
+        await account_stream_widget.add_cards()
     #
-    # '''Fills Report Stream Metrics'''
-    # if await fill_report_stream_widget._is_initialized():
-    #     print("Updating Fills Report Stream Metrics card")
-    #     await fill_report_stream_widget.update_cards()
-    # else:
-    #     print("Adding Fills Report Stream Metrics card")
-    #     await fill_report_stream_widget.add_cards()
+    '''Positions Stream Metrics'''
+    if await positions_stream_widget._is_initialized():
+        print("Updating Positions Stream Metrics card")
+        await positions_stream_widget.update_cards()
+    else:
+        print("Adding Positions Stream Metrics card")
+        await positions_stream_widget.add_cards()
+
+    '''Fills Report Stream Metrics'''
+    if await fill_report_stream_widget._is_initialized():
+        print("Updating Fills Report Stream Metrics card")
+        await fill_report_stream_widget.update_cards()
+    else:
+        print("Adding Fills Report Stream Metrics card")
+        await fill_report_stream_widget.add_cards()
 
     # if await oks_signal_handler_widget._is_initialized():
     #     print("Updating Manual Controls card")

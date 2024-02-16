@@ -500,7 +500,8 @@ async def generate_tv_payload(q: Q):
             auth_response = check_str_token_validity(q.client.token)
             if not auth_response:
                 raise ValueError("Token is invalid, please reload the page and log in again")
-
+        if not q.client.okx_dashboard_page_okx_premium_indicator_instID:
+            raise ValueError("Choose an instrument ID first")
         # Curl create_instrument_api_key using the InstIdAPIKeyCreationRequestForm model
         request_payload = InstIdAPIKeyCreationRequestForm(
             username=q.client.email,

@@ -86,11 +86,11 @@ class OKX_Premium_Indicator_Handler_Widget:
                             items=[
                                 # Small note
                                 ui.message_bar(
-                                    type='info',
+                                    type='warning',
                                     text='Bullish or Bearish signals will override order side'
                                 ),
                                 ui.message_bar(
-                                    type='info',
+                                    type='warning',
                                     text='OKX SIGNAL should be validated prior to submitting'
                                 ),
                                 ui.mini_buttons(
@@ -124,6 +124,10 @@ class OKX_Premium_Indicator_Handler_Widget:
                                     label='Instrument ID',
                                     choices=instrument_id_choices,
                                     trigger=True
+                                ),
+                                ui.message_bar(
+                                    type='info',
+                                    text='RECOMMENDED!',
                                 ),
                                 ui.toggle(
                                     name=f'okx_dashboard_page_okx_premium_indicator_{OKXSignalInput.flip_position_if_opposite_side}',

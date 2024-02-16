@@ -26,6 +26,7 @@ import dotenv
 import requests
 from h2o_wave import Q, app, ui, on, data, run_on, AsyncSite  # noqa F401
 
+from firebase_tools.authenticate import authenticate_with_firebase, check_str_token_validity
 from h2o_dashboard.pages.documentation_page import documentation_page
 from h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page import okx_dashboard_page
 from h2o_dashboard.pages.overview_page import overview_page
@@ -183,67 +184,7 @@ async def initialize_client(q: Q):
     q.client.token = None  # Initially, no token is set.
 
 
-def authenticate_with_firebase(email, password):
-    """Authenticate with Firebase and return token if successful, or an error message."""
-    endpoint = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_CONFIG['apiKey']}"
-    data = {
-        "email": email,
-        "password": password,
-        "returnSecureToken": True
-    }
 
-    try:
-        response = requests.post(endpoint, data=json.dumps(data))
-        response_data = response.json()
-
-        if "idToken" in response_data:
-            return {
-                'status': 'success',
-                'error_message': None,
-                'token': response_data.get('idToken'),
-                'refresh_token': response_data.get('refreshToken'),
-                'user_id': response_data.get('localId'),
-                'email': response_data.get('email'),
-                'expires_in': response_data.get('expiresIn'),
-            }
-
-        elif "error" in response_data:
-            return {
-                'status': 'error',
-                'error_message': f"Authentication failed: {response_data['error'].get('message', 'Unknown error.')}",
-                'token': None,
-                'refresh_token': None,
-                'user_id': None,
-                'email': None,
-                'expires_in': None,
-            }
-    except requests.RequestException as e:
-        return {
-            'status': 'error',
-            'error_message': f"Authentication failed: {e}",
-            'token': None,
-            'refresh_token': None,
-            'user_id': None,
-            'email': None,
-            'expires_in': None,
-        }
-    return {
-        'status': 'error',
-        'error_message': f"Authentication failed: Unknown error.",
-        'token': None,
-        'refresh_token': None,
-        'user_id': None,
-        'email': None,
-        'expires_in': None,
-    }
-
-
-def check_token_validity(idToken):
-    """Check if a Firebase token is valid."""
-    endpoint = f"https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={FIREBASE_CONFIG['apiKey']}"
-    data = {"idToken": idToken}
-    response = requests.post(endpoint, data=json.dumps(data))
-    return (response.status_code == 200)
 
 
 async def render_login_page(q: Q, error_message=None):
@@ -361,13 +302,24 @@ async def serve_security(q: Q, bypass_security=False):
 
     # If login is triggered, try to authenticate and decide what to render next
     if q.args.login:
-        response = authenticate_with_firebase(q.args.email, q.args.password)
+        response = await authenticate_with_firebase(q.args.email, q.args.password)
 
         if response['status'] == 'success':
             print("Token already exists and is valid")
             q.client.token = response['token']
+            q.client.user_id = response['user_id']
+            q.client.email = q.args.email
+            q.client.expires_in = response['expires_in']
+            q.client.password = q.args.password
+
+
             await render_login_page(q, error_message=response['error_message'])
         else:
+            q.client.token = None
+            q.client.user_id = None
+            q.client.email = None
+            q.client.expires_in = None
+            q.client.password = None
             await render_login_page(q, error_message=response['error_message'])
             return  # End the function if login fails
 
@@ -378,7 +330,7 @@ async def serve_security(q: Q, bypass_security=False):
 
     # If the client already has a token, check its validity and act accordingly
     if q.client.token:
-        if check_token_validity(q.client.token):
+        if check_str_token_validity(q.client.token):
             context = response  # todo: implement better context handling
             await render_hidden_content(q)
         else:

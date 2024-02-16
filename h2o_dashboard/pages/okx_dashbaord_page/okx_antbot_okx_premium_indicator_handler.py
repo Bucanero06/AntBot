@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite, pack, copy_expando  # noqa F401
 from pydantic import ValidationError
 
+from firebase_tools.authenticate import check_str_token_validity
 from h2o_dashboard.util import add_card
 from pyokx import ENFORCED_INSTRUMENT_TYPE
 from pyokx.InstrumentSearcher import InstrumentSearcher
@@ -30,6 +31,7 @@ from pyokx.data_structures import OKXSignalInput, InstrumentStatusReport, Premiu
     OKXPremiumIndicatorSignalRequestForm
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
 from pyokx.rest_handling import okx_signal_handler, validate_okx_signal_params, okx_premium_indicator_handler
+from routers.okx_authentication import InstIdAPIKeyCreationRequestForm, create_instrument_api_key
 
 OKX_SIGNAL_INPUT_KEYS = OKXSignalInput.model_fields.keys()
 OKX_PREMIUM_INDICATOR_SIGNAL_INPUT_KEYS = PremiumIndicatorSignals.model_fields.keys()
@@ -69,10 +71,14 @@ class OKX_Premium_Indicator_Handler_Widget:
             items=[
                 ui.mini_buttons(items=[
                     ui.mini_button(name=f'okx_dashboard_page_okx_premium_indicator_validate_inputs',
-                                   label='Validate Input Model',
+                                   label='Validate Input',
                                    icon='CheckMark'),
-                    ui.mini_button(name='okx_dashboard_page_okx_premium_indicator_submit_okx_signal', label='Submit',
-                                   icon='Send')
+                    ui.mini_button(name='okx_dashboard_page_okx_premium_indicator_submit_okx_signal',
+                                   label='Submit Signal',
+                                   icon='Send'),
+                    ui.mini_button(name='okx_dashboard_page_okx_premium_indicator_generate_tv_payload',
+                                   label='Generate TV Payload',
+                                   icon='Send'),
                 ]),
 
                 ui.expander(name='okx_dashboard_page_okx_premium_indicator_expander',
@@ -481,13 +487,62 @@ async def submit_okx_signal(q: Q):
     await q.page.save()
 
 
+@on('okx_dashboard_page_okx_premium_indicator_generate_tv_payload')
+async def generate_tv_payload(q: Q):
+    output_response_card = q.page[q.client.OKX_Manual_ControlsWidget_card_name + '_okx_signal_output_response_card']
+    okx_signal_txt_header = 'TV Payload Response:\n\n'
+
+    try:
+        output_response_card.items[1].copyable_text.value = f"Generating TV Payload..."
+        await q.page.save()
+
+        if q.client.token:
+            auth_response = check_str_token_validity(q.client.token)
+            if not auth_response:
+                raise ValueError("Token is invalid, please reload the page and log in again")
+
+        # Curl create_instrument_api_key using the InstIdAPIKeyCreationRequestForm model
+        request_payload = InstIdAPIKeyCreationRequestForm(
+            username=q.client.email,
+            password=q.client.password,
+            instID=q.client.okx_dashboard_page_okx_premium_indicator_instID,
+            expire_time=None
+        )
+        instrument_api_key_response = await create_instrument_api_key(request_payload, q.client.token)
+
+        print(f'{instrument_api_key_response = }')
+        if not instrument_api_key_response.get('access_token'):
+            raise ValueError("Failed to create instrument API key")
+
+        request_model = await on_premium_indicator_signal_selection(q, only_return_request_model=True)
+        print(f'{request_model = }')
+        if not request_model:
+            return
+
+        print(f'{request_model = }')
+        request_model.InstIdAPIKey = instrument_api_key_response.get('access_token')
+
+        tradingview_payload = request_model.to_tradingview_json_payload()
+        print(f'{tradingview_payload = }')
+        # Pretty print but keep json integrity meaning without the string quotes
+
+        output_response_card.items[1].copyable_text.value = tradingview_payload
+    except Exception as e:
+        print(f'{e = }')
+        output_response_card.items[1].copyable_text.value = f"{e = }"
+        await q.page.save()
+        return
+
+    await q.page.save()
+
+
 @on('okx_dashboard_page_okx_premium_indicator_Bullish')
 @on('okx_dashboard_page_okx_premium_indicator_Bearish')
 @on('okx_dashboard_page_okx_premium_indicator_Bullish_plus')
 @on('okx_dashboard_page_okx_premium_indicator_Bearish_plus')
 @on('okx_dashboard_page_okx_premium_indicator_Bullish_Exit')
 @on('okx_dashboard_page_okx_premium_indicator_Bearish_Exit')
-async def on_premium_indicator_signal_selection(q: Q):
+async def on_premium_indicator_signal_selection(q: Q, only_return_request_model=False):
     output_response_card = q.page[q.client.OKX_Manual_ControlsWidget_card_name + '_okx_signal_output_response_card']
     okx_signal_txt_header = 'OKX Premium Indicator Signal Response:\n\n'
 
@@ -495,7 +550,7 @@ async def on_premium_indicator_signal_selection(q: Q):
                                        OKX_PREMIUM_INDICATOR_SIGNAL_INPUT_KEYS}
     cleaned_indicator_params = {k: 1 if v is not None else 0 for k, v in premium_indicator_signal_params.items()}
     print(f'{cleaned_indicator_params = }')
-    if sum(cleaned_indicator_params.values()) != 1:
+    if not only_return_request_model and sum(cleaned_indicator_params.values()) != 1:
         raise ValueError("Only one of the premium indicator signals should be True")
 
     # Now lets Validate the inputs for the OKX signal
@@ -516,7 +571,7 @@ async def on_premium_indicator_signal_selection(q: Q):
         input_values += '\n\n'
         input_values += f'OKX Signal:\n'
         input_values += pprint.pformat(q.client.okx_dashboard_page_okx_signal_input.model_dump(), compact=True,
-                                        sort_dicts=False, width=100, depth=5)
+                                       sort_dicts=False, width=100, depth=5)
 
         bot_okx_signal_input_model_box.items[1].copyable_text.value = input_values
 
@@ -545,14 +600,17 @@ async def on_premium_indicator_signal_selection(q: Q):
     try:
         output_response_card.items[1].copyable_text.value = f"Submitting OKX Premium Indicator Signal Request..."
         await q.page.save()
-        print(f'{okx_signal = }')
-        print(f'{okx_premium_indicator_signals = }')
 
-        signal_response = await okx_premium_indicator_handler(indicator_input=OKXPremiumIndicatorSignalRequestForm(
-            InstIdAPIKey='instrument_specific_api_key',  # TODO this should be a valid API key for the endpoint
+        request_model = OKXPremiumIndicatorSignalRequestForm(
+            InstIdAPIKey='place_holder_until_generated',  # TODO this should be a valid API key for the endpoint
             OKXSignalInput=okx_signal,
             PremiumIndicatorSignals=okx_premium_indicator_signals
-        ))
+        )
+
+        if only_return_request_model:
+            return request_model
+
+        signal_response = await okx_premium_indicator_handler(indicator_input=request_model)
 
         print(f'{signal_response= }')
         if isinstance(signal_response, dict) and (signal_response.get('error') or signal_response.get('red_button')):

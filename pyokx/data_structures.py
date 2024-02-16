@@ -604,11 +604,38 @@ class PremiumIndicatorSignals(OKXBaseModel):
     Bullish_Exit: Optional[Union[int, str]]
     Bearish_Exit: Optional[Union[int, str]]
 
+    def tradingview_json_payload(self):
+        return """{
+        "Buy": {{plot("Buy")}},
+        "Minimal_Buy": {{plot("Minimal Buy")}},
+        "Strong_Buy": {{plot("Strong Buy")}},
+        "Minimal_Strong_Buy": {{plot("Minimal Strong Buy")}},
+        "Exit_Buy": {{plot("Exit Buy")}},
+        "Sell": {{plot("Sell")}},
+        "Minimal_Sell": {{plot("Minimal Sell")}},
+        "Strong_Sell": {{plot("Strong Sell")}},
+        "Minimal_Strong_Sell": {{plot("Minimal Strong Sell")}},
+        "Exit_Sell": {{plot("Exit Sell")}}
+    }"""
 
 class OKXPremiumIndicatorSignalRequestForm(OKXBaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
     PremiumIndicatorSignals: PremiumIndicatorSignals
+
+    def to_tradingview_json_payload(self):
+        # return f"""{
+        #     "InstIdAPIKey": {self.InstIdAPIKey},
+        #     "OKXSignalInput": {self.OKXSignalInput.model_dump()},
+        #     "PremiumIndicatorSignals": {self.PremiumIndicatorSignals.tradingview_json_payload()}
+        # }"""
+        return f"""{{
+            "InstIdAPIKey": "{self.InstIdAPIKey}",
+            "OKXSignalInput": {self.OKXSignalInput.json()},
+            "PremiumIndicatorSignals": {self.PremiumIndicatorSignals.tradingview_json_payload()}
+        }}"""
+
+
 
 
 class InstIdSignalRequestForm(OKXBaseModel):

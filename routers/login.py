@@ -31,7 +31,7 @@ login_router = APIRouter(tags=["Token"], include_in_schema=False)
 
 
 @login_router.post("/login", status_code=status.HTTP_202_ACCEPTED)
-def login(request: OAuth2PasswordRequestForm = Depends(),
+async def login(request: OAuth2PasswordRequestForm = Depends(),
           # db: Session = Depends(get_db)
           ):
     # login_user = db.query(User).filter(request.username == User.email).first()
@@ -44,7 +44,7 @@ def login(request: OAuth2PasswordRequestForm = Depends(),
     #                         detail="incorrect password"
     #                         )
 
-    response = authenticate_with_firebase(request.username, request.password)
+    response = await authenticate_with_firebase(request.username, request.password)
     print(response)
     if response['status'] != 'success':
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,

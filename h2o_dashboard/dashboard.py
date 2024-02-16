@@ -49,6 +49,7 @@ async def on_shutdown():
 @on('@system.client_disconnect')
 async def on_client_disconnect(q: Q):
     print('Client disconnected')
+    # Pages Tasks and Events
     q.client.overview_page_running_event.clear()
     q.client.okx_dashboard_page_running_event.clear()
     q.client.documentation_page_running_event.clear()
@@ -56,6 +57,9 @@ async def on_client_disconnect(q: Q):
     q.client.okx_dashboard_page_task.cancel()
     q.client.documentation_page_task.cancel()
 
+    # Redis Listener Tasks and Events
+    q.client.okx_redis_listener_task.cancel()
+    q.client.okx_redis_listener_running_event.clear()
 
     await asyncio.sleep(1)
     print('Client disconnected')
@@ -76,10 +80,6 @@ async def serve(q: Q):
             q.client.okx_dashboard_page_running_event = asyncio.Event()
         if not isinstance(getattr(q.client, 'documentation_page_running_event'), asyncio.Event):
             q.client.documentation_page_running_event = asyncio.Event()
-        if not isinstance(getattr(q.client, 'page_loop_event_entry'), asyncio.Event):
-            q.client.page_loop_event_entry = asyncio.Event()
-        if not isinstance(getattr(q.client, 'page_loop_event_exit'), asyncio.Event):
-            q.client.page_loop_event_exit = asyncio.Event()
 
         q.client.overview_page_running_event.clear()
         q.client.okx_dashboard_page_running_event.clear()

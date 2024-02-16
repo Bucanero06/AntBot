@@ -86,8 +86,7 @@ class InstIdAPIKeyCreationRequestForm(BaseModel):
 async def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = Depends(),
                               current_user=Depends(check_token_validity),
                               ):
-    response = authenticate_with_firebase(request.username, request.password)
-    print(response)
+    response = await authenticate_with_firebase(request.username, request.password)
     if response['status'] != 'success':
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=response['error_message']

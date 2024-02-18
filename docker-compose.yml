@@ -100,6 +100,8 @@ services:
     cpus: 0.5
     mem_limit: 4g
     mem_reservation: 512m
+    volumes:
+      - redis-data:/data
 
 
   okx_rest:
@@ -191,6 +193,7 @@ services:
 
 
 
+
 networks:
   my-network:
     driver: bridge
@@ -198,3 +201,6 @@ networks:
       config:
         - subnet: 172.18.0.0/16
 
+volumes:
+  redis-data:
+    driver: local

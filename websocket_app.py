@@ -19,6 +19,7 @@
 # SOFTWARE.
 import asyncio
 import os
+import threading
 
 import dotenv
 import uvicorn
@@ -54,18 +55,11 @@ def health_check():
     # Todo add more health check metrics used around the codebase
     return {"status": "OK"}
 
+def start_websocket_task_loop():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
-@app.on_event("startup")
-async def startup_event():
-    print("Startup event triggered")
-    global websocket_task
-    global rest_task
-    global websocket_instrument_task
-
-    async_redis = await init_async_redis()
-    assert async_redis, "async_redis is None, check the connection to the Redis server"
-
-    websocket_task = asyncio.create_task(okx_websockets_main_run(input_channel_models=[
+    loop.run_until_complete(okx_websockets_main_run(input_channel_models=[
         ### Private Channels
         AccountChannelInputArgs(channel="account", ccy=None,
                                 extraParams="{"
@@ -81,6 +75,19 @@ async def startup_event():
         secretkey=os.getenv('OKX_SECRET_KEY'), sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
         redis_store=True
     ))
+    loop.close()
+@app.on_event("startup")
+async def startup_event():
+    print("Startup event triggered")
+    global websocket_task
+    global rest_task
+    global websocket_instrument_task
+
+    async_redis = await init_async_redis()
+    assert async_redis, "async_redis is None, check the connection to the Redis server"
+
+    websocket_thread = threading.Thread(target=start_websocket_task_loop)
+    websocket_thread.start()
     rest_task = asyncio.create_task(okx_rest_messages_services(reload_interval=30))
 
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus

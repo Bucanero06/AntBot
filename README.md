@@ -52,7 +52,7 @@ robust technological stack.
     - Utilization of docker-compose version 2.2 is strategic for optimal resource management within a VM environment,
       despite version 3.x offering the latest features.
 
-## Technology Stack Synopsis
+## Technology Stack Summary 
 
 The AntBot project integrates an array of leading-edge technologies, each contributing uniquely to the system's overall
 performance and versatility:

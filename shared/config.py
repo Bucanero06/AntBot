@@ -28,9 +28,12 @@ import dotenv
 dotenv.load_dotenv(dotenv.find_dotenv())
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-ALGORITHM = os.getenv('ALGORITHM')
+ALGORITHM = os.getenv('ALGORITHM', 'HS256')
 DEFAULT_KEY_EXPIRE_TIME = int(os.getenv('DEFAULT_KEY_EXPIRE_TIME', 3600))
 
+assert SECRET_KEY, f'{SECRET_KEY = }'
+assert ALGORITHM, f'{ALGORITHM = }'
+assert DEFAULT_KEY_EXPIRE_TIME, f'{DEFAULT_KEY_EXPIRE_TIME = }'
 
 
 

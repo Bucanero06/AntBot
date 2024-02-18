@@ -503,7 +503,8 @@ async def generate_tv_payload(q: Q):
         await q.page.save()
 
         if q.client.token:
-            auth_response = check_str_token_validity(q.client.token)
+            auth_response = await check_str_token_validity(q.client.token)
+            print(f'{auth_response = }')
             if not auth_response:
                 raise ValueError("Token is invalid, please reload the page and log in again")
         if not q.client.okx_dashboard_page_okx_premium_indicator_instID:

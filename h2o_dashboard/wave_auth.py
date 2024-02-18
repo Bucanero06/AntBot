@@ -330,7 +330,7 @@ async def serve_security(q: Q, bypass_security=False):
 
     # If the client already has a token, check its validity and act accordingly
     if q.client.token:
-        if check_str_token_validity(q.client.token):
+        if await check_str_token_validity(q.client.token):
             context = response  # todo: implement better context handling
             await render_hidden_content(q)
         else:

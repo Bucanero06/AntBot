@@ -91,7 +91,7 @@ async def authenticate_with_firebase(email, password):
     }
 
 
-def check_token_validity(token: str = Depends(Oauth2_scheme)):
+async def check_token_validity(token: str = Depends(Oauth2_scheme)):
     """Check if a Firebase token is valid."""
     endpoint = f"https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={FIREBASE_CONFIG['apiKey']}"
     data = {"idToken": token}
@@ -100,7 +100,7 @@ def check_token_validity(token: str = Depends(Oauth2_scheme)):
     return (response.status_code == 200)
 
 
-def check_str_token_validity(idToken):
+async def check_str_token_validity(idToken):
     """Check if a Firebase token is valid."""
     endpoint = f"https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={FIREBASE_CONFIG['apiKey']}"
     data = {"idToken": idToken}

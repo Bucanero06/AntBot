@@ -19,11 +19,11 @@
 # SOFTWARE.
 import asyncio
 
+import requests
 from h2o_wave import main, Q, app, ui, on, run_on, data  # noqa F401
 
-from h2o_dashboard.util import add_card
 from h2o_dashboard.pages.okx_streams import Overview_StreamWidget
-from shared.command_execution import execute_command
+from h2o_dashboard.util import add_card
 
 
 async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
@@ -72,17 +72,17 @@ async def overview_page(q: Q):
                                   color='transparent',
                                   icon='Home',
                                   icon_color=None,
+                                  items=[
+                                      ui.message_bar(
+                                          type='info',
+                                          text=f''
+                                      ),
+                                  ]
                                   ))
-
-
+    header_card = q.page['Overview_Page_Header']
 
     await add_tradingview_advanced_chart(q, card_name='Overview_Page_TradingView_Advanced_Chart', box='grid_1')
 
-    # await add_card(q, 'Overview_Page_TradingView_Info', ui.form_card(box='grid_1', items=[
-    #     ui.frame(height="100px", width="300px",
-    #              content=str(get_info_widget("AAPL"))
-    #      )
-    # ]))
 
     '''Init Widgets'''
     overview_widget = Overview_StreamWidget(q=q, card_name='grid_2', box='grid_2', count=2)
@@ -109,12 +109,31 @@ async def overview_page(q: Q):
                 print("Adding Overview card")
                 await overview_widget.add_cards()
 
-            # Get logs for dashboard
-            # dashboard_logs = execute_command("sudo docker-compose logs --tail 10")
-            # print(f'{dashboard_logs = }')
-            # await add_card(q, 'Overview_Page_Dashboard_Logs', ui.form_card(box='grid_3', items=[
-            #     ui.text_xl(dashboard_logs)
-            # ]))
+
+
+            '''Ping Services and Update UI Component'''
+            try:
+                # Request health check at
+                rest_handling_check = requests.request(
+                    'GET',
+                    'http://localhost:8080/health'
+                )
+                websocket_handling_check = requests.request(
+                    'GET',
+                    'http://localhost:8081/health'
+                )
+                nginx_handling_check = requests.request(
+                    'GET',
+                    'http://localhost:8081/health'
+                )
+
+                header_card.subtitle = f'Rest Service Ping: {rest_handling_check.text}\n' \
+                                                                  f'Websockets Service Ping: {websocket_handling_check.text}\n ' \
+                                                                  f'Nginx Service Ping: {nginx_handling_check.text}\n'
+
+
+            except Exception as e:
+                print(f'{e = }')
             await q.page.save()
     except asyncio.CancelledError:
         print("Cancelled")

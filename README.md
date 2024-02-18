@@ -163,6 +163,8 @@ e.g. LuxAlgo Premium Indicator
 ```
 
 ## Redis Stack 
+[Screencast from 02-18-2024 06:06:26 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/2e26fcde-6fa6-4aa7-8c61-9472f78e54d8)
+
 Currently there are a few channels used by default, here are all that have been implemented.
 
 

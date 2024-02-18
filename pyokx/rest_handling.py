@@ -28,6 +28,8 @@ from pprint import pprint
 from typing import List, Any, Union
 from urllib.error import HTTPError
 
+import requests
+
 from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Return,
                                    Position, Closed_Position, Ticker,
@@ -1818,25 +1820,30 @@ if __name__ == '__main__':
         with open('../tradingview_tools/tradingview_debug_message.json', 'r') as f:
             webhook_payload = json.load(f)
 
-        # Debugging print statement
-        pprint(f'{webhook_payload = }')
-
         # Construct the signal request form
         indicator_input = OKXPremiumIndicatorSignalRequestForm(**webhook_payload)
-        import redis
-
-        # Connect to Redis server
-
-        # Prepare and send a message to a Redis stream for debugging
-        redis_ready_message = serialize_for_redis(indicator_input.model_dump())
 
         # Process the indicator input and store the result
-        response = asyncio.run(okx_premium_indicator_handler(indicator_input))
+        # response = asyncio.run(okx_premium_indicator_handler(indicator_input))
+
+        # Optionally Use a request instead of calling the function directly
+        response = requests.post(
+            # 'http://localhost:8080/tradingview/premium_indicator/', # Local
+            'http://localhost/api/tradingview/premium_indicator', # Docker
+            # 'http://34.170.145.146/api/tradingview/premium_indicator/', # GCP
+            # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
+                                 json=indicator_input.model_dump()
+        )
+
+        print(f'{response.content = }')
+        response = response.json()
+
 
 
     else:
         # Handle invalid test function selection
         raise ValueError(f'Invalid test function {TEST_FUNCTION = }')
+
 
     # Print the final response for debugging
     print(f'{response = }')

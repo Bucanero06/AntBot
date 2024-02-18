@@ -606,17 +606,16 @@ class PremiumIndicatorSignals(OKXBaseModel):
 
     def tradingview_json_payload(self):
         return """{
-        "Buy": {{plot("Buy")}},
-        "Minimal_Buy": {{plot("Minimal Buy")}},
-        "Strong_Buy": {{plot("Strong Buy")}},
-        "Minimal_Strong_Buy": {{plot("Minimal Strong Buy")}},
-        "Exit_Buy": {{plot("Exit Buy")}},
-        "Sell": {{plot("Sell")}},
-        "Minimal_Sell": {{plot("Minimal Sell")}},
-        "Strong_Sell": {{plot("Strong Sell")}},
-        "Minimal_Strong_Sell": {{plot("Minimal Strong Sell")}},
-        "Exit_Sell": {{plot("Exit Sell")}}
+        "Bullish": {{plot("Bullish")}},
+        "Bearish": {{plot("Bearish")}},
+        "Bullish_plus": {{plot("Bullish+")}},
+        "Bearish_plus": {{plot("Bearish+")}},
+        "Bullish_Exit": {{plot("Bullish Exit")}},
+        "Bearish_Exit": {{plot("Bearish Exit")}}
     }"""
+
+
+
 
 class OKXPremiumIndicatorSignalRequestForm(OKXBaseModel):
     InstIdAPIKey: str
@@ -631,7 +630,7 @@ class OKXPremiumIndicatorSignalRequestForm(OKXBaseModel):
         # }"""
         return f"""{{
             "InstIdAPIKey": "{self.InstIdAPIKey}",
-            "OKXSignalInput": {self.OKXSignalInput.json()},
+            "OKXSignalInput": {self.OKXSignalInput.model_dump()},
             "PremiumIndicatorSignals": {self.PremiumIndicatorSignals.tradingview_json_payload()}
         }}"""
 

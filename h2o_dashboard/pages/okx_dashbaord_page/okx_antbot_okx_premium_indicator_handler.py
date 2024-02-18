@@ -132,7 +132,9 @@ class OKX_Premium_Indicator_Handler_Widget:
                                 ui.toggle(
                                     name=f'okx_dashboard_page_okx_premium_indicator_{OKXSignalInput.flip_position_if_opposite_side}',
                                     label='Flip Position If Opposite Side',
-                                    value=True),
+                                    value=True,
+                                    tooltip='This is recommended for automated trading unless you want to keep by default '
+                                            'all orders and positions untouched, unlikely unless market making'),
 
                                 ui.expander(name='okx_dashboard_page_okx_premium_indicator_advanced_expander',
                                             label='Advanced',

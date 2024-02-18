@@ -1649,7 +1649,7 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
     return [FillEntry(**fill) for fill in all_data]
 
 
-async def okx_premium_indicator_handler(indicator_input: OKXPremiumIndicatorSignalRequestForm):
+async def okx_premium_indicator_handler(indicator_input: Union[OKXPremiumIndicatorSignalRequestForm, dict]):
     """
     Handles incoming premium indicator signals for trading on the OKX platform. It processes the signals,
     interprets the trading instructions, manages positions based on the received signals, and executes trading actions.
@@ -1679,14 +1679,15 @@ async def okx_premium_indicator_handler(indicator_input: OKXPremiumIndicatorSign
     specifically designed to handle premium indicator signals (TV), and it includes additional processing
     steps for interpreting the signals and aligning them with the current positions.
     """
+
     if isinstance(indicator_input, OKXPremiumIndicatorSignalRequestForm):
         input_to_pass = indicator_input.model_dump()
     elif isinstance(indicator_input, dict):
         input_to_pass = indicator_input
     else:
         return {"detail": f"Invalid input type {type(indicator_input)}"}
-    indicator_input = OKXPremiumIndicatorSignalRequestForm(**input_to_pass)
 
+    indicator_input = OKXPremiumIndicatorSignalRequestForm(**input_to_pass)
     try:
         pprint(f'{indicator_input.OKXSignalInput = }')
         pprint(f'{indicator_input.PremiumIndicatorSignals = }')
@@ -1698,9 +1699,9 @@ async def okx_premium_indicator_handler(indicator_input: OKXPremiumIndicatorSign
         premium_indicator.Bearish_plus = int(premium_indicator.Bearish_plus)
         premium_indicator.Bullish = int(premium_indicator.Bullish)
         premium_indicator.Bullish_plus = int(premium_indicator.Bullish_plus)
-        premium_indicator.Bearish_Exit = 0 if (premium_indicator.Bearish_Exit == 'null' or 0) else float(
+        premium_indicator.Bearish_Exit = 0 if (premium_indicator.Bearish_Exit in ['null', 0, None]) else float(
             premium_indicator.Bearish_Exit)
-        premium_indicator.Bullish_Exit = 0 if (premium_indicator.Bullish_Exit == 'null' or 0) else float(
+        premium_indicator.Bullish_Exit = 0 if (premium_indicator.Bullish_Exit in ['null', 0, None]) else float(
             premium_indicator.Bullish_Exit)
 
         _order_side = None
@@ -1823,17 +1824,21 @@ if __name__ == '__main__':
         # Construct the signal request form
         indicator_input = OKXPremiumIndicatorSignalRequestForm(**webhook_payload)
 
+        indicator_input.PremiumIndicatorSignals.Bearish_Exit = None
+        indicator_input.PremiumIndicatorSignals.Bullish_Exit = None
+
         # Process the indicator input and store the result
         response = asyncio.run(okx_premium_indicator_handler(indicator_input))
+        exit()
 
         # Optionally Use a request instead of calling the function directly
-        # response = requests.post(
-        #     # 'http://localhost:8080/tradingview/premium_indicator/', # Local
-        #     # 'http://localhost/api/tradingview/premium_indicator', # Docker
-        #     # 'http://34.170.145.146/api/tradingview/premium_indicator', # GCP
-        #     # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
-        #                          json=indicator_input.model_dump()
-        # )
+        response = requests.post(
+            'http://localhost:8080/tradingview/premium_indicator/', # Local
+            # 'http://localhost/api/tradingview/premium_indicator', # Docker
+            # 'http://34.170.145.146/api/tradingview/premium_indicator', # GCP
+            # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
+                                 json=indicator_input.model_dump()
+        )
 
         print(f'{response.content = }')
         response = response.json()

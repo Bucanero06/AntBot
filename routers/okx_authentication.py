@@ -46,16 +46,15 @@ async def check_token_against_instrument(token: str, reference_instID: str,
 
     try:
         reference_instID_ticker = await _validate_instID_and_return_ticker_info(reference_instID)
-        print(f"{reference_instID_ticker = }")
         assert reference_instID_ticker, f'{reference_instID = }'
         reference_instID = reference_instID_ticker.instId
     except AssertionError as e:
         reference_instID = ''
         print(f"AssertionError in check_token_against_instrument: {e}")
 
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
         email: str = payload.get("sub")
         user_id: int = payload.get("id")
         role: str = payload.get("role")
@@ -65,6 +64,8 @@ async def check_token_against_instrument(token: str, reference_instID: str,
 
     except JWTError:
         raise credentials_exception
+
+
 
     assert role == 'trading_instrument', f'role must be "trading_instrument", {role = }'
     assert instID is not None, f'{instID = }'

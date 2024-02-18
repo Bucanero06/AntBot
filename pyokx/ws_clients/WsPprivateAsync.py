@@ -94,6 +94,7 @@ class WsPrivateAsync:
         return True
 
     async def unsubscribe(self, params: list):
+
         payload = json.dumps({
             "op": "unsubscribe",
             "args": params

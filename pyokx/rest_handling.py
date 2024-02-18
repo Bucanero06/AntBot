@@ -1824,16 +1824,16 @@ if __name__ == '__main__':
         indicator_input = OKXPremiumIndicatorSignalRequestForm(**webhook_payload)
 
         # Process the indicator input and store the result
-        # response = asyncio.run(okx_premium_indicator_handler(indicator_input))
+        response = asyncio.run(okx_premium_indicator_handler(indicator_input))
 
         # Optionally Use a request instead of calling the function directly
-        response = requests.post(
-            # 'http://localhost:8080/tradingview/premium_indicator/', # Local
-            'http://localhost/api/tradingview/premium_indicator', # Docker
-            # 'http://34.170.145.146/api/tradingview/premium_indicator/', # GCP
-            # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
-                                 json=indicator_input.model_dump()
-        )
+        # response = requests.post(
+        #     # 'http://localhost:8080/tradingview/premium_indicator/', # Local
+        #     # 'http://localhost/api/tradingview/premium_indicator', # Docker
+        #     # 'http://34.170.145.146/api/tradingview/premium_indicator', # GCP
+        #     # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
+        #                          json=indicator_input.model_dump()
+        # )
 
         print(f'{response.content = }')
         response = response.json()

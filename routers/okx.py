@@ -101,7 +101,7 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
 
 
 @okx_router.post(path="/tradingview/premium_indicator", status_code=status.HTTP_200_OK)
-async def okx_premium_indicator_handler(indicator_input: OKXPremiumIndicatorSignalRequestForm):
+async def okx_premium_indicator_webhook(indicator_input: OKXPremiumIndicatorSignalRequestForm):
     from fastapi import HTTPException
     from starlette import status
     credentials_exception = HTTPException(

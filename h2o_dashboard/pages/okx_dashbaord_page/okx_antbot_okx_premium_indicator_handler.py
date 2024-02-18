@@ -234,8 +234,41 @@ class OKX_Premium_Indicator_Handler_Widget:
                                             name=f'okx_dashboard_page_okx_premium_indicator_{OKXSignalInput.trailing_stop_callback_offset}',
                                             label='Trailing Stop Callback Offset (USD)',
                                             placeholder='float: 0.0 (USD)'),
-                                    ])
-                            ])])
+                                    ]),
+                                ui.expander(name='okx_dashboard_page_okx_premium_indicator_dca_expander',
+                                            label='SINGLE DCA PARAMS (UI-Form not enabled)', items=[
+                                            # DCAInputParameters(
+                                            #         usd_amount=100,
+                                            #         order_type="LIMIT",
+                                            #         order_side="BUY",
+                                            #         trigger_price_offset=100,
+                                            #         execution_price_offset=90,
+                                            #         tp_trigger_price_offset=100,
+                                            #         tp_execution_price_offset=90,
+                                            #         sl_trigger_price_offset=100,
+                                            #         sl_execution_price_offset=90
+                                            #     ),
+                                        ui.textbox(
+                                            name=f'okx_dashboard_page_okx_premium_indicator_{OKXSignalInput.trailing_stop_callback_offset}',
+                                            label="""DCAInputParameters(
+                                                    usd_amount=100,
+                                                    order_type="LIMIT",
+                                                    order_side="BUY",
+                                                    trigger_price_offset=100,
+                                                    execution_price_offset=90,
+                                                    tp_trigger_price_offset=100,
+                                                    tp_execution_price_offset=90,
+                                                    sl_trigger_price_offset=100,
+                                                    sl_execution_price_offset=90
+                                                ),""",
+                                            # placeholder='float: 0.0 (USD)'
+                                        ),
+                                    ]),
+                            ]),
+            ])
+
+
+
 
         output_value = "When ready or in doubt, \n  press the `Validate Input Model` button" if not self.q.client.okx_dashboard_page_okx_signal_input else self.q.client.okx_dashboard_page_okx_signal_input.model_dump()
         output_value = str(output_value) if not isinstance(output_value, dict) else pprint.pformat(output_value,

@@ -17,34 +17,24 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
+import dotenv
+dotenv.load_dotenv(dotenv.find_dotenv())
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+ALGORITHM = os.getenv('ALGORITHM')
+DEFAULT_KEY_EXPIRE_TIME = int(os.getenv('DEFAULT_KEY_EXPIRE_TIME', 3600))
 
 
-# SQLALCHEMY_DATABASE_URL = 'sqlite:///pexon.db'
 
-SECRET_KEY = 'eyJhbGciOiJIUzI1NiJ9eyJSb2xlIjoiQWRtaW4i'
-ALGORITHM = 'HS256'
-DEFAULT_KEY_EXPIRE_TIME = 30
-
-
-# engine = create_engine(SQLALCHEMY_DATABASE_URL,
-#                        connect_args={"check_same_thread": False})
-
-# SessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 Base = declarative_base()
-
-
-# def get_db():
-#     db = SessionLocal()
-#     try:
-#         yield db
-#     finally:
-#         db.close()
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

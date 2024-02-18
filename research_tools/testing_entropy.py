@@ -53,7 +53,7 @@ def evaluate_strategy_performance(strategy_parameters):
     return performance_metrics
 
 
-async def main():
+async def main(): # Pseudo code
     # Fetch historical data
     df = get_historical_data('AAPL')
     df_preprocessed = preprocess_data(df)

@@ -710,7 +710,6 @@ async def clear_orders_and_positions_for_instrument(instId):
     print(f'{cancelled_algo_orders = }')
 
 
-
 async def get_order_book(instId, depth):
     """
     Fetches the order book for a specific instrument.
@@ -738,6 +737,55 @@ async def get_order_book(instId, depth):
         structured_bids.append(Bid(price=bid[0], quantity=bid[1], deprecated_value=bid[2], number_of_orders=bid[3]))
 
     return Orderbook_Snapshot(instId=instId, depth=str(depth), ts=ts, asks=structured_asks, bids=structured_bids)
+
+
+async def place_algo_trailing_stop_loss(
+        instId: str = '',
+        tdMode: str = '',
+        ordType: str = '',
+        side: str = '',
+        sz: str = '',
+        activePx: str = '',
+        posSide: str = '',
+        callbackRatio: str = '',
+        reduceOnly: str = '',
+        algoClOrdId: str = '',
+        cxlOnClosePos: str = ''
+):
+    """
+    Places a trailing stop-loss order with detailed parameters.
+
+    :param instId: The instrument ID for the order.
+    :type instId: str
+    :param tdMode: The trade mode for the order (e.g., 'cash', 'margin').
+    :type tdMode: str
+    ... (and so on for other parameters)
+    :returns: The response from the trailing stop-loss order placement request.
+    """
+    return place_algo_order(
+        instId=instId,
+        tdMode=tdMode,
+        ordType=ordType,
+        side=side,
+        sz=sz,
+        activePx=activePx,
+        posSide=posSide,
+        callbackRatio=callbackRatio,
+        reduceOnly=reduceOnly,
+        algoClOrdId=algoClOrdId,
+        cxlOnClosePos=cxlOnClosePos
+    )
+
+
+async def get_leverage(instId, mgnMode):
+    result = accountAPI.get_leverage(instId=instId, mgnMode=mgnMode)
+    if result["code"] != "0":
+        print("Unsuccessful get_leverage request，\n  error_code = ", result["code"], ", \n  Error_message = ",
+              result["msg"])
+        return []
+    if len(result['data']) != 0:
+        leverage = result['data'][0]['lever']
+        return int(leverage)
 
 
 async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[int, float], side, reference_price: float,
@@ -797,44 +845,6 @@ async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[in
         raise Exception("Could not find a price in the orderbook that has enough volume to cover the quantity")
 
     return round(limit_price, 2)
-
-
-async def place_algo_trailing_stop_loss(
-        instId: str = '',
-        tdMode: str = '',
-        ordType: str = '',
-        side: str = '',
-        sz: str = '',
-        activePx: str = '',
-        posSide: str = '',
-        callbackRatio: str = '',
-        reduceOnly: str = '',
-        algoClOrdId: str = '',
-        cxlOnClosePos: str = ''
-):
-    """
-    Places a trailing stop-loss order with detailed parameters.
-
-    :param instId: The instrument ID for the order.
-    :type instId: str
-    :param tdMode: The trade mode for the order (e.g., 'cash', 'margin').
-    :type tdMode: str
-    ... (and so on for other parameters)
-    :returns: The response from the trailing stop-loss order placement request.
-    """
-    return place_algo_order(
-        instId=instId,
-        tdMode=tdMode,
-        ordType=ordType,
-        side=side,
-        sz=sz,
-        activePx=activePx,
-        posSide=posSide,
-        callbackRatio=callbackRatio,
-        reduceOnly=reduceOnly,
-        algoClOrdId=algoClOrdId,
-        cxlOnClosePos=cxlOnClosePos
-    )
 
 
 async def _validate_instID_and_return_ticker_info(instID):
@@ -1003,17 +1013,6 @@ async def _validate_okx_signal_additional_params(
         'flip_position_if_opposite_side': flip_position_if_opposite_side,
         'clear_prior_to_new_order': clear_prior_to_new_order,
     }
-
-
-async def get_leverage(instId, mgnMode):
-    result = accountAPI.get_leverage(instId=instId, mgnMode=mgnMode)
-    if result["code"] != "0":
-        print("Unsuccessful get_leverage request，\n  error_code = ", result["code"], ", \n  Error_message = ",
-              result["msg"])
-        return []
-    if len(result['data']) != 0:
-        leverage = result['data'][0]['lever']
-        return int(leverage)
 
 
 async def prepare_dca(dca_parameters: List[DCAInputParameters], side: str, reference_price: float,
@@ -1191,16 +1190,65 @@ async def okx_signal_handler(
         dca_parameters: List[DCAInputParameters] = None
 ):
     """
-    Handles trading signals for the OKX platform, executing trades based on the specified parameters and current market conditions.
+    Handles trading signals for the OKX platform, executing trades based on the specified parameters and current
+    market conditions.
 
-    Process Flow:
-    1. Validates and processes input parameters, preparing the trading signal.
-    2. Checks and manages current positions based on new signal, potentially flipping positions or clearing orders as configured.
-    3. Calculates and sets order parameters such as price and size, leveraging current market data and user preferences.
-    4. Executes the trading actions (placing/canceling orders, opening/closing positions) on the OKX platform.
-    5. Fetches and returns an updated status report of the instrument, reflecting the changes made by the executed signal.
+    Overview: 1. Validates and processes input parameters, preparing the trading signal. 2. Checks and manages
+    current positions based on new signal, potentially flipping positions or clearing orders as configured. 3.
+    Calculates and sets order parameters such as price and size, leveraging current market data and user preferences.
+    4. Executes the trading actions (placing/canceling orders, opening/closing positions) on the OKX platform. 5.
+    Fetches and returns an updated status report of the instrument, reflecting the changes made by the executed signal.
 
-    :raises Exception: Catches and logs any exceptions that occur during signal handling, providing detailed error information.
+    Process Flow: The `okx_signal_handler` function is a complex asynchronous function designed to handle trading
+    signals for the OKX platform, covering a wide range of trading strategies and actions. Here is a step-by-step
+    structural and behavioral walkthrough of the main activities within the function, highlighting how it interacts
+    with other helper functions:
+
+        1. **Initialize OKX Signal Input**: It creates an instance of `OKXSignalInput` with all the provided
+        parameters. This step is crucial for collecting all user inputs regarding the trading signal they wish to
+        execute.
+
+        2. **Pre-validation and Setup**: - Validates trading mode (`TD_MODE`) and position type (`POSSIDETYPE`) to
+        ensure they are within acceptable parameters. - If the `red_button` parameter is true, the function triggers
+        emergency actions to close all positions, cancel all orders, and return the status of these actions.
+
+        3. **Validate Parameters**: Calls `validate_okx_signal_params` to validate and process input parameters
+        comprehensively. This includes instrument ID validation, leverage checks, and configuration of additional
+        parameters like order size, type, and various trading strategies (e.g., stop loss, take profit).
+
+        4. **Initial Data Fetching**: Retrieves necessary initial data related to the trading account and the
+        specific instrument being traded. This might include balance details, account configurations, and the current
+        status report of the instrument.
+
+        5. **Set Leverage**: If leverage is specified, it sets the leverage for the trading account according to the
+        provided value.
+
+        6. **Order and Position Management**: - Checks for existing positions and manages them based on the new
+        signal. This includes closing positions, canceling orders, or flipping positions if configured to do so by
+        the user. - If there are no conflicting positions or if the user has opted to clear previous orders and
+        positions, it proceeds to calculate and set new order parameters.
+
+        7. **Order Execution**: - Retrieves current market data (e.g., ticker information) to determine reference
+        prices for order placement. - Calls `prepare_limit_price` to calculate the appropriate limit price for the
+        order based on current market conditions and user specifications. - Constructs and sends order requests,
+        including handling of special order types like take profit, stop loss, and trailing stop losses.
+
+        8. **Dollar-Cost Averaging (DCA) Orders**: - If DCA parameters are provided, it prepares and sends multiple
+        DCA orders based on the specified strategies and market conditions. - Each DCA order is configured with
+        trigger prices, execution prices, and optional stop loss/take profit parameters.
+
+        9. **Final Actions**: - After all trading actions have been attempted, it fetches and returns an updated
+        status report for the instrument, reflecting the changes made by the executed signal. - Handles exceptions
+        and errors throughout the process, ensuring that any issues are caught and logged, with appropriate cleanup
+        actions taken if necessary.
+
+        This function encapsulates a comprehensive set of trading strategies and operations, leveraging asynchronous
+        programming to handle market data fetching, order preparation, and execution in a non-blocking manner. It
+        demonstrates a complex integration of trading logic, error handling, and user input validation to manage
+        trading signals on the OKX platform effectively.
+
+        :raises Exception: Catches and logs any exceptions that occur during signal handling, providing detailed
+        error information.
     """
     okx_signal_input: OKXSignalInput = OKXSignalInput(
         instID=instID,
@@ -1297,8 +1345,6 @@ async def okx_signal_handler(
     position = instrument_status_report.positions[0] if len(
         instrument_status_report.positions) > 0 else None  # we are only using net so only one position
 
-
-
     if order_side and order_size:
         ticker = await get_ticker(instId=instID)
         print(f'{ticker = }')
@@ -1355,7 +1401,7 @@ async def okx_signal_handler(
                                     algo_orders_to_cancel.append(algo_order)
 
                             if orders_to_cancel:
-                                cancel_all_orders(orders_list=orders_to_cancel)
+                                await cancel_all_orders(orders_list=orders_to_cancel)
                                 print(f"Cancelling orders to prep for incoming orders: \n"
                                       f"    {orders_to_cancel = }")
                             if algo_orders_to_cancel:
@@ -1390,6 +1436,7 @@ async def okx_signal_handler(
 
             order_request_dict['px'] = limit_price
 
+        # Todo TP/SL add options for ordertypes other than limit, similar to how TP/SL's for DCA are configured
         if take_profit_activated:
             stop_surplus_trigger_price, stop_surplus_execute_price = calculate_tp_stop_prices_usd(
                 order_side=order_side,
@@ -1651,7 +1698,7 @@ async def okx_premium_indicator_handler(indicator_input: OKXPremiumIndicatorSign
         premium_indicator.Bullish_plus = int(premium_indicator.Bullish_plus)
         premium_indicator.Bearish_Exit = 0 if (premium_indicator.Bearish_Exit == 'null' or 0) else float(
             premium_indicator.Bearish_Exit)
-        premium_indicator.Bullish_Exit = 0 if (premium_indicator.Bullish_Exit == 'null' or 0)else float(
+        premium_indicator.Bullish_Exit = 0 if (premium_indicator.Bullish_Exit == 'null' or 0) else float(
             premium_indicator.Bullish_Exit)
 
         _order_side = None
@@ -1712,7 +1759,7 @@ if __name__ == '__main__':
     dotenv.load_dotenv(dotenv.find_dotenv())
 
     # Define the test function to be used
-    TEST_FUNCTION = 'okx_signal_handler'
+    TEST_FUNCTION = 'okx_premium_indicator'
 
     # Immediately execute the 'red button' functionality to clear all positions and orders
     # TODO: Ensure only relevant orders/positions are handled.
@@ -1768,7 +1815,7 @@ if __name__ == '__main__':
         ))
     elif TEST_FUNCTION == 'okx_premium_indicator':
         # Load a payload from a file for testing the 'okx_premium_indicator'
-        with open('../debugging_payload.json', 'r') as f:
+        with open('../tradingview_tools/tradingview_debug_message.json', 'r') as f:
             webhook_payload = json.load(f)
 
         # Debugging print statement
@@ -1779,21 +1826,14 @@ if __name__ == '__main__':
         import redis
 
         # Connect to Redis server
-        r = redis.Redis(host='localhost', port=6379, db=0)
 
         # Prepare and send a message to a Redis stream for debugging
         redis_ready_message = serialize_for_redis(indicator_input.model_dump())
-        r.xadd(f'okx:webhook@premium_indicator@input', fields=redis_ready_message, maxlen=REDIS_STREAM_MAX_LEN)
 
         # Process the indicator input and store the result
-        result = okx_premium_indicator_handler(indicator_input)
+        response = asyncio.run(okx_premium_indicator_handler(indicator_input))
 
-        # Get the response from the 'okx_premium_indicator' function
-        response = okx_premium_indicator_handler(webhook_payload)
-        if isinstance(result, dict):
-            # Send the result to a Redis stream for debugging
-            r.xadd(f'okx:webhook@premium_indicator@result', fields=serialize_for_redis(result),
-                   maxlen=REDIS_STREAM_MAX_LEN)
+
     else:
         # Handle invalid test function selection
         raise ValueError(f'Invalid test function {TEST_FUNCTION = }')

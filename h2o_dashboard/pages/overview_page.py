@@ -83,7 +83,6 @@ async def overview_page(q: Q):
 
     await add_tradingview_advanced_chart(q, card_name='Overview_Page_TradingView_Advanced_Chart', box='grid_1')
 
-
     '''Init Widgets'''
     overview_widget = Overview_StreamWidget(q=q, card_name='grid_2', box='grid_2', count=2)
 
@@ -109,28 +108,16 @@ async def overview_page(q: Q):
                 print("Adding Overview card")
                 await overview_widget.add_cards()
 
-
-
             '''Ping Services and Update UI Component'''
             try:
-                # Request health check at
-                rest_handling_check = requests.request(
-                    'GET',
-                    'http://localhost:8080/health'
-                )
-                websocket_handling_check = requests.request(
-                    'GET',
-                    'http://localhost:8081/health'
-                )
-                nginx_handling_check = requests.request(
-                    'GET',
-                    'http://localhost:8081/health'
+
+                rest_handling_check, websocket_handling_check = await asyncio.gather(
+                    q.run(requests.request, 'GET', 'http://localhost:8080/health'),
+                    q.run(requests.request, 'GET', 'http://localhost:8081/health'),
                 )
 
                 header_card.subtitle = f'Rest Service Ping: {rest_handling_check.text}\n' \
-                                                                  f'Websockets Service Ping: {websocket_handling_check.text}\n ' \
-                                                                  f'Nginx Service Ping: {nginx_handling_check.text}\n'
-
+                                       f'Websockets Service Ping: {websocket_handling_check.text}\n '
 
             except Exception as e:
                 print(f'{e = }')

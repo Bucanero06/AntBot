@@ -46,6 +46,7 @@ async def check_token_against_instrument(token: str, reference_instID: str,
 
     try:
         reference_instID_ticker = await _validate_instID_and_return_ticker_info(reference_instID)
+        print(f"{reference_instID_ticker = }")
         assert reference_instID_ticker, f'{reference_instID = }'
         reference_instID = reference_instID_ticker.instId
     except AssertionError as e:

@@ -23,7 +23,6 @@ from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
 from h2o_dashboard.util import add_card
 from h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler import OKX_Premium_Indicator_Handler_Widget
-from h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_signal_handler import OKX_Signal_Handler_Widget
 from h2o_dashboard.pages.okx_streams import OKX_Account_StreamWidget, OKX_Positions_StreamWidget, \
     OKX_Fill_Report_StreamWidget
 
@@ -47,14 +46,12 @@ async def okx_dashboard_page(q: Q):
     fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_2',
                                                              count=1)
 
-    okx_signal_handler_widget = OKX_Signal_Handler_Widget(q=q, card_name='OKXDEBUG_Manual_Controls', box='grid_3')
     okx_premium_indicator_handler_widget = OKX_Premium_Indicator_Handler_Widget(q=q,
                                                                                 card_name='OKXDEBUG_Premium_Manual_Controls',
                                                                                 box='grid_4')
 
     '''Init RealTime Page Cards'''
     await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget,
-                         okx_signal_handler_widget,
                          okx_premium_indicator_handler_widget)
     await q.page.save()
 
@@ -65,7 +62,6 @@ async def okx_dashboard_page(q: Q):
                 break
             await asyncio.sleep(1)
             await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget,
-                                 okx_signal_handler_widget,
                                  okx_premium_indicator_handler_widget)
             await q.page.save()
     except asyncio.CancelledError:
@@ -80,7 +76,6 @@ async def okx_dashboard_page(q: Q):
 async def add_page_cards(q: Q, account_stream_widget: OKX_Account_StreamWidget,
                          positions_stream_widget: OKX_Positions_StreamWidget,
                          fill_report_stream_widget: OKX_Fill_Report_StreamWidget,
-                         oks_signal_handler_widget: OKX_Signal_Handler_Widget,
 okx_premium_indicator_handler_widget: OKX_Premium_Indicator_Handler_Widget
                          ):
     '''Account Stream Metrics'''
@@ -107,13 +102,6 @@ okx_premium_indicator_handler_widget: OKX_Premium_Indicator_Handler_Widget
         print("Adding Fills Report Stream Metrics card")
         await fill_report_stream_widget.add_cards()
 
-    # if await oks_signal_handler_widget._is_initialized():
-    #     print("Updating Manual Controls card")
-    #
-    #     await oks_signal_handler_widget.update_cards()
-    # else:
-    #     print("Adding Manual Controls card")
-    #     await oks_signal_handler_widget.add_cards()
 
     if await okx_premium_indicator_handler_widget._is_initialized():
         print("Updating Premium Manual Controls card")

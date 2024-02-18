@@ -1432,7 +1432,7 @@ async def okx_signal_handler(
 
         if order_type != 'market':
             order_book = await get_order_book(instID, 400)
-            limit_price = prepare_limit_price(order_book, order_size, order_side, reference_price,
+            limit_price = await prepare_limit_price(order_book, order_size, order_side, reference_price,
                                               max_orderbook_price_offset=max_orderbook_limit_price_offset)
             print(f'Setting New Target Limit Price to {limit_price = }')
 

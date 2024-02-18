@@ -261,7 +261,7 @@ async def render_hidden_content(q: Q):
             await add_application_sidebar(q)
             await q.page.save()
             q.client.overview_page_running_event.set()
-            q.client.overview_page_task = asyncio.create_task(overview_page(q))
+            q.client.overview_page_task = asyncio.create_task(overview_page(q,update_seconds=1))
         await q.page.save()
 
     elif q.args['#'] == 'okx_dashboard_page':
@@ -273,7 +273,7 @@ async def render_hidden_content(q: Q):
             await add_application_sidebar(q)
             await q.page.save()
             q.client.okx_dashboard_page_running_event.set()
-            q.client.okx_dashboard_page_task = asyncio.create_task(okx_dashboard_page(q))
+            q.client.okx_dashboard_page_task = asyncio.create_task(okx_dashboard_page(q, update_seconds=1))
         await q.page.save()
     elif q.args['#'] == 'documentation_page':
         print("Route to Documentation Page")

@@ -1,9 +1,6 @@
 FROM python:3.10
 
-COPY . .
-#RUN pip install -r requirements.txt
-#RUN pip install --upgrade h2o-wave
-
+WORKDIR /app
 
 # Update and Upgrade the base image
 RUN apt-get update && apt-get upgrade -y && apt-get clean

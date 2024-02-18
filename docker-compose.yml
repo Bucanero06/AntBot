@@ -77,15 +77,16 @@ services:
 
   redis:
     image: redis/redis-stack:latest
-    command: redis-server --requirepass ${REDIS_SERVICE_PASSWORD} -
+#    command: redis-server --requirepass ${REDIS_SERVICE_PASSWORD} --port ${REDIS_SERVICE_PORT}
+
     ports:
       - ${REDIS_SERVICE_PORT}:${REDIS_SERVICE_PORT}
       - 8001:8001
+    environment:
+      REDIS_ARGS: --requirepass ${REDIS_SERVICE_PASSWORD} --port ${REDIS_SERVICE_PORT}
     restart: unless-stopped
     networks:
       - my-network
-    environment:
-      - REDIS_MASTER_PORT_NUMBER=${REDIS_SERVICE_PORT}
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s

@@ -23,6 +23,17 @@ from enum import Enum
 import redis
 from pydantic import BaseModel
 
+import dotenv
+import os
+
+from redis_tools.config import RedisConfig
+
+dotenv.load_dotenv(dotenv.find_dotenv())
+
+REDIS_SERVICE_PORT = int(os.getenv('REDIS_SERVICE_PORT', 6379))
+REDIS_SERVICE_DB = int(os.getenv('REDIS_SERVICE_DB', 0))
+REDIS_SERVICE_PASSWORD = os.getenv('REDIS_SERVICE_PASSWORD', None)
+
 
 def _serialize_for_redis(data):
     if isinstance(data, Enum):
@@ -75,15 +86,27 @@ async def connect_to_aioredis():
     async_redis = None
 
     # Define possible Redis hosts and ports
-    local_redis = ('localhost', 6379)
-    docker_redis = ('redis', 6379)
+    local_redis = ('localhost', REDIS_SERVICE_PORT)
+    docker_redis = ('redis', REDIS_SERVICE_PORT)
     # Add more tuples (host, port) for other scenarios
 
     redis_options = [local_redis, docker_redis]  # Add more options as needed
 
     for host, port in redis_options:
         try:
-            async_redis = aioredis.from_url(f"redis://{host}:{port}", decode_responses=True)
+            #     encoding: Optional[str] = "utf-8"
+            redis_config = RedisConfig(
+                host=host,
+                port=port,
+                db=REDIS_SERVICE_DB,
+                password=REDIS_SERVICE_PASSWORD,
+                ssl=False,
+                encoding="utf-8"
+            )
+            print(f"{redis_config.redis_url = }")
+
+            # async_redis = aioredis.from_url(f"redis://{host}:{port}", decode_responses=True)
+            async_redis = aioredis.from_url(redis_config.redis_url, decode_responses=True)
             await async_redis.ping()
             print(f"Connected to Redis at {host}:{port}")
             return async_redis  # Return as soon as a successful connection is made

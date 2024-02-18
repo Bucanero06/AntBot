@@ -29,7 +29,7 @@ from h2o_dashboard.pages.okx_streams import OKX_Account_StreamWidget, OKX_Positi
 app = AsyncSite()
 
 
-async def okx_dashboard_page(q: Q):
+async def okx_dashboard_page(q: Q,update_seconds: int = 2):
     '''Header'''
     await add_card(q, 'OKXDEBUG_Header', ui.header_card(box='header', title='OKX Dashboard', subtitle='DevPage',
                                                         # Color
@@ -60,7 +60,7 @@ async def okx_dashboard_page(q: Q):
             if not q.client.okx_dashboard_page_running_event.is_set():
                 print("Breaking OKX Dashboard Page Loop")
                 break
-            await asyncio.sleep(1)
+            await asyncio.sleep(update_seconds)
             await add_page_cards(q, account_stream_widget, positions_stream_widget, fill_report_stream_widget,
                                  okx_premium_indicator_handler_widget)
             await q.page.save()

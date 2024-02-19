@@ -28,8 +28,6 @@ from pprint import pprint
 from typing import List, Any, Union
 from urllib.error import HTTPError
 
-import requests
-
 from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Return,
                                    Position, Closed_Position, Ticker,
@@ -42,7 +40,7 @@ from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Retur
                                    DCAOrderParameters)
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
-from redis_tools.utils import init_async_redis, serialize_for_redis
+from redis_tools.utils import init_async_redis
 from shared import logging
 from shared.tmp_shared import calculate_tp_stop_prices_usd, calculate_sl_stop_prices_usd, ccy_usd_to_contracts
 
@@ -1080,22 +1078,24 @@ async def validate_okx_signal_params(
     _main_order_flag = okx_signal.usd_order_size and okx_signal.order_side
 
     if _main_order_flag or okx_signal.dca_parameters:
-        usd_to_base_rate = 1
+        ctValCcy = instId_info.ctValCcy
         min_order_quantity = int(instId_info.minSz)  # contracts
         max_market_order_quantity = int(instId_info.maxMktSz)  # contracts
-        ccy_contract_size = float(instId_info.ctVal)
+        ctval_contract_size = float(instId_info.ctVal)
         instId_ticker: Ticker = await get_ticker(instId=instId_info.instId)
         assert instId_ticker, f'Could not fetch ticker for {instId_info.instId = }'
         ccy_last_price = float(instId_ticker.last)
         leverage = validated_additional_params.get('leverage') or await get_leverage(instId=instId_info.instId,
                                                                                      mgnMode='isolated')
 
+        usd_to_base_rate = 1  # TODO use the USD to USDT and USDC ratio but 1 is close enough
+
         if okx_signal.dca_parameters:
             dca_parameters: [DCAOrderParameters] = await prepare_dca(
                 dca_parameters=okx_signal.dca_parameters,
                 side=validated_order_params.get('order_side'),
                 reference_price=ccy_last_price,
-                ccy_contract_size=ccy_contract_size, ccy_last_price=ccy_last_price,
+                ccy_contract_size=ctval_contract_size, ccy_last_price=ccy_last_price,
                 usd_to_base_rate=usd_to_base_rate, leverage=leverage,
                 min_order_quantity=min_order_quantity,
                 max_market_order_quantity=max_market_order_quantity)
@@ -1103,12 +1103,11 @@ async def validate_okx_signal_params(
     if _main_order_flag:
 
         usd_amount = float(okx_signal.usd_order_size)
-
-        # convert USD to order size (contracts)
-        order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount, ccy_contract_size=ccy_contract_size,
+        order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount, ccy_contract_size=ctval_contract_size,
                                                ccy_last_price=ccy_last_price, minimum_contract_size=min_order_quantity,
                                                max_market_contract_size=max_market_order_quantity,
-                                               usd_base_ratio=usd_to_base_rate, leverage=leverage)
+                                               usd_base_ratio=usd_to_base_rate, leverage=leverage,
+                                               ctValCcy=ctValCcy)
         print(f"Number of contracts you can buy: {order_contracts} {instId_info.instId}")
 
         # Convert these into trailing_stop_callback_offset to trailing_stop_callback_ratio
@@ -1433,7 +1432,7 @@ async def okx_signal_handler(
         if order_type != 'market':
             order_book = await get_order_book(instID, 400)
             limit_price = await prepare_limit_price(order_book, order_size, order_side, reference_price,
-                                              max_orderbook_price_offset=max_orderbook_limit_price_offset)
+                                                    max_orderbook_price_offset=max_orderbook_limit_price_offset)
             print(f'Setting New Target Limit Price to {limit_price = }')
 
             order_request_dict['px'] = limit_price
@@ -1824,31 +1823,26 @@ if __name__ == '__main__':
         # Construct the signal request form
         indicator_input = OKXPremiumIndicatorSignalRequestForm(**webhook_payload)
 
-        indicator_input.PremiumIndicatorSignals.Bearish_Exit = None
-        indicator_input.PremiumIndicatorSignals.Bullish_Exit = None
 
         # Process the indicator input and store the result
         response = asyncio.run(okx_premium_indicator_handler(indicator_input))
-        exit()
 
-        # Optionally Use a request instead of calling the function directly
-        response = requests.post(
-            'http://localhost:8080/tradingview/premium_indicator/', # Local
-            # 'http://localhost/api/tradingview/premium_indicator', # Docker
-            # 'http://34.170.145.146/api/tradingview/premium_indicator', # GCP
-            # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
-                                 json=indicator_input.model_dump()
-        )
-
-        print(f'{response.content = }')
-        response = response.json()
+        # # Optionally Use a request instead of calling the function directly
+        # response = requests.post(
+        #     'http://localhost:8080/tradingview/premium_indicator/', # Local
+        #     # 'http://localhost/api/tradingview/premium_indicator', # Docker
+        #     # 'http://34.170.145.146/api/tradingview/premium_indicator', # GCP
+        #     # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
+        #                          json=indicator_input.model_dump()
+        # )
+        # print(f'{response.content = }')
+        # response = response.json()
 
 
 
     else:
         # Handle invalid test function selection
         raise ValueError(f'Invalid test function {TEST_FUNCTION = }')
-
 
     # Print the final response for debugging
     print(f'{response = }')

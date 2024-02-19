@@ -1,13 +1,13 @@
 {
   "InstIdAPIKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJydWJlbkBjYXJib255bC5vcmciLCJpZCI6IjN6WGJxVkw3MjBjaTlPY0h6UUtZRXd0T284SDMiLCJyb2xlIjoidHJhZGluZ19pbnN0cnVtZW50IiwiaW5zdElEIjoiQlRDLVVTRC0yNDAzMjkifQ.btubMctBm5NG87DUTvbkaSPwZIOKGcjI4Dv701U1pOU",
   "OKXSignalInput": {
-    "instID": "BTC-USD-240329",
+    "instID": "BTC-USDT-240329",
     "usd_order_size": 100.0,
     "leverage": 5,
     "order_side": "",
     "order_type": "LIMIT",
     "max_orderbook_limit_price_offset": 0.0,
-    "flip_position_if_opposite_side": false,
+    "flip_position_if_opposite_side": true,
     "clear_prior_to_new_order": false,
     "red_button": false,
     "tp_trigger_price_type": "",

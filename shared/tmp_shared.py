@@ -30,34 +30,45 @@ def ccy_contracts_to_usd(contracts_amount, ccy_contract_size, ccy_last_price, us
         leverage = 10  # example leverage
         return total_cost_usd / leverage
 
-
+#TODO TEST THE CONVERSIONS
+# Getting error:
+#     url: /api/v5/market/ticker?instId=BTC-USDT-240329
+#     antbot-okx_rest-1  | {'error': 'USD equivalent of 100.0 is too much to buy the \n'
+#     antbot-okx_rest-1  |           'maximum quantity of 3000 contracts for 0.01 at \n'
+#     antbot-okx_rest-1  |           '53163.7 with 5 leverage. The maximum cost is 6.0 USDT'}
+# The starting boundries will be around the validate_okx_signal_params function in the rest_handling.py file
 def ccy_usd_to_contracts(usd_equivalent, ccy_contract_size, ccy_last_price,
                          minimum_contract_size,
                          max_market_contract_size,
                          usd_base_ratio, leverage=None, ctValCcy='USD'):
 
-    if ctValCcy != 'USD':
-        cost_of_one_contract_usdt = ccy_contract_size * ccy_last_price
-        base_equivalent = usd_equivalent * usd_base_ratio
-    else:
-        cost_of_one_contract_usdt = ccy_contract_size
+    if ctValCcy == 'USD':
+        cost_of_one_contract_in_usd = ccy_contract_size
         base_equivalent = usd_equivalent
+    else:
+        cost_of_one_contract_in_usd = ccy_contract_size * ccy_last_price
+        base_equivalent = usd_equivalent * usd_base_ratio
 
     if leverage:
-        cost_of_one_contract_usdt = cost_of_one_contract_usdt / leverage
+        leveraged_cost_of_one_contract_usd = cost_of_one_contract_in_usd / leverage
     else:
         leverage = 1
 
-    max_contracts = base_equivalent / cost_of_one_contract_usdt
+
+    print(f"Cost of one contract in USD: {cost_of_one_contract_in_usd}")
+    print(f"Cost of one contract in USD with leverage: {leveraged_cost_of_one_contract_usd}")
+    print(f"Base equivalent: {base_equivalent}")
+
+    max_contracts = base_equivalent / leveraged_cost_of_one_contract_usd
     max_contracts = int(max_contracts)  # round down to the nearest whole number
     # Raise error if max_contracts is less than min_order_quantity or greater than max_market_order_quantity
     if max_contracts < minimum_contract_size:
-        minimum_cost = minimum_contract_size * cost_of_one_contract_usdt
+        minimum_cost = minimum_contract_size * leveraged_cost_of_one_contract_usd
         raise ValueError(f"USD equivalent of {usd_equivalent} is not enough to buy the \n"
                          f"minimum quantity of {minimum_contract_size} contracts for {ccy_contract_size} at \n"
                          f"{ccy_last_price} with {leverage} leverage. The minimum cost is {minimum_cost} USDT")
     if max_contracts > max_market_contract_size:
-        max_cost = max_market_contract_size * cost_of_one_contract_usdt
+        max_cost = max_market_contract_size * leveraged_cost_of_one_contract_usd
         raise ValueError(f"USD equivalent of {usd_equivalent} is too much to buy the \n"
                          f"maximum quantity of {max_market_contract_size} contracts for {ccy_contract_size} at \n"
                          f"{ccy_last_price} with {leverage} leverage. The maximum cost is "

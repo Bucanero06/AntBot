@@ -1,22 +1,4 @@
-# Copyright (c) 2024 Carbonyl LLC & Carbonyl R&D
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+
 import asyncio
 import json
 import os
@@ -27,6 +9,8 @@ import time
 from pprint import pprint
 from typing import List, Any, Union
 from urllib.error import HTTPError
+
+import requests
 
 from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Return,
@@ -1637,6 +1621,9 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
                     await asyncio.sleep(2 - elapsed)
                 start_time = time.time()
 
+            await asyncio.sleep(2)  # FIXME Here to prevent hogging the CPU remove this line
+
+
 
         except HTTPError as http_err:
             logger.error(f'HTTP error occurred: {http_err}')
@@ -1825,18 +1812,18 @@ if __name__ == '__main__':
 
 
         # Process the indicator input and store the result
-        response = asyncio.run(okx_premium_indicator_handler(indicator_input))
+        # response = asyncio.run(okx_premium_indicator_handler(indicator_input))
 
-        # # Optionally Use a request instead of calling the function directly
-        # response = requests.post(
-        #     'http://localhost:8080/tradingview/premium_indicator/', # Local
-        #     # 'http://localhost/api/tradingview/premium_indicator', # Docker
-        #     # 'http://34.170.145.146/api/tradingview/premium_indicator', # GCP
-        #     # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
-        #                          json=indicator_input.model_dump()
-        # )
-        # print(f'{response.content = }')
-        # response = response.json()
+        # Optionally Use a request instead of calling the function directly
+        response = requests.post(
+            # 'http://localhost:8080/tradingview/premium_indicator/', # Local
+            # 'http://localhost/api/tradingview/premium_indicator', # Docker
+            'http://34.170.145.146/api/tradingview/premium_indicator', # GCP
+            # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
+                                 json=indicator_input.model_dump()
+        )
+        print(f'{response.content = }')
+        response = response.json()
 
 
 

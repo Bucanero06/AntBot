@@ -1,22 +1,4 @@
-# Copyright (c) 2024 Carbonyl LLC & Carbonyl R&D
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+
 import asyncio
 import os
 import threading
@@ -86,8 +68,24 @@ async def startup_event():
     async_redis = await init_async_redis()
     assert async_redis, "async_redis is None, check the connection to the Redis server"
 
-    websocket_thread = threading.Thread(target=start_websocket_task_loop)
-    websocket_thread.start()
+    # websocket_thread = threading.Thread(target=start_websocket_task_loop)
+    # websocket_thread.start()
+    websocket_task = asyncio.create_task(okx_websockets_main_run(input_channel_models=[
+        ### Private Channels
+        AccountChannelInputArgs(channel="account", ccy=None,
+                                extraParams="{"
+                                            "\"updateInterval\": \"1\""
+                                            "}"),
+        PositionsChannelInputArgs(channel="positions", instType="ANY", instFamily=None, instId=None,
+                                  extraParams="{"
+                                              "\"updateInterval\": \"1\""
+                                              "}"),
+        BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
+        OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None, instId=None)
+    ], apikey=os.getenv('OKX_API_KEY'), passphrase=os.getenv('OKX_PASSPHRASE'),
+        secretkey=os.getenv('OKX_SECRET_KEY'), sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
+        redis_store=True
+    ))
     rest_task = asyncio.create_task(okx_rest_messages_services(reload_interval=30))
 
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus

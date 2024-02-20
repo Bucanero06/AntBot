@@ -19,11 +19,11 @@ async def documentation_page(q: Q):
                                   icon_color=None,
                                   ))
 
-    await add_card(q, 'Documentation_Page_FASTAPIDOCS', ui.form_card(box='grid_1', items=[
-        ui.frame(content="""<iframe src="http://localhost:8080/docs" width="100%" height="100%"></iframe>""",
-                 height="500px",
-                 width="100%")
-    ]))
+    # await add_card(q, 'Documentation_Page_FASTAPIDOCS', ui.form_card(box='grid_1', items=[
+    #     ui.frame(content="""<iframe src="http://localhost:8080/docs" width="100%" height="100%"></iframe>""",
+    #              height="500px",
+    #              width="100%")
+    # ]))
 
     # embed https://bucanero06.github.io/AntBot
     await add_card(q, 'Documentation_Page_Documentation', ui.markdown_card(box='grid_2', title='Documentation',

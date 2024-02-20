@@ -10,7 +10,7 @@ robust technological stack.
 - **Document Title:** AntBot Project Synopsis Documentation
 - **Visual Reference:**
 
-[Screencast from 02-07-2024 01:06:45 AM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/d47830d0-bd6c-4718-bb3e-ecce9da40ffe)
+[Screencast from 02-19-2024 07:16:27 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/177c7bd3-46c8-4cd1-9a02-ff0e9ced38e8)
 
 ## Deployment Guidelines
 
@@ -80,6 +80,7 @@ dashboard
 ```yaml
 port 10101 or behind a reverse proxy (e.g. Nginx) on port 80
 ```
+[Screencast from 02-07-2024 01:06:45 AM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/d47830d0-bd6c-4718-bb3e-ecce9da40ffe)
 
 okx_signal_handler:
 ```yaml
@@ -252,10 +253,10 @@ e.g. LuxAlgo Premium Indicator
     v   - Set "Webhook URL" to your Hosted app URL (e.g. http://your-app-ip:your-port/yourtvendpoint)
             make sure to select the Webhook URL check box so that the alert is sent using the Webhook
     vi  - Name Alert Name (e.g. "LuxAlgo Premium") to something that is easy to identify in the logs
-    vii - Add the Message as found in the json payload examples below, you can customize the message to your liking
+    vii - Add the Message as found in the JSON payload examples below, you can customize the message to your liking
     viii - Create Alert - Congratulations you just set up your first TradingView Strategy Alert Webhook!
             if you want other conditions to trigger alerts, repeat steps i-viii since LuxAlgo Premium Indicator
-            does not allow for custom webhooks  explicitely but you easily adjusted. This application is designed to be used with the LuxAlgo Premium Indicator
+            does not allow for custom webhooks  explicitly but you easily adjust. This application is designed to be used with the LuxAlgo Premium Indicator
             but can be used with any TradingView Strategy Alert Webhook that is sent in the correct format.
             See the TradingView Webhook Documentation for more information on how to create a custom webhook and notify
             the bot of your custom webhook format for entries and exits. *TODO: See the "Expanding the Bot" section in this 
@@ -266,7 +267,7 @@ e.g. LuxAlgo Premium Indicator
 
 This project is for informational purposes only. You should not construe this information or any other material as
 legal, tax, investment, financial or other advice. Nothing contained herein constitutes a solicitation, recommendation,
-endorsement or offer by us or any third party provider to buy or sell any securities or other financial instruments in
+endorsement or offer by us or any third-party provider to buy or sell any securities or other financial instruments in
 this or any other jurisdiction in which such solicitation or offer would be unlawful under the securities laws of such
 jurisdiction.
 
@@ -277,3 +278,6 @@ of any kind, including but not limited to direct or indirect damages for loss of
 
 For further elaboration or specific details, please proceed to the codebase documentation or refer to the official
 documentation of each integrated component or library.
+
+## Contact US
+Reach out to us if you would like to contribute to help maintain this project, monitary assistance can be provided to contributors that can bring valuable changes and additions, from meaningful features and task completions to documentation and testing. If you are interested in using AntBot yourself and have questions please reach out to me directly at `ruben@carbonyl.org`

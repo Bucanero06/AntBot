@@ -1,0 +1,11 @@
+h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler
+===============================================================================
+
+.. automodule:: h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler
+    :parts: 1
+

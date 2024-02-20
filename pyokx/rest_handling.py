@@ -2,11 +2,11 @@
 import asyncio
 import json
 import os
+import pprint
 import random
 import re
 import string
 import time
-from pprint import pprint
 from typing import List, Any, Union
 from urllib.error import HTTPError
 
@@ -826,7 +826,12 @@ async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[in
                 )
 
     if limit_price is None:
-        raise Exception("Could not find a price in the orderbook that has enough volume to cover the quantity")
+        print(f"{order_book = }")
+        print(f"{quantity = }")
+        print(f"{side = }")
+        print(f"{reference_price = }")
+        print(f"{max_orderbook_price_offset = }")
+        raise Exception(f"Could not find a price in the orderbook that has enough volume to cover the quantity")
 
     return round(limit_price, 2)
 
@@ -1092,13 +1097,13 @@ async def validate_okx_signal_params(
                                                max_market_contract_size=max_market_order_quantity,
                                                usd_base_ratio=usd_to_base_rate, leverage=leverage,
                                                ctValCcy=ctValCcy)
-        print(f"Number of contracts you can buy: {order_contracts} {instId_info.instId}")
+        logger.info(f"Number of contracts you can buy: {order_contracts} {instId_info.instId}")
 
         # Convert these into trailing_stop_callback_offset to trailing_stop_callback_ratio
         if okx_signal.trailing_stop_callback_offset:
             trailing_stop_callback_offset = float(okx_signal.trailing_stop_callback_offset)
             trailing_stop_callback_ratio = trailing_stop_callback_offset / ccy_last_price
-            print(f'{trailing_stop_callback_ratio = }')
+
             # Min is 0,001 and max is 1
             if trailing_stop_callback_ratio < 0.001:
                 trailing_stop_callback_ratio = 0.001
@@ -1267,12 +1272,12 @@ async def okx_signal_handler(
         all_positions = await get_all_positions()
         all_orders = await get_all_orders()
         all_algo_orders = await get_all_algo_orders()
-        print(f'{all_closed_positions = }')
-        print(f'{all_cancelled_orders = }')
-        print(f'{all_cancelled_algo_orders = }')
-        print(f'{all_positions = }')
-        print(f'{all_orders = }')
-        print(f'{all_algo_orders = }')
+        logger.info(f'{all_closed_positions = }')
+        logger.info(f'{all_cancelled_orders = }')
+        logger.info(f'{all_cancelled_algo_orders = }')
+        logger.info(f'{all_positions = }')
+        logger.info(f'{all_orders = }')
+        logger.info(f'{all_algo_orders = }')
         return {'red_button': 'ok',
                 'all_closed_positions': all_closed_positions,
                 'all_cancelled_orders': all_cancelled_orders,
@@ -1332,7 +1337,6 @@ async def okx_signal_handler(
 
     if order_side and order_size:
         ticker = await get_ticker(instId=instID)
-        print(f'{ticker = }')
         ask_price = float(ticker.askPx) if ticker.askPx else ticker.bidPx  # fixme sometimes okx returns '' for askPx
         bid_price = float(ticker.bidPx)
         reference_price = ask_price if order_side == 'buy' else bid_price
@@ -1340,24 +1344,25 @@ async def okx_signal_handler(
             position_side = 'buy' if float(position.pos) > 0 else 'sell' if float(
                 position.pos) < 0 else None  # we are only using net so only one position
             if position_side is None:
-                print(f'Closing all positions for {instID = } due to 0 net position')
-                await close_all_positions(instId=instID)
-                await cancel_all_algo_orders_with_params(instId=instID)
-                await cancel_all_orders(instId=instID)
+                # logger.info(f'Closing all positions for {instID = } due to 0 net position')
+                # await close_all_positions(instId=instID)
+                # await cancel_all_algo_orders_with_params(instId=instID)
+                # await cancel_all_orders(instId=instID)
+                pass # this is not a problem and the position is net 0
             elif order_side and position_side != order_side:
                 if flip_position_if_opposite_side:
-                    print(f'Flipping position from {position_side = } to {order_side = }')
+                    logger.info(f'Flipping position from {position_side = } to {order_side = }')
                     await close_all_positions(instId=instID)
-                    print(f'Closed all positions for {instID = }')
+                    logger.info(f'Closed all positions for {instID = }')
 
                     cancelled_orders = await cancel_all_orders(instId=instID)
-                    print(f"Cancelling orders to flip position: \n"
+                    logger.info(f"Cancelling orders to flip position: \n"
                           f"    {cancelled_orders = }")
                     cancelled_algo_orders = await cancel_all_algo_orders_with_params(instId=instID)
-                    print(f"Cancelling Algo orders to flip position: \n"
+                    logger.info(f"Cancelling Algo orders to flip position: \n"
                           f"    {cancelled_algo_orders = }")
                 else:
-                    print(f'Closing all positions for {instID = } due to {position_side = }')
+                    logger.info(f'Closing all positions for {instID = } due to {position_side = } and {order_side = }')
                     agg_pos = float(position.pos) + order_size
                     if agg_pos > 0:
                         dominant_pos_side = 'buy'
@@ -1367,7 +1372,6 @@ async def okx_signal_handler(
                         dominant_pos_side = None
 
                     if dominant_pos_side is not None:
-                        print(f'{dominant_pos_side = }')
                         if dominant_pos_side != order_side:
                             # This means that the future to be position net direction is not the same as the order side
                             # thus we need to cancel all orders that are not on the dominant side
@@ -1387,21 +1391,22 @@ async def okx_signal_handler(
 
                             if orders_to_cancel:
                                 await cancel_all_orders(orders_list=orders_to_cancel)
-                                print(f"Cancelling orders to prep for incoming orders: \n"
+                                logger.info(f"Cancelling orders to prep for incoming orders: \n"
                                       f"    {orders_to_cancel = }")
                             if algo_orders_to_cancel:
-                                print(f'{algo_orders_to_cancel = }')
+                                logger.info(f'{algo_orders_to_cancel = }')
                                 cancelled_algo_orders = cancel_all_algo_orders_with_params(
                                     algo_orders_list=algo_orders_to_cancel)
-                                print(f"Cancelling Algo orders to prep for incoming orders: \n"
+                                logger.info(f"Cancelling Algo orders to prep for incoming orders: \n"
                                       f"    {cancelled_algo_orders = }")
 
                     else:
-                        print(f'The new position will result in a net 0 after the incoming orders'
-                              f' {position_side = } and the order side is {order_side = }'
-                              f' with {position.pos = } and {order_size = }')
-                        await cancel_all_orders(instId=instID)
-                        await cancel_all_algo_orders_with_params(instId=instID)
+                        # logger.info(f'The new position will result in a net 0 after the incoming orders'
+                        #       f' {position_side = } and the order side is {order_side = }'
+                        #       f' with {position.pos = } and {order_size = }')
+                        # await cancel_all_orders(instId=instID)
+                        # await cancel_all_algo_orders_with_params(instId=instID)
+                        pass # this is not a problem and the position is net 0
 
         order_request_dict = dict(
             instId=instID,
@@ -1415,11 +1420,14 @@ async def okx_signal_handler(
 
         if order_type != 'market':
             order_book = await get_order_book(instID, 400)
-            limit_price = await prepare_limit_price(order_book, order_size, order_side, reference_price,
-                                                    max_orderbook_price_offset=max_orderbook_limit_price_offset)
-            print(f'Setting New Target Limit Price to {limit_price = }')
-
-            order_request_dict['px'] = limit_price
+            try:
+                limit_price = await prepare_limit_price(order_book, order_size, order_side, reference_price,
+                                                        max_orderbook_price_offset=max_orderbook_limit_price_offset)
+                logger.info(f'Setting New Target Limit Price to {limit_price = }')
+                order_request_dict['px'] = limit_price
+            except Exception as e:
+                logger.error(f'Error preparing limit price: {e}\n   Will set to the reference price {reference_price = }')
+                order_request_dict['px'] = reference_price
 
         # Todo TP/SL add options for ordertypes other than limit, similar to how TP/SL's for DCA are configured
         if take_profit_activated:
@@ -1451,11 +1459,11 @@ async def okx_signal_handler(
 
         order_placement_return = await place_order(**order_request_dict)
 
-        print(f'{order_placement_return = }')
+        logger.info(f'{order_placement_return = }')
 
         # If error, cancel all orders and exit
         if order_placement_return and order_placement_return.sCode != '0':
-            print(f'{order_placement_return.sMsg = }')
+            logger.info(f'{order_placement_return.sMsg = }')
             await cancel_all_orders(instId=instID)
             await cancel_all_algo_orders_with_params(instId=instID)
             exit()
@@ -1480,14 +1488,14 @@ async def okx_signal_handler(
                 algoClOrdId=f'{generated_client_order_id}TrailS',
                 cxlOnClosePos="true",
             )
-            print(f'{trailing_stop_order_placement_return = }')
+            logger.info(f'{trailing_stop_order_placement_return = }')
 
     if dca_parameters and isinstance(dca_parameters, list):
         dca_orders_to_call = []
         _order_book = None
         for dca_order in dca_parameters:
             if dca_order.size <= 0:
-                print(f'Ignoring DCA order with size {dca_order.size = }')
+                logger.warning(f'Ignoring DCA order with size {dca_order.size = }')
                 continue
 
             dca_order_request_dict = dict(
@@ -1506,11 +1514,15 @@ async def okx_signal_handler(
             if not _order_book and dca_order.type != 'market':
                 _order_book = await get_order_book(instID, 400)
             if dca_order.type != 'market':
-                dca_order_request_dict['orderPx'] = await prepare_limit_price(
-                    _order_book, dca_order.size,
-                    str(dca_order.side).lower(),
-                    dca_order.execution_price,
-                    max_orderbook_price_offset=max_orderbook_limit_price_offset)
+                try:
+                    dca_order_request_dict['orderPx'] = await prepare_limit_price(
+                        _order_book, dca_order.size,
+                        str(dca_order.side).lower(),
+                        dca_order.execution_price,
+                        max_orderbook_price_offset=max_orderbook_limit_price_offset)
+                except Exception as e:
+                    logger.error(f'Error preparing limit price: {e}\n   Will set to the reference price {reference_price = }')
+                    dca_order_request_dict['orderPx'] = dca_order.execution_price
 
             if dca_order.tp_trigger_price_offset and dca_order.tp_execution_price_offset:
                 stop_surplus_trigger_price, stop_surplus_execute_price = calculate_tp_stop_prices_usd(
@@ -1542,8 +1554,8 @@ async def okx_signal_handler(
         dca_orders_placement_return = await asyncio.gather(
             *[place_algo_order(**dca_order) for dca_order in dca_orders_to_call]
         )
-        print(f'{dca_orders_placement_return = }')
-    print('\n\nFINAL REPORT')
+        logger.info(f'{dca_orders_placement_return = }')
+    logger.info('\n\nFINAL REPORT')
     return await fetch_status_report_for_instrument(instID, TD_MODE)
 
 
@@ -1608,11 +1620,11 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
 
             # Check if we have reached the start_timestamp
             if int(fills_message_data[-1]['ts']) <= start_timestamp:
-                print(f'Found the start_timestamp: {start_timestamp = }')
+                logger.info(f'Found the start_timestamp: {start_timestamp = }')
                 break  # Exit the loop if we have reached the start_timestamp
 
             after = fills_message_data[-1]['billId']  # Prepare the 'after' for the next request
-            print(f'{after = }')
+            logger.info(f'{after = }')
             request_count += 1
             if request_count % 10 == 0:
                 elapsed = time.time() - start_time
@@ -1675,8 +1687,8 @@ async def okx_premium_indicator_handler(indicator_input: Union[OKXPremiumIndicat
 
     indicator_input = OKXPremiumIndicatorSignalRequestForm(**input_to_pass)
     try:
-        pprint(f'{indicator_input.OKXSignalInput = }')
-        pprint(f'{indicator_input.PremiumIndicatorSignals = }')
+        logger.info(pprint.pformat(f'{indicator_input.OKXSignalInput = }'))
+        logger.info(pprint.pformat(f'{indicator_input.PremiumIndicatorSignals = }'))
 
         # Interpret Signals
         premium_indicator = indicator_input.PremiumIndicatorSignals
@@ -1716,8 +1728,8 @@ async def okx_premium_indicator_handler(indicator_input: Union[OKXPremiumIndicat
 
         # TODO - IDEA: Logic here betweeen _close_signal and entry, if just a closing then it can be handled using market or limit orders but if it is an entry and exit then we decide depening on wehther the entry is in the same or opposite directoion and if flip on opposite order is true.
         #   lets assume that we are not flipping on opposite order  then cancel if entry in opposite direction and close_order then clear before starting, if just closing then trat them as an actual order which can be market post only or limits
-        print(f'{_order_side or _close_signal = }')
-        print(f'{_red_button = }')
+        logger.info(f'{_order_side or _close_signal = }')
+        logger.info(f'{_red_button = }')
         if _order_side or _close_signal or _red_button:
             okx_signal = indicator_input.OKXSignalInput
 
@@ -1727,18 +1739,18 @@ async def okx_premium_indicator_handler(indicator_input: Union[OKXPremiumIndicat
             if _close_signal:  # FIXME this works for Premium indicator but might have issues if not handled in order
                 okx_signal.order_side = ''
 
-            pprint(f'updated-{premium_indicator = }')
-            pprint(f'updated-{okx_signal= }')
+            logger.info(pprint.pformat(f'updated-{premium_indicator = }'))
+            logger.info(pprint.pformat(f'updated-{okx_signal= }'))
 
             assert indicator_input.OKXSignalInput, "OKXSignalInput is None"
             okx_signal_input = indicator_input.OKXSignalInput
             instrument_status_report: InstrumentStatusReport = await okx_signal_handler(**okx_signal_input.model_dump())
-            pprint(instrument_status_report)
+            logger.info(pprint.pformat(f'{instrument_status_report = }'))
             assert instrument_status_report, "Instrument Status Report is None, check the Instrument ID"
             return {"detail": "okx signal received", "instrument_status_report": instrument_status_report}
         return {"detail": "okx signal received but no action taken"}
     except Exception as e:
-        print(f"Exception in okx_premium_indicator {e}")
+        logger.warning(f"Exception in okx_premium_indicator {e}")
         return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
 
 
@@ -1822,7 +1834,7 @@ if __name__ == '__main__':
             # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
                                  json=indicator_input.model_dump()
         )
-        print(f'{response.content = }')
+        logger.info(f'{response.content = }')
         response = response.json()
 
 
@@ -1832,11 +1844,11 @@ if __name__ == '__main__':
         raise ValueError(f'Invalid test function {TEST_FUNCTION = }')
 
     # Print the final response for debugging
-    print(f'{response = }')
+    logger.info(f'{response = }')
 
     # Validation and print statements for the instrument status report
     if response is None:
-        print("No response")
+        logger.warning("No response")
         exit()
 
     if isinstance(response, InstrumentStatusReport):
@@ -1844,16 +1856,15 @@ if __name__ == '__main__':
     elif isinstance(response, dict):
         instrument_report = response.get('instrument_status_report')
         if instrument_report is None:
-            print("No instrument status report")
+            logger.warning("No instrument status report")
             exit()
     else:
-        print("No instrument status report")
+        logger.warning("No instrument status report")
         exit()
-
     # Debugging print statements for the instrument report
-    print(f'{instrument_report = }')
-    pprint(f'{instrument_report.positions = }')
-    pprint(f'{len(instrument_report.positions) = }')
-    pprint(f'{instrument_report.positions[0].pos = }')
-    pprint(f'{instrument_report.orders = }')
-    pprint(f'{instrument_report.algo_orders = }')
+    logger.info(f'{instrument_report = }')
+    logger.info(pprint.pformat(f'{instrument_report.positions = }'))
+    logger.info(pprint.pformat(f'{len(instrument_report.positions) = }'))
+    logger.info(pprint.pformat(f'{instrument_report.positions[0].pos = }'))
+    logger.info(pprint.pformat(f'{instrument_report.orders = }'))
+    logger.info(pprint.pformat(f'{instrument_report.algo_orders = }'))

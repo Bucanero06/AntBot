@@ -189,7 +189,7 @@
 
 <span class="kn">from</span> <span class="nn">h2o_dashboard.util</span> <span class="kn">import</span> <span class="n">add_card</span>
 <span class="kn">from</span> <span class="nn">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</span> <span class="kn">import</span> <span class="n">OKX_Premium_Indicator_Handler_Widget</span>
-<span class="kn">from</span> <span class="nn">h2o_dashboard.pages.okx_streams</span> <span class="kn">import</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">,</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">,</span> \
+<span class="kn">from</span> <span class="nn">h2o_dashboard.pages.okx_streams</span> <span class="kn">import</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">,</span> <span class="n">OKX_Live_Positions_StreamWidget</span><span class="p">,</span> \
     <span class="n">OKX_Fill_Report_StreamWidget</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">AsyncSite</span><span class="p">()</span>
@@ -209,7 +209,7 @@
     <span class="c1"># Add the the</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Init Widgets&#39;&#39;&#39;</span>
     <span class="n">account_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Account_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_1&#39;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">900</span><span class="p">)</span>
-    <span class="n">positions_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Positions_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span>
+    <span class="n">positions_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Live_Positions_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Positions_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span>
                                                          <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">fill_report_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Fill_Report_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">,</span>
                                                              <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -245,7 +245,7 @@
 <div class="viewcode-block" id="add_page_cards">
 <a class="viewcode-back" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html#h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.add_page_cards">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">add_page_cards</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span> <span class="n">account_stream_widget</span><span class="p">:</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">,</span>
-                         <span class="n">positions_stream_widget</span><span class="p">:</span> <span class="n">OKX_Positions_StreamWidget</span><span class="p">,</span>
+                         <span class="n">positions_stream_widget</span><span class="p">:</span> <span class="n">OKX_Live_Positions_StreamWidget</span><span class="p">,</span>
                          <span class="n">fill_report_stream_widget</span><span class="p">:</span> <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">,</span>
 <span class="n">okx_premium_indicator_handler_widget</span><span class="p">:</span> <span class="n">OKX_Premium_Indicator_Handler_Widget</span>
                          <span class="p">):</span>

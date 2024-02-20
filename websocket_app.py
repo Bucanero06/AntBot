@@ -1,7 +1,5 @@
-
 import asyncio
 import os
-import threading
 
 import dotenv
 import uvicorn
@@ -12,6 +10,10 @@ from pyokx.websocket_handling import okx_websockets_main_run
 from pyokx.ws_data_structures import AccountChannelInputArgs, PositionsChannelInputArgs, \
     BalanceAndPositionsChannelInputArgs, OrdersChannelInputArgs
 from redis_tools.utils import init_async_redis, stop_async_redis
+from shared.logging import setup_logger
+
+
+logger = setup_logger(__name__)
 
 app = FastAPI(
     title="AntBot-Websocket-API",
@@ -37,6 +39,7 @@ def health_check():
     # Todo add more health check metrics used around the codebase
     return {"status": "OK"}
 
+
 def start_websocket_task_loop():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -58,9 +61,11 @@ def start_websocket_task_loop():
         redis_store=True
     ))
     loop.close()
+
+
 @app.on_event("startup")
 async def startup_event():
-    print("Startup event triggered")
+    logger.info("Startup event triggered")
     global websocket_task
     global rest_task
     global websocket_instrument_task
@@ -99,31 +104,31 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    print("Shutdown event triggered")
+    logger.info("Shutdown event triggered")
     if websocket_task:
         websocket_task.cancel()
         try:
             await websocket_task
         except asyncio.CancelledError:
-            print("WebSocket task was cancelled")
+            logger.error("WebSocket task was cancelled")
     else:
-        print("WebSocket task was not running")
+        logger.warning("WebSocket task was not running")
 
     if rest_task:
         rest_task.cancel()
         try:
             await rest_task
         except asyncio.CancelledError:
-            print("REST task was cancelled")
+            logger.error("REST task was cancelled")
     else:
-        print("REST task was not running")
+        logger.warning("REST task was not running")
 
     if websocket_instrument_task:
         websocket_instrument_task.cancel()
         try:
             await websocket_instrument_task
         except asyncio.CancelledError:
-            print("WebSocket task was cancelled")
+            logger.error("WebSocket task was cancelled")
 
     await stop_async_redis()
 
@@ -146,9 +151,9 @@ async def restart_instrument_websocket():  # Todo adds security for now dont exp
         try:
             await websocket_instrument_task
         except asyncio.CancelledError:
-            print("WebSocket task was cancelled")
+            logger.error("WebSocket task was cancelled")
     else:
-        print("WebSocket task was not running")
+        logger.warning("WebSocket task was not running")
 
     # turn up the websocket
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus

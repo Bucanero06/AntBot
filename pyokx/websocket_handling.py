@@ -25,6 +25,9 @@ from pyokx.ws_data_structures import PriceLimitChannel, InstrumentsChannel, \
     TickersChannelInputArgs, OrdersChannelInputArgs, OKX_WEBSOCKET_URLS, public_channels_available, \
     business_channels_available, private_channels_available, available_channel_models
 from redis_tools.utils import serialize_for_redis, init_async_redis
+from shared.logging import setup_logger
+
+logger = setup_logger(__name__)
 
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 
@@ -40,12 +43,12 @@ async def ws_callback(message):
     """
     message_json = json.loads(message)
     event = message_json.get("event", None)
-    print(f"Incoming Raw WS Message: {message_json}")
+    logger.info(f"Incoming Raw WS Message: {message_json}")
     if event:
         if event == "error":
-            print(f"Error: {message_json}")
+            logger.error(f"Error: {message_json}")
             return  # TODO: Handle events, mostly subscribe and error stop and reconnect task
-        print(f"Event: {message_json}")
+        logger.info(f"Event: {message_json}")
         return  # TODO: Handle events, mostly subscribe and error
 
     try:
@@ -63,7 +66,7 @@ async def ws_callback(message):
             structured_message = data_struct.from_array(**message_json)
         else:
             structured_message = data_struct(**message_json)
-        print(f"Received Structured-Data: {structured_message}")
+        logger.info(f"Received Structured-Data: {structured_message}")
 
         if _redis_store and async_redis:
             redis_ready_message = serialize_for_redis(structured_message)
@@ -93,7 +96,7 @@ async def ws_callback(message):
 
 
     except Exception as e:
-        print(f"Exception: {e} \n {message_json}")
+        logger.warning(f"Exception: {e} \n {message_json}")
         return  # TODO: Handle exceptions
 async def okx_websockets_main_run(input_channel_models: list,
                                   apikey: str = None, passphrase: str = None, secretkey: str = None,
@@ -114,7 +117,7 @@ async def okx_websockets_main_run(input_channel_models: list,
         Exception: If no channels are provided or if an invalid channel is specified.
 
     """
-    print(f"Starting OKX Websocket Connections ")
+    logger.info(f"Starting OKX Websocket Connections ")
     if not input_channel_models:
         raise Exception("No channels provided")
 
@@ -167,12 +170,12 @@ async def okx_websockets_main_run(input_channel_models: list,
     private_client = None
     if public_params:
         public_client = WsPublicAsync(url=public_channels_config.wss_url, callback=ws_callback)
-        print(f"Subscribing to public channels: {public_params}")
+        logger.info(f"Subscribing to public channels: {public_params}")
         await public_client.start()
         await public_client.subscribe(params=public_params)
     if business_params:
         business_client = WsPublicAsync(url=business_channels_config.wss_url, callback=ws_callback)
-        print(f"Subscribing to business channels: {business_params}")
+        logger.info(f"Subscribing to business channels: {business_params}")
         await business_client.start()
         await business_client.subscribe(params=business_params)
     if private_params:
@@ -182,7 +185,7 @@ async def okx_websockets_main_run(input_channel_models: list,
 
         private_client = WsPrivateAsync(apikey=apikey, passphrase=passphrase, secretkey=secretkey,
                                         url=private_channels_config.wss_url, use_servertime=False, callback=ws_callback)
-        print(f"Subscribing to private channels: {private_params}")
+        logger.info(f"Subscribing to private channels: {private_params}")
         await private_client.start()
         await private_client.subscribe(params=private_params)
 
@@ -190,21 +193,21 @@ async def okx_websockets_main_run(input_channel_models: list,
     try:
         while True:  # This could be the main loop of the trading strategy or at least for the health checks
             await asyncio.sleep(60)
-            print("Heartbeat \n ___________")
+            logger.debug("Heartbeat \n ___________")
             # Print stats for redis
             if redis_store and async_redis:
-                print(f"Redis Stats: ")
+                logger.debug(f"Redis Stats: ")
                 # print only the relevant stats that have human in them
                 redis_stats = await async_redis.info()
                 stats_to_print = {k: v for k, v in redis_stats.items() if "human" in k}
                 pprint(stats_to_print)
-            print("___________ \n Heartbeat")
+            logger.debug("___________ \n Heartbeat")
 
 
     except KeyboardInterrupt:
         pass
     except Exception as e:
-        print(f"Exception: {e}")
+        logger.error(f"Exception: {e}")
     finally:
         if public_client:
             try:
@@ -212,27 +215,27 @@ async def okx_websockets_main_run(input_channel_models: list,
                     await public_client.unsubscribe(params=public_params)
                 await public_client.stop()
             except Exception as e:
-                print(f"Exception: {e}")
+                logger.error(f"Exception: {e}")
         if business_client:
             try:
                 if business_params:
                     await business_client.unsubscribe(params=business_params)
                 await business_client.stop()
             except Exception as e:
-                print(f"Exception: {e}")
+                logger.error(f"Exception: {e}")
         if private_client:
             try:
                 if private_params:
                     await private_client.unsubscribe(params=private_params)
                 await private_client.stop()
             except Exception as e:
-                print(f"Exception: {e}")
+                logger.error(f"Exception: {e}")
         if redis_store and async_redis:
             try:
                 await async_redis.close()
             except Exception as e:
-                print(f"Exception: {e}")
-        print("Exiting")
+                logger.error(f"Exception: {e}")
+        logger.info("Exiting")
 
 
 async def handle_reports(message_json, async_redis):

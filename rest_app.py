@@ -1,18 +1,23 @@
-
 import asyncio
 from typing import List
 
+# Imports the Cloud Logging client library
 import uvicorn
 from fastapi import FastAPI, HTTPException, Depends
 
 from firebase_tools.authenticate import check_token_validity
 from redis_tools.consumers import start_listening, get_listener_task, remove_listener_task, get_all_listener_tasks
-
 from redis_tools.utils import init_async_redis, stop_async_redis
 from routers.api_keys import api_key_router
 from routers.login import login_router
 from routers.okx import okx_router
 from routers.okx_authentication import okx_authentication_router
+from shared.logging import setup_logger
+
+
+
+logger = setup_logger(__name__)
+
 
 app = FastAPI(
     title="AntBot-Rest-API",
@@ -60,13 +65,13 @@ def health_check():
 
 @app.on_event("startup")
 async def startup_event():
-    print("Startup event triggered")
+    logger.info("Startup event triggered")
     await init_async_redis()
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    print("Shutdown event triggered")
+    logger.info("Shutdown event triggered")
     for _, (listener_task, shutdown_signal_handler) in get_all_listener_tasks().items():
         await shutdown_signal_handler()  # Send shutdown signal to listeners
         try:
@@ -74,7 +79,7 @@ async def shutdown_event():
         except asyncio.CancelledError:
             pass  # The task was cancelled, handle it gracefully if needed
         except Exception as e:
-            print(f"Error while shutting down listener: {e}")
+            logger.error(f"Error while shutting down listener: {e}")
 
     await stop_async_redis()
 

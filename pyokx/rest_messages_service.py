@@ -32,7 +32,7 @@ async def analyze_transaction_history(instType: InstType = ENFORCED_INSTRUMENT_T
     end_timestamp = get_timestamp_from_days_ago()
     fill_history: List[FillEntry] = await fetch_fill_history(start_timestamp, end_timestamp, instType)
     redis_ready_message = serialize_for_redis(fill_history)
-    await async_redis.xadd('okx:rest@fill@3months', {'data': redis_ready_message}, maxlen=REDIS_STREAM_MAX_LEN)
+    await async_redis.xadd('okx:rest@fill@3months', {'data': redis_ready_message}, maxlen=1)
 
     timeframes = {
         "ONE_DAY": 1,
@@ -80,7 +80,7 @@ async def analyze_transaction_history(instType: InstType = ENFORCED_INSTRUMENT_T
 
     fill_metrics = FillHistoricalMetrics(**_fill_metrics)
     redis_ready_message = serialize_for_redis(fill_metrics)
-    await async_redis.xadd('okx:reports@fill_metrics', {'data': redis_ready_message}, maxlen=REDIS_STREAM_MAX_LEN)
+    await async_redis.xadd('okx:reports@fill_metrics', {'data': redis_ready_message}, maxlen=1)
 
 
 async def update_instruments(okx_futures_instrument_searcher: InstrumentSearcher,

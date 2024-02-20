@@ -564,6 +564,7 @@ class OKXSignalInput(OKXBaseModel):
     order_side: Optional[str] = ''
     order_type: Optional[str] = ''
     max_orderbook_limit_price_offset: Optional[float] = 0
+    min_orderbook_limit_price_offset: Optional[float] = 0
     flip_position_if_opposite_side: Optional[bool] = False
     clear_prior_to_new_order: Optional[bool] = False
     red_button: Optional[bool] = False

@@ -773,8 +773,8 @@ async def get_leverage(instId, mgnMode):
 
 
 async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[int, float], side, reference_price: float,
-                              max_orderbook_price_offset=None,
-                              ):
+                              max_orderbook_price_offset=None):
+
     """
     Prepares a limit price based on the order book, quantity, side, reference price, and maximum order book price offset.
 
@@ -807,6 +807,7 @@ async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[in
                 (side == 'sell' and reference_price < float(ask_or_bid.price)):
             continue
 
+        # Check if price meets the min_orderbook_limit_price_offset
         if aggregate_quantity >= quantity:
             print(f"ask_or_bid_price: {ask_or_bid.price}, ask_or_bid_volume: {ask_or_bid.quantity}")
 
@@ -820,17 +821,11 @@ async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[in
                 break
             else:
                 raise Exception(
-                    f"Computed Limit Price {ask_or_bid.price} is not within the range given by"
-                    f" {max_orderbook_price_offset}"
-                    f" if you want to remove this check, set max_orderbook_price_offset=False"
-                )
+                    f"Computed Limit Price {ask_or_bid.price} is not within the range of the max_orderbook_price_offset "
+                    f"{max_orderbook_price_offset = } and reference price {reference_price = }")
+
 
     if limit_price is None:
-        print(f"{order_book = }")
-        print(f"{quantity = }")
-        print(f"{side = }")
-        print(f"{reference_price = }")
-        print(f"{max_orderbook_price_offset = }")
         raise Exception(f"Could not find a price in the orderbook that has enough volume to cover the quantity")
 
     return round(limit_price, 2)
@@ -986,12 +981,15 @@ async def _validate_okx_signal_order_params(order_type, order_side, order_size):
 
 
 async def _validate_okx_signal_additional_params(
-        leverage=None, max_orderbook_limit_price_offset=None, flip_position_if_opposite_side=None,
+        leverage=None, max_orderbook_limit_price_offset=None, min_orderbook_limit_price_offset=None,
+        flip_position_if_opposite_side=None,
         clear_prior_to_new_order=None
 ):
     leverage = 0 if not leverage else int(leverage)
     max_orderbook_limit_price_offset = 0 \
         if not max_orderbook_limit_price_offset else float(max_orderbook_limit_price_offset)
+    min_orderbook_limit_price_offset = 0 \
+        if not min_orderbook_limit_price_offset else float(min_orderbook_limit_price_offset)
     flip_position_if_opposite_side = False \
         if not flip_position_if_opposite_side else bool(flip_position_if_opposite_side)
     clear_prior_to_new_order = False if not clear_prior_to_new_order else bool(clear_prior_to_new_order)
@@ -999,6 +997,7 @@ async def _validate_okx_signal_additional_params(
     return {
         'leverage': leverage,
         'max_orderbook_limit_price_offset': max_orderbook_limit_price_offset,
+        'min_orderbook_limit_price_offset': min_orderbook_limit_price_offset,
         'flip_position_if_opposite_side': flip_position_if_opposite_side,
         'clear_prior_to_new_order': clear_prior_to_new_order,
     }
@@ -1057,6 +1056,7 @@ async def validate_okx_signal_params(
 
     validated_additional_params = await _validate_okx_signal_additional_params(
         leverage=okx_signal.leverage, max_orderbook_limit_price_offset=okx_signal.max_orderbook_limit_price_offset,
+        min_orderbook_limit_price_offset=okx_signal.min_orderbook_limit_price_offset,
         flip_position_if_opposite_side=okx_signal.flip_position_if_opposite_side,
         clear_prior_to_new_order=okx_signal.clear_prior_to_new_order)
     passed_expiration_test = False if int(instId_info.expTime) < int(time.time() * 1000) else True
@@ -1137,6 +1137,7 @@ async def validate_okx_signal_params(
         'order_side': validated_order_params.get('order_side'),
         'order_type': validated_order_params.get('order_type'),
         'max_orderbook_limit_price_offset': validated_additional_params.get('max_orderbook_limit_price_offset'),
+        'min_orderbook_limit_price_offset': validated_additional_params.get('min_orderbook_limit_price_offset'),
         'flip_position_if_opposite_side': validated_additional_params.get('flip_position_if_opposite_side'),
         'clear_prior_to_new_order': validated_additional_params.get('clear_prior_to_new_order'),
         'red_button': red_button,
@@ -1166,6 +1167,7 @@ async def okx_signal_handler(
         order_side: str = None,
         order_type: str = None,
         max_orderbook_limit_price_offset: float = None,
+min_orderbook_limit_price_offset: float = None,
         flip_position_if_opposite_side: bool = False,
         clear_prior_to_new_order: bool = False,
         red_button: bool = False,
@@ -1247,6 +1249,7 @@ async def okx_signal_handler(
         order_side=order_side,
         order_type=order_type,
         max_orderbook_limit_price_offset=max_orderbook_limit_price_offset,
+        min_orderbook_limit_price_offset=min_orderbook_limit_price_offset,
         flip_position_if_opposite_side=flip_position_if_opposite_side,
         clear_prior_to_new_order=clear_prior_to_new_order,
         red_button=red_button,
@@ -1300,6 +1303,7 @@ async def okx_signal_handler(
     order_side = validated_params.get('order_side')
     order_type = validated_params.get('order_type')
     max_orderbook_limit_price_offset = validated_params.get('max_orderbook_limit_price_offset')
+    min_orderbook_limit_price_offset = validated_params.get('min_orderbook_limit_price_offset')
     flip_position_if_opposite_side = validated_params.get('flip_position_if_opposite_side')
     clear_prior_to_new_order = validated_params.get('clear_prior_to_new_order')
     red_button = validated_params.get('red_button')
@@ -1420,14 +1424,18 @@ async def okx_signal_handler(
 
         if order_type != 'market':
             order_book = await get_order_book(instID, 400)
+            target_limit_price = reference_price + min_orderbook_limit_price_offset if order_side == 'buy' else \
+                reference_price - min_orderbook_limit_price_offset
             try:
-                limit_price = await prepare_limit_price(order_book, order_size, order_side, reference_price,
+
+                limit_price = await prepare_limit_price(order_book, order_size, order_side,
+                                                        target_limit_price,
                                                         max_orderbook_price_offset=max_orderbook_limit_price_offset)
                 logger.info(f'Setting New Target Limit Price to {limit_price = }')
                 order_request_dict['px'] = limit_price
             except Exception as e:
                 logger.error(f'Error preparing limit price: {e}\n   Will set to the reference price {reference_price = }')
-                order_request_dict['px'] = reference_price
+                order_request_dict['px'] = target_limit_price
 
         # Todo TP/SL add options for ordertypes other than limit, similar to how TP/SL's for DCA are configured
         if take_profit_activated:
@@ -1514,15 +1522,21 @@ async def okx_signal_handler(
             if not _order_book and dca_order.type != 'market':
                 _order_book = await get_order_book(instID, 400)
             if dca_order.type != 'market':
+
+                if not isinstance(min_orderbook_limit_price_offset, float):
+                    min_orderbook_limit_price_offset = 0.0
+
+                target_limit_price = dca_order.execution_price + min_orderbook_limit_price_offset if order_side == 'buy' else \
+                    dca_order.execution_price - min_orderbook_limit_price_offset
                 try:
                     dca_order_request_dict['orderPx'] = await prepare_limit_price(
                         _order_book, dca_order.size,
                         str(dca_order.side).lower(),
-                        dca_order.execution_price,
+                        target_limit_price,
                         max_orderbook_price_offset=max_orderbook_limit_price_offset)
                 except Exception as e:
-                    logger.error(f'Error preparing limit price: {e}\n   Will set to the reference price {reference_price = }')
-                    dca_order_request_dict['orderPx'] = dca_order.execution_price
+                    logger.error(f'Error preparing limit price: {e}\n   Will set to the reference price {target_limit_price = }')
+                    dca_order_request_dict['orderPx'] = target_limit_price
 
             if dca_order.tp_trigger_price_offset and dca_order.tp_execution_price_offset:
                 stop_surplus_trigger_price, stop_surplus_execute_price = calculate_tp_stop_prices_usd(
@@ -1774,6 +1788,7 @@ if __name__ == '__main__':
             instID="BTC-USDT-240628",
             leverage=5,
             max_orderbook_limit_price_offset=None,
+            min_orderbook_limit_price_offset=None,
             clear_prior_to_new_order=False,
             red_button=False,
             # Principal Order

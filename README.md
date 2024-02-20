@@ -280,4 +280,4 @@ For further elaboration or specific details, please proceed to the codebase docu
 documentation of each integrated component or library.
 
 ## Contact US
-Reach out to us if you would like to contribute to help maintain this project, monitary assistance can be provided to contributors that can bring valuable changes and additions, from meaningful features and task completions to documentation and testing. If you are interested in using AntBot yourself and have questions please reach out to me directly at `ruben@carbonyl.org`
+Reach out to us if you would like to contribute and help maintain this project, monitary assistance can be provided to contributors that can bring valuable changes and additions, from meaningful features and task completions to documentation and testing. If you are interested in using AntBot yourself and have questions please reach out to me directly at `ruben@carbonyl.org`

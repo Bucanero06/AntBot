@@ -19,7 +19,6 @@ dotenv.load_dotenv(dotenv.find_dotenv())
 FIREBASE_CONFIG = {
     "apiKey": os.environ.get("FIREBASE_API_KEY"),
 }
-
 assert FIREBASE_CONFIG["apiKey"], "FIREBASE_API_KEY environment variable not set!"
 
 
@@ -126,6 +125,7 @@ async def init(q: Q) -> None:
                                       ui.zone('footer', size='0 1 0 0', direction=ui.ZoneDirection.ROW),
                                   ]),
                                            ],
+                                  tracker=ui.tracker(type=ui.TrackerType.GA, id='G-Q21Z3V0G9K'),
                                   themes=[
                                       ui.theme(
                                           name='my-awesome-theme',

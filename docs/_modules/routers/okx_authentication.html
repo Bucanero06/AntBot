@@ -53,12 +53,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_streams.html">h2o_dashboard.pages.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
@@ -136,20 +136,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.store.html">redis_tools._shared.store</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.consumers.html">redis_tools.consumers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
@@ -194,25 +182,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for routers.okx_authentication</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) 2024 Carbonyl LLC &amp; Carbonyl R&amp;D</span>
-<span class="c1">#</span>
-<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
-<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
-<span class="c1"># in the Software without restriction, including without limitation the rights</span>
-<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
-<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
-<span class="c1"># furnished to do so, subject to the following conditions:</span>
-<span class="c1">#</span>
-<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
-<span class="c1"># copies or substantial portions of the Software.</span>
-<span class="c1">#</span>
-<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
-<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
-<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
-<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
-<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
-<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
-<span class="c1"># SOFTWARE.</span>
+<span></span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
@@ -250,9 +220,9 @@
         <span class="n">reference_instID</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AssertionError in check_token_against_instrument: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-
     <span class="k">try</span><span class="p">:</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">SECRET_KEY</span><span class="p">,</span> <span class="n">algorithms</span><span class="o">=</span><span class="p">[</span><span class="n">ALGORITHM</span><span class="p">])</span>
+
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sub&quot;</span><span class="p">)</span>
         <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
         <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;role&quot;</span><span class="p">)</span>
@@ -262,6 +232,8 @@
 
     <span class="k">except</span> <span class="n">JWTError</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">credentials_exception</span>
+
+
 
     <span class="k">assert</span> <span class="n">role</span> <span class="o">==</span> <span class="s1">&#39;trading_instrument&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;role must be &quot;trading_instrument&quot;, </span><span class="si">{</span><span class="n">role</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
     <span class="k">assert</span> <span class="n">instID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
@@ -290,8 +262,7 @@
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_instrument_api_key</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">InstIdAPIKeyCreationRequestForm</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(),</span>
                               <span class="n">current_user</span><span class="o">=</span><span class="n">Depends</span><span class="p">(</span><span class="n">check_token_validity</span><span class="p">),</span>
                               <span class="p">):</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">authenticate_with_firebase</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">authenticate_with_firebase</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;success&#39;</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_401_UNAUTHORIZED</span><span class="p">,</span>
                             <span class="n">detail</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;error_message&#39;</span><span class="p">]</span>
@@ -305,10 +276,10 @@
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;The Futures instrument ID must be in the format of &quot;BTC-USDT-210326&quot;. </span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
     <span class="n">instrument_ticker</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_instID_and_return_ticker_info</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">instrument_ticker</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> not found in instrument_searcher&#39;</span>
-    <span class="n">instrument</span> <span class="o">=</span> <span class="n">instrument_ticker</span><span class="p">[</span><span class="s1">&#39;instrument&#39;</span><span class="p">]</span>
-    <span class="k">assert</span> <span class="n">instrument</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> not found in instrument_searcher&#39;</span>
     <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">InstType</span>
-    <span class="k">assert</span> <span class="n">instrument</span><span class="o">.</span><span class="n">instType</span> <span class="o">==</span> <span class="n">InstType</span><span class="o">.</span><span class="n">FUTURES</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> is not a Futures instrument&#39;</span>
+    <span class="k">assert</span> <span class="n">instrument_ticker</span><span class="o">.</span><span class="n">instType</span> <span class="o">==</span> <span class="s1">&#39;FUTURES&#39;</span><span class="p">,</span> \
+        <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> is not a Futures instrument, type </span><span class="si">{</span><span class="n">instrument_ticker</span><span class="o">.</span><span class="n">instType</span><span class="si">}</span><span class="s1">&#39;</span>
+         <span class="sa">f</span><span class="s1">&#39; rather than </span><span class="si">{</span><span class="n">InstType</span><span class="o">.</span><span class="n">FUTURES</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">token</span> <span class="o">=</span> <span class="n">create_access_token</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sub&quot;</span><span class="p">:</span> <span class="n">good_response</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
                                       <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">good_response</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span>

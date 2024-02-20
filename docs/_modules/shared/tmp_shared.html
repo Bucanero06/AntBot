@@ -53,12 +53,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_streams.html">h2o_dashboard.pages.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
@@ -136,20 +136,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.store.html">redis_tools._shared.store</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.consumers.html">redis_tools.consumers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
@@ -194,26 +182,69 @@
            <div itemprop="articleBody">
              
   <h1>Source code for shared.tmp_shared</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) 2024 Carbonyl LLC &amp; Carbonyl R&amp;D</span>
-<span class="c1">#</span>
-<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
-<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
-<span class="c1"># in the Software without restriction, including without limitation the rights</span>
-<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
-<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
-<span class="c1"># furnished to do so, subject to the following conditions:</span>
-<span class="c1">#</span>
-<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
-<span class="c1"># copies or substantial portions of the Software.</span>
-<span class="c1">#</span>
-<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
-<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
-<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
-<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
-<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
-<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
-<span class="c1"># SOFTWARE.</span>
+<span></span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+
+<div class="viewcode-block" id="ccy_contracts_to_usd">
+<a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.ccy_contracts_to_usd">[docs]</a>
+<span class="k">def</span> <span class="nf">ccy_contracts_to_usd</span><span class="p">(</span><span class="n">contracts_amount</span><span class="p">,</span> <span class="n">ccy_contract_size</span><span class="p">,</span> <span class="n">ccy_last_price</span><span class="p">,</span> <span class="n">usd_base_ratio</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">base_cost_of_one_contract</span> <span class="o">=</span> <span class="n">ccy_contract_size</span> <span class="o">*</span> <span class="n">ccy_last_price</span>
+    <span class="n">base_total_cost</span> <span class="o">=</span> <span class="n">base_cost_of_one_contract</span> <span class="o">*</span> <span class="n">contracts_amount</span>
+    <span class="n">total_cost_usd</span> <span class="o">=</span> <span class="n">base_total_cost</span> <span class="o">/</span> <span class="n">usd_base_ratio</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">leverage</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">total_cost_usd</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">leverage</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># example leverage</span>
+        <span class="k">return</span> <span class="n">total_cost_usd</span> <span class="o">/</span> <span class="n">leverage</span></div>
+
+
+<span class="c1">#TODO TEST THE CONVERSIONS</span>
+<span class="c1"># Getting error:</span>
+<span class="c1">#     url: /api/v5/market/ticker?instId=BTC-USDT-240329</span>
+<span class="c1">#     antbot-okx_rest-1  | {&#39;error&#39;: &#39;USD equivalent of 100.0 is too much to buy the \n&#39;</span>
+<span class="c1">#     antbot-okx_rest-1  |           &#39;maximum quantity of 3000 contracts for 0.01 at \n&#39;</span>
+<span class="c1">#     antbot-okx_rest-1  |           &#39;53163.7 with 5 leverage. The maximum cost is 6.0 USDT&#39;}</span>
+<span class="c1"># The starting boundries will be around the validate_okx_signal_params function in the rest_handling.py file</span>
+<div class="viewcode-block" id="ccy_usd_to_contracts">
+<a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.ccy_usd_to_contracts">[docs]</a>
+<span class="k">def</span> <span class="nf">ccy_usd_to_contracts</span><span class="p">(</span><span class="n">usd_equivalent</span><span class="p">,</span> <span class="n">ccy_contract_size</span><span class="p">,</span> <span class="n">ccy_last_price</span><span class="p">,</span>
+                         <span class="n">minimum_contract_size</span><span class="p">,</span>
+                         <span class="n">max_market_contract_size</span><span class="p">,</span>
+                         <span class="n">usd_base_ratio</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ctValCcy</span><span class="o">=</span><span class="s1">&#39;USD&#39;</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">ctValCcy</span> <span class="o">==</span> <span class="s1">&#39;USD&#39;</span><span class="p">:</span>
+        <span class="n">cost_of_one_contract_in_usd</span> <span class="o">=</span> <span class="n">ccy_contract_size</span>
+        <span class="n">base_equivalent</span> <span class="o">=</span> <span class="n">usd_equivalent</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cost_of_one_contract_in_usd</span> <span class="o">=</span> <span class="n">ccy_contract_size</span> <span class="o">*</span> <span class="n">ccy_last_price</span>
+        <span class="n">base_equivalent</span> <span class="o">=</span> <span class="n">usd_equivalent</span> <span class="o">*</span> <span class="n">usd_base_ratio</span>
+
+    <span class="k">if</span> <span class="n">leverage</span><span class="p">:</span>
+        <span class="n">leveraged_cost_of_one_contract_usd</span> <span class="o">=</span> <span class="n">cost_of_one_contract_in_usd</span> <span class="o">/</span> <span class="n">leverage</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">leverage</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cost of one contract in USD: </span><span class="si">{</span><span class="n">cost_of_one_contract_in_usd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cost of one contract in USD with leverage: </span><span class="si">{</span><span class="n">leveraged_cost_of_one_contract_usd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Base equivalent: </span><span class="si">{</span><span class="n">base_equivalent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">max_contracts</span> <span class="o">=</span> <span class="n">base_equivalent</span> <span class="o">/</span> <span class="n">leveraged_cost_of_one_contract_usd</span>
+    <span class="n">max_contracts</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_contracts</span><span class="p">)</span>  <span class="c1"># round down to the nearest whole number</span>
+    <span class="c1"># Raise error if max_contracts is less than min_order_quantity or greater than max_market_order_quantity</span>
+    <span class="k">if</span> <span class="n">max_contracts</span> <span class="o">&lt;</span> <span class="n">minimum_contract_size</span><span class="p">:</span>
+        <span class="n">minimum_cost</span> <span class="o">=</span> <span class="n">minimum_contract_size</span> <span class="o">*</span> <span class="n">leveraged_cost_of_one_contract_usd</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;USD equivalent of </span><span class="si">{</span><span class="n">usd_equivalent</span><span class="si">}</span><span class="s2"> is not enough to buy the </span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;minimum quantity of </span><span class="si">{</span><span class="n">minimum_contract_size</span><span class="si">}</span><span class="s2"> contracts for </span><span class="si">{</span><span class="n">ccy_contract_size</span><span class="si">}</span><span class="s2"> at </span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ccy_last_price</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">leverage</span><span class="si">}</span><span class="s2"> leverage. The minimum cost is </span><span class="si">{</span><span class="n">minimum_cost</span><span class="si">}</span><span class="s2"> USDT&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_contracts</span> <span class="o">&gt;</span> <span class="n">max_market_contract_size</span><span class="p">:</span>
+        <span class="n">max_cost</span> <span class="o">=</span> <span class="n">max_market_contract_size</span> <span class="o">*</span> <span class="n">leveraged_cost_of_one_contract_usd</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;USD equivalent of </span><span class="si">{</span><span class="n">usd_equivalent</span><span class="si">}</span><span class="s2"> is too much to buy the </span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;maximum quantity of </span><span class="si">{</span><span class="n">max_market_contract_size</span><span class="si">}</span><span class="s2"> contracts for </span><span class="si">{</span><span class="n">ccy_contract_size</span><span class="si">}</span><span class="s2"> at </span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ccy_last_price</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">leverage</span><span class="si">}</span><span class="s2"> leverage. The maximum cost is &quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">max_cost</span><span class="si">}</span><span class="s2"> USDT&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">max_contracts</span></div>
 
 
 <div class="viewcode-block" id="calculate_stop_prices">
@@ -234,27 +265,31 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">order_side</span> <span class="o">==</span> <span class="s1">&#39;sell&#39;</span><span class="p">:</span>
-        <span class="n">stop_loss_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sl_trigger_price_offset</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">stop_loss_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sl_trigger_price_offset</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">stop_loss_execute_price</span> <span class="o">=</span> <span class="n">stop_loss_trigger_price</span> <span class="o">+</span> <span class="n">sl_execution_price_offset</span>
-        <span class="n">stop_surplus_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">stop_surplus_trigger_percentage</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">stop_surplus_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">stop_surplus_trigger_percentage</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">stop_surplus_execute_price</span> <span class="o">=</span> <span class="n">stop_surplus_trigger_price</span> <span class="o">-</span> <span class="n">stop_surplus_price_offset</span>
         <span class="k">assert</span> <span class="n">stop_loss_execute_price</span> <span class="o">&gt;</span> <span class="n">stop_loss_trigger_price</span><span class="p">,</span> <span class="s2">&quot;stop_loss_execute_price must be less than stop_loss_trigger_price&quot;</span>
         <span class="k">assert</span> <span class="n">stop_surplus_execute_price</span> <span class="o">&lt;</span> <span class="n">stop_surplus_trigger_price</span><span class="p">,</span> <span class="s2">&quot;stop_surplus_execute_price must be greater than stop_surplus_trigger_price&quot;</span>
     <span class="k">elif</span> <span class="n">order_side</span> <span class="o">==</span> <span class="s1">&#39;buy&#39;</span><span class="p">:</span>
-        <span class="n">stop_surplus_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">stop_surplus_trigger_percentage</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">stop_surplus_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">stop_surplus_trigger_percentage</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">stop_surplus_execute_price</span> <span class="o">=</span> <span class="n">stop_surplus_trigger_price</span> <span class="o">+</span> <span class="n">stop_surplus_price_offset</span>
-        <span class="n">stop_loss_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sl_trigger_price_offset</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">stop_loss_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sl_trigger_price_offset</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">stop_loss_execute_price</span> <span class="o">=</span> <span class="n">stop_loss_trigger_price</span> <span class="o">-</span> <span class="n">sl_execution_price_offset</span>
         <span class="k">assert</span> <span class="n">stop_loss_execute_price</span> <span class="o">&lt;</span> <span class="n">stop_loss_trigger_price</span><span class="p">,</span> <span class="s2">&quot;stop_loss_execute_price must be greater than stop_loss_trigger_price&quot;</span>
         <span class="k">assert</span> <span class="n">stop_surplus_execute_price</span> <span class="o">&gt;</span> <span class="n">stop_surplus_trigger_price</span><span class="p">,</span> <span class="s2">&quot;stop_surplus_execute_price must be less than stop_surplus_trigger_price&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;order_side must be either &quot;buy&quot; or &quot;sell&quot;&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">stop_loss_trigger_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">stop_surplus_trigger_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">stop_loss_execute_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">stop_surplus_execute_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">stop_loss_trigger_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">stop_surplus_trigger_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">stop_loss_execute_price</span><span class="p">,</span>
+                                                                                          <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span>
+        <span class="n">stop_surplus_execute_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
 
 <div class="viewcode-block" id="calculate_tp_stop_prices">
 <a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.calculate_tp_stop_prices">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_tp_stop_prices</span><span class="p">(</span><span class="n">order_side</span><span class="p">,</span> <span class="n">reference_price</span><span class="p">,</span> <span class="n">tp_trigger_percentage</span><span class="p">,</span>  <span class="n">tp_execution_price_offset</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">calculate_tp_stop_prices</span><span class="p">(</span><span class="n">order_side</span><span class="p">,</span> <span class="n">reference_price</span><span class="p">,</span> <span class="n">tp_trigger_percentage</span><span class="p">,</span> <span class="n">tp_execution_price_offset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate take profit trigger and execute prices based on the order side.</span>
 
@@ -267,11 +302,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">order_side</span> <span class="o">==</span> <span class="s1">&#39;sell&#39;</span><span class="p">:</span>
-        <span class="n">tp_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tp_trigger_percentage</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">tp_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tp_trigger_percentage</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">tp_execute_price</span> <span class="o">=</span> <span class="n">tp_trigger_price</span> <span class="o">-</span> <span class="n">tp_execution_price_offset</span>
         <span class="k">assert</span> <span class="n">tp_execute_price</span> <span class="o">&lt;</span> <span class="n">tp_trigger_price</span><span class="p">,</span> <span class="s2">&quot;tp_execute_price must be less than tp_trigger_price&quot;</span>
     <span class="k">elif</span> <span class="n">order_side</span> <span class="o">==</span> <span class="s1">&#39;buy&#39;</span><span class="p">:</span>
-        <span class="n">tp_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tp_trigger_percentage</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">tp_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">tp_trigger_percentage</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">tp_execute_price</span> <span class="o">=</span> <span class="n">tp_trigger_price</span> <span class="o">+</span> <span class="n">tp_execution_price_offset</span>
         <span class="k">assert</span> <span class="n">tp_execute_price</span> <span class="o">&gt;</span> <span class="n">tp_trigger_price</span><span class="p">,</span> <span class="s2">&quot;tp_execute_price must be greater than tp_trigger_price&quot;</span>
     <span class="k">else</span><span class="p">:</span>
@@ -280,9 +315,10 @@
     <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">tp_trigger_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">tp_execute_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
+
 <div class="viewcode-block" id="calculate_sl_stop_prices">
 <a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.calculate_sl_stop_prices">[docs]</a>
-<span class="k">def</span> <span class="nf">calculate_sl_stop_prices</span><span class="p">(</span><span class="n">order_side</span><span class="p">,</span> <span class="n">reference_price</span><span class="p">,</span> <span class="n">sl_trigger_percentage</span><span class="p">,</span>  <span class="n">sl_price_offset</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">calculate_sl_stop_prices</span><span class="p">(</span><span class="n">order_side</span><span class="p">,</span> <span class="n">reference_price</span><span class="p">,</span> <span class="n">sl_trigger_percentage</span><span class="p">,</span> <span class="n">sl_price_offset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate stop loss trigger and execute prices based on the order side.</span>
 
@@ -295,17 +331,19 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">order_side</span> <span class="o">==</span> <span class="s1">&#39;sell&#39;</span><span class="p">:</span>
-        <span class="n">sl_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sl_trigger_percentage</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">sl_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sl_trigger_percentage</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">sl_execute_price</span> <span class="o">=</span> <span class="n">sl_trigger_price</span> <span class="o">+</span> <span class="n">sl_price_offset</span>
         <span class="k">assert</span> <span class="n">sl_execute_price</span> <span class="o">&gt;</span> <span class="n">sl_trigger_price</span><span class="p">,</span> <span class="s2">&quot;sl_execute_price must be greater than sl_trigger_price&quot;</span>
     <span class="k">elif</span> <span class="n">order_side</span> <span class="o">==</span> <span class="s1">&#39;buy&#39;</span><span class="p">:</span>
-        <span class="n">sl_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sl_trigger_percentage</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">sl_trigger_price</span> <span class="o">=</span> <span class="n">reference_price</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sl_trigger_percentage</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
         <span class="n">sl_execute_price</span> <span class="o">=</span> <span class="n">sl_trigger_price</span> <span class="o">-</span> <span class="n">sl_price_offset</span>
         <span class="k">assert</span> <span class="n">sl_execute_price</span> <span class="o">&lt;</span> <span class="n">sl_trigger_price</span><span class="p">,</span> <span class="s2">&quot;sl_execute_price must be less than sl_trigger_price&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;order_side must be either &quot;buy&quot; or &quot;sell&quot;&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">sl_trigger_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">sl_execute_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
 
 <div class="viewcode-block" id="calculate_tp_stop_prices_usd">
 <a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.calculate_tp_stop_prices_usd">[docs]</a>
@@ -333,6 +371,8 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;order_side must be either &quot;buy&quot; or &quot;sell&quot;&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">tp_trigger_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">tp_execute_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
 
 <div class="viewcode-block" id="calculate_sl_stop_prices_usd">
 <a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.calculate_sl_stop_prices_usd">[docs]</a>
@@ -362,6 +402,7 @@
     <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">sl_trigger_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">sl_execute_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
 
 
+
 <div class="viewcode-block" id="FunctionCall">
 <a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.FunctionCall">[docs]</a>
 <span class="k">class</span> <span class="nc">FunctionCall</span><span class="p">:</span>
@@ -377,6 +418,7 @@
 </div>
 
 
+
 <div class="viewcode-block" id="execute_function_calls">
 <a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.execute_function_calls">[docs]</a>
 <span class="k">def</span> <span class="nf">execute_function_calls</span><span class="p">(</span><span class="n">function_calls</span><span class="p">):</span>
@@ -390,13 +432,11 @@
 <div class="viewcode-block" id="get_timestamp_from_days_ago">
 <a class="viewcode-back" href="../../shared.tmp_shared.html#shared.tmp_shared.get_timestamp_from_days_ago">[docs]</a>
 <span class="k">def</span> <span class="nf">get_timestamp_from_days_ago</span><span class="p">(</span><span class="n">days_ago</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hours_ago</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minutes_ago</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">seconds_ago</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">reference_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-
     <span class="k">if</span> <span class="ow">not</span> <span class="n">reference_time</span><span class="p">:</span>
         <span class="n">reference_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
     <span class="n">past_time</span> <span class="o">=</span> <span class="n">reference_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days_ago</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="n">hours_ago</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">minutes_ago</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="n">seconds_ago</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">past_time</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span></div>
-
 
 </pre></div>
 

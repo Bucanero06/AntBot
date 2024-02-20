@@ -53,12 +53,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_streams.html">h2o_dashboard.pages.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
@@ -136,20 +136,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.store.html">redis_tools._shared.store</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.consumers.html">redis_tools.consumers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
@@ -194,30 +182,11 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pyokx.ws_data_structures</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) 2024 Carbonyl LLC &amp; Carbonyl R&amp;D</span>
-<span class="c1">#</span>
-<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
-<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
-<span class="c1"># in the Software without restriction, including without limitation the rights</span>
-<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
-<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
-<span class="c1"># furnished to do so, subject to the following conditions:</span>
-<span class="c1">#</span>
-<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
-<span class="c1"># copies or substantial portions of the Software.</span>
-<span class="c1">#</span>
-<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
-<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
-<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
-<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
-<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
-<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
-<span class="c1"># SOFTWARE.</span>
+<span></span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">OKXBaseModel</span><span class="p">,</span> <span class="n">Instrument</span><span class="p">,</span> <span class="n">AccountBalanceData</span><span class="p">,</span> <span class="n">Ask</span><span class="p">,</span> <span class="n">Bid</span><span class="p">,</span> <span class="n">Ticker</span>
 
-<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">Instrument</span><span class="p">,</span> <span class="n">AccountBalanceData</span><span class="p">,</span> <span class="n">Ask</span><span class="p">,</span> <span class="n">Bid</span><span class="p">,</span> <span class="n">Ticker</span>
 <span class="sd">&quot;&quot;&quot;The data structures used to represent the data received from the OKX Websocket API.&quot;&quot;</span>
 <span class="sd">The channels are split into three categories: public, business, and private. The public channels are available to all</span>
 <span class="sd">users, the business channels are typically for market makers, and the private channels are for the user&#39;s account data.</span>
@@ -233,9 +202,10 @@
 <span class="sd">- wss://wspap.okx.com:8443/ws/v5/business?brokerId=9999</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="TickersChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.TickersChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">TickersChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TickersChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -243,7 +213,7 @@
 
 <div class="viewcode-block" id="TickersChannelReturnArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.TickersChannelReturnArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">TickersChannelReturnArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TickersChannelReturnArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -251,7 +221,7 @@
 
 <div class="viewcode-block" id="TickersChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.TickersChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">TickersChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TickersChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">TickersChannelReturnArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Ticker</span><span class="p">]</span></div>
 
@@ -259,7 +229,7 @@
 
 <div class="viewcode-block" id="CandleStick">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.CandleStick">[docs]</a>
-<span class="k">class</span> <span class="nc">CandleStick</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CandleStick</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;timestamp&#39;</span>
     <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span>
     <span class="nb">open</span><span class="p">:</span> <span class="nb">str</span>
@@ -272,7 +242,7 @@
 
 <div class="viewcode-block" id="PriceLimit">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PriceLimit">[docs]</a>
-<span class="k">class</span> <span class="nc">PriceLimit</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PriceLimit</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;instId&#39;</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">buyLmt</span><span class="p">:</span> <span class="nb">str</span>
@@ -284,7 +254,7 @@
 
 <div class="viewcode-block" id="InstrumentsChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.InstrumentsChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">InstrumentsChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">InstrumentsChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;instType&#39;</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -293,7 +263,7 @@
 
 <div class="viewcode-block" id="InstrumentsChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.InstrumentsChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">InstrumentsChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">InstrumentsChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">InstrumentsChannelInputArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Instrument</span><span class="p">]</span></div>
 
@@ -301,7 +271,7 @@
 
 <div class="viewcode-block" id="PriceLimitChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PriceLimitChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">PriceLimitChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PriceLimitChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;instId&#39;</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -310,7 +280,7 @@
 
 <div class="viewcode-block" id="PriceLimitChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PriceLimitChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">PriceLimitChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PriceLimitChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">PriceLimitChannelInputArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PriceLimit</span><span class="p">]</span></div>
 
@@ -318,7 +288,7 @@
 
 <div class="viewcode-block" id="MarkPriceChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.MarkPriceChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">MarkPriceChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MarkPriceChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;instId&#39;</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -327,7 +297,7 @@
 
 <div class="viewcode-block" id="MarkPrice">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.MarkPrice">[docs]</a>
-<span class="k">class</span> <span class="nc">MarkPrice</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MarkPrice</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;instId&#39;</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span>
@@ -338,7 +308,7 @@
 
 <div class="viewcode-block" id="MarkPriceChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.MarkPriceChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">MarkPriceChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MarkPriceChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">MarkPriceChannelInputArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">MarkPrice</span><span class="p">]</span></div>
 
@@ -346,7 +316,7 @@
 
 <div class="viewcode-block" id="MarkPriceCandleSticksChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.MarkPriceCandleSticksChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">MarkPriceCandleSticksChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MarkPriceCandleSticksChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;instId&#39;</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -355,7 +325,7 @@
 
 <div class="viewcode-block" id="MarkPriceCandleSticksChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.MarkPriceCandleSticksChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">MarkPriceCandleSticksChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MarkPriceCandleSticksChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">MarkPriceChannelInputArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CandleStick</span><span class="p">]</span>
 
@@ -382,7 +352,7 @@
 
 <div class="viewcode-block" id="IndexTickersChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexTickersChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">IndexTickersChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">IndexTickersChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;instId&#39;</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -391,7 +361,7 @@
 
 <div class="viewcode-block" id="IndexTickers">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexTickers">[docs]</a>
-<span class="k">class</span> <span class="nc">IndexTickers</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">IndexTickers</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">idxPx</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">high24h</span><span class="p">:</span> <span class="nb">str</span>
@@ -405,7 +375,7 @@
 
 <div class="viewcode-block" id="IndexTickersChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexTickersChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">IndexTickersChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">IndexTickersChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">IndexTickersChannelInputArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">IndexTickers</span><span class="p">]</span></div>
 
@@ -413,7 +383,7 @@
 
 <div class="viewcode-block" id="IndexCandleSticksChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexCandleSticksChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">IndexCandleSticksChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">IndexCandleSticksChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span> <span class="o">=</span> <span class="s1">&#39;instId&#39;</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -422,7 +392,7 @@
 
 <div class="viewcode-block" id="IndexCandleSticksChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexCandleSticksChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">IndexCandleSticksChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">IndexCandleSticksChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">IndexCandleSticksChannelInputArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CandleStick</span><span class="p">]</span>
 
@@ -447,7 +417,7 @@
 
 <div class="viewcode-block" id="AccountChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.AccountChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">AccountChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AccountChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ccy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">extraParams</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -456,7 +426,7 @@
 
 <div class="viewcode-block" id="AccountChannelReturnArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.AccountChannelReturnArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">AccountChannelReturnArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AccountChannelReturnArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">uid</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -464,7 +434,7 @@
 
 <div class="viewcode-block" id="AccountChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.AccountChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">AccountChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AccountChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">AccountChannelReturnArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AccountBalanceData</span><span class="p">]</span></div>
 
@@ -472,7 +442,7 @@
 
 <div class="viewcode-block" id="WSPosition">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition">[docs]</a>
-<span class="k">class</span> <span class="nc">WSPosition</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WSPosition</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">mgnMode</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">posId</span><span class="p">:</span> <span class="nb">str</span>
@@ -537,7 +507,7 @@
 
 <div class="viewcode-block" id="PositionsChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionsChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">PositionsChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PositionsChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="c1"># {</span>
     <span class="c1">#       &quot;channel&quot;: &quot;positions&quot;,</span>
     <span class="c1">#       &quot;instType&quot;: &quot;ANY&quot;,</span>
@@ -554,9 +524,10 @@
     <span class="n">extraParams</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
+
 <div class="viewcode-block" id="PositionsChannelReturnArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionsChannelReturnArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">PositionsChannelReturnArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PositionsChannelReturnArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">uid</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span>
@@ -567,7 +538,7 @@
 
 <div class="viewcode-block" id="PositionsChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.PositionsChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">PositionsChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PositionsChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">PositionsChannelReturnArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">WSPosition</span><span class="p">]</span></div>
 
@@ -575,14 +546,14 @@
 
 <div class="viewcode-block" id="BalanceAndPositionsChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.BalanceAndPositionsChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">BalanceAndPositionsChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BalanceAndPositionsChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span></div>
 
 
 
 <div class="viewcode-block" id="BalanceAndPositionsChannelReturnArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.BalanceAndPositionsChannelReturnArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">BalanceAndPositionsChannelReturnArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BalanceAndPositionsChannelReturnArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">uid</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -590,7 +561,7 @@
 
 <div class="viewcode-block" id="ws_balData_element">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.ws_balData_element">[docs]</a>
-<span class="k">class</span> <span class="nc">ws_balData_element</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ws_balData_element</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ccy&quot;</span>
 
     <span class="n">ccy</span><span class="p">:</span> <span class="nb">str</span>
@@ -601,7 +572,7 @@
 
 <div class="viewcode-block" id="ws_posData_element">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.ws_posData_element">[docs]</a>
-<span class="k">class</span> <span class="nc">ws_posData_element</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ws_posData_element</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;posId&quot;</span>
 
     <span class="n">posId</span><span class="p">:</span> <span class="nb">str</span>
@@ -620,7 +591,7 @@
 
 <div class="viewcode-block" id="ws_trades_element">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.ws_trades_element">[docs]</a>
-<span class="k">class</span> <span class="nc">ws_trades_element</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ws_trades_element</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tradeId&quot;</span>
 
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span>
@@ -630,7 +601,7 @@
 
 <div class="viewcode-block" id="BalanceAndPositionData">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.BalanceAndPositionData">[docs]</a>
-<span class="k">class</span> <span class="nc">BalanceAndPositionData</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BalanceAndPositionData</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">pTime</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">eventType</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">balData</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ws_balData_element</span><span class="p">]</span>
@@ -641,7 +612,7 @@
 
 <div class="viewcode-block" id="BalanceAndPositionsChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.BalanceAndPositionsChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">BalanceAndPositionsChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">BalanceAndPositionsChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">BalanceAndPositionsChannelReturnArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BalanceAndPositionData</span><span class="p">]</span></div>
 
@@ -649,7 +620,7 @@
 
 <div class="viewcode-block" id="WebSocketConnectionConfig">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.WebSocketConnectionConfig">[docs]</a>
-<span class="k">class</span> <span class="nc">WebSocketConnectionConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WebSocketConnectionConfig</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">_primary_key_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">channels</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -659,7 +630,7 @@
 
 <div class="viewcode-block" id="OrdersChannelInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrdersChannelInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">OrdersChannelInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OrdersChannelInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instFamily</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -669,7 +640,7 @@
 
 <div class="viewcode-block" id="OrdersChannelReturnArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrdersChannelReturnArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">OrdersChannelReturnArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OrdersChannelReturnArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">uid</span><span class="p">:</span> <span class="nb">str</span>
@@ -680,7 +651,7 @@
 
 <div class="viewcode-block" id="WSOrder">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSOrder">[docs]</a>
-<span class="k">class</span> <span class="nc">WSOrder</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">WSOrder</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">accFillSz</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">algoClOrdId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">algoId</span><span class="p">:</span> <span class="nb">str</span>
@@ -751,7 +722,7 @@
 
 <div class="viewcode-block" id="OrdersChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrdersChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">OrdersChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OrdersChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">OrdersChannelReturnArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">WSOrder</span><span class="p">]</span></div>
 
@@ -759,7 +730,7 @@
 
 <div class="viewcode-block" id="OrderBookInputArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrderBookInputArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">OrderBookInputArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OrderBookInputArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -767,7 +738,7 @@
 
 <div class="viewcode-block" id="OrderBookReturnArgs">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrderBookReturnArgs">[docs]</a>
-<span class="k">class</span> <span class="nc">OrderBookReturnArgs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OrderBookReturnArgs</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
 
@@ -775,7 +746,7 @@
 
 <div class="viewcode-block" id="OrderBookData">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrderBookData">[docs]</a>
-<span class="k">class</span> <span class="nc">OrderBookData</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OrderBookData</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">asks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Ask</span><span class="p">]</span>
     <span class="n">bids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Bid</span><span class="p">]</span>
     <span class="n">ts</span><span class="p">:</span> <span class="nb">str</span>
@@ -788,7 +759,7 @@
 
 <div class="viewcode-block" id="OrderBookChannel">
 <a class="viewcode-back" href="../../pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrderBookChannel">[docs]</a>
-<span class="k">class</span> <span class="nc">OrderBookChannel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OrderBookChannel</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">arg</span><span class="p">:</span> <span class="n">OrderBookReturnArgs</span>
     <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OrderBookData</span><span class="p">]</span>
     <span class="n">action</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>

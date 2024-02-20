@@ -22,7 +22,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="h2o_dashboard.widgets.okx_antbot_controls" href="h2o_dashboard.widgets.okx_antbot_controls.html" />
+    <link rel="next" title="pyokx.Futures_Exchange_Client" href="pyokx.Futures_Exchange_Client.html" />
     <link rel="prev" title="h2o_dashboard.util" href="h2o_dashboard.util.html" /> 
 </head>
 
@@ -56,13 +56,13 @@
 <li class="toctree-l1"><a class="reference internal" href="firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_streams.html">h2o_dashboard.pages.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">h2o_dashboard.wave_auth</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#h2o_dashboard.wave_auth.add_application_sidebar"><code class="docutils literal notranslate"><span class="pre">add_application_sidebar()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#h2o_dashboard.wave_auth.authenticate_with_firebase"><code class="docutils literal notranslate"><span class="pre">authenticate_with_firebase()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#h2o_dashboard.wave_auth.check_token_validity"><code class="docutils literal notranslate"><span class="pre">check_token_validity()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#h2o_dashboard.wave_auth.init"><code class="docutils literal notranslate"><span class="pre">init()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#h2o_dashboard.wave_auth.initialize_client"><code class="docutils literal notranslate"><span class="pre">initialize_client()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#h2o_dashboard.wave_auth.render_hidden_content"><code class="docutils literal notranslate"><span class="pre">render_hidden_content()</span></code></a></li>
@@ -70,8 +70,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#h2o_dashboard.wave_auth.serve_security"><code class="docutils literal notranslate"><span class="pre">serve_security()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
@@ -149,20 +147,8 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.store.html">redis_tools._shared.store</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.config.html">redis_tools.config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.consumers.html">redis_tools.consumers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.utils.html">redis_tools.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="routers.api_keys.html">routers.api_keys</a></li>
@@ -212,18 +198,6 @@
 <dt class="sig sig-object py" id="h2o_dashboard.wave_auth.add_application_sidebar">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">h2o_dashboard.wave_auth.</span></span><span class="sig-name descname"><span class="pre">add_application_sidebar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/h2o_dashboard/wave_auth.html#add_application_sidebar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#h2o_dashboard.wave_auth.add_application_sidebar" title="Link to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="h2o_dashboard.wave_auth.authenticate_with_firebase">
-<span class="sig-prename descclassname"><span class="pre">h2o_dashboard.wave_auth.</span></span><span class="sig-name descname"><span class="pre">authenticate_with_firebase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/h2o_dashboard/wave_auth.html#authenticate_with_firebase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#h2o_dashboard.wave_auth.authenticate_with_firebase" title="Link to this definition"></a></dt>
-<dd><p>Authenticate with Firebase and return token if successful, or an error message.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="h2o_dashboard.wave_auth.check_token_validity">
-<span class="sig-prename descclassname"><span class="pre">h2o_dashboard.wave_auth.</span></span><span class="sig-name descname"><span class="pre">check_token_validity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idToken</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/h2o_dashboard/wave_auth.html#check_token_validity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#h2o_dashboard.wave_auth.check_token_validity" title="Link to this definition"></a></dt>
-<dd><p>Check if a Firebase token is valid.</p>
-</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="h2o_dashboard.wave_auth.init">
@@ -300,7 +274,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="h2o_dashboard.util.html" class="btn btn-neutral float-left" title="h2o_dashboard.util" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="h2o_dashboard.widgets.okx_antbot_controls.html" class="btn btn-neutral float-right" title="h2o_dashboard.widgets.okx_antbot_controls" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pyokx.Futures_Exchange_Client.html" class="btn btn-neutral float-right" title="pyokx.Futures_Exchange_Client" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

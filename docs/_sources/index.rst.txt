@@ -1,5 +1,5 @@
 .. AntBot documentation master file, created by
-   sphinx-quickstart on Wed Feb  7 01:13:04 2024.
+   sphinx-quickstart on Mon Feb 19 20:48:33 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -16,12 +16,12 @@ Welcome to AntBot's documentation!
    firebase_tools.authenticate
    h2o_dashboard.dashboard
    h2o_dashboard.pages.documentation_page
-   h2o_dashboard.pages.okx_dashboard_page
+   h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler
+   h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page
+   h2o_dashboard.pages.okx_streams
    h2o_dashboard.pages.overview_page
    h2o_dashboard.util
    h2o_dashboard.wave_auth
-   h2o_dashboard.widgets.okx_antbot_controls
-   h2o_dashboard.widgets.okx_streams
    pyokx.Futures_Exchange_Client
    pyokx.InstrumentSearcher
    pyokx.data_structures
@@ -99,20 +99,8 @@ Welcome to AntBot's documentation!
    pyokx.ws_clients.WsPublicAsync
    pyokx.ws_clients.WsUtils
    pyokx.ws_data_structures
-   redis_tools._shared.lua_scripts
-   redis_tools._shared.model.base
-   redis_tools._shared.model.delete_utils
-   redis_tools._shared.model.insert_utils
-   redis_tools._shared.model.prop_utils
-   redis_tools._shared.model.select_utils
-   redis_tools._shared.store
-   redis_tools._shared.utils
-   redis_tools.asyncio.model
-   redis_tools.asyncio.store
    redis_tools.config
    redis_tools.consumers
-   redis_tools.syncio.model
-   redis_tools.syncio.store
    redis_tools.utils
    rest_app
    routers.api_keys

@@ -53,12 +53,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../firebase_tools.authenticate.html">firebase_tools.authenticate</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_streams.html">h2o_dashboard.pages.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.overview_page.html">h2o_dashboard.pages.overview_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.util.html">h2o_dashboard.util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.wave_auth.html">h2o_dashboard.wave_auth</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_antbot_controls.html">h2o_dashboard.widgets.okx_antbot_controls</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.widgets.okx_streams.html">h2o_dashboard.widgets.okx_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
@@ -136,20 +136,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsPublicAsync.html">pyokx.ws_clients.WsPublicAsync</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_clients.WsUtils.html">pyokx.ws_clients.WsUtils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.ws_data_structures.html">pyokx.ws_data_structures</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.lua_scripts.html">redis_tools._shared.lua_scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.base.html">redis_tools._shared.model.base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.delete_utils.html">redis_tools._shared.model.delete_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.insert_utils.html">redis_tools._shared.model.insert_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.prop_utils.html">redis_tools._shared.model.prop_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.model.select_utils.html">redis_tools._shared.model.select_utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.store.html">redis_tools._shared.store</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools._shared.utils.html">redis_tools._shared.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.model.html">redis_tools.asyncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.asyncio.store.html">redis_tools.asyncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.config.html">redis_tools.config</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.consumers.html">redis_tools.consumers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.model.html">redis_tools.syncio.model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../redis_tools.syncio.store.html">redis_tools.syncio.store</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../redis_tools.utils.html">redis_tools.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../rest_app.html">rest_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../routers.api_keys.html">routers.api_keys</a></li>
@@ -194,27 +182,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pyokx.data_structures</h1><div class="highlight"><pre>
-<span></span><span class="c1"># Copyright (c) 2024 Carbonyl LLC &amp; Carbonyl R&amp;D</span>
-<span class="c1">#</span>
-<span class="c1"># Permission is hereby granted, free of charge, to any person obtaining a copy</span>
-<span class="c1"># of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
-<span class="c1"># in the Software without restriction, including without limitation the rights</span>
-<span class="c1"># to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
-<span class="c1"># copies of the Software, and to permit persons to whom the Software is</span>
-<span class="c1"># furnished to do so, subject to the following conditions:</span>
-<span class="c1">#</span>
-<span class="c1"># The above copyright notice and this permission notice shall be included in all</span>
-<span class="c1"># copies or substantial portions of the Software.</span>
-<span class="c1">#</span>
-<span class="c1"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
-<span class="c1"># IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
-<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
-<span class="c1"># AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
-<span class="c1"># LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
-<span class="c1"># OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE</span>
-<span class="c1"># SOFTWARE.</span>
+<span></span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">validator</span>
@@ -222,9 +191,26 @@
 <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">MgnMode</span><span class="p">,</span> <span class="n">PosSide</span><span class="p">,</span> <span class="n">InstType</span>
 
 
+<div class="viewcode-block" id="OKXBaseModelModelMeta">
+<a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.OKXBaseModelModelMeta">[docs]</a>
+<span class="k">class</span> <span class="nc">OKXBaseModelModelMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">model_fields</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">item</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="OKXBaseModel">
+<a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.OKXBaseModel">[docs]</a>
+<span class="k">class</span> <span class="nc">OKXBaseModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">OKXBaseModelModelMeta</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+
 <div class="viewcode-block" id="Order">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Order">[docs]</a>
-<span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">accFillSz</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">algoClOrdId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">algoId</span><span class="p">:</span> <span class="nb">str</span>
@@ -279,7 +265,7 @@
 
 <div class="viewcode-block" id="Cancelled_Order">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Cancelled_Order">[docs]</a>
-<span class="k">class</span> <span class="nc">Cancelled_Order</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Cancelled_Order</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">clOrdId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ordId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sCode</span><span class="p">:</span> <span class="nb">str</span>
@@ -289,7 +275,7 @@
 
 <div class="viewcode-block" id="Cancelled_Algo_Order">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Cancelled_Algo_Order">[docs]</a>
-<span class="k">class</span> <span class="nc">Cancelled_Algo_Order</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Cancelled_Algo_Order</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;algoClOrdId&#39;: &#39;&#39;, &#39;algoId&#39;: &#39;661126556584251392&#39;, &#39;clOrdId&#39;: &#39;&#39;, &#39;sCode&#39;: &#39;0&#39;, &#39;sMsg&#39;: &#39;&#39;, &#39;tag&#39;: &#39;&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -304,7 +290,7 @@
 
 <div class="viewcode-block" id="Position">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Position">[docs]</a>
-<span class="k">class</span> <span class="nc">Position</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Position</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;adl&#39;: &#39;1&#39;, &#39;availPos&#39;: &#39;&#39;, &#39;avgPx&#39;: &#39;45075.3000000000000001&#39;, &#39;baseBal&#39;: &#39;&#39;, &#39;baseBorrowed&#39;: &#39;&#39;, &#39;baseInterest&#39;: &#39;&#39;, &#39;bePx&#39;: &#39;45120.39784892446&#39;, &#39;bizRefId&#39;: &#39;&#39;, &#39;bizRefType&#39;: &#39;&#39;, &#39;cTime&#39;: &#39;1703728631744&#39;, &#39;ccy&#39;: &#39;USDT&#39;, &#39;closeOrderAlgo&#39;: [], &#39;deltaBS&#39;: &#39;&#39;, &#39;deltaPA&#39;: &#39;&#39;, &#39;fee&#39;: &#39;-0.901506&#39;, &#39;fundingFee&#39;: &#39;0&#39;, &#39;gammaBS&#39;: &#39;&#39;, &#39;gammaPA&#39;: &#39;&#39;, &#39;idxPx&#39;: &#39;43474.0&#39;, &#39;imr&#39;: &#39;&#39;, &#39;instId&#39;: &#39;BTC-USDT-240329&#39;, &#39;instType&#39;: &#39;FUTURES&#39;, &#39;interest&#39;: &#39;&#39;, &#39;last&#39;: &#39;45070.1&#39;, &#39;lever&#39;: &#39;3&#39;, &#39;liab&#39;: &#39;&#39;, &#39;liabCcy&#39;: &#39;&#39;, &#39;liqPenalty&#39;: &#39;0&#39;, &#39;liqPx&#39;: &#39;30186.137167252637&#39;, &#39;margin&#39;: &#39;601.004&#39;, &#39;markPx&#39;: &#39;45068&#39;, &#39;mgnMode&#39;: &#39;isolated&#39;, &#39;mgnRatio&#39;: &#39;74.05007741388319&#39;, &#39;mmr&#39;: &#39;7.21088&#39;, &#39;notionalUsd&#39;: &#39;1804.4145568&#39;, &#39;optVal&#39;: &#39;&#39;, &#39;pendingCloseOrdLiabVal&#39;: &#39;&#39;, &#39;pnl&#39;: &#39;0&#39;, &#39;pos&#39;: &#39;4&#39;, &#39;posCcy&#39;: &#39;&#39;, &#39;posId&#39;: &#39;660420980350771429&#39;, &#39;posSide&#39;: &#39;net&#39;, &#39;quoteBal&#39;: &#39;&#39;, &#39;quoteBorrowed&#39;: &#39;&#39;, &#39;quoteInterest&#39;: &#39;&#39;, &#39;realizedPnl&#39;: &#39;-0.901506&#39;, &#39;spotInUseAmt&#39;: &#39;&#39;, &#39;spotInUseCcy&#39;: &#39;&#39;, &#39;thetaBS&#39;: &#39;&#39;, &#39;thetaPA&#39;: &#39;&#39;, &#39;tradeId&#39;: &#39;3014208&#39;, &#39;uTime&#39;: &#39;1703728655219&#39;, &#39;upl&#39;: &#39;-0.2920000000001164&#39;, &#39;uplLastPx&#39;: &#39;-0.2080000000001746&#39;, &#39;uplRatio&#39;: &#39;-0.0004858536715233&#39;, &#39;uplRatioLastPx&#39;: &#39;-0.0003460875468385&#39;, &#39;usdPx&#39;: &#39;&#39;, &#39;vegaBS&#39;: &#39;&#39;, &#39;vegaPA&#39;: &#39;&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -370,10 +356,9 @@
 
 
 
-
 <div class="viewcode-block" id="Closed_Position">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Closed_Position">[docs]</a>
-<span class="k">class</span> <span class="nc">Closed_Position</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Closed_Position</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;clOrdId&#39;: &#39;&#39;, &#39;instId&#39;: &#39;BTC-USDT-240329&#39;, &#39;posSide&#39;: &#39;net&#39;, &#39;tag&#39;: &#39;&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -386,7 +371,7 @@
 
 <div class="viewcode-block" id="Ticker">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Ticker">[docs]</a>
-<span class="k">class</span> <span class="nc">Ticker</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Ticker</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g {&#39;instType&#39;: &#39;FUTURES&#39;, &#39;instId&#39;: &#39;BTC-USDT-240329&#39;, &#39;last&#39;: &#39;44725.3&#39;, &#39;lastSz&#39;: &#39;11&#39;, &#39;askPx&#39;: &#39;44727&#39;, &#39;askSz&#39;: &#39;147&#39;, &#39;bidPx&#39;: &#39;44724.5&#39;, &#39;bidSz&#39;: &#39;170&#39;, &#39;open24h&#39;: &#39;43854.9&#39;, &#39;high24h&#39;: &#39;45406.2&#39;, &#39;low24h&#39;: &#39;38196.8&#39;, &#39;volCcy24h&#39;: &#39;14025.4&#39;, &#39;vol24h&#39;: &#39;1402540&#39;, &#39;ts&#39;: &#39;1703741214308&#39;, &#39;sodUtc0&#39;: &#39;44977.8&#39;, &#39;sodUtc8&#39;: &#39;44452.3&#39;}]}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -411,7 +396,7 @@
 
 <div class="viewcode-block" id="Order_Placement_Return">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Order_Placement_Return">[docs]</a>
-<span class="k">class</span> <span class="nc">Order_Placement_Return</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Order_Placement_Return</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;clOrdId&#39;: &#39;&#39;, &#39;ordId&#39;: &#39;660478634888654848&#39;, &#39;sCode&#39;: &#39;0&#39;, &#39;sMsg&#39;: &#39;Order placed&#39;, &#39;tag&#39;: &#39;&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -425,7 +410,7 @@
 
 <div class="viewcode-block" id="Algo_Order">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Algo_Order">[docs]</a>
-<span class="k">class</span> <span class="nc">Algo_Order</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Algo_Order</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;activePx&#39;: &#39;&#39;, &#39;actualPx&#39;: &#39;&#39;, &#39;actualSide&#39;: &#39;&#39;, &#39;actualSz&#39;: &#39;0&#39;, &#39;algoClOrdId&#39;: &#39;&#39;, &#39;algoId&#39;: &#39;660707839958183936&#39;, &#39;amendPxOnTriggerType&#39;: &#39;0&#39;, &#39;attachAlgoOrds&#39;: [], &#39;cTime&#39;: &#39;1703797024404&#39;, &#39;callbackRatio&#39;: &#39;&#39;, &#39;callbackSpread&#39;: &#39;&#39;, &#39;ccy&#39;: &#39;&#39;, &#39;clOrdId&#39;: &#39;&#39;, &#39;closeFraction&#39;: &#39;&#39;, &#39;failCode&#39;: &#39;&#39;, &#39;instId&#39;: &#39;BTC-USDT-240329&#39;, &#39;instType&#39;: &#39;FUTURES&#39;, &#39;last&#39;: &#39;44080&#39;, &#39;lever&#39;: &#39;3&#39;, &#39;moveTriggerPx&#39;: &#39;&#39;, &#39;ordId&#39;: &#39;&#39;, &#39;ordIdList&#39;: [], &#39;ordPx&#39;: &#39;&#39;, &#39;ordType&#39;: &#39;conditional&#39;, &#39;posSide&#39;: &#39;net&#39;, &#39;pxLimit&#39;: &#39;&#39;, &#39;pxSpread&#39;: &#39;&#39;, &#39;pxVar&#39;: &#39;&#39;, &#39;quickMgnType&#39;: &#39;&#39;, &#39;reduceOnly&#39;: &#39;false&#39;, &#39;side&#39;: &#39;buy&#39;, &#39;slOrdPx&#39;: &#39;&#39;, &#39;slTriggerPx&#39;: &#39;&#39;, &#39;slTriggerPxType&#39;: &#39;&#39;, &#39;state&#39;: &#39;live&#39;, &#39;sz&#39;: &#39;1&#39;, &#39;szLimit&#39;: &#39;&#39;, &#39;tag&#39;: &#39;&#39;, &#39;tdMode&#39;: &#39;isolated&#39;, &#39;tgtCcy&#39;: &#39;&#39;, &#39;timeInterval&#39;: &#39;&#39;, &#39;tpOrdPx&#39;: &#39;-1&#39;, &#39;tpTriggerPx&#39;: &#39;44075&#39;, &#39;tpTriggerPxType&#39;: &#39;last&#39;, &#39;triggerPx&#39;: &#39;&#39;, &#39;triggerPxType&#39;: &#39;&#39;, &#39;triggerTime&#39;: &#39;&#39;}, {&#39;activePx&#39;: &#39;&#39;, &#39;actualPx&#39;: &#39;&#39;, &#39;actualSide&#39;: &#39;&#39;, &#39;actualSz&#39;: &#39;0&#39;, &#39;algoClOrdId&#39;: &#39;&#39;, &#39;algoId&#39;: &#39;660707810421895170&#39;, &#39;amendPxOnTriggerType&#39;: &#39;0&#39;, &#39;attachAlgoOrds&#39;: [], &#39;cTime&#39;: &#39;1703797017362&#39;, &#39;callbackRatio&#39;: &#39;&#39;, &#39;callbackSpread&#39;: &#39;&#39;, &#39;ccy&#39;: &#39;&#39;, &#39;clOrdId&#39;: &#39;&#39;, &#39;closeFraction&#39;: &#39;&#39;, &#39;failCode&#39;: &#39;&#39;, &#39;instId&#39;: &#39;BTC-USDT-240329&#39;, &#39;instType&#39;: &#39;FUTURES&#39;, &#39;last&#39;: &#39;44079.5&#39;, &#39;lever&#39;: &#39;3&#39;, &#39;moveTriggerPx&#39;: &#39;&#39;, &#39;ordId&#39;: &#39;&#39;, &#39;ordIdList&#39;: [], &#39;ordPx&#39;: &#39;&#39;, &#39;ordType&#39;: &#39;conditional&#39;, &#39;posSide&#39;: &#39;net&#39;, &#39;pxLimit&#39;: &#39;&#39;, &#39;pxSpread&#39;: &#39;&#39;, &#39;pxVar&#39;: &#39;&#39;, &#39;quickMgnType&#39;: &#39;&#39;, &#39;reduceOnly&#39;: &#39;false&#39;, &#39;side&#39;: &#39;buy&#39;, &#39;slOrdPx&#39;: &#39;&#39;, &#39;slTriggerPx&#39;: &#39;&#39;, &#39;slTriggerPxType&#39;: &#39;&#39;, &#39;state&#39;: &#39;live&#39;, &#39;sz&#39;: &#39;1&#39;, &#39;szLimit&#39;: &#39;&#39;, &#39;tag&#39;: &#39;&#39;, &#39;tdMode&#39;: &#39;isolated&#39;, &#39;tgtCcy&#39;: &#39;&#39;, &#39;timeInterval&#39;: &#39;&#39;, &#39;tpOrdPx&#39;: &#39;-1&#39;, &#39;tpTriggerPx&#39;: &#39;44074.5&#39;, &#39;tpTriggerPxType&#39;: &#39;last&#39;, &#39;triggerPx&#39;: &#39;&#39;, &#39;triggerPxType&#39;: &#39;&#39;, &#39;triggerTime&#39;: &#39;&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -481,7 +466,7 @@
 
 <div class="viewcode-block" id="Algo_Order_Placement_Return">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Algo_Order_Placement_Return">[docs]</a>
-<span class="k">class</span> <span class="nc">Algo_Order_Placement_Return</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Algo_Order_Placement_Return</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;algoClOrdId&#39;: &#39;&#39;, &#39;algoId&#39;: &#39;660710963351515145&#39;, &#39;clOrdId&#39;: &#39;&#39;, &#39;sCode&#39;: &#39;0&#39;, &#39;sMsg&#39;: &#39;&#39;, &#39;tag&#39;: &#39;&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -496,7 +481,7 @@
 
 <div class="viewcode-block" id="Instrument">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Instrument">[docs]</a>
-<span class="k">class</span> <span class="nc">Instrument</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Instrument</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;alias&#39;: &#39;next_month&#39;, &#39;baseCcy&#39;: &#39;&#39;, &#39;category&#39;: &#39;1&#39;, &#39;ctMult&#39;: &#39;1&#39;, &#39;ctType&#39;: &#39;inverse&#39;, &#39;ctVal&#39;: &#39;100&#39;,</span>
 <span class="sd">         &#39;ctValCcy&#39;: &#39;USD&#39;, &#39;expTime&#39;: &#39;1708675200000&#39;, &#39;instFamily&#39;: &#39;BTC-USD&#39;, &#39;instId&#39;: &#39;BTC-USD-240223&#39;,</span>
@@ -541,7 +526,7 @@
 
 <div class="viewcode-block" id="Bid">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Bid">[docs]</a>
-<span class="k">class</span> <span class="nc">Bid</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Bid</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. &#39;43752.4&#39;, &#39;156&#39;, &#39;0&#39;, &#39;1&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -554,7 +539,7 @@
 
 <div class="viewcode-block" id="Ask">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Ask">[docs]</a>
-<span class="k">class</span> <span class="nc">Ask</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Ask</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. &#39;43752.4&#39;, &#39;156&#39;, &#39;0&#39;, &#39;1&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -567,7 +552,7 @@
 
 <div class="viewcode-block" id="Orderbook_Snapshot">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Orderbook_Snapshot">[docs]</a>
-<span class="k">class</span> <span class="nc">Orderbook_Snapshot</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Orderbook_Snapshot</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;asks&#39;: [[&#39;43746.5&#39;, &#39;106&#39;, &#39;0&#39;, &#39;1&#39;], [&#39;43751.1&#39;, &#39;171&#39;, &#39;0&#39;, &#39;1&#39;], [&#39;43751.2&#39;, &#39;118&#39;, &#39;0&#39;, &#39;1&#39;],</span>
 <span class="sd">          [&#39;43752.4&#39;, &#39;156&#39;, &#39;0&#39;, &#39;1&#39;], [&#39;43753.5&#39;, &#39;151&#39;, &#39;0&#39;, &#39;1&#39;], [&#39;43753.7&#39;, &#39;126&#39;, &#39;0&#39;, &#39;1&#39;],</span>
@@ -594,7 +579,7 @@
 
 <div class="viewcode-block" id="Simplified_Balance_Details">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.Simplified_Balance_Details">[docs]</a>
-<span class="k">class</span> <span class="nc">Simplified_Balance_Details</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Simplified_Balance_Details</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">Currency</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">Available_Balance</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">Equity</span><span class="p">:</span> <span class="nb">str</span>
@@ -605,7 +590,7 @@
 
 <div class="viewcode-block" id="AccountBalanceDetails">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails">[docs]</a>
-<span class="k">class</span> <span class="nc">AccountBalanceDetails</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AccountBalanceDetails</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;availBal&#39;: &#39;1&#39;, &#39;availEq&#39;: &#39;1&#39;, &#39;borrowFroz&#39;: &#39;&#39;, &#39;cashBal&#39;: &#39;1&#39;, &#39;ccy&#39;: &#39;BTC&#39;, &#39;crossLiab&#39;: &#39;&#39;, &#39;disEq&#39;: &#39;42219&#39;,</span>
 <span class="sd">          &#39;eq&#39;: &#39;1&#39;, &#39;eqUsd&#39;: &#39;42219&#39;, &#39;fixedBal&#39;: &#39;0&#39;, &#39;frozenBal&#39;: &#39;0&#39;, &#39;interest&#39;: &#39;&#39;, &#39;isoEq&#39;: &#39;0&#39;, &#39;isoLiab&#39;: &#39;&#39;,</span>
@@ -644,7 +629,7 @@
 
 <div class="viewcode-block" id="AccountBalanceData">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.AccountBalanceData">[docs]</a>
-<span class="k">class</span> <span class="nc">AccountBalanceData</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AccountBalanceData</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;adjEq&#39;: &#39;&#39;, &#39;borrowFroz&#39;: &#39;&#39;, &#39;details&#39;: [{&#39;availBal&#39;: &#39;1&#39;, &#39;availEq&#39;: &#39;1&#39;, &#39;borrowFroz&#39;: &#39;&#39;, &#39;cashBal&#39;: &#39;1&#39;, &#39;ccy&#39;: &#39;BTC&#39;, &#39;crossLiab&#39;: &#39;&#39;, &#39;disEq&#39;: &#39;42219&#39;, &#39;eq&#39;: &#39;1&#39;, &#39;eqUsd&#39;: &#39;42219&#39;, &#39;fixedBal&#39;: &#39;0&#39;, &#39;frozenBal&#39;: &#39;0&#39;, &#39;interest&#39;: &#39;&#39;, &#39;isoEq&#39;: &#39;0&#39;, &#39;isoLiab&#39;: &#39;&#39;, &#39;isoUpl&#39;: &#39;0&#39;, &#39;liab&#39;: &#39;&#39;, &#39;maxLoan&#39;: &#39;&#39;, &#39;mgnRatio&#39;: &#39;&#39;, &#39;notionalLever&#39;: &#39;0&#39;, &#39;ordFrozen&#39;: &#39;0&#39;, &#39;spotInUseAmt&#39;: &#39;&#39;, &#39;spotIsoBal&#39;: &#39;0&#39;, &#39;stgyEq&#39;: &#39;0&#39;, &#39;twap&#39;: &#39;0&#39;, &#39;uTime&#39;: &#39;1703639691142&#39;, &#39;upl&#39;: &#39;0&#39;, &#39;uplLiab&#39;: &#39;&#39;}, {&#39;availBal&#39;: &#39;100&#39;, &#39;availEq&#39;: &#39;100&#39;, &#39;borrowFroz&#39;: &#39;&#39;, &#39;cashBal&#39;: &#39;100&#39;, &#39;ccy&#39;: &#39;OKB&#39;, &#39;crossLiab&#39;: &#39;&#39;, &#39;disEq&#39;: &#39;5207.329999999999&#39;, &#39;eq&#39;: &#39;100&#39;, &#39;eqUsd&#39;: &#39;5481.4&#39;, &#39;fixedBal&#39;: &#39;0&#39;, &#39;frozenBal&#39;: &#39;0&#39;, &#39;interest&#39;: &#39;&#39;, &#39;isoEq&#39;: &#39;0&#39;, &#39;isoLiab&#39;: &#39;&#39;, &#39;isoUpl&#39;: &#39;0&#39;, &#39;liab&#39;: &#39;&#39;, &#39;maxLoan&#39;: &#39;&#39;, &#39;mgnRatio&#39;: &#39;&#39;, &#39;notionalLever&#39;: &#39;0&#39;, &#39;ordFrozen&#39;: &#39;0&#39;, &#39;spotInUseAmt&#39;: &#39;&#39;, &#39;spotIsoBal&#39;: &#39;0&#39;, &#39;stgyEq&#39;: &#39;0&#39;, &#39;twap&#39;: &#39;0&#39;, &#39;uTime&#39;: &#39;1703639691152&#39;, &#39;upl&#39;: &#39;0&#39;, &#39;uplLiab&#39;: &#39;&#39;}, {&#39;availBal&#39;: &#39;5069.205129833334&#39;, &#39;availEq&#39;: &#39;5069.205129833334&#39;, &#39;borrowFroz&#39;: &#39;&#39;, &#39;cashBal&#39;: &#39;5069.205129833334&#39;, &#39;ccy&#39;: &#39;USDT&#39;, &#39;crossLiab&#39;: &#39;&#39;, &#39;disEq&#39;: &#39;5218.680085966916&#39;, &#39;eq&#39;: &#39;5217.0627965&#39;, &#39;eqUsd&#39;: &#39;5218.680085966916&#39;, &#39;fixedBal&#39;: &#39;0&#39;, &#39;frozenBal&#39;: &#39;147.85766666666666&#39;, &#39;interest&#39;: &#39;&#39;, &#39;isoEq&#39;: &#39;147.85766666666666&#39;, &#39;isoLiab&#39;: &#39;&#39;, &#39;isoUpl&#39;: &#39;2.5&#39;, &#39;liab&#39;: &#39;&#39;, &#39;maxLoan&#39;: &#39;&#39;, &#39;mgnRatio&#39;: &#39;&#39;, &#39;notionalLever&#39;: &#39;0&#39;, &#39;ordFrozen&#39;: &#39;0&#39;, &#39;spotInUseAmt&#39;: &#39;&#39;, &#39;spotIsoBal&#39;: &#39;0&#39;, &#39;stgyEq&#39;: &#39;0&#39;, &#39;twap&#39;: &#39;0&#39;, &#39;uTime&#39;: &#39;1703877105585&#39;, &#39;upl&#39;: &#39;2.5&#39;, &#39;uplLiab&#39;: &#39;&#39;}, {&#39;availBal&#39;: &#39;1&#39;, &#39;availEq&#39;: &#39;1&#39;, &#39;borrowFroz&#39;: &#39;&#39;, &#39;cashBal&#39;: &#39;1&#39;, &#39;ccy&#39;: &#39;ETH&#39;, &#39;crossLiab&#39;: &#39;&#39;, &#39;disEq&#39;: &#39;2310.18&#39;, &#39;eq&#39;: &#39;1&#39;, &#39;eqUsd&#39;: &#39;2310.18&#39;, &#39;fixedBal&#39;: &#39;0&#39;, &#39;frozenBal&#39;: &#39;0&#39;, &#39;interest&#39;: &#39;&#39;, &#39;isoEq&#39;: &#39;0&#39;, &#39;isoLiab&#39;: &#39;&#39;, &#39;isoUpl&#39;: &#39;0&#39;, &#39;liab&#39;: &#39;&#39;, &#39;maxLoan&#39;: &#39;&#39;, &#39;mgnRatio&#39;: &#39;&#39;, &#39;notionalLever&#39;: &#39;0&#39;, &#39;ordFrozen&#39;: &#39;0&#39;, &#39;spotInUseAmt&#39;: &#39;&#39;, &#39;spotIsoBal&#39;: &#39;0&#39;, &#39;stgyEq&#39;: &#39;0&#39;, &#39;twap&#39;: &#39;0&#39;, &#39;uTime&#39;: &#39;1703639691162&#39;, &#39;upl&#39;: &#39;0&#39;, &#39;uplLiab&#39;: &#39;&#39;}], &#39;imr&#39;: &#39;&#39;, &#39;isoEq&#39;: &#39;147.90350254333333&#39;, &#39;mgnRatio&#39;: &#39;&#39;, &#39;mmr&#39;: &#39;&#39;, &#39;notionalUsd&#39;: &#39;&#39;, &#39;ordFroz&#39;: &#39;&#39;, &#39;totalEq&#39;: &#39;55229.26008596692&#39;, &#39;uTime&#39;: &#39;1703884466962&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -660,9 +645,11 @@
     <span class="n">totalEq</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">uTime</span><span class="p">:</span> <span class="nb">str</span></div>
 
+
+
 <div class="viewcode-block" id="PositionHistory">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.PositionHistory">[docs]</a>
-<span class="k">class</span> <span class="nc">PositionHistory</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PositionHistory</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">instType</span><span class="p">:</span> <span class="n">InstType</span>  <span class="c1"># Instrument type</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Instrument ID</span>
     <span class="n">mgnMode</span><span class="p">:</span> <span class="n">MgnMode</span>  <span class="c1"># Margin mode</span>
@@ -704,9 +691,11 @@
         <span class="n">use_enum_values</span> <span class="o">=</span> <span class="kc">True</span></div>
 </div>
 
+
+
 <div class="viewcode-block" id="FillEntry">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.FillEntry">[docs]</a>
-<span class="k">class</span> <span class="nc">FillEntry</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">FillEntry</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">side</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">fillSz</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">fillPx</span><span class="p">:</span> <span class="nb">str</span>
@@ -733,10 +722,9 @@
 
 
 
-
 <div class="viewcode-block" id="AccountConfigData">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.AccountConfigData">[docs]</a>
-<span class="k">class</span> <span class="nc">AccountConfigData</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AccountConfigData</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">acctLv</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">autoLoan</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">ctIsoMode</span><span class="p">:</span> <span class="nb">str</span>
@@ -763,7 +751,7 @@
 
 <div class="viewcode-block" id="MaxOrderSizeData">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.MaxOrderSizeData">[docs]</a>
-<span class="k">class</span> <span class="nc">MaxOrderSizeData</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MaxOrderSizeData</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">ccy</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">maxBuy</span><span class="p">:</span> <span class="nb">str</span>
@@ -773,7 +761,7 @@
 
 <div class="viewcode-block" id="MaxAvailSizeData">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.MaxAvailSizeData">[docs]</a>
-<span class="k">class</span> <span class="nc">MaxAvailSizeData</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MaxAvailSizeData</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">availBuy</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">availSell</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span></div>
@@ -783,7 +771,7 @@
 <span class="c1">#</span>
 <div class="viewcode-block" id="InstrumentStatusReport">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.InstrumentStatusReport">[docs]</a>
-<span class="k">class</span> <span class="nc">InstrumentStatusReport</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">InstrumentStatusReport</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">max_order_size</span><span class="p">:</span> <span class="n">MaxOrderSizeData</span>
@@ -796,7 +784,7 @@
 
 <div class="viewcode-block" id="AccountStatusReport">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport">[docs]</a>
-<span class="k">class</span> <span class="nc">AccountStatusReport</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AccountStatusReport</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
     <span class="n">account_balance</span><span class="p">:</span> <span class="n">AccountBalanceData</span>
     <span class="n">account_config</span><span class="p">:</span> <span class="n">AccountConfigData</span>
@@ -807,9 +795,42 @@
 
 
 
+<div class="viewcode-block" id="DCAInputParameters">
+<a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.DCAInputParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">DCAInputParameters</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
+    <span class="n">usd_amount</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">trigger_price_offset</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">order_type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">order_side</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">execution_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tp_trigger_price_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">tp_trigger_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tp_execution_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sl_trigger_price_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">sl_trigger_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sl_execution_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+
+<div class="viewcode-block" id="DCAOrderParameters">
+<a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.DCAOrderParameters">[docs]</a>
+<span class="k">class</span> <span class="nc">DCAOrderParameters</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
+    <span class="n">size</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">trigger_price</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">side</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">execution_price</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+    <span class="n">tp_trigger_price_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">tp_trigger_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">tp_execution_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sl_trigger_price_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">sl_trigger_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sl_execution_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
 <div class="viewcode-block" id="OKXSignalInput">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.OKXSignalInput">[docs]</a>
-<span class="k">class</span> <span class="nc">OKXSignalInput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OKXSignalInput</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">instID</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">usd_order_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">leverage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -826,45 +847,75 @@
     <span class="n">sl_trigger_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">sl_execution_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">trailing_stop_activation_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">trailing_stop_callback_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div>
-
-
-
-
+    <span class="n">trailing_stop_callback_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">dca_parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DCAInputParameters</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span></div>
 
 
 
 <div class="viewcode-block" id="PremiumIndicatorSignals">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignals">[docs]</a>
-<span class="k">class</span> <span class="nc">PremiumIndicatorSignals</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PremiumIndicatorSignals</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">Bullish</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
     <span class="n">Bearish</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
     <span class="n">Bullish_plus</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
     <span class="n">Bearish_plus</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
     <span class="n">Bullish_Exit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
-    <span class="n">Bearish_Exit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span></div>
+    <span class="n">Bearish_Exit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
+
+<div class="viewcode-block" id="PremiumIndicatorSignals.tradingview_json_payload">
+<a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignals.tradingview_json_payload">[docs]</a>
+    <span class="k">def</span> <span class="nf">tradingview_json_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;{</span>
+<span class="s2">        &quot;Bullish&quot;: {{plot(&quot;Bullish&quot;)}},</span>
+<span class="s2">        &quot;Bearish&quot;: {{plot(&quot;Bearish&quot;)}},</span>
+<span class="s2">        &quot;Bullish_plus&quot;: {{plot(&quot;Bullish+&quot;)}},</span>
+<span class="s2">        &quot;Bearish_plus&quot;: {{plot(&quot;Bearish+&quot;)}},</span>
+<span class="s2">        &quot;Bullish_Exit&quot;: {{plot(&quot;Bullish Exit&quot;)}},</span>
+<span class="s2">        &quot;Bearish_Exit&quot;: {{plot(&quot;Bearish Exit&quot;)}}</span>
+<span class="s2">    }&quot;&quot;&quot;</span></div>
+</div>
 
 
 
-<div class="viewcode-block" id="PremiumIndicatorSignalRequestForm">
-<a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignalRequestForm">[docs]</a>
-<span class="k">class</span> <span class="nc">OKXPremiumIndicatorSignalRequestForm</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+
+
+<div class="viewcode-block" id="OKXPremiumIndicatorSignalRequestForm">
+<a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.OKXPremiumIndicatorSignalRequestForm">[docs]</a>
+<span class="k">class</span> <span class="nc">OKXPremiumIndicatorSignalRequestForm</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">InstIdAPIKey</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">OKXSignalInput</span><span class="p">:</span> <span class="n">OKXSignalInput</span>
-    <span class="n">PremiumIndicatorSignals</span><span class="p">:</span> <span class="n">PremiumIndicatorSignals</span></div>
+    <span class="n">PremiumIndicatorSignals</span><span class="p">:</span> <span class="n">PremiumIndicatorSignals</span>
+
+<div class="viewcode-block" id="OKXPremiumIndicatorSignalRequestForm.to_tradingview_json_payload">
+<a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.OKXPremiumIndicatorSignalRequestForm.to_tradingview_json_payload">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_tradingview_json_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># return f&quot;&quot;&quot;{</span>
+        <span class="c1">#     &quot;InstIdAPIKey&quot;: {self.InstIdAPIKey},</span>
+        <span class="c1">#     &quot;OKXSignalInput&quot;: {self.OKXSignalInput.model_dump()},</span>
+        <span class="c1">#     &quot;PremiumIndicatorSignals&quot;: {self.PremiumIndicatorSignals.tradingview_json_payload()}</span>
+        <span class="c1"># }&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="se">{{</span>
+<span class="s2">            &quot;InstIdAPIKey&quot;: &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">InstIdAPIKey</span><span class="si">}</span><span class="s2">&quot;,</span>
+<span class="s2">            &quot;OKXSignalInput&quot;: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">            &quot;PremiumIndicatorSignals&quot;: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">PremiumIndicatorSignals</span><span class="o">.</span><span class="n">tradingview_json_payload</span><span class="p">()</span><span class="si">}</span>
+<span class="s2">        </span><span class="se">}}</span><span class="s2">&quot;&quot;&quot;</span></div>
+</div>
+
+
 
 
 
 <div class="viewcode-block" id="InstIdSignalRequestForm">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.InstIdSignalRequestForm">[docs]</a>
-<span class="k">class</span> <span class="nc">InstIdSignalRequestForm</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">InstIdSignalRequestForm</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">InstIdAPIKey</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">OKXSignalInput</span><span class="p">:</span> <span class="n">OKXSignalInput</span></div>
 
 
+
 <div class="viewcode-block" id="FillHistoricalMetricsEntry">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry">[docs]</a>
-<span class="k">class</span> <span class="nc">FillHistoricalMetricsEntry</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">FillHistoricalMetricsEntry</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">avg_fill_pnl</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">total_fill_pnl</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">total_fill_fee</span><span class="p">:</span> <span class="nb">float</span></div>
@@ -873,12 +924,11 @@
 
 <div class="viewcode-block" id="FillHistoricalMetrics">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetrics">[docs]</a>
-<span class="k">class</span> <span class="nc">FillHistoricalMetrics</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">FillHistoricalMetrics</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
     <span class="n">ONE_DAY</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
     <span class="n">ONE_WEEK</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
     <span class="n">ONE_MONTH</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
     <span class="n">THREE_MONTHS</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span></div>
-
 
 </pre></div>
 

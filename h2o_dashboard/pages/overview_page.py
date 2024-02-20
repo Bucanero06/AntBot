@@ -44,19 +44,29 @@ async def add_tradingview_advanced_chart(q: Q, card_name: str, box: str):
 
 # Usage
 async def _ping_services(q):
+    header_card = q.page['Overview_Page_Header']
+    responses = []
     try:
-        header_card = q.page['Overview_Page_Header']
-        rest_handling_check, websocket_handling_check = await asyncio.gather(
-            q.run(requests.request, 'GET', 'http://localhost:8080/health'),
-            q.run(requests.request, 'GET', 'http://localhost:8081/health'),
-        )
-
-        header_card.subtitle = f'Rest Service Ping: {rest_handling_check.text}\n' \
-                               f'Websockets Service Ping: {websocket_handling_check.text}\n '
+        rest_handling_check= await q.run(requests.request, 'GET', 'http://localhost:8080/health')
+        responses.append(rest_handling_check.text)
 
     except Exception as e:
-        header_card.subtitle = f'Error: {e}'
+        responses.append(e)
         print(f'{e = }')
+    try:
+        websocket_handling_check = await q.run(requests.request, 'GET', 'http://localhost:8081/health')
+        responses.append(websocket_handling_check.text)
+    except Exception as e:
+        responses.append(e)
+        print(f'{e = }')
+
+
+
+    header_card.subtitle = (f'Rest Service Ping: {responses[0]} | Websocket Service Ping: {responses[1]}')
+
+
+
+
 
 
 async def overview_page(q: Q, update_seconds: int = 2):

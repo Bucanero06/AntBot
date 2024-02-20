@@ -11,7 +11,7 @@ from h2o_wave import Q, app, ui, on, data, run_on, AsyncSite  # noqa F401
 from firebase_tools.authenticate import authenticate_with_firebase, check_str_token_validity
 from h2o_dashboard.pages.documentation_page import documentation_page
 from h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page import okx_dashboard_page
-from h2o_dashboard.pages.overview_page import overview_page
+from h2o_dashboard.pages.overview_page.overview_page import overview_page
 from h2o_dashboard.util import add_card, clear_cards
 
 dotenv.load_dotenv(dotenv.find_dotenv())

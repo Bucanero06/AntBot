@@ -4,7 +4,7 @@ import asyncio
 import requests
 from h2o_wave import main, Q, app, ui, on, run_on, data  # noqa F401
 
-from h2o_dashboard.pages.okx_streams import Overview_StreamWidget
+from h2o_dashboard.pages.overview_page.overview_stream_widget import Overview_StreamWidget
 from h2o_dashboard.util import add_card
 
 
@@ -96,7 +96,7 @@ async def overview_page(q: Q, update_seconds: int = 2):
                    ]))
 
     '''Init Widgets'''
-    overview_widget = Overview_StreamWidget(q=q, card_name='grid_2', box='grid_2', count=2)
+    overview_widget = Overview_StreamWidget(q=q, card_name='grid_2', box='grid_2')
 
     '''Init RealTime Page Cards'''
     await overview_widget.add_cards()
@@ -120,7 +120,7 @@ async def overview_page(q: Q, update_seconds: int = 2):
                 print("Adding Overview card")
                 await overview_widget.add_cards()
 
-            await _ping_services(q)
+            # await _ping_services(q)
 
 
 

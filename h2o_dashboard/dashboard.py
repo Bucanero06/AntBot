@@ -31,7 +31,7 @@ async def on_shutdown():
 @on('@system.client_disconnect')
 async def on_client_disconnect(q: Q):
     print('Client disconnected')
-    # Pages Tasks and Events
+    # Pages Tasks and Events # Todo automate the handling of these to reduce developer error
     q.client.overview_page_running_event.clear()
     q.client.okx_dashboard_page_running_event.clear()
     q.client.documentation_page_running_event.clear()

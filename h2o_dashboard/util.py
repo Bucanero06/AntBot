@@ -1,6 +1,7 @@
 
 import asyncio
 import os
+from datetime import datetime
 from typing import Optional, List
 
 from h2o_wave import Q
@@ -114,3 +115,13 @@ def load_env_file(env_path: str = '.env'):
         print(f"File does not exist: {env_path}")
         raise FileNotFoundError(f"File does not exist: {env_path}")
 
+def convert_to_col_type(col_value, expected_type):
+    if expected_type == 'float':
+        return round(float(col_value), 2)
+    elif expected_type == 'int':
+        return int(col_value)
+    elif expected_type == 'timestamp':
+        return datetime.fromtimestamp(int(col_value) / 1000, tz=None).strftime(
+            '%Y-%m-%d %H:%M:%S')
+    else:
+        return str(col_value)

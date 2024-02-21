@@ -79,10 +79,32 @@ class TradeAPI(Client):
         return self._request_with_params(POST, AMEND_BATCH_ORDER, orders_data)
 
     # Close Positions
-    def close_positions(self, instId, mgnMode, posSide='', ccy='', autoCxl='', clOrdId='', tag=''):
+
+
+    async def close_positions(self, instId, mgnMode, posSide='', ccy='', autoCxl='', clOrdId='', tag=''):
+        """
+        Closes a position based on the given parameters.
+
+        :param instId: The instrument ID for the position to be closed.
+        :type instId: str
+        :param mgnMode: The margin mode for the position (e.g., 'isolated', 'cross').
+        :type mgnMode: str
+        :param posSide: The position side (e.g., 'long', 'short'). Defaults to an empty string.
+        :type posSide: str, optional
+        :param ccy: The currency used for the position. Defaults to an empty string.
+        :type ccy: str, optional
+        :param autoCxl: Automatically cancel the position. Defaults to an empty string.
+        :type autoCxl: str, optional
+        :param clOrdId: The client order ID. Defaults to an empty string.
+        :type clOrdId: str, optional
+        :param tag: A tag for the position. Defaults to an empty string.
+        :type tag: str, optional
+        :returns: The response from the position close request.
+        """
         params = {'instId': instId, 'mgnMode': mgnMode, 'posSide': posSide, 'ccy': ccy, 'autoCxl': autoCxl,
                   'clOrdId': clOrdId, 'tag': tag}
-        return self._request_with_params(POST, CLOSE_POSITION, params)
+        closed_position_return = self._request_with_params(POST, CLOSE_POSITION, params)
+        return closed_position_return
 
     # Get Order Details
     def get_order(self, instId, ordId='', clOrdId=''):

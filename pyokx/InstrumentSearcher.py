@@ -1,6 +1,6 @@
 from typing import List, Dict, Optional
 
-from pyokx import publicAPI, ENFORCED_INSTRUMENT_TYPE
+from pyokx import publicAPI, ENFORCED_INSTRUMENT_TYPES
 from pyokx.data_structures import Instrument
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
 
@@ -19,7 +19,7 @@ class InstrumentSearcher:
         find_by_underlying: Returns all instruments with a specific underlying asset.
     """
 
-    def __init__(self, instType=ENFORCED_INSTRUMENT_TYPE, _instrument_map=None):
+    def __init__(self, instTypes=ENFORCED_INSTRUMENT_TYPES, _instrument_map=None):
         """
         InstrumentSearcher is a class that allows you to search for instruments by instId, instType, or underlying
 
@@ -34,7 +34,7 @@ class InstrumentSearcher:
         print(f'{"BTC-USDT-240329" in okx_futures_instrument_searcher._instrument_map = }')
         ```
         """
-        self.instType = instType
+        self.instTypes = instTypes
         if _instrument_map is None:
             self.instruments = self.request_instruments()
             self._instrument_map = self._create_map(self.instruments)
@@ -43,16 +43,20 @@ class InstrumentSearcher:
             self.instruments = list(_instrument_map.values())
 
     def request_instruments(self):
-        returned_data = publicAPI.get_instruments(instType=self.instType)
-        if len(returned_data['data']) == 0:
-            if returned_data["code"] != '0':
-                print(f'{returned_data["code"] = }')
-                print(f'{returned_data["msg"] = }')
-            instruments = []
-        else:
-            instruments = []
-            for data in returned_data['data']:
-                instruments.append(Instrument(**data))
+        instruments = []
+        for instTypes in self.instTypes:
+            returned_data = publicAPI.get_instruments(instType=instTypes)
+            if len(returned_data['data']) == 0:
+                if returned_data["code"] != '0':
+                    print(f'{returned_data["code"] = }')
+                    print(f'{returned_data["msg"] = }')
+                _instruments = []
+            else:
+                _instruments = []
+                for data in returned_data['data']:
+                    _instruments.append(Instrument(**data))
+            instruments.extend(_instruments)
+
         return instruments
 
     def _create_map(self, instruments: List[Instrument]) -> Dict[str, Instrument]:

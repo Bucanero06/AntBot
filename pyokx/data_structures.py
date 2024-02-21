@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from typing import List, Optional, Union
 
@@ -510,15 +509,6 @@ class MaxAvailSizeData(OKXBaseModel):
 
 
 #
-class InstrumentStatusReport(OKXBaseModel):
-    timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-    instId: str
-    max_order_size: MaxOrderSizeData
-    max_avail_size: MaxAvailSizeData
-    positions: List[Position]
-    orders: List[Order]
-    algo_orders: List[Algo_Order]
-
 
 class AccountStatusReport(OKXBaseModel):
     timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
@@ -556,6 +546,7 @@ class DCAOrderParameters(OKXBaseModel):
     sl_trigger_price_type: Optional[str] = ''
     sl_trigger_price_offset: Optional[float] = 0
     sl_execution_price_offset: Optional[float] = 0
+
 
 class OKXSignalInput(OKXBaseModel):
     instID: Optional[str] = ''
@@ -598,26 +589,20 @@ class PremiumIndicatorSignals(OKXBaseModel):
     }"""
 
 
-
-
 class OKXPremiumIndicatorSignalRequestForm(OKXBaseModel):
     InstIdAPIKey: str
     OKXSignalInput: OKXSignalInput
     PremiumIndicatorSignals: PremiumIndicatorSignals
 
     def to_tradingview_json_payload(self):
-        # return f"""{
-        #     "InstIdAPIKey": {self.InstIdAPIKey},
-        #     "OKXSignalInput": {self.OKXSignalInput.model_dump()},
-        #     "PremiumIndicatorSignals": {self.PremiumIndicatorSignals.tradingview_json_payload()}
-        # }"""
-        return f"""{{
+        return (f"""{{
             "InstIdAPIKey": "{self.InstIdAPIKey}",
             "OKXSignalInput": {self.OKXSignalInput.model_dump()},
             "PremiumIndicatorSignals": {self.PremiumIndicatorSignals.tradingview_json_payload()}
-        }}"""
-
-
+        }}""".replace("True", "true")
+                .replace("False", "false")
+                .replace("None", "null")
+                .replace("'", '"'))
 
 
 class InstIdSignalRequestForm(OKXBaseModel):

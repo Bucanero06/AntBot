@@ -7,12 +7,13 @@ from pydantic import ValidationError
 
 from firebase_tools.authenticate import check_str_token_validity
 from h2o_dashboard.util import add_card
-from pyokx import ENFORCED_INSTRUMENT_TYPE
+from pyokx import ENFORCED_INSTRUMENT_TYPES
 from pyokx.InstrumentSearcher import InstrumentSearcher
-from pyokx.data_structures import OKXSignalInput, InstrumentStatusReport, PremiumIndicatorSignals, \
+from pyokx.data_structures import OKXSignalInput,  PremiumIndicatorSignals, \
     OKXPremiumIndicatorSignalRequestForm
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
 from pyokx.rest_handling import okx_signal_handler, validate_okx_signal_params, okx_premium_indicator_handler
+from pyokx.ws_data_structures import InstrumentStatusReport
 from routers.okx_authentication import InstIdAPIKeyCreationRequestForm, create_instrument_api_key
 
 OKX_SIGNAL_INPUT_KEYS = OKXSignalInput.model_fields.keys()
@@ -39,7 +40,7 @@ class OKX_Premium_Indicator_Handler_Widget:
                 return
         self._last_update_time = datetime.now()
         self.okx_futures_instruments_searcher = await get_instruments_searcher_from_redis(
-            async_redis=self.q.client.async_redis, instType=ENFORCED_INSTRUMENT_TYPE)
+            async_redis=self.q.client.async_redis)
 
     async def _is_initialized(self):
         return self._initialized and self.okx_futures_instruments_searcher
@@ -346,8 +347,7 @@ async def on_instID_selection(q: Q):
     try:
         # Lets show the rest of the ticker/instID information in the Output Response card
         instID = q.client.okx_dashboard_page_okx_premium_indicator_instID
-        instruments_searcher: InstrumentSearcher = await get_instruments_searcher_from_redis(q.client.async_redis,
-                                                                                             instType=ENFORCED_INSTRUMENT_TYPE)
+        instruments_searcher: InstrumentSearcher = await get_instruments_searcher_from_redis(q.client.async_redis)
         instrument_ticker = instruments_searcher.find_by_instId(instID)
         if instrument_ticker:
             q.client.okx_dashboard_page_instrument_ticker = instrument_ticker

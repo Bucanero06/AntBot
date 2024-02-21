@@ -1,7 +1,8 @@
-
+from datetime import datetime
 from typing import List, Optional
 
-from pyokx.data_structures import OKXBaseModel, Instrument, AccountBalanceData, Ask, Bid, Ticker
+from pyokx.data_structures import OKXBaseModel, Instrument, AccountBalanceData, Ask, Bid, Ticker, MaxOrderSizeData, \
+    MaxAvailSizeData, Order, Algo_Order
 
 """The data structures used to represent the data received from the OKX Websocket API.""
 The channels are split into three categories: public, business, and private. The public channels are available to all
@@ -483,100 +484,6 @@ class AlgoOrdersChannelReturnArgs(OKXBaseModel):
     instId: Optional[str] = None
 
 class WSAlgoOrder(OKXBaseModel):
-    # > instType	String	Instrument type
-    # > instId	String	Instrument ID
-    # > ccy	String	Margin currency
-    # Only applicable to cross MARGIN orders in Single-currency margin.
-    # > ordId	String	Latest order ID, the order ID associated with the algo order.
-    # > ordIdList	String	Order ID list. There will be multiple order IDs when there is TP/SL splitting order.
-    # > algoId	String	Algo ID
-    # > clOrdId	String	Client Order ID as assigned by the client
-    # > sz	String	Quantity to buy or sell. SPOT/MARGIN: in the unit of currency. FUTURES/SWAP/OPTION: in the unit of contract.
-    # > ordType	String	Order type
-    # conditional: One-way stop order
-    # oco: One-cancels-the-other order
-    # trigger: Trigger order
-    # > side	String	Order side, buy sell
-    # > posSide	String	Position side
-    # net
-    # long or short Only applicable to FUTURES/SWAP
-    # > tdMode	String	Trade mode, cross: cross isolated: isolated cash: cash
-    # > tgtCcy	String	Order quantity unit setting for sz
-    # base_ccy: Base currency ,quote_ccy: Quote currency
-    # Only applicable to SPOT Market Orders
-    # Default is quote_ccy for buy, base_ccy for sell
-    # > lever	String	Leverage, from 0.01 to 125.
-    # Only applicable to MARGIN/FUTURES/SWAP
-    # > state	String	Order status
-    # live: to be effective
-    # effective: effective
-    # canceled: canceled
-    # order_failed: order failed
-    # partially_failed: partially failed
-    # > tpTriggerPx	String	Take-profit trigger price.
-    # > tpTriggerPxType	String	Take-profit trigger price type.
-    # last: last price
-    # index: index price
-    # mark: mark price
-    # > tpOrdPx	String	Take-profit order price.
-    # > slTriggerPx	String	Stop-loss trigger price.
-    # > slTriggerPxType	String	Stop-loss trigger price type.
-    # last: last price
-    # index: index price
-    # mark: mark price
-    # > slOrdPx	String	Stop-loss order price.
-    # > triggerPx	String	Trigger price
-    # > triggerPxType	String	Trigger price type.
-    # last: last price
-    # index: index price
-    # mark: mark price
-    # > ordPx	String	Order price
-    # > last	String	Last filled price while placing
-    # > actualSz	String	Actual order quantity
-    # > actualPx	String	Actual order price
-    # > notionalUsd	String	Estimated national value in USD of order
-    # > tag	String	Order tag
-    # > actualSide	String	Actual trigger side
-    # > triggerTime	String	Trigger time, Unix timestamp format in milliseconds, e.g. 1597026383085
-    # > reduceOnly	String	Whether the order can only reduce the position size. Valid options: true or false.
-    # > failCode	String	It represents that the reason that algo order fails to trigger. It is "" when the state is effective/canceled. There will be value when the state is order_failed, e.g. 51008;
-    # Only applicable to Stop Order, Trailing Stop Order, Trigger order.
-    # > algoClOrdId	String	Client Algo Order ID as assigned by the client.
-    # > cTime	String	Creation time, Unix timestamp format in milliseconds, e.g. 1597026383085
-    # > reqId	String	Client Request ID as assigned by the client for order amendment. "" will be returned if there is no order amendment.
-    # > amendResult	String	The result of amending the order
-    # -1: failure
-    # 0: success
-    # > amendPxOnTriggerType	String	Whether to enable Cost-price SL. Only applicable to SL order of split TPs.
-    # 0: disable, the default value
-    # 1. Enable “Cost-price SL”
-    # > attachAlgoOrds	Array of object	Attached SL/TP orders info
-    # Applicable to Single-currency margin/Multi-currency margin/Portfolio margin
-    # >> attachAlgoClOrdId	String	Client-supplied Algo ID when placing order attaching TP/SL.
-    # A combination of case-sensitive alphanumerics, all numbers, or all letters of up to 32 characters.
-    # It will be posted to algoClOrdId when placing TP/SL order once the general order is filled completely.
-    # >> tpTriggerPx	String	Take-profit trigger price
-    # If you fill in this parameter, you should fill in the take-profit order price as well.
-    # >> tpTriggerPxType	String	Take-profit trigger price type
-    #
-    # last: last price
-    # index: index price
-    # mark: mark price
-    # The Default is last
-    # >> tpOrdPx	String	Take-profit order price
-    # If you fill in this parameter, you should fill in the take-profit trigger price as well.
-    # If the price is -1, take-profit will be executed at the market price.
-    # >> slTriggerPx	String	Stop-loss trigger price
-    # If you fill in this parameter, you should fill in the stop-loss order price.
-    # >> slTriggerPxType	String	Stop-loss trigger price type
-    # last: last price
-    # index: index price
-    # mark: mark price
-    # The Default is last
-    # >> slOrdPx	String	Stop-loss order price
-    # If you fill in this parameter, you should fill in the stop-loss trigger price.
-    # If the price is -1, stop-loss will be executed at the market price.
-
     instType: str
     instId: str
     ccy: str
@@ -621,6 +528,14 @@ class AlgoOrdersChannel(OKXBaseModel):
     arg: AlgoOrdersChannelReturnArgs
     data: List[WSAlgoOrder]
 
+class InstrumentStatusReport(OKXBaseModel):
+    timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    instId: str
+    # max_order_size: MaxOrderSizeData
+    # max_avail_size: MaxAvailSizeData
+    positions: List[WSPosition]
+    orders: List[Order]
+    algo_orders: List[Algo_Order]
 
 
 OKX_WEBSOCKET_URLS = dict(

@@ -2,27 +2,30 @@ from typing import List
 
 import aioredis
 
-from pyokx import ENFORCED_INSTRUMENT_TYPE
+from pyokx import ENFORCED_INSTRUMENT_TYPES
 from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import FillHistoricalMetrics, Order, Algo_Order
 from pyokx.ws_data_structures import AccountChannel, PositionsChannel, OrdersChannel, available_channel_models
 from redis_tools.utils import _deserialize_from_redis
 
 
-async def get_instruments_searcher_from_redis(async_redis=None, instType=ENFORCED_INSTRUMENT_TYPE) -> InstrumentSearcher:
-    instrument_stream = await async_redis.xrevrange(f'okx:rest@{instType}-instruments', count=1)
+async def get_instruments_searcher_from_redis(async_redis: aioredis.Redis) -> InstrumentSearcher:
+    instrument_stream = await async_redis.xrevrange(f'okx:rest@instruments', count=1)
     if not instrument_stream:
-        okx_futures_instrument_searcher = InstrumentSearcher(instType=instType)
+        print(f"no instruments in cache, creating InstrumentSearcher with instTypes {ENFORCED_INSTRUMENT_TYPES}")
+        okx_futures_instrument_searcher = InstrumentSearcher(instTypes=ENFORCED_INSTRUMENT_TYPES)
     else:
         message = instrument_stream[0]
         redis_stream_id = message[0]
         message_serialized = message[1].get("data")
         if not message_serialized:
-            okx_futures_instrument_searcher = InstrumentSearcher(instType=instType)
+            print(
+                f"A message in the instruments stream {'okx:rest@instruments'} with id {redis_stream_id} was empty"
+                f", creating InstrumentSearcher with instTypes {ENFORCED_INSTRUMENT_TYPES}")
+            okx_futures_instrument_searcher = InstrumentSearcher(instTypes=ENFORCED_INSTRUMENT_TYPES)
         else:
             deserialized_message = _deserialize_from_redis(message_serialized)
-            okx_futures_instrument_searcher = InstrumentSearcher(
-                _instrument_map=deserialized_message)
+            okx_futures_instrument_searcher = InstrumentSearcher(_instrument_map=deserialized_message)
     return okx_futures_instrument_searcher
 
 
@@ -121,7 +124,8 @@ async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int 
     return order_messages
 
 
-async def get_stream_okx_fill_metrics_report(async_redis: aioredis.Redis, count: int = 10) -> List[FillHistoricalMetrics]:
+async def get_stream_okx_fill_metrics_report(async_redis: aioredis.Redis, count: int = 10) -> List[
+    FillHistoricalMetrics]:
     fill_metrics_report_serialized = await async_redis.xrevrange('okx:reports@fill_metrics', count=count)
     if not fill_metrics_report_serialized:
         print(f"fills information not ready in fills cache!")
@@ -164,6 +168,7 @@ async def get_stream_okx_incomplete_orders(async_redis: aioredis.Redis, count: i
         incomplete_orders.append(incomplete_order)
     return incomplete_orders
 
+
 async def get_stream_okx_incomplete_algo_orders(async_redis: aioredis.Redis, count: int = 1) -> List[List[Algo_Order]]:
     incomplete_algo_orders_serialized = await async_redis.xrevrange('okx:rest@algo-orders', count=count)
     if not incomplete_algo_orders_serialized:
@@ -181,6 +186,7 @@ async def get_stream_okx_incomplete_algo_orders(async_redis: aioredis.Redis, cou
                 f"A message in the incomplete algo orders stream {'okx:websockets@incomplete_algo_orders'} with id {redis_stream_id} was empty, skipping")
             continue
         incomplete_algo_order_deserialized = _deserialize_from_redis(incomplete_algo_order_serialized)
-        incomplete_algo_order: List[Algo_Order] = [Algo_Order(**algo_order) for algo_order in incomplete_algo_order_deserialized]
+        incomplete_algo_order: List[Algo_Order] = [Algo_Order(**algo_order) for algo_order in
+                                                   incomplete_algo_order_deserialized]
         incomplete_algo_orders.append(incomplete_algo_order)
     return incomplete_algo_orders

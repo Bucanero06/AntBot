@@ -6,8 +6,9 @@ from fastapi import APIRouter, HTTPException
 from jose import JWTError
 
 from firebase_tools.authenticate import check_token_validity
-from pyokx.data_structures import InstrumentStatusReport, InstIdSignalRequestForm, OKXPremiumIndicatorSignalRequestForm
+from pyokx.data_structures import  InstIdSignalRequestForm, OKXPremiumIndicatorSignalRequestForm
 from pyokx.rest_handling import okx_premium_indicator_handler
+from pyokx.ws_data_structures import InstrumentStatusReport
 from redis_tools.utils import serialize_for_redis, init_async_redis
 from routers.okx_authentication import check_token_against_instrument
 

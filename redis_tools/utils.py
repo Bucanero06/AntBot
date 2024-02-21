@@ -1,12 +1,9 @@
-
 import json
+import os
 from enum import Enum
 
-import redis
-from pydantic import BaseModel
-
 import dotenv
-import os
+from pydantic import BaseModel
 
 from redis_tools.config import RedisConfig
 
@@ -76,7 +73,6 @@ async def connect_to_aioredis():
 
     for host, port in redis_options:
         try:
-            #     encoding: Optional[str] = "utf-8"
             redis_config = RedisConfig(
                 host=host,
                 port=port,
@@ -85,9 +81,7 @@ async def connect_to_aioredis():
                 ssl=False,
                 encoding="utf-8"
             )
-            print(f"{redis_config.redis_url = }")
 
-            # async_redis = aioredis.from_url(f"redis://{host}:{port}", decode_responses=True)
             async_redis = aioredis.from_url(redis_config.redis_url, decode_responses=True)
             await async_redis.ping()
             print(f"Connected to Redis at {host}:{port}")
@@ -103,7 +97,6 @@ async def init_async_redis():
     from redis_tools import async_redis
 
     if isinstance(async_redis, aioredis.Redis):
-        print("Async Redis connection already exists")
         return async_redis
 
     async_redis = await connect_to_aioredis()

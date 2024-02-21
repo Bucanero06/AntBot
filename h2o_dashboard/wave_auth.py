@@ -83,18 +83,7 @@ async def init(q: Q) -> None:
                                                               ui.zone('first_context_3', size='1 4 0 0'),
                                                               ui.zone('first_context_4', size='1 4 0 0'),
                                                           ]),
-                                                  ui.zone('second_context', size='0 0 1 4',
-                                                          direction=ui.ZoneDirection.ROW,
-                                                          zones=[
-                                                              ui.zone('second_context_1', size='1 4 0 0'),
-                                                              ui.zone('second_context_2', size='1 4 0 0'),
-                                                              ui.zone('second_context_3', size='1 4 0 0',
-                                                                      direction=ui.ZoneDirection.ROW,
-                                                                      zones=[
-                                                                          ui.zone('second_context_3_1', size='1 4 0 0'),
-                                                                          ui.zone('second_context_3_2', size='1 4 0 0')
-                                                                      ]),
-                                                          ]),
+
                                                   ui.zone('details', size='4 4 4 4'),
                                                   ui.zone('horizontal', size='1', direction=ui.ZoneDirection.ROW),
                                                   ui.zone('centered', size='1 1 1 1', align='center'),
@@ -117,8 +106,20 @@ async def init(q: Q) -> None:
                                                             direction=ui.ZoneDirection.ROW,
                                                           # Cover the entire card
                                                             wrap='stretch',
-
                                                             ),
+                                                  ui.zone('second_context', size='0 0 1 4',
+                                                          direction=ui.ZoneDirection.ROW,
+                                                          zones=[
+                                                              ui.zone('second_context_1', size='1 4 0 0'),
+                                                              ui.zone('second_context_2', size='1 4 0 0'),
+                                                              ui.zone('second_context_3', size='1 4 0 0',
+                                                                      direction=ui.ZoneDirection.ROW,
+                                                                      zones=[
+                                                                          ui.zone('second_context_3_1', size='1 4 0 0'),
+                                                                          ui.zone('second_context_3_2', size='1 4 0 0')
+                                                                      ]),
+                                                          ]),
+
                                               ]),
                                           ]),
                                       ]),

@@ -44,7 +44,7 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
     positions_stream_widget = OKX_Live_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_2')
     fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_2')
 
-    orders_stream_widget = OKX_Orders_StreamWidget(q=q, card_name='OKXDEBUG_Orders_Stream', box='second_context_1',
+    orders_stream_widget = OKX_Orders_StreamWidget(q=q, card_name='OKXDEBUG_Orders_Stream', box='footer',
                                                    history_count=20)
     # algo_orders_stream_widget = OKX_AlgoOrders_StreamWidget(q=q, card_name='OKXDEBUG_Algo_Orders_Stream', box='grid_4',
     #                                                         history_count=20)

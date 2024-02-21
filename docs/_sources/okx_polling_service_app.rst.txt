@@ -1,0 +1,11 @@
+okx_polling_service_app
+=======================
+
+.. automodule:: okx_polling_service_app
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: okx_polling_service_app
+    :parts: 1
+

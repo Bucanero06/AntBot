@@ -1,0 +1,11 @@
+h2o_dashboard.pages.overview_page.overview_page
+===============================================
+
+.. automodule:: h2o_dashboard.pages.overview_page.overview_page
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: h2o_dashboard.pages.overview_page.overview_page
+    :parts: 1
+

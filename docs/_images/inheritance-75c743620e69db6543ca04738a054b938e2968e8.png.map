@@ -1,5 +1,0 @@
-<map id="inheritance480cf6dfd0" name="inheritance480cf6dfd0">
-<area shape="rect" id="node1" href="#pyokx.okx_market_maker.position_management_service.model.Account.Account" target="_top" title="Account" alt="" coords="167,55,241,80"/>
-<area shape="rect" id="node2" title="Usage docs: https://docs.pydantic.dev/2.5/concepts/models/" alt="" coords="15,55,109,80"/>
-<area shape="rect" id="node3" href="#pyokx.okx_market_maker.position_management_service.model.Account.AccountDetail" target="_top" title="AccountDetail(avail_bal: float = 0, avail_eq: float = 0, ccy: str = &#39;&#39;, cash_bal: float = 0, u_time: int = 0, dis_eq: float = 0, eq: float = 0, eq_usd: float = 0, frozen_bal: float = 0, interest: float = 0, iso_eq: float = 0, liability: float = 0, max_loan: float = 0, notional_lever: float = 0, ord_frozen: float = 0, upl: float = 0, upl_liability: float = 0, cross_liability: float = 0, iso_liability: float = 0, coin_usd_price: float = 0, strategy_eq: float = 0, spot_in_usd_amt: float = 0, iso_upl: float = 0)" alt="" coords="5,5,119,31"/>
-</map>

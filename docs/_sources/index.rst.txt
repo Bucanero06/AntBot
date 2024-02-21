@@ -1,5 +1,5 @@
 .. AntBot documentation master file, created by
-   sphinx-quickstart on Mon Feb 19 20:48:33 2024.
+   sphinx-quickstart on Wed Feb 21 15:39:59 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -16,12 +16,18 @@ Welcome to AntBot's documentation!
    firebase_tools.authenticate
    h2o_dashboard.dashboard
    h2o_dashboard.pages.documentation_page
+   h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget
+   h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget
    h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler
    h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page
-   h2o_dashboard.pages.okx_streams
-   h2o_dashboard.pages.overview_page
+   h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget
+   h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget
+   h2o_dashboard.pages.okx_dashbaord_page.okx_positions_widget
+   h2o_dashboard.pages.overview_page.overview_page
+   h2o_dashboard.pages.overview_page.overview_stream_widget
    h2o_dashboard.util
    h2o_dashboard.wave_auth
+   okx_polling_service_app
    pyokx.Futures_Exchange_Client
    pyokx.InstrumentSearcher
    pyokx.data_structures
@@ -45,32 +51,6 @@ Welcome to AntBot's documentation!
    pyokx.low_rest_api.consts
    pyokx.low_rest_api.exceptions
    pyokx.low_rest_api.utils
-   pyokx.okx_market_maker.market_data_service.WssMarketDataService
-   pyokx.okx_market_maker.market_data_service.model.Instrument
-   pyokx.okx_market_maker.market_data_service.model.MarkPx
-   pyokx.okx_market_maker.market_data_service.model.OrderBook
-   pyokx.okx_market_maker.market_data_service.model.Tickers
-   pyokx.okx_market_maker.order_management_service.WssOrderManagementService
-   pyokx.okx_market_maker.order_management_service.model.Order
-   pyokx.okx_market_maker.order_management_service.model.OrderRequest
-   pyokx.okx_market_maker.position_management_service.WssPositionManagementService
-   pyokx.okx_market_maker.position_management_service.model.Account
-   pyokx.okx_market_maker.position_management_service.model.BalanceAndPosition
-   pyokx.okx_market_maker.position_management_service.model.Positions
-   pyokx.okx_market_maker.run_sample_market_maker
-   pyokx.okx_market_maker.settings
-   pyokx.okx_market_maker.strategy.BaseStrategy
-   pyokx.okx_market_maker.strategy.SampleMM
-   pyokx.okx_market_maker.strategy.model.StrategyMeasurement
-   pyokx.okx_market_maker.strategy.model.StrategyOrder
-   pyokx.okx_market_maker.strategy.params.ParamsLoader
-   pyokx.okx_market_maker.strategy.risk.RiskCalculator
-   pyokx.okx_market_maker.strategy.risk.RiskSnapshot
-   pyokx.okx_market_maker.tests.test_strategy
-   pyokx.okx_market_maker.utils.InstrumentUtil
-   pyokx.okx_market_maker.utils.OkxEnum
-   pyokx.okx_market_maker.utils.TdModeUtil
-   pyokx.okx_market_maker.utils.WsOrderUtil
    pyokx.redis_structured_reports
    pyokx.redis_structured_streams
    pyokx.rest_handling

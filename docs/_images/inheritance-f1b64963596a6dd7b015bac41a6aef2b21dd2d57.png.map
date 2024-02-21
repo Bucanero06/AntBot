@@ -1,4 +1,0 @@
-<map id="inheritancee8b6c59f20" name="inheritancee8b6c59f20">
-<area shape="rect" id="node1" href="#pyokx.okx_market_maker.market_data_service.model.MarkPx.MarkPx" target="_top" title="MarkPx(inst_type: pyokx.okx_market_maker.utils.OkxEnum.InstType = None, inst_id: str = 0, mark_px: float = 0, ts: int = 0)" alt="" coords="25,55,97,80"/>
-<area shape="rect" id="node2" href="#pyokx.okx_market_maker.market_data_service.model.MarkPx.MarkPxCache" target="_top" title="MarkPxCache(_mark_px_map: Dict[str, pyokx.okx_market_maker.market_data_service.model.MarkPx.MarkPx] = &lt;factory&gt;)" alt="" coords="5,5,116,31"/>
-</map>

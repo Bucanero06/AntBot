@@ -1,6 +1,0 @@
-<map id="inheritancee5b46e2e53" name="inheritancee5b46e2e53">
-<area shape="rect" id="node1" href="#h2o_dashboard.pages.okx_streams.OKX_Account_StreamWidget" target="_top" title="OKX_Account_StreamWidget" alt="" coords="14,153,223,179"/>
-<area shape="rect" id="node2" href="#h2o_dashboard.pages.okx_streams.OKX_Fill_Report_StreamWidget" target="_top" title="OKX_Fill_Report_StreamWidget" alt="" coords="5,104,232,129"/>
-<area shape="rect" id="node3" href="#h2o_dashboard.pages.okx_streams.OKX_Live_Positions_StreamWidget" target="_top" title="OKX_Live_Positions_StreamWidget" alt="" coords="11,55,227,80"/>
-<area shape="rect" id="node4" href="#h2o_dashboard.pages.okx_streams.Overview_StreamWidget" target="_top" title="Overview_StreamWidget" alt="" coords="27,5,211,31"/>
-</map>

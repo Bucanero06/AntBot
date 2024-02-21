@@ -119,7 +119,7 @@ async def consumer(stream_name, shutdown_event, last_ids=None):
     print(f'Listening to stream: {stream_name} with last_id: {last_id}')
     while not shutdown_event.is_set():
         # Read messages. Block=0 means it will return immediately if there are no messages.
-        messages = await async_redis.xread(streams={"okx:websockets@account": last_id}, count=1, block=0)
+        messages = await async_redis.xread(streams={stream_name: last_id}, block=0, count=1)
         for message in messages:
             _, message_entries = message
             for message_entry in message_entries:

@@ -1,4 +1,3 @@
-
 import asyncio
 import json
 import os
@@ -23,7 +22,7 @@ from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Retur
                                    OKXPremiumIndicatorSignalRequestForm, FillEntry, OKXSignalInput, DCAInputParameters,
                                    DCAOrderParameters)
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
-from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
+from pyokx.redis_structured_streams import get_instruments_searcher_from_redis, get_stream_okx_incomplete_algo_orders
 from redis_tools.utils import init_async_redis
 from shared import logging
 from shared.tmp_shared import calculate_tp_stop_prices_usd, calculate_sl_stop_prices_usd, ccy_usd_to_contracts
@@ -161,7 +160,8 @@ async def is_valid_alphanumeric(string, max_length):
     return bool(re.match('^[a-zA-Z0-9]{1,' + str(max_length) + '}$', string))
 
 
-async def get_all_orders(instType: str = None, instId: str = None):
+async def get_orders_list(instType: str = None, instId: str = None, ordType: str = None, state: str = None,
+                          after: str = None, before: str = None, limit: int = None, instFamily: str = None):
     """
     Fetches all orders matching the given criteria from the trading API.
 
@@ -173,10 +173,23 @@ async def get_all_orders(instType: str = None, instId: str = None):
         List[Order]: A list of orders that match the given criteria.
     """
     params = {}
+
     if instType is not None:
         params['instType'] = instType
     if instId is not None:
         params['instId'] = instId
+    if ordType is not None:
+        params['ordType'] = ordType
+    if state is not None:
+        params['state'] = state
+    if after is not None:
+        params['after'] = after
+    if before is not None:
+        params['before'] = before
+    if limit is not None:
+        params['limit'] = limit
+    if instFamily is not None:
+        params['instFamily'] = instFamily
     return await get_request_data(tradeAPI.get_order_list(**params), Order)
 
 
@@ -198,22 +211,30 @@ async def cancel_all_orders(orders_list: List[Order] = None, instType: InstType 
             params['instType'] = instType
         if instId is not None:
             params['instId'] = instId
-        orders_list = await get_all_orders(**params)
+
+        orders_list = await fetch_incomplete_orders(**params)
     # cancelled_orders = []
     orders_to_cancel = []
     for order in orders_list:
         orders_to_cancel.append(order)
 
-    # Batch Cancel Orders
-    cancelled_orders = await get_request_data(tradeAPI.cancel_multiple_orders(
-        orders_data=[
-            {'instId': order.instId,
-             'ordId': order.ordId,
-             } for order in orders_to_cancel
-        ]
-    ), Cancelled_Order)
+    # In chunks of 20
+    cancelled_orders = []
+    for i in range(0, len(orders_to_cancel), 20):
+        chunk = orders_to_cancel[i:i + 20]
+        result = tradeAPI.cancel_multiple_orders(
+            orders_data=[
+                {'instId': order.instId,
+                 'ordId': order.ordId,
+                 } for order in chunk
+            ]
+        )
+        if result["code"] != "0":
+            print("Unsuccessful cancel_all_orders request，\n  error_code = ", result["code"], ", \n  Error_message = ",
+                  result["msg"])
+            continue
+        cancelled_orders.extend(await get_request_data(result, Cancelled_Order))
 
-    #
     return cancelled_orders
 
 
@@ -434,29 +455,58 @@ async def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] 
     :type ordType: str, optional
     :returns: A list of the algo orders that were successfully cancelled.
     """
-    assert algo_orders_list is None or (
-            instId is not None or ordType is not None), f'algo_orders_list or instId must be provided'
 
-    if algo_orders_list is None and (instId is not None or ordType is not None):
+    if algo_orders_list is None:
         params = {}
         if instId is not None:
             params['instId'] = instId
         if ordType is not None:
             params['ordType'] = ordType
-        algo_orders_list = await get_all_algo_orders(**params)
+        algo_orders_list = await fetch_incomplete_algo_orders(**params)
 
+        # all_algo_orders_stream = await get_stream_okx_incomplete_algo_orders(async_redis=await init_async_redis())
+        # all_algo_orders = all_algo_orders_stream[-1]
+        # algo_orders_list= []
+        # for algo_order in all_algo_orders:
+        #     matches_instId = instId is None or algo_order.instId == instId
+        #     matches_ordType = ordType is None or algo_order.ordType == ordType
+        #     if matches_instId and matches_ordType:
+        #         algo_orders_list.append(algo_order)
+
+
+
+    print(f'{algo_orders_list = }')
     if algo_orders_list is None or len(algo_orders_list) == 0:
         return []
 
-    result = tradeAPI.cancel_algo_order(
-        params=[
+
+    params = [
             {'algoId': algo_order.algoId,
              'instId': algo_order.instId,
              } for algo_order in algo_orders_list
         ]
-    )
-    print(f'{result = }')
-    return await get_request_data(result, Cancelled_Algo_Order)
+
+    cancelled_algo_orders = []
+    for i in range(0, len(params), 10):
+        chunk = params[i:i + 10]
+        print(f'{chunk = }')
+        result = tradeAPI.cancel_algo_order(
+        params=chunk
+        )
+        if result["code"] != "0":
+            print("Unsuccessful cancel_all_algo_orders_with_params request，\n  error_code = ", result["code"], ", \n  Error_message = ",
+                  result["msg"])
+            print(f'{result = }')
+            result = tradeAPI.cancel_advance_algos(
+                params=chunk
+            )
+            if result["code"] != "0":
+                print("Unsuccessful cancel_all_algo_orders_with_params request，\n  error_code = ", result["code"], ", \n  Error_message = ",
+                      result["msg"])
+                continue
+
+        cancelled_algo_orders.extend(await get_request_data(result, Cancelled_Algo_Order))
+    return cancelled_algo_orders
 
 
 async def place_algo_order(
@@ -638,7 +688,7 @@ async def fetch_status_report_for_instrument(instId, TD_MODE):
         get_max_order_size(instId=instId, tdMode=TD_MODE),
         get_max_avail_size(instId=instId, tdMode=TD_MODE),
         get_all_positions(instId=instId),
-        get_all_orders(instId=instId),
+        get_orders_list(instId=instId),
         get_all_algo_orders(instId=instId)
     )
     return InstrumentStatusReport(
@@ -677,21 +727,6 @@ async def fetch_initial_data(TD_MODE, instId=None):
     instrument_status_report = await fetch_status_report_for_instrument(instId, TD_MODE)
 
     return simplified_balance_details, account_config, instrument_status_report
-
-
-async def clear_orders_and_positions_for_instrument(instId):
-    """
-    Clears all orders and positions for a specific instrument.
-
-    :param instId: The instrument ID for which to clear orders and positions.
-    :type instId: str
-    """
-    closed_positions = await close_all_positions(instId=instId)
-    cancelled_orders = await cancel_all_orders(instId=instId)
-    cancelled_algo_orders = await cancel_all_algo_orders_with_params(instId=instId)
-    print(f'{closed_positions = }')
-    print(f'{cancelled_orders = }')
-    print(f'{cancelled_algo_orders = }')
 
 
 async def get_order_book(instId, depth):
@@ -774,7 +809,6 @@ async def get_leverage(instId, mgnMode):
 
 async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[int, float], side, reference_price: float,
                               max_orderbook_price_offset=None):
-
     """
     Prepares a limit price based on the order book, quantity, side, reference price, and maximum order book price offset.
 
@@ -823,7 +857,6 @@ async def prepare_limit_price(order_book: Orderbook_Snapshot, quantity: Union[in
                 raise Exception(
                     f"Computed Limit Price {ask_or_bid.price} is not within the range of the max_orderbook_price_offset "
                     f"{max_orderbook_price_offset = } and reference price {reference_price = }")
-
 
     if limit_price is None:
         raise Exception(f"Could not find a price in the orderbook that has enough volume to cover the quantity")
@@ -1005,7 +1038,7 @@ async def _validate_okx_signal_additional_params(
 
 async def prepare_dca(dca_parameters: List[DCAInputParameters], side: str, reference_price: float,
                       ccy_contract_size: float, ccy_last_price: float, usd_to_base_rate: float, leverage: int,
-                      min_order_quantity: int, max_market_order_quantity: int):
+                      min_order_quantity: int, max_market_order_quantity: int,ctValCcy:str):
     # Assert the correct input parameters for dca
     assert all([isinstance(param, DCAInputParameters) for param in
                 dca_parameters]), f'The dca_parameters must be a list of DCAInputParameters. {dca_parameters = }'
@@ -1020,7 +1053,7 @@ async def prepare_dca(dca_parameters: List[DCAInputParameters], side: str, refer
         order_contracts = ccy_usd_to_contracts(usd_equivalent=usd_amount, ccy_contract_size=ccy_contract_size,
                                                ccy_last_price=ccy_last_price, minimum_contract_size=min_order_quantity,
                                                max_market_contract_size=max_market_order_quantity,
-                                               usd_base_ratio=usd_to_base_rate, leverage=leverage)
+                                               usd_base_ratio=usd_to_base_rate, leverage=leverage,ctValCcy=ctValCcy)
         orders.append(DCAOrderParameters(
             size=order_contracts,
             trigger_price=order_trigger_price,
@@ -1068,6 +1101,7 @@ async def validate_okx_signal_params(
 
     if _main_order_flag or okx_signal.dca_parameters:
         ctValCcy = instId_info.ctValCcy
+        print(f'{ctValCcy = }')
         min_order_quantity = int(instId_info.minSz)  # contracts
         max_market_order_quantity = int(instId_info.maxMktSz)  # contracts
         ctval_contract_size = float(instId_info.ctVal)
@@ -1087,7 +1121,8 @@ async def validate_okx_signal_params(
                 ccy_contract_size=ctval_contract_size, ccy_last_price=ccy_last_price,
                 usd_to_base_rate=usd_to_base_rate, leverage=leverage,
                 min_order_quantity=min_order_quantity,
-                max_market_order_quantity=max_market_order_quantity)
+                max_market_order_quantity=max_market_order_quantity,
+                ctValCcy=ctValCcy)
 
     if _main_order_flag:
 
@@ -1097,6 +1132,7 @@ async def validate_okx_signal_params(
                                                max_market_contract_size=max_market_order_quantity,
                                                usd_base_ratio=usd_to_base_rate, leverage=leverage,
                                                ctValCcy=ctValCcy)
+
         logger.info(f"Number of contracts you can buy: {order_contracts} {instId_info.instId}")
 
         # Convert these into trailing_stop_callback_offset to trailing_stop_callback_ratio
@@ -1167,7 +1203,7 @@ async def okx_signal_handler(
         order_side: str = None,
         order_type: str = None,
         max_orderbook_limit_price_offset: float = None,
-min_orderbook_limit_price_offset: float = None,
+        min_orderbook_limit_price_offset: float = None,
         flip_position_if_opposite_side: bool = False,
         clear_prior_to_new_order: bool = False,
         red_button: bool = False,
@@ -1272,8 +1308,9 @@ min_orderbook_limit_price_offset: float = None,
         all_closed_positions = await close_all_positions()
         all_cancelled_orders = await cancel_all_orders()
         all_cancelled_algo_orders = await cancel_all_algo_orders_with_params()
+        #
         all_positions = await get_all_positions()
-        all_orders = await get_all_orders()
+        all_orders = await get_orders_list()
         all_algo_orders = await get_all_algo_orders()
         logger.info(f'{all_closed_positions = }')
         logger.info(f'{all_cancelled_orders = }')
@@ -1323,7 +1360,12 @@ min_orderbook_limit_price_offset: float = None,
 
     assert isinstance(instID, str), f'{instID = }'
     if clear_prior_to_new_order:
-        await clear_orders_and_positions_for_instrument(instID)
+        closed_positions = await close_all_positions(instId=instID)
+        cancelled_orders = await cancel_all_orders(instId=instID)
+        cancelled_algo_orders = await cancel_all_algo_orders_with_params(instId=instID)
+        print(f'{closed_positions = }')
+        print(f'{cancelled_orders = }')
+        print(f'{cancelled_algo_orders = }')
 
     (simplified_balance_details, account_config, instrument_status_report) = await fetch_initial_data(TD_MODE,
                                                                                                       instId=instID)
@@ -1348,23 +1390,18 @@ min_orderbook_limit_price_offset: float = None,
             position_side = 'buy' if float(position.pos) > 0 else 'sell' if float(
                 position.pos) < 0 else None  # we are only using net so only one position
             if position_side is None:
-                # logger.info(f'Closing all positions for {instID = } due to 0 net position')
-                # await close_all_positions(instId=instID)
-                # await cancel_all_algo_orders_with_params(instId=instID)
-                # await cancel_all_orders(instId=instID)
-                pass # this is not a problem and the position is net 0
+                pass  # this is not a problem and the position is net 0
             elif order_side and position_side != order_side:
                 if flip_position_if_opposite_side:
                     logger.info(f'Flipping position from {position_side = } to {order_side = }')
                     await close_all_positions(instId=instID)
                     logger.info(f'Closed all positions for {instID = }')
-
                     cancelled_orders = await cancel_all_orders(instId=instID)
                     logger.info(f"Cancelling orders to flip position: \n"
-                          f"    {cancelled_orders = }")
+                                f"    {cancelled_orders = }")
                     cancelled_algo_orders = await cancel_all_algo_orders_with_params(instId=instID)
                     logger.info(f"Cancelling Algo orders to flip position: \n"
-                          f"    {cancelled_algo_orders = }")
+                                f"    {cancelled_algo_orders = }")
                 else:
                     logger.info(f'Closing all positions for {instID = } due to {position_side = } and {order_side = }')
                     agg_pos = float(position.pos) + order_size
@@ -1396,13 +1433,13 @@ min_orderbook_limit_price_offset: float = None,
                             if orders_to_cancel:
                                 await cancel_all_orders(orders_list=orders_to_cancel)
                                 logger.info(f"Cancelling orders to prep for incoming orders: \n"
-                                      f"    {orders_to_cancel = }")
+                                            f"    {orders_to_cancel = }")
                             if algo_orders_to_cancel:
                                 logger.info(f'{algo_orders_to_cancel = }')
                                 cancelled_algo_orders = cancel_all_algo_orders_with_params(
                                     algo_orders_list=algo_orders_to_cancel)
                                 logger.info(f"Cancelling Algo orders to prep for incoming orders: \n"
-                                      f"    {cancelled_algo_orders = }")
+                                            f"    {cancelled_algo_orders = }")
 
                     else:
                         # logger.info(f'The new position will result in a net 0 after the incoming orders'
@@ -1410,7 +1447,7 @@ min_orderbook_limit_price_offset: float = None,
                         #       f' with {position.pos = } and {order_size = }')
                         # await cancel_all_orders(instId=instID)
                         # await cancel_all_algo_orders_with_params(instId=instID)
-                        pass # this is not a problem and the position is net 0
+                        pass  # this is not a problem and the position is net 0
 
         order_request_dict = dict(
             instId=instID,
@@ -1424,6 +1461,9 @@ min_orderbook_limit_price_offset: float = None,
 
         if order_type != 'market':
             order_book = await get_order_book(instID, 400)
+            if not isinstance(min_orderbook_limit_price_offset, float):
+                min_orderbook_limit_price_offset = 0.0
+
             target_limit_price = reference_price + min_orderbook_limit_price_offset if order_side == 'buy' else \
                 reference_price - min_orderbook_limit_price_offset
             try:
@@ -1434,7 +1474,8 @@ min_orderbook_limit_price_offset: float = None,
                 logger.info(f'Setting New Target Limit Price to {limit_price = }')
                 order_request_dict['px'] = limit_price
             except Exception as e:
-                logger.error(f'Error preparing limit price: {e}\n   Will set to the reference price {reference_price = }')
+                logger.error(
+                    f'Error preparing limit price: {e}\n   Will set to the reference price {reference_price = }')
                 order_request_dict['px'] = target_limit_price
 
         # Todo TP/SL add options for ordertypes other than limit, similar to how TP/SL's for DCA are configured
@@ -1469,12 +1510,11 @@ min_orderbook_limit_price_offset: float = None,
 
         logger.info(f'{order_placement_return = }')
 
-        # If error, cancel all orders and exit
         if order_placement_return and order_placement_return.sCode != '0':
             logger.info(f'{order_placement_return.sMsg = }')
             await cancel_all_orders(instId=instID)
             await cancel_all_algo_orders_with_params(instId=instID)
-            exit()
+            return {'error': 'Cancelling orders due to error msg=' + order_placement_return.sMsg}
 
         if trailing_stop_loss_activated:
             activePx = None
@@ -1535,7 +1575,8 @@ min_orderbook_limit_price_offset: float = None,
                         target_limit_price,
                         max_orderbook_price_offset=max_orderbook_limit_price_offset)
                 except Exception as e:
-                    logger.error(f'Error preparing limit price: {e}\n   Will set to the reference price {target_limit_price = }')
+                    logger.error(
+                        f'Error preparing limit price: {e}\n   Will set to the reference price {target_limit_price = }')
                     dca_order_request_dict['orderPx'] = target_limit_price
 
             if dca_order.tp_trigger_price_offset and dca_order.tp_execution_price_offset:
@@ -1571,6 +1612,83 @@ min_orderbook_limit_price_offset: float = None,
         logger.info(f'{dca_orders_placement_return = }')
     logger.info('\n\nFINAL REPORT')
     return await fetch_status_report_for_instrument(instID, TD_MODE)
+
+
+async def fetch_incomplete_orders(instId: str = None, instType: str = None):
+    limit = 100
+    after = ''
+    all_data = []
+    request_count = 0
+    start_time = time.time()
+    if instId is None:
+        instId = ''
+    if instType is None:
+        instType = ''
+
+    while True:
+        try:
+            orders = await get_orders_list(after=after, limit=limit, instId=instId, instType=instType)
+            if not orders:
+                break
+            all_data.extend(orders)
+            after = orders[-1].ordId
+            request_count += 1
+            if request_count % 60 == 0:
+                elapsed = time.time() - start_time
+                if elapsed < 2:
+                    await asyncio.sleep(2 - elapsed)
+                start_time = time.time()
+        except Exception as e:
+            logger.error(f'Error fetching orders: {e}')
+            break
+    return all_data
+
+
+async def fetch_incomplete_algo_orders(instId=None, ordType=None):
+    limit = 100
+    after = ''
+    all_data = []
+    request_count = 0
+    start_time = time.time()
+    if instId is None:
+        instId = ''
+
+    order_types = ['trigger', 'oco', 'conditional', 'move_order_stop', 'twap'] if not ordType else [ordType]
+
+    after_map = {}
+    for order_type in order_types:
+        after_map[order_type] = ''
+    _keep_loop_alive = True
+    while _keep_loop_alive:
+        try:
+            for order_type in order_types:
+                if after_map[order_type] is None:
+                    print(f'{after_map  = }')
+                    # Check if all the after_map values are None and break if they are
+                    if all([v is None for v in after_map.values()]):
+                        _keep_loop_alive = False
+                        break
+                    continue
+                response = tradeAPI.order_algos_list(
+                    ordType=order_type, after=after_map[order_type], limit=limit,
+                    instId=instId)
+                algo_orders = await get_request_data(response, Algo_Order)
+                print(f'{algo_orders = }')
+                if not algo_orders:
+                    after_map[order_type] = None
+                    continue
+                all_data.extend(algo_orders)
+                after_map[order_type] = algo_orders[-1].algoId
+                request_count += 1
+                if request_count % 20 == 0:
+                    elapsed = time.time() - start_time
+                    if elapsed < 2:
+                        await asyncio.sleep(2 - elapsed)
+                    start_time = time.time()
+        except Exception as e:
+            logger.error(f'Error fetching algo orders: {e}')
+            break
+    return all_data
 
 
 async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
@@ -1609,7 +1727,6 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
     start_time = time.time()
 
     while True:
-
         try:
             fills_response = tradeAPI.get_fills_history(
                 instType=instType,
@@ -1639,6 +1756,7 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
 
             after = fills_message_data[-1]['billId']  # Prepare the 'after' for the next request
             logger.info(f'{after = }')
+            # The
             request_count += 1
             if request_count % 10 == 0:
                 elapsed = time.time() - start_time
@@ -1647,7 +1765,7 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
                     await asyncio.sleep(2 - elapsed)
                 start_time = time.time()
 
-            await asyncio.sleep(2)  # FIXME Here to prevent hogging the CPU remove this line
+            await asyncio.sleep(0.1)  # FIXME Here to prevent hogging the CPU remove this line
 
 
 
@@ -1774,7 +1892,8 @@ if __name__ == '__main__':
     dotenv.load_dotenv(dotenv.find_dotenv())
 
     # Define the test function to be used
-    TEST_FUNCTION = 'okx_premium_indicator'
+    # TEST_FUNCTION = 'okx_premium_indicator'
+    TEST_FUNCTION = 'okx_signal_handler'
 
     # Immediately execute the 'red button' functionality to clear all positions and orders
     # TODO: Ensure only relevant orders/positions are handled.
@@ -1785,16 +1904,16 @@ if __name__ == '__main__':
         # Execute the 'okx_signal_handler' with predefined parameters for testing
         response = asyncio.run(okx_signal_handler(
             # Global
-            instID="BTC-USDT-240628",
-            leverage=5,
+            instID="ETH-USDT-240329",
+            leverage=1,
             max_orderbook_limit_price_offset=None,
             min_orderbook_limit_price_offset=None,
             clear_prior_to_new_order=False,
-            red_button=False,
+            red_button=True,
             # Principal Order
             usd_order_size=100,
             order_side="BUY",
-            order_type="MARKET",
+            order_type="POST_ONLY",
             flip_position_if_opposite_side=True,
             # Principal Order's TP/SL/Trail
             # tp_trigger_price_offset=100,
@@ -1804,31 +1923,33 @@ if __name__ == '__main__':
             # trailing_stop_activation_price_offset=100,
             # trailing_stop_callback_offset=10,
             # DCA Orders (are not linked to the principal order)
-            # dca_parameters=[
-            #     DCAInputParameters(
-            #         usd_amount=100,
-            #         order_type="LIMIT",
-            #         order_side="BUY",
-            #         trigger_price_offset=100,
-            #         execution_price_offset=90,
-            #         tp_trigger_price_offset=100,
-            #         tp_execution_price_offset=90,
-            #         sl_trigger_price_offset=100,
-            #         sl_execution_price_offset=90
-            #     ),
-            #     DCAInputParameters(
-            #         usd_amount=100,
-            #         order_type="LIMIT",
-            #         order_side="BUY",
-            #         trigger_price_offset=150,
-            #         execution_price_offset=149,
-            #         tp_trigger_price_offset=100,
-            #         tp_execution_price_offset=90,
-            #         sl_trigger_price_offset=100,
-            #         sl_execution_price_offset=90
-            #     )
-            # ]
+            dca_parameters=[
+                DCAInputParameters(
+                    usd_amount=150,
+                    order_type="LIMIT",
+                    order_side="BUY",
+                    trigger_price_offset=100,
+                    execution_price_offset=90,
+                    tp_trigger_price_offset=100,
+                    tp_execution_price_offset=90,
+                    sl_trigger_price_offset=100,
+                    sl_execution_price_offset=90
+                ),
+                DCAInputParameters(
+                    usd_amount=150,
+                    order_type="LIMIT",
+                    order_side="BUY",
+                    trigger_price_offset=150,
+                    execution_price_offset=149,
+                    tp_trigger_price_offset=100,
+                    tp_execution_price_offset=90,
+                    sl_trigger_price_offset=100,
+                    sl_execution_price_offset=90
+                )
+            ]
         ))
+
+
     elif TEST_FUNCTION == 'okx_premium_indicator':
         # Load a payload from a file for testing the 'okx_premium_indicator'
         with open('../tradingview_tools/tradingview_debug_message.json', 'r') as f:
@@ -1837,7 +1958,6 @@ if __name__ == '__main__':
         # Construct the signal request form
         indicator_input = OKXPremiumIndicatorSignalRequestForm(**webhook_payload)
 
-
         # Process the indicator input and store the result
         # response = asyncio.run(okx_premium_indicator_handler(indicator_input))
 
@@ -1845,9 +1965,9 @@ if __name__ == '__main__':
         response = requests.post(
             # 'http://localhost:8080/tradingview/premium_indicator/', # Local
             # 'http://localhost/api/tradingview/premium_indicator', # Docker
-            'http://34.170.145.146/api/tradingview/premium_indicator', # GCP
+            'http://34.170.145.146/api/tradingview/premium_indicator',  # GCP
             # 'http://34.170.145.146:8080/tradingview/premium_indicator/', # GCP
-                                 json=indicator_input.model_dump()
+            json=indicator_input.model_dump()
         )
         logger.info(f'{response.content = }')
         response = response.json()

@@ -7,6 +7,7 @@
     "order_side": "",
     "order_type": "",
     "max_orderbook_limit_price_offset": 0.0,
+    "min_orderbook_limit_price_offset":5.0,
     "flip_position_if_opposite_side": false,
     "clear_prior_to_new_order": false,
     "red_button": false,

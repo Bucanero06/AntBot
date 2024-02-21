@@ -40,27 +40,6 @@ def health_check():
     return {"status": "OK"}
 
 
-def start_websocket_task_loop():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    loop.run_until_complete(okx_websockets_main_run(input_channel_models=[
-        ### Private Channels
-        AccountChannelInputArgs(channel="account", ccy=None,
-                                extraParams="{"
-                                            "\"updateInterval\": \"1\""
-                                            "}"),
-        PositionsChannelInputArgs(channel="positions", instType="ANY", instFamily=None, instId=None,
-                                  extraParams="{"
-                                              "\"updateInterval\": \"1\""
-                                              "}"),
-        BalanceAndPositionsChannelInputArgs(channel="balance_and_position"),
-        OrdersChannelInputArgs(channel="orders", instType="FUTURES", instFamily=None, instId=None)
-    ], apikey=os.getenv('OKX_API_KEY'), passphrase=os.getenv('OKX_PASSPHRASE'),
-        secretkey=os.getenv('OKX_SECRET_KEY'), sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
-        redis_store=True
-    ))
-    loop.close()
 
 
 @app.on_event("startup")
@@ -73,8 +52,6 @@ async def startup_event():
     async_redis = await init_async_redis()
     assert async_redis, "async_redis is None, check the connection to the Redis server"
 
-    # websocket_thread = threading.Thread(target=start_websocket_task_loop)
-    # websocket_thread.start()
     websocket_task = asyncio.create_task(okx_websockets_main_run(input_channel_models=[
         ### Private Channels
         AccountChannelInputArgs(channel="account", ccy=None,
@@ -91,7 +68,6 @@ async def startup_event():
         secretkey=os.getenv('OKX_SECRET_KEY'), sandbox_mode=os.getenv('OKX_SANDBOX_MODE', True),
         redis_store=True
     ))
-    rest_task = asyncio.create_task(okx_rest_messages_services(reload_interval=30))
 
     # TODO need to do this for each desired instrument and should be updated since contracts expire thus
     #  instruments change
@@ -114,14 +90,6 @@ async def shutdown_event():
     else:
         logger.warning("WebSocket task was not running")
 
-    if rest_task:
-        rest_task.cancel()
-        try:
-            await rest_task
-        except asyncio.CancelledError:
-            logger.error("REST task was cancelled")
-    else:
-        logger.warning("REST task was not running")
 
     if websocket_instrument_task:
         websocket_instrument_task.cancel()

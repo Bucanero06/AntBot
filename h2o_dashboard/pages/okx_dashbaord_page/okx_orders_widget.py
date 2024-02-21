@@ -27,14 +27,21 @@ class OKX_Orders_StreamWidget:
             ordType={'label': 'Type', 'type': 'str'},
             avgPx={'label': 'Avg Price', 'type': 'float'},
             fee={'label': 'Fee', 'type': 'float'},
+            fillFee={'label': 'Fill Fee', 'type': 'float'},
             lever={'label': 'Leverage', 'type': 'float'},
-            slOrdPx={'label': 'SL Order Price', 'type': 'float'},
-            slTriggerPx={'label': 'SL Trigger Price', 'type': 'float'},
-            tpOrdPx={'label': 'TP Order Price', 'type': 'float'},
-            tpTriggerPx={'label': 'TP Trigger Price', 'type': 'float'},
+            # slOrdPx={'label': 'SL Order Price', 'type': 'float'},
+            # slTriggerPx={'label': 'SL Trigger Price', 'type': 'float'},
+            # tpOrdPx={'label': 'TP Order Price', 'type': 'float'},
+            # tpTriggerPx={'label': 'TP Trigger Price', 'type': 'float'},
             execType={'label': 'ExecType', 'type': 'str'},
             feeCcy={'label': 'Fee Currency', 'type': 'str'},
-            cTime={'label': 'Creation Time', 'type': 'timestamp'},
+            fillPnl={'label': 'Fill Profit/Loss', 'type': 'float'},
+            fillFeeCcy={'label': 'Fill Fee Currency', 'type': 'str'},
+            msg={'label': 'Message', 'type': 'str'},
+            cancelSource={'label': 'Cancel Source', 'type': 'str'},
+
+            cTime={'label': 'cTime', 'type': 'timestamp'},
+            uTime={'label': 'uTime', 'type': 'timestamp'},
         )
 
     async def _update_stream(self):
@@ -80,7 +87,7 @@ class OKX_Orders_StreamWidget:
                 items.append(ui.stat_table_item(label=label_value, values=values))
         return ui.stat_table_card(
             box=box,
-            title=f'Last N orders - okx:websockets@orders (not just fills or open orders)',
+            title=f'Last N orders messages - okx:websockets@orders (DEPRECATED FOR ORDERHISTORY STREAMS)',
             columns=[col_value['label'] for col_value in self.okx_order_column_mappings.values()],
             items=items
         )

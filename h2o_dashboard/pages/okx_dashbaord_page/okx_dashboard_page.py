@@ -3,7 +3,7 @@ import asyncio
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
 from h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget import OKX_Account_StreamWidget
-from h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget import OKX_AlgoOrders_StreamWidget
+# from h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget import OKX_AlgoOrders_StreamWidget
 from h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler import \
     OKX_Premium_Indicator_Handler_Widget
 from h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget import OKX_Fill_Report_StreamWidget
@@ -32,8 +32,8 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
 
     orders_stream_widget = OKX_Orders_StreamWidget(q=q, card_name='OKXDEBUG_Orders_Stream', box='grid_3',
                                                    history_count=20)
-    algo_orders_stream_widget = OKX_AlgoOrders_StreamWidget(q=q, card_name='OKXDEBUG_Algo_Orders_Stream', box='grid_4',
-                                                            history_count=20)
+    # algo_orders_stream_widget = OKX_AlgoOrders_StreamWidget(q=q, card_name='OKXDEBUG_Algo_Orders_Stream', box='grid_4',
+    #                                                         history_count=20)
     okx_premium_indicator_handler_widget = OKX_Premium_Indicator_Handler_Widget(q=q,
                                                                                 card_name='OKXDEBUG_Premium_Manual_Controls',
                                                                                 box='grid_5')
@@ -61,7 +61,7 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
             await okx_premium_indicator_handler_widget.update_cards()
             await orders_stream_widget.update_cards()
             # await algo_orders_stream_widget.update_cards()
-            #
+
             await q.page.save()
     except asyncio.CancelledError:
         print("Cancelled")

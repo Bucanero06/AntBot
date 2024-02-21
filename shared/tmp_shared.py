@@ -1,4 +1,3 @@
-
 from datetime import datetime, timedelta
 
 
@@ -12,7 +11,8 @@ def ccy_contracts_to_usd(contracts_amount, ccy_contract_size, ccy_last_price, us
         leverage = 10  # example leverage
         return total_cost_usd / leverage
 
-#TODO TEST THE CONVERSIONS
+
+# TODO TEST THE CONVERSIONS
 # Getting error:
 #     url: /api/v5/market/ticker?instId=BTC-USDT-240329
 #     antbot-okx_rest-1  | {'error': 'USD equivalent of 100.0 is too much to buy the \n'
@@ -22,8 +22,7 @@ def ccy_contracts_to_usd(contracts_amount, ccy_contract_size, ccy_last_price, us
 def ccy_usd_to_contracts(usd_equivalent, ccy_contract_size, ccy_last_price,
                          minimum_contract_size,
                          max_market_contract_size,
-                         usd_base_ratio, leverage=None, ctValCcy='USD'):
-
+                         usd_base_ratio, leverage, ctValCcy):
     if ctValCcy == 'USD':
         cost_of_one_contract_in_usd = ccy_contract_size
         base_equivalent = usd_equivalent
@@ -31,15 +30,15 @@ def ccy_usd_to_contracts(usd_equivalent, ccy_contract_size, ccy_last_price,
         cost_of_one_contract_in_usd = ccy_contract_size * ccy_last_price
         base_equivalent = usd_equivalent * usd_base_ratio
 
-    if leverage:
-        leveraged_cost_of_one_contract_usd = cost_of_one_contract_in_usd / leverage
-    else:
+    if not leverage:
         leverage = 1
 
+    leveraged_cost_of_one_contract_usd = cost_of_one_contract_in_usd / leverage
 
+    print(f"ctValCcy: {ctValCcy}")
+    print(f"ccy_contract_size: {ccy_contract_size}")
     print(f"Cost of one contract in USD: {cost_of_one_contract_in_usd}")
     print(f"Cost of one contract in USD with leverage: {leveraged_cost_of_one_contract_usd}")
-    print(f"Base equivalent: {base_equivalent}")
 
     max_contracts = base_equivalent / leveraged_cost_of_one_contract_usd
     max_contracts = int(max_contracts)  # round down to the nearest whole number
@@ -55,7 +54,9 @@ def ccy_usd_to_contracts(usd_equivalent, ccy_contract_size, ccy_last_price,
                          f"maximum quantity of {max_market_contract_size} contracts for {ccy_contract_size} at \n"
                          f"{ccy_last_price} with {leverage} leverage. The maximum cost is "
                          f"{max_cost} USDT")
+    print(f"Suggested N contracts: {max_contracts} for a total cost of {base_equivalent} USDT")
     return max_contracts
+
 
 def calculate_stop_prices(order_side, reference_price, sl_trigger_price_offset,
                           stop_surplus_trigger_percentage, sl_execution_price_offset, stop_surplus_price_offset):

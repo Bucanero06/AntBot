@@ -117,6 +117,8 @@ services:
     depends_on:
       okx_websockets:
         condition: service_healthy
+      okx_polling_service:
+        condition: service_healthy
       redis:
         condition: service_healthy
     environment:
@@ -156,7 +158,7 @@ services:
       context: .
       dockerfile: .docker/bot.dockerfile
     ports:
-      - ${OKX_WS_SERVICE_PORT}:${OKX_WS_SERVICE_PORT}
+      - 8081:8081
     restart: unless-stopped
     networks:
       - my-network
@@ -168,7 +170,7 @@ services:
       - MODULE_PATH=${OKX_WS_MODULE_PATH}
       - MODULE_NAME=${OKX_WS_MODULE_NAME}
       - HOST=0.0.0.0
-      - PORT=${OKX_WS_SERVICE_PORT}
+      - PORT=8081
       - REDIS_STREAM_MAX_LEN=${REDIS_STREAM_MAX_LEN}
       - OKX_API_KEY=${OKX_API_KEY}
       - OKX_SECRET_KEY=${OKX_SECRET_KEY}
@@ -179,6 +181,46 @@ services:
       - REDIS_SERVICE_PASSWORD=${REDIS_SERVICE_PASSWORD}
     healthcheck:
       test: [ "CMD", "curl", "--fail", "http://localhost:8081/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    cpus: 1
+    mem_limit: 1g
+    mem_reservation: 512m
+
+  okx_polling_service:
+    build:
+      context: .
+      dockerfile: .docker/bot.dockerfile
+    ports:
+      - 8082:8082
+    restart: unless-stopped
+    networks:
+      - my-network
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - FIREBASE_API_KEY=${FIREBASE_API_KEY}
+      - MODULE_PATH=${OKX_POLLING_MODULE_PATH}
+      - MODULE_NAME=${OKX_POLLING_MODULE_NAME}
+      - HOST=0.0.0.0
+      - PORT=8082
+      - REDIS_STREAM_MAX_LEN=${REDIS_STREAM_MAX_LEN}
+      - OKX_API_KEY=${OKX_API_KEY}
+      - OKX_SECRET_KEY=${OKX_SECRET_KEY}
+      - OKX_PASSPHRASE=${OKX_PASSPHRASE}
+      - OKX_SANDBOX_MODE=${OKX_SANDBOX_MODE}
+      - OKX_VERBOSE=${OKX_VERBOSE}
+      - N_WORKERS=1
+      - REDIS_SERVICE_PASSWORD=${REDIS_SERVICE_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:8082/health" ]
       interval: 10s
       timeout: 5s
       retries: 3

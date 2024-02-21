@@ -8,7 +8,8 @@ from pyokx import ENFORCED_INSTRUMENT_TYPE
 from pyokx.data_structures import FillEntry, FillHistoricalMetricsEntry, FillHistoricalMetrics
 from pyokx.low_rest_api.exceptions import OkxAPIException, OkxParamsException, OkxRequestException
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
-from pyokx.rest_handling import fetch_fill_history, InstrumentSearcher
+from pyokx.rest_handling import fetch_fill_history, InstrumentSearcher, fetch_incomplete_algo_orders, \
+    fetch_incomplete_orders
 from redis_tools.utils import init_async_redis, serialize_for_redis
 from shared import logging
 from shared.tmp_shared import get_timestamp_from_days_ago
@@ -91,28 +92,13 @@ async def update_instruments(okx_futures_instrument_searcher: InstrumentSearcher
                            maxlen=REDIS_STREAM_MAX_LEN)
 
 
-async def okx_rest_messages_services(reload_interval: int = 30):
-    """
-    Main service loop for processing OKX REST messages.
-
-    This function initializes the Redis connection and enters a loop that, at each interval,
-    calls `analyze_transaction_history` to analyze and store the last 90 days of transaction history.
-    Handles exceptions and logs them accordingly.
-
-    :param reload_interval: The interval in seconds between each iteration of the loop. Default is 30 seconds.
-    :type reload_interval: int
-    """
-    print("Starting okx_rest_messages_services")
-    global async_redis
-    async_redis = await init_async_redis()
-    assert async_redis, "async_redis is None, check the connection to the Redis server"
-
+async def slow_polling_service(reload_interval: int = 30):
     okx_futures_instrument_searcher = InstrumentSearcher(ENFORCED_INSTRUMENT_TYPE)
     while True:
         try:
             await asyncio.gather(
-
-                analyze_transaction_history(ENFORCED_INSTRUMENT_TYPE),  # by default, analyze and store the last 90 days for futures
+                analyze_transaction_history(ENFORCED_INSTRUMENT_TYPE),
+                # by default, analyze and store the last 90 days for futures
                 update_instruments(okx_futures_instrument_searcher, ENFORCED_INSTRUMENT_TYPE)
             )
         except KeyboardInterrupt:
@@ -126,6 +112,65 @@ async def okx_rest_messages_services(reload_interval: int = 30):
         finally:
             print(f"Sleeping for {reload_interval} seconds")
             await asyncio.sleep(reload_interval)
+
+
+async def loop_fetch_incomplete_algo_orders(reload_interval: int = 0.2):
+    while True:
+        try:
+            algo_orders = await fetch_incomplete_algo_orders()
+            redis_ready_message = serialize_for_redis(algo_orders)
+            await async_redis.xadd('okx:rest@algo-orders', {'data': redis_ready_message}, maxlen=1)
+        except KeyboardInterrupt:
+            break
+        except (OkxAPIException, OkxParamsException, OkxRequestException):
+            logger.warning(traceback.format_exc())
+            continue
+        except Exception:
+            logger.error(traceback.format_exc())
+            continue
+        finally:
+            print(f"Sleeping loop_fetch_incomplete_algo_orders for {reload_interval} seconds")
+            await asyncio.sleep(reload_interval)
+
+async def loop_fetch_incomplete_orders(reload_interval: int = 0.2):
+    while True:
+        try:
+            orders = await fetch_incomplete_orders()
+            redis_ready_message = serialize_for_redis(orders)
+            await async_redis.xadd('okx:rest@orders', {'data': redis_ready_message}, maxlen=1)
+        except KeyboardInterrupt:
+            break
+        except (OkxAPIException, OkxParamsException, OkxRequestException):
+            logger.warning(traceback.format_exc())
+            continue
+        except Exception:
+            logger.error(traceback.format_exc())
+            continue
+        finally:
+            await asyncio.sleep(reload_interval)
+
+async def okx_rest_messages_services(slow_reload_interval: int = 30):
+    """
+    Main service loop for processing OKX REST messages.
+
+    This function initializes the Redis connection and enters a loop that, at each interval,
+    calls `analyze_transaction_history` to analyze and store the last 90 days of transaction history.
+    Handles exceptions and logs them accordingly.
+
+    :param slow_reload_interval: The interval in seconds between each iteration of the loop. Default is 30 seconds.
+    :type slow_reload_interval: int
+    """
+    print("Starting okx_rest_messages_services")
+    global async_redis
+    async_redis = await init_async_redis()
+
+    assert async_redis, "async_redis is None, check the connection to the Redis server"
+    slow_polling_task = await asyncio.create_task(slow_polling_service(slow_reload_interval))
+    # loop_fetch_incomplete_algo_orders_task = asyncio.create_task(loop_fetch_incomplete_algo_orders())
+    # loop_fetch_incomplete_orders_task = asyncio.create_task(loop_fetch_incomplete_orders())
+    # await asyncio.gather(slow_polling_task, loop_fetch_incomplete_algo_orders_task, loop_fetch_incomplete_orders_task)
+
+
 
 
 if __name__ == "__main__":

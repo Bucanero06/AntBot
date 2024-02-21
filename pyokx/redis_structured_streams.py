@@ -1,16 +1,15 @@
-
 from typing import List
 
 import aioredis
 
 from pyokx import ENFORCED_INSTRUMENT_TYPE
 from pyokx.InstrumentSearcher import InstrumentSearcher
-from pyokx.data_structures import FillHistoricalMetrics
+from pyokx.data_structures import FillHistoricalMetrics, Order, Algo_Order
 from pyokx.ws_data_structures import AccountChannel, PositionsChannel, OrdersChannel, available_channel_models
 from redis_tools.utils import _deserialize_from_redis
 
 
-async def get_instruments_searcher_from_redis(async_redis=None, instType=ENFORCED_INSTRUMENT_TYPE):
+async def get_instruments_searcher_from_redis(async_redis=None, instType=ENFORCED_INSTRUMENT_TYPE) -> InstrumentSearcher:
     instrument_stream = await async_redis.xrevrange(f'okx:rest@{instType}-instruments', count=1)
     if not instrument_stream:
         okx_futures_instrument_searcher = InstrumentSearcher(instType=instType)
@@ -27,7 +26,7 @@ async def get_instruments_searcher_from_redis(async_redis=None, instType=ENFORCE
     return okx_futures_instrument_searcher
 
 
-async def get_stream_okx_all_messages(async_redis: aioredis.Redis, count: int = 10):
+async def get_stream_okx_all_messages(async_redis: aioredis.Redis, count: int = 10) -> List:
     messages_serialized = await async_redis.xrevrange('okx:websockets@all', count=count)
     if not messages_serialized:
         print(f"no messages in all cache!")
@@ -100,7 +99,7 @@ async def get_stream_okx_position_messages(async_redis: aioredis.Redis, count: i
     return position_messages
 
 
-async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int = 10):
+async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int = 10) -> List[OrdersChannel]:
     order_messages_serialized = await async_redis.xrevrange('okx:websockets@orders', count=count)
     if not order_messages_serialized:
         print(f"orders information not ready in order cache!")
@@ -122,7 +121,7 @@ async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int 
     return order_messages
 
 
-async def get_stream_okx_fill_metrics_report(async_redis: aioredis.Redis, count: int = 10):
+async def get_stream_okx_fill_metrics_report(async_redis: aioredis.Redis, count: int = 10) -> List[FillHistoricalMetrics]:
     fill_metrics_report_serialized = await async_redis.xrevrange('okx:reports@fill_metrics', count=count)
     if not fill_metrics_report_serialized:
         print(f"fills information not ready in fills cache!")
@@ -142,3 +141,46 @@ async def get_stream_okx_fill_metrics_report(async_redis: aioredis.Redis, count:
         fill_metrics = FillHistoricalMetrics(**fill_metrics_deserialized)
         fill_metrics_report.append(fill_metrics)
     return fill_metrics_report
+
+
+async def get_stream_okx_incomplete_orders(async_redis: aioredis.Redis, count: int = 1) -> List[List[Order]]:
+    incomplete_orders_serialized = await async_redis.xrevrange('okx:rest@orders', count=count)
+    if not incomplete_orders_serialized:
+        print(f"incomplete orders information not ready in incomplete orders cache!")
+        return []
+
+    incomplete_orders_serialized.reverse()
+
+    incomplete_orders = []
+    for incomplete_order in incomplete_orders_serialized:
+        redis_stream_id = incomplete_order[0]
+        incomplete_order_serialized = incomplete_order[1].get("data")
+        if not incomplete_order_serialized:
+            print(
+                f"A message in the incomplete orders stream {'okx:websockets@incomplete_orders'} with id {redis_stream_id} was empty, skipping")
+            continue
+        incomplete_order_deserialized = _deserialize_from_redis(incomplete_order_serialized)
+        incomplete_order: List[Order] = [Order(**order) for order in incomplete_order_deserialized]
+        incomplete_orders.append(incomplete_order)
+    return incomplete_orders
+
+async def get_stream_okx_incomplete_algo_orders(async_redis: aioredis.Redis, count: int = 1) -> List[List[Algo_Order]]:
+    incomplete_algo_orders_serialized = await async_redis.xrevrange('okx:rest@algo-orders', count=count)
+    if not incomplete_algo_orders_serialized:
+        print(f"incomplete algo orders information not ready in incomplete algo orders cache!")
+        return []
+
+    incomplete_algo_orders_serialized.reverse()
+
+    incomplete_algo_orders = []
+    for incomplete_algo_order in incomplete_algo_orders_serialized:
+        redis_stream_id = incomplete_algo_order[0]
+        incomplete_algo_order_serialized = incomplete_algo_order[1].get("data")
+        if not incomplete_algo_order_serialized:
+            print(
+                f"A message in the incomplete algo orders stream {'okx:websockets@incomplete_algo_orders'} with id {redis_stream_id} was empty, skipping")
+            continue
+        incomplete_algo_order_deserialized = _deserialize_from_redis(incomplete_algo_order_serialized)
+        incomplete_algo_order: List[Algo_Order] = [Algo_Order(**algo_order) for algo_order in incomplete_algo_order_deserialized]
+        incomplete_algo_orders.append(incomplete_algo_order)
+    return incomplete_algo_orders

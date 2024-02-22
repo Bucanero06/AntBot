@@ -60,8 +60,8 @@ performance and versatility:
 1. **FastAPI & Uvicorn:**
     - Implements a modern, high-performance framework with Uvicorn serving for high concurrency and reliability.
 
-2. **Pydantic & Redis:**
-    - Employs Pydantic for robust data structuring and Redis for fast, scalable data processing.
+2. **MsgS & Redis:**
+    - Employs MsgSpec for robust data structuring and Redis for fast, scalable data processing.
 
 3. **Supplementary Technologies:**
     - Nginx, Asyncio, Wave, Poetry, VectorBT(PRO), Nautilus Trader, and TradingView enrich the stack with capabilities ranging

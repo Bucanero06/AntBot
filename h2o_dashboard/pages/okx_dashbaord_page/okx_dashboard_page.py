@@ -2,6 +2,7 @@ import asyncio
 
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
+from h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget import OKX_Account_StreamWidget
 # from h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget import OKX_AlgoOrders_StreamWidget
 from h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler import \
     OKX_Premium_Indicator_Handler_Widget
@@ -39,8 +40,8 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
     #                       ui.link(label="OKX API Docs", name='okx_website_stats', path='https://www.okx.com/docs-v5/en/', target=''),
     #                  ]))
 
-    # account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_1',
-    #                                                  history_count=900)
+    account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_1',
+                                                     history_count=900)
     positions_stream_widget = OKX_Live_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_2')
     fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_2')
 
@@ -55,9 +56,9 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
 
 
     '''Init RealTime Page Cards'''
-    # await account_stream_widget.add_cards()
-    # await positions_stream_widget.add_cards()
-    # await fill_report_stream_widget.add_cards()
+    await account_stream_widget.add_cards()
+    await positions_stream_widget.add_cards()
+    await fill_report_stream_widget.add_cards()
     await okx_premium_indicator_handler_widget.add_cards()
     # await orders_stream_widget.add_cards()
     # await algo_orders_stream_widget.add_cards()
@@ -71,9 +72,9 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
                 break
             await asyncio.sleep(update_seconds)
             #
-            # await account_stream_widget.update_cards()
-            # await positions_stream_widget.update_cards()
-            # await fill_report_stream_widget.update_cards()
+            await account_stream_widget.update_cards()
+            await positions_stream_widget.update_cards()
+            await fill_report_stream_widget.update_cards()
             await okx_premium_indicator_handler_widget.update_cards()
             # await orders_stream_widget.update_cards()
             # await algo_orders_stream_widget.update_cards()

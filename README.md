@@ -80,7 +80,6 @@ dashboard
 ```yaml
 port 10101 or behind a reverse proxy (e.g. Nginx) on port 80
 ```
-[Screencast from 02-07-2024 01:06:45 AM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/d47830d0-bd6c-4718-bb3e-ecce9da40ffe)
 
 okx_signal_handler:
 ```yaml

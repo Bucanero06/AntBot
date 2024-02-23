@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project synopsis presents a guide for the AntBot codebase. The AntBot is a high-performance trading application tailored for the OKX exchange. It emphasizes real-time data processing, efficient resource management, and a
+This project synopsis presents a guide for the AntBot Python codebase. The AntBot is a high-performance trading application tailored for the OKX exchange. It emphasizes real-time data processing, efficient resource management, and a
 robust technological stack.
 
 ### Document Details

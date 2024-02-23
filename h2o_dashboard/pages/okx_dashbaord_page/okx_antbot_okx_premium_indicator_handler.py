@@ -28,7 +28,7 @@ class OKX_Premium_Indicator_Handler_Widget:
         self.box = box
         self._initialized = False
 
-        self.okx_futures_instruments_searcher: InstrumentSearcher = None
+        self.okx_instruments_searcher: InstrumentSearcher = None
 
         self._last_update_time = None
         self._minimum_update_delay = minimum_update_delay
@@ -39,16 +39,16 @@ class OKX_Premium_Indicator_Handler_Widget:
             if (self._last_update_time - self._last_update_time) < timedelta(seconds=self._minimum_update_delay):
                 return
         self._last_update_time = datetime.now()
-        self.okx_futures_instruments_searcher = await get_instruments_searcher_from_redis(
+        self.okx_instruments_searcher = await get_instruments_searcher_from_redis(
             async_redis=self.q.client.async_redis)
 
     async def _is_initialized(self):
-        return self._initialized and self.okx_futures_instruments_searcher
+        return self._initialized and self.okx_instruments_searcher
 
     async def add_cards(self):
         await self._update_stream()
         instrument_id_choices = [ui.choice(name=instID, label=instID) for instID in
-                                 self.okx_futures_instruments_searcher.get_instrument_ids()]
+                                 self.okx_instruments_searcher.get_instrument_ids()]
         bot_okx_signal_inputs = ui.form_card(
             box=self.box,
             items=[

@@ -839,10 +839,10 @@ async def _validate_instID_and_return_ticker_info(instID):
     """
     # Clean Input Data
     instID = instID.upper()
-    okx_futures_instrument_searcher: InstrumentSearcher = await get_instruments_searcher_from_redis(
+    okx_instrument_searcher: InstrumentSearcher = await get_instruments_searcher_from_redis(
         await init_async_redis())
 
-    instrument = okx_futures_instrument_searcher.find_by_instId(instID)
+    instrument = okx_instrument_searcher.find_by_instId(instID)
     assert instrument, f'Instrument not found. {instID = }'
     return instrument
 

@@ -80,8 +80,6 @@ async def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = D
 
     # Check whether the instID is valid
     instID = request.instID.upper()
-    splitted = instID.split('-')
-    assert len(splitted) == 3, f'The Futures instrument ID must be in the format of "BTC-USDT-210326". {instID = }'
     instrument_ticker = await _validate_instID_and_return_ticker_info(instID)
     assert instrument_ticker, f'Instrument {instID} not found in instrument_searcher'
 

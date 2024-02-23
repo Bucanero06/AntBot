@@ -13,7 +13,7 @@ async def get_instruments_searcher_from_redis(async_redis: aioredis.Redis) -> In
     instrument_stream = await async_redis.xrevrange(f'okx:rest@instruments', count=1)
     if not instrument_stream:
         print(f"no instruments in cache, creating InstrumentSearcher with instTypes {ENFORCED_INSTRUMENT_TYPES}")
-        okx_futures_instrument_searcher = InstrumentSearcher(instTypes=ENFORCED_INSTRUMENT_TYPES)
+        okx_instrument_searcher = InstrumentSearcher(instTypes=ENFORCED_INSTRUMENT_TYPES)
     else:
         message = instrument_stream[0]
         redis_stream_id = message[0]
@@ -22,11 +22,11 @@ async def get_instruments_searcher_from_redis(async_redis: aioredis.Redis) -> In
             print(
                 f"A message in the instruments stream {'okx:rest@instruments'} with id {redis_stream_id} was empty"
                 f", creating InstrumentSearcher with instTypes {ENFORCED_INSTRUMENT_TYPES}")
-            okx_futures_instrument_searcher = InstrumentSearcher(instTypes=ENFORCED_INSTRUMENT_TYPES)
+            okx_instrument_searcher = InstrumentSearcher(instTypes=ENFORCED_INSTRUMENT_TYPES)
         else:
             deserialized_message = deserialize_from_redis(message_serialized)
-            okx_futures_instrument_searcher = InstrumentSearcher(_instrument_map=deserialized_message)
-    return okx_futures_instrument_searcher
+            okx_instrument_searcher = InstrumentSearcher(_instrument_map=deserialized_message)
+    return okx_instrument_searcher
 
 
 async def get_stream_okx_all_messages(async_redis: aioredis.Redis, count: int = 10) -> List:

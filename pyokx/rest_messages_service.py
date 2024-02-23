@@ -87,21 +87,21 @@ async def analyze_transaction_history(InstTypes: List[InstType] = ENFORCED_INSTR
     await async_redis.xadd('okx:reports@fill_metrics', {'data': redis_ready_message}, maxlen=1)
 
 
-async def update_instruments(okx_futures_instrument_searcher: InstrumentSearcher):
-    instrument_map = await okx_futures_instrument_searcher.update_instruments()
+async def update_instruments(okx_instrument_searcher: InstrumentSearcher):
+    instrument_map = await okx_instrument_searcher.update_instruments()
     redis_ready_message = serialize_for_redis(instrument_map)
     await async_redis.xadd(f'okx:rest@instruments', {'data': redis_ready_message},
                            maxlen=REDIS_STREAM_MAX_LEN)
 
 
 async def slow_polling_service(reload_interval: int = 30):
-    okx_futures_instrument_searcher = InstrumentSearcher(ENFORCED_INSTRUMENT_TYPES)
+    okx_instrument_searcher = InstrumentSearcher(ENFORCED_INSTRUMENT_TYPES)
     while True:
         try:
             await asyncio.gather(
                 # by default, analyze and store the last 90 days for futures
                 analyze_transaction_history(ENFORCED_INSTRUMENT_TYPES),
-                update_instruments(okx_futures_instrument_searcher)
+                update_instruments(okx_instrument_searcher)
             )
         except KeyboardInterrupt:
             break

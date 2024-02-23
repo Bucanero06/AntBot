@@ -28,11 +28,11 @@ class InstrumentSearcher:
 
         Usage:
         ```
-        okx_futures_instrument_searcher = InstrumentSearcher(all_futures_instruments)
-        print(f'{okx_futures_instrument_searcher.find_by_instId("BTC-USDT-240329") = }')
-        print(f'{okx_futures_instrument_searcher.find_by_type(InstType.FUTURES) = }')
-        print(f'{okx_futures_instrument_searcher.find_by_underlying("BTC-USDT") = }')
-        print(f'{"BTC-USDT-240329" in okx_futures_instrument_searcher._instrument_map = }')
+        okx_instrument_searcher = InstrumentSearcher(all_futures_instruments)
+        print(f'{okx_instrument_searcher.find_by_instId("BTC-USDT-240329") = }')
+        print(f'{okx_instrument_searcher.find_by_type(InstType.FUTURES) = }')
+        print(f'{okx_instrument_searcher.find_by_underlying("BTC-USDT") = }')
+        print(f'{"BTC-USDT-240329" in okx_instrument_searcher._instrument_map = }')
         ```
         """
         self.instTypes = instTypes

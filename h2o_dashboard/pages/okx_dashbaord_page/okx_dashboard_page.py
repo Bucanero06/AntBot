@@ -56,10 +56,10 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
 
     '''Init RealTime Page Cards'''
     # await account_stream_widget.add_cards()
-    await positions_stream_widget.add_cards()
-    await fill_report_stream_widget.add_cards()
+    # await positions_stream_widget.add_cards()
+    # await fill_report_stream_widget.add_cards()
     await okx_premium_indicator_handler_widget.add_cards()
-    await orders_stream_widget.add_cards()
+    # await orders_stream_widget.add_cards()
     # await algo_orders_stream_widget.add_cards()
 
     await q.page.save()
@@ -72,10 +72,10 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
             await asyncio.sleep(update_seconds)
             #
             # await account_stream_widget.update_cards()
-            await positions_stream_widget.update_cards()
-            await fill_report_stream_widget.update_cards()
+            # await positions_stream_widget.update_cards()
+            # await fill_report_stream_widget.update_cards()
             await okx_premium_indicator_handler_widget.update_cards()
-            await orders_stream_widget.update_cards()
+            # await orders_stream_widget.update_cards()
             # await algo_orders_stream_widget.update_cards()
 
             await q.page.save()

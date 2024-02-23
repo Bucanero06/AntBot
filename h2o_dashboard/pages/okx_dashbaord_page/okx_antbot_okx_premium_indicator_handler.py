@@ -1,4 +1,3 @@
-
 import pprint
 from datetime import datetime, timedelta
 
@@ -7,9 +6,8 @@ from pydantic import ValidationError
 
 from firebase_tools.authenticate import check_str_token_validity
 from h2o_dashboard.util import add_card
-from pyokx import ENFORCED_INSTRUMENT_TYPES
 from pyokx.InstrumentSearcher import InstrumentSearcher
-from pyokx.data_structures import OKXSignalInput,  PremiumIndicatorSignals, \
+from pyokx.data_structures import OKXSignalInput, PremiumIndicatorSignals, \
     OKXPremiumIndicatorSignalRequestForm
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis
 from pyokx.rest_handling import okx_signal_handler, validate_okx_signal_params, okx_premium_indicator_handler
@@ -220,17 +218,17 @@ class OKX_Premium_Indicator_Handler_Widget:
                                     ]),
                                 ui.expander(name='okx_dashboard_page_okx_premium_indicator_dca_expander',
                                             label='SINGLE DCA PARAMS (UI-Form not enabled)', items=[
-                                            # DCAInputParameters(
-                                            #         usd_amount=100,
-                                            #         order_type="LIMIT",
-                                            #         order_side="BUY",
-                                            #         trigger_price_offset=100,
-                                            #         execution_price_offset=90,
-                                            #         tp_trigger_price_offset=100,
-                                            #         tp_execution_price_offset=90,
-                                            #         sl_trigger_price_offset=100,
-                                            #         sl_execution_price_offset=90
-                                            #     ),
+                                        # DCAInputParameters(
+                                        #         usd_amount=100,
+                                        #         order_type="LIMIT",
+                                        #         order_side="BUY",
+                                        #         trigger_price_offset=100,
+                                        #         execution_price_offset=90,
+                                        #         tp_trigger_price_offset=100,
+                                        #         tp_execution_price_offset=90,
+                                        #         sl_trigger_price_offset=100,
+                                        #         sl_execution_price_offset=90
+                                        #     ),
                                         ui.textbox(
                                             name=f'okx_dashboard_page_okx_premium_indicator_{OKXSignalInput.trailing_stop_callback_offset}',
                                             label="""DCAInputParameters(
@@ -249,9 +247,6 @@ class OKX_Premium_Indicator_Handler_Widget:
                                     ]),
                             ]),
             ])
-
-
-
 
         output_value = "When ready or in doubt, \n  press the `Validate Input Model` button" if not self.q.client.okx_dashboard_page_okx_signal_input else self.q.client.okx_dashboard_page_okx_signal_input.model_dump()
         output_value = str(output_value) if not isinstance(output_value, dict) else pprint.pformat(output_value,
@@ -519,7 +514,6 @@ async def generate_tv_payload(q: Q):
 
         if q.client.token:
             auth_response = await check_str_token_validity(q.client.token)
-            print(f'{auth_response = }')
             if not auth_response:
                 raise ValueError("Token is invalid, please reload the page and log in again")
         if not q.client.okx_dashboard_page_okx_premium_indicator_instID:
@@ -537,7 +531,7 @@ async def generate_tv_payload(q: Q):
         if not instrument_api_key_response.get('access_token'):
             raise ValueError("Failed to create instrument API key")
 
-        request_model = await on_premium_indicator_signal_selection(q, only_return_request_model=True)
+        request_model = await on_premium_indicator_signal_selection(q=q, return_request_model_only=True)
         print(f'{request_model = }')
         if not request_model:
             return
@@ -565,15 +559,18 @@ async def generate_tv_payload(q: Q):
 @on('okx_dashboard_page_okx_premium_indicator_Bearish_plus')
 @on('okx_dashboard_page_okx_premium_indicator_Bullish_Exit')
 @on('okx_dashboard_page_okx_premium_indicator_Bearish_Exit')
-async def on_premium_indicator_signal_selection(q: Q, only_return_request_model=False):
+async def on_premium_indicator_signal_selection(q: Q,dummy=None,return_request_model_only=False):
+    print(f'WARNING, it is unknown why the second arg in on_premium_indicator_signal_selection '
+          f'no matter what is always True {dummy = }\n  it is not being called anywhere or passed any value and it'
+          f' ramains True even if False is passed in. Perhaps is due to the on() decorator, using a dummy arguement '
+          f'works')
     output_response_card = q.page[q.client.OKX_Manual_ControlsWidget_card_name + '_okx_signal_output_response_card']
     okx_signal_txt_header = 'OKX Premium Indicator Signal Response:\n\n'
 
     premium_indicator_signal_params = {att: q.args[f'okx_dashboard_page_okx_premium_indicator_{att}'] for att in
                                        OKX_PREMIUM_INDICATOR_SIGNAL_INPUT_KEYS}
     cleaned_indicator_params = {k: 1 if v is not None else 0 for k, v in premium_indicator_signal_params.items()}
-    print(f'{cleaned_indicator_params = }')
-    if not only_return_request_model and sum(cleaned_indicator_params.values()) != 1:
+    if not return_request_model_only and sum(cleaned_indicator_params.values()) != 1:
         raise ValueError("Only one of the premium indicator signals should be True")
 
     # Now lets Validate the inputs for the OKX signal
@@ -630,11 +627,12 @@ async def on_premium_indicator_signal_selection(q: Q, only_return_request_model=
             PremiumIndicatorSignals=okx_premium_indicator_signals
         )
 
-        if only_return_request_model:
+        if return_request_model_only:
+
             return request_model
+        print(f'sfdsfefew{request_model = }')
 
         signal_response = await okx_premium_indicator_handler(indicator_input=request_model)
-
         print(f'{signal_response= }')
         if isinstance(signal_response, dict) and (signal_response.get('error') or signal_response.get('red_button')):
             print('Is instance of dict')

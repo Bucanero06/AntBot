@@ -50,7 +50,7 @@ robust technological stack.
 
 3. **Docker-Compose Specification:**
     - Utilization of docker-compose version 2.2 is strategic for optimal resource management within a VM environment,
-      despite version 3.x offering the latest features.
+      despite version 3.x offering the latest features it is mainly targeted for clusters or for e.g. Kubernetes
 
 ## Technology Stack Summary 
 
@@ -61,7 +61,7 @@ performance and versatility:
     - Implements a modern, high-performance framework with Uvicorn serving for high concurrency and reliability.
 
 2. **Pydantic & Redis:**
-    - Employs Pydantic for robust data structuring and Redis for fast, scalable data processing.
+    - Employs Pydantic for robust data structuring and Redis for fast, scalable data processing between services.
 
 3. **Supplementary Technologies:**
     - Nginx, Asyncio, Wave, Poetry, VectorBT(PRO), Nautilus Trader, and TradingView enrich the stack with capabilities ranging

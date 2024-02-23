@@ -84,10 +84,6 @@ async def create_instrument_api_key(request: InstIdAPIKeyCreationRequestForm = D
     assert len(splitted) == 3, f'The Futures instrument ID must be in the format of "BTC-USDT-210326". {instID = }'
     instrument_ticker = await _validate_instID_and_return_ticker_info(instID)
     assert instrument_ticker, f'Instrument {instID} not found in instrument_searcher'
-    from pyokx.data_structures import InstType
-    assert instrument_ticker.instType == 'FUTURES', \
-        (f'Instrument {instID} is not a Futures instrument, type {instrument_ticker.instType}'
-         f' rather than {InstType.FUTURES}')
 
     token = create_access_token(data={"sub": good_response.email,
                                       "id": good_response.user_id,

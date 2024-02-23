@@ -1,4 +1,9 @@
 from datetime import datetime, timedelta
+from typing import Type, Callable
+
+import msgspec
+from fastapi import HTTPException, Request, status
+
 
 
 def ccy_contracts_to_usd(contracts_amount, ccy_contract_size, ccy_last_price, usd_base_ratio, leverage=None):
@@ -222,3 +227,25 @@ def get_timestamp_from_days_ago(days_ago=0, hours_ago=0, minutes_ago=0, seconds_
 
     past_time = reference_time - timedelta(days=days_ago, hours=hours_ago, minutes=minutes_ago, seconds=seconds_ago)
     return int(past_time.timestamp() * 1000)
+
+
+def create_msgspec_dependency(struct_type: Type[msgspec.Struct]) -> Callable:
+    """
+    Factory function to create a FastAPI dependency that parses and validates
+    the request body using a specified msgspec.Struct type.
+
+    :param struct_type: The msgspec.Struct type to use for request validation.
+    :return: A FastAPI dependency function.
+    """
+
+    async def parse_request_body(request: Request):
+        try:
+            body = await request.json()
+            return msgspec.json.decode(body, type=struct_type)
+        except (msgspec.DecodeError, TypeError) as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid request format: {str(e)}"
+            )
+
+    return parse_request_body

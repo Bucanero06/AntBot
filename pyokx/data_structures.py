@@ -16,7 +16,6 @@ class OKXBaseModelModelMeta(type(BaseModel)):
 class OKXBaseModel(BaseModel, metaclass=OKXBaseModelModelMeta):
     pass
 
-
 class Order(OKXBaseModel):
     accFillSz: str
     algoClOrdId: str
@@ -428,9 +427,10 @@ class PositionHistory(OKXBaseModel):
     pnlRatio: float  # P&L ratio
     lever: float  # Leverage
     direction: PosSide  # Direction: long, short
-    triggerPx: Optional[float] = None  # Trigger mark price, value when type is 3, 4, or 5; None when type is 1 or 2
     uly: str  # Underlying
     ccy: str  # Currency used for margin
+    triggerPx: Optional[float] = None  # Trigger mark price, value when type is 3, 4, or 5; None when type is 1 or 2
+
 
     @validator('triggerPx', pre=True)
     def handle_triggerPx(cls, value):
@@ -449,26 +449,28 @@ class FillEntry(OKXBaseModel):
     side: str
     fillSz: str
     fillPx: str
-    fillPxVol: Optional[str] = None
-    fillFwdPx: Optional[str] = None
     fee: str
     fillPnl: str
     ordId: str
     instType: str
-    fillPxUsd: Optional[str] = None
     instId: str
     clOrdId: str
     posSide: str
     billId: str
-    fillMarkVol: Optional[str] = None
-    tag: Optional[str] = None
     fillTime: str
     execType: str
-    fillIdxPx: Optional[str] = None
     tradeId: str
-    fillMarkPx: Optional[str] = None
     feeCcy: str
     ts: str
+    fillPxVol: Optional[str] = None
+    fillFwdPx: Optional[str] = None
+    fillPxUsd: Optional[str] = None
+    fillMarkVol: Optional[str] = None
+    tag: Optional[str] = None
+    fillIdxPx: Optional[str] = None
+    fillMarkPx: Optional[str] = None
+
+
 
 
 class AccountConfigData(OKXBaseModel):
@@ -508,16 +510,14 @@ class MaxAvailSizeData(OKXBaseModel):
     instId: str
 
 
-#
-
 class AccountStatusReport(OKXBaseModel):
-    timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
     account_balance: AccountBalanceData
     account_config: AccountConfigData
     all_positions: List[Position]
     all_orders: List[Order]
     all_algo_orders: List[Algo_Order]
     simplified_balance: Simplified_Balance_Details
+    timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
 
 class DCAInputParameters(OKXBaseModel):
@@ -546,6 +546,7 @@ class DCAOrderParameters(OKXBaseModel):
     sl_trigger_price_type: Optional[str] = ''
     sl_trigger_price_offset: Optional[float] = 0
     sl_execution_price_offset: Optional[float] = 0
+
 
 
 class OKXSignalInput(OKXBaseModel):

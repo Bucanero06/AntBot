@@ -19,7 +19,7 @@ from typing import List
 from fastapi import HTTPException
 
 from pyokx.ws_data_structures import available_channel_models
-from redis_tools.utils import init_async_redis, _deserialize_from_redis
+from redis_tools.utils import init_async_redis, deserialize_from_redis
 
 callbacks = {}
 
@@ -131,7 +131,7 @@ async def consumer(stream_name, shutdown_event, last_ids=None):
                         f"A message in the stream {stream_name} with id {message_id} was empty, skipping")
                     continue
 
-                message_deserialized = _deserialize_from_redis(message_serialized)
+                message_deserialized = deserialize_from_redis(message_serialized)
                 message_channel = message_deserialized.get("arg").get("channel")
                 data_struct = available_channel_models.get(message_channel)
 

@@ -80,7 +80,7 @@ async def ws_callback(message):
             Handle supported channels data 
             (can be moved to listen to the redistributed redis channel -from-above-)
             e.g. 
-                message = _deserialize_from_redis(r.xrevrange('okx:websockets@account', count=1)[0][1])
+                message = deserialize_from_redis(r.xrevrange('okx:websockets@account', count=1)[0][1])
                 account: Account = on_account(incoming_account_message)
                 redis_ready_message = serialize_for_redis(account.to_dict())
                 r.xadd(f'okx:reports@{message.get("arg").get("channel")}', redis_ready_message, maxlen=1000)

@@ -65,19 +65,6 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
         return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
 
     if instrument_status_report:
-        # instrument_status_model = InstrumentStatusReportModel(
-        #     timestamp=instrument_status_report.timestamp,
-        #     instID=instrument_status_report.instID,
-        #     # orders=instrument_status_report.orders,
-        #     # positions=instrument_status_report.positions,
-        #     # algo_orders=instrument_status_report.algo_orders
-        #     orders=[OrderModel(**order) for order in instrument_status_report.orders],
-        #     positions=[PositionModel(**position) for position in instrument_status_report.positions],
-        #     algo_orders=[AlgoOrderModel(**algo_order) for algo_order in instrument_status_report.algo_orders]
-        # )
-        # db.add(instrument_status_model)
-        # db.commit()
-        # db.refresh(instrument_status_model)
         return {"detail": "okx signal and report received"}
     else:
         return {"detail": "okx signal received but no report returned"}

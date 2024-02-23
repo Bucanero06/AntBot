@@ -16,7 +16,7 @@ REDIS_SERVICE_PASSWORD = os.getenv('REDIS_SERVICE_PASSWORD', None)
 
 def _serialize_for_redis(data):
     if isinstance(data, Enum):
-        return data.name  # or data.value if you want to store the value
+        return data.value  # or data.value if you want to store the value
     elif isinstance(data, dict):
         return {k: _serialize_for_redis(v) for k, v in data.items()}
     elif isinstance(data, list):
@@ -30,13 +30,11 @@ def _serialize_for_redis(data):
     else:
         return data
 
-
 def serialize_for_redis(model_dict):
     serialized_data = _serialize_for_redis(model_dict)
     return json.dumps(serialized_data)
 
-
-def _deserialize_from_redis(data):
+def deserialize_from_redis(data):
     if isinstance(data, str):
         try:
             # Attempt to deserialize JSON
@@ -45,11 +43,11 @@ def _deserialize_from_redis(data):
             # If not a valid JSON, assume it's a simple string
             return data
     elif isinstance(data, dict):
-        return {k: _deserialize_from_redis(v) for k, v in data.items()}
+        return {k: deserialize_from_redis(v) for k, v in data.items()}
     elif isinstance(data, list):
-        return [_deserialize_from_redis(item) for item in data]
+        return [deserialize_from_redis(item) for item in data]
     elif isinstance(data, tuple):
-        return tuple(_deserialize_from_redis(item) for item in data)
+        return tuple(deserialize_from_redis(item) for item in data)
     elif isinstance(data, Enum):
         # Handle Enum deserialization
         # Assuming Enums are stored as strings

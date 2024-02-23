@@ -8,7 +8,7 @@ from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
 from pyokx.okx_market_maker.strategy.risk.RiskSnapshot import RiskSnapShot, AssetValueInst
 from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
 from pyokx.okx_market_maker.utils.OkxEnum import InstType, CtType
-from redis_tools.utils import connect_to_redis, _deserialize_from_redis
+from redis_tools.utils import connect_to_redis, deserialize_from_redis
 
 
 @dataclass
@@ -38,10 +38,10 @@ class StrategyMeasurement:
             raise ValueError(f"BTC-USDT or BTC-USD index ticker not ready in index-tickers cache!")
         btc_usdt_index_ticker = btc_usdt_index_ticker[0][1]
         btc_usd_index_ticker = btc_usd_index_ticker[0][1]
-        btc_usdt_index_ticker = _deserialize_from_redis(btc_usdt_index_ticker)
-        btc_usd_index_ticker = _deserialize_from_redis(btc_usd_index_ticker)
-        btc_usdt_index_ticker = _deserialize_from_redis(btc_usdt_index_ticker["data"][0]["idxPx"])
-        btc_usd_index_ticker = _deserialize_from_redis(btc_usd_index_ticker["data"][0]["idxPx"])
+        btc_usdt_index_ticker = deserialize_from_redis(btc_usdt_index_ticker)
+        btc_usd_index_ticker = deserialize_from_redis(btc_usd_index_ticker)
+        btc_usdt_index_ticker = deserialize_from_redis(btc_usdt_index_ticker["data"][0]["idxPx"])
+        btc_usd_index_ticker = deserialize_from_redis(btc_usd_index_ticker["data"][0]["idxPx"])
         usdt_to_usd_rate = btc_usd_index_ticker / btc_usdt_index_ticker
         return usdt_to_usd_rate
 
@@ -119,7 +119,7 @@ class StrategyMeasurement:
         if not tickers_report_serialized:
             raise ValueError(f"tickers information not ready in tickers cache!")
         tickers_report_serialized = tickers_report_serialized[0][1]
-        tickers_report_deserialized = _deserialize_from_redis(tickers_report_serialized)
+        tickers_report_deserialized = deserialize_from_redis(tickers_report_serialized)
         tickers: Tickers = Tickers().from_dict(tickers_dict=tickers_report_deserialized)
         return tickers
 

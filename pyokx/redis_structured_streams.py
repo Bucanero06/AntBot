@@ -6,7 +6,7 @@ from pyokx import ENFORCED_INSTRUMENT_TYPES
 from pyokx.InstrumentSearcher import InstrumentSearcher
 from pyokx.data_structures import FillHistoricalMetrics, Order, Algo_Order
 from pyokx.ws_data_structures import AccountChannel, PositionsChannel, OrdersChannel, available_channel_models
-from redis_tools.utils import _deserialize_from_redis
+from redis_tools.utils import deserialize_from_redis
 
 
 async def get_instruments_searcher_from_redis(async_redis: aioredis.Redis) -> InstrumentSearcher:
@@ -24,7 +24,7 @@ async def get_instruments_searcher_from_redis(async_redis: aioredis.Redis) -> In
                 f", creating InstrumentSearcher with instTypes {ENFORCED_INSTRUMENT_TYPES}")
             okx_futures_instrument_searcher = InstrumentSearcher(instTypes=ENFORCED_INSTRUMENT_TYPES)
         else:
-            deserialized_message = _deserialize_from_redis(message_serialized)
+            deserialized_message = deserialize_from_redis(message_serialized)
             okx_futures_instrument_searcher = InstrumentSearcher(_instrument_map=deserialized_message)
     return okx_futures_instrument_searcher
 
@@ -45,7 +45,7 @@ async def get_stream_okx_all_messages(async_redis: aioredis.Redis, count: int = 
             print(
                 f"A message in the all stream {'okx:websockets@all'} with id {redis_stream_id} was empty, skipping")
             continue
-        message_deserialized = _deserialize_from_redis(message_serialized)
+        message_deserialized = deserialize_from_redis(message_serialized)
         message_channel = message_deserialized.get("arg").get("channel")
         data_struct = available_channel_models[message_channel]
         if hasattr(data_struct, "from_array"):
@@ -74,7 +74,7 @@ async def get_stream_okx_account_messages(async_redis: aioredis.Redis, count: in
             print(
                 f"A message in the account stream {'okx:websockets@account'} with id {redis_stream_id} was empty, skipping")
             continue
-        account_message_deserialized = _deserialize_from_redis(account_message_serialized)
+        account_message_deserialized = deserialize_from_redis(account_message_serialized)
         account_message: AccountChannel = AccountChannel(**account_message_deserialized)
         account_messages.append(account_message)
     return account_messages
@@ -96,7 +96,7 @@ async def get_stream_okx_position_messages(async_redis: aioredis.Redis, count: i
             print(
                 f"A message in the positions stream {'okx:websockets@positions'} with id {redis_stream_id} was empty, skipping")
             continue
-        position_message_deserialized = _deserialize_from_redis(position_message_serialized)
+        position_message_deserialized = deserialize_from_redis(position_message_serialized)
         position_message: PositionsChannel = PositionsChannel(**position_message_deserialized)
         position_messages.append(position_message)
     return position_messages
@@ -105,7 +105,7 @@ async def get_stream_okx_position_messages(async_redis: aioredis.Redis, count: i
 async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int = 10) -> List[OrdersChannel]:
     order_messages_serialized = await async_redis.xrevrange('okx:websockets@orders', count=count)
     if not order_messages_serialized:
-        print(f"orders information not ready in order cache!")
+        print(f"orders information not ready in order cache or empty data!")
         return []
 
     order_messages_serialized.reverse()
@@ -118,7 +118,7 @@ async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int 
             print(
                 f"A message in the orders stream {'okx:websockets@orders'} with id {redis_stream_id} was empty, skipping")
             continue
-        order_message_deserialized = _deserialize_from_redis(order_message_serialized)
+        order_message_deserialized = deserialize_from_redis(order_message_serialized)
         order_message: OrdersChannel = OrdersChannel(**order_message_deserialized)
         order_messages.append(order_message)
     return order_messages
@@ -141,7 +141,7 @@ async def get_stream_okx_fill_metrics_report(async_redis: aioredis.Redis, count:
             print(
                 f"A message in the fills stream {'okx:reports@fill_metrics'} with id {redis_stream_id} was empty, skipping")
             continue
-        fill_metrics_deserialized = _deserialize_from_redis(fill_metrics_serialized)
+        fill_metrics_deserialized = deserialize_from_redis(fill_metrics_serialized)
         fill_metrics = FillHistoricalMetrics(**fill_metrics_deserialized)
         fill_metrics_report.append(fill_metrics)
     return fill_metrics_report
@@ -163,7 +163,7 @@ async def get_stream_okx_incomplete_orders(async_redis: aioredis.Redis, count: i
             print(
                 f"A message in the incomplete orders stream {'okx:websockets@incomplete_orders'} with id {redis_stream_id} was empty, skipping")
             continue
-        incomplete_order_deserialized = _deserialize_from_redis(incomplete_order_serialized)
+        incomplete_order_deserialized = deserialize_from_redis(incomplete_order_serialized)
         incomplete_order: List[Order] = [Order(**order) for order in incomplete_order_deserialized]
         incomplete_orders.append(incomplete_order)
     return incomplete_orders
@@ -185,7 +185,7 @@ async def get_stream_okx_incomplete_algo_orders(async_redis: aioredis.Redis, cou
             print(
                 f"A message in the incomplete algo orders stream {'okx:websockets@incomplete_algo_orders'} with id {redis_stream_id} was empty, skipping")
             continue
-        incomplete_algo_order_deserialized = _deserialize_from_redis(incomplete_algo_order_serialized)
+        incomplete_algo_order_deserialized = deserialize_from_redis(incomplete_algo_order_serialized)
         incomplete_algo_order: List[Algo_Order] = [Algo_Order(**algo_order) for algo_order in
                                                    incomplete_algo_order_deserialized]
         incomplete_algo_orders.append(incomplete_algo_order)

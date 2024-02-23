@@ -20,7 +20,7 @@ from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Retur
                                    Orderbook_Snapshot, Bid, Ask,
                                    Simplified_Balance_Details,
                                    OKXPremiumIndicatorSignalRequestForm, FillEntry, OKXSignalInput, DCAInputParameters,
-                                   DCAOrderParameters)
+                                   DCAOrderParameters, PremiumIndicatorSignals)
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis, get_stream_okx_incomplete_algo_orders, \
     get_stream_okx_incomplete_orders, get_stream_okx_position_messages
@@ -1161,6 +1161,173 @@ async def validate_okx_signal_params(
     return result
 
 
+
+
+async def fetch_incomplete_orders(instId: str = None, instType: str = None):
+    limit = 100
+    after = ''
+    all_data = []
+    request_count = 0
+    start_time = time.time()
+    if instId is None:
+        instId = ''
+    if instType is None:
+        instType = ''
+
+    while True:
+        try:
+            orders = await get_request_data(
+                tradeAPI.get_order_list(after=after, limit=limit, instId=instId, instType=instType), Order)
+            if not orders:
+                break
+            all_data.extend(orders)
+            after = orders[-1].ordId
+            request_count += 1
+            if request_count % 60 == 0:
+                elapsed = time.time() - start_time
+                if elapsed < 2:
+                    await asyncio.sleep(2 - elapsed)
+                start_time = time.time()
+        except Exception as e:
+            logger.error(f'Error fetching orders: {e}')
+            break
+    return all_data
+
+
+async def fetch_incomplete_algo_orders(instId=None, ordType=None):
+    limit = 100
+    after = ''
+    all_data = []
+    request_count = 0
+    start_time = time.time()
+    if instId is None:
+        instId = ''
+
+    order_types = ['trigger', 'oco', 'conditional', 'move_order_stop', 'twap'] if not ordType else [ordType]
+
+    after_map = {}
+    for order_type in order_types:
+        after_map[order_type] = ''
+    _keep_loop_alive = True
+    while _keep_loop_alive:
+        try:
+            for order_type in order_types:
+                if after_map[order_type] is None:
+                    print(f'{after_map  = }')
+                    # Check if all the after_map values are None and break if they are
+                    if all([v is None for v in after_map.values()]):
+                        _keep_loop_alive = False
+                        break
+                    continue
+                response = tradeAPI.order_algos_list(
+                    ordType=order_type, after=after_map[order_type], limit=limit,
+                    instId=instId)
+                algo_orders = await get_request_data(response, Algo_Order)
+                print(f'{algo_orders = }')
+                if not algo_orders:
+                    after_map[order_type] = None
+                    continue
+                all_data.extend(algo_orders)
+                after_map[order_type] = algo_orders[-1].algoId
+                request_count += 1
+                if request_count % 20 == 0:
+                    elapsed = time.time() - start_time
+                    if elapsed < 2:
+                        await asyncio.sleep(2 - elapsed)
+                    start_time = time.time()
+        except Exception as e:
+            logger.error(f'Error fetching algo orders: {e}')
+            break
+    return all_data
+
+
+async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
+    """
+    Fetches the fill history for a specific period and instrument type.
+
+    :param start_timestamp: The starting timestamp for the fill history.
+    :type start_timestamp: int
+    :param end_timestamp: The ending timestamp for the fill history.
+    :type end_timestamp: int
+    :param instType: The type of instrument for the fill history, defaults to None.
+    :type instType: str, optional
+    :returns: A list of fill entries.
+    :raises AssertionError: If the requested period is outside the allowed range based on the instrument type.
+    """
+    """
+
+    Note:
+        If instType passed in then up to 30 days ago the data can be pulled, but if None then only up to 3 days, verify
+            Im refering to AGO!!! meaning from now
+
+    :param start_timestamp:
+    :param end_timestamp:
+    :param instType:
+    :return:
+    """
+    if instType is None:
+        assert (time.time() - start_timestamp) < 259200, f'{time.time() - start_timestamp = }'
+    else:
+        assert (time.time() - start_timestamp) < 2592000, f'{time.time() - start_timestamp = }'
+
+    limit = 100
+    after = ''
+    all_data = []
+    request_count = 0
+    start_time = time.time()
+
+    while True:
+        try:
+            fills_response = tradeAPI.get_fills_history(
+                instType=instType,
+                uly='',
+                instId='',
+                ordId='',
+                after=after,
+                before='',
+                limit=limit,
+                instFamily='',
+                begin=start_timestamp,
+                end=end_timestamp
+            )
+            if fills_response.get('code') != '0':
+                break
+
+            fills_message_data = fills_response['data']
+            if not fills_message_data:
+                break  # Break if no data is returned
+
+            all_data.extend(fills_message_data)
+
+            # Check if we have reached the start_timestamp
+            if int(fills_message_data[-1]['ts']) <= start_timestamp:
+                logger.info(f'Found the start_timestamp: {start_timestamp = }')
+                break  # Exit the loop if we have reached the start_timestamp
+
+            after = fills_message_data[-1]['billId']  # Prepare the 'after' for the next request
+            logger.info(f'{after = }')
+            # The
+            request_count += 1
+            if request_count % 10 == 0:
+                elapsed = time.time() - start_time
+                if elapsed < 2:
+                    # time.sleep(2 - elapsed)
+                    await asyncio.sleep(2 - elapsed)
+                start_time = time.time()
+
+            await asyncio.sleep(0.1)  # FIXME Here to prevent hogging the CPU remove this line
+
+
+
+        except HTTPError as http_err:
+            logger.error(f'HTTP error occurred: {http_err}')
+            break  # Optional: Decide whether to break or retry
+        except Exception as err:
+            logger.error(f'Other error occurred: {err}')
+            break  # Optional: Decide whether to break or retry
+
+    return [FillEntry(**fill) for fill in all_data]
+
 async def okx_signal_handler(
         instID: str = '',
         usd_order_size: int = None,
@@ -1580,173 +1747,6 @@ async def okx_signal_handler(
     logger.info('\n\nFINAL REPORT')
     return await fetch_status_report_for_instrument(instID, ENFORCED_TD_MODE)
 
-
-async def fetch_incomplete_orders(instId: str = None, instType: str = None):
-    limit = 100
-    after = ''
-    all_data = []
-    request_count = 0
-    start_time = time.time()
-    if instId is None:
-        instId = ''
-    if instType is None:
-        instType = ''
-
-    while True:
-        try:
-            orders = await get_request_data(
-                tradeAPI.get_order_list(after=after, limit=limit, instId=instId, instType=instType), Order)
-            if not orders:
-                break
-            all_data.extend(orders)
-            after = orders[-1].ordId
-            request_count += 1
-            if request_count % 60 == 0:
-                elapsed = time.time() - start_time
-                if elapsed < 2:
-                    await asyncio.sleep(2 - elapsed)
-                start_time = time.time()
-        except Exception as e:
-            logger.error(f'Error fetching orders: {e}')
-            break
-    return all_data
-
-
-async def fetch_incomplete_algo_orders(instId=None, ordType=None):
-    limit = 100
-    after = ''
-    all_data = []
-    request_count = 0
-    start_time = time.time()
-    if instId is None:
-        instId = ''
-
-    order_types = ['trigger', 'oco', 'conditional', 'move_order_stop', 'twap'] if not ordType else [ordType]
-
-    after_map = {}
-    for order_type in order_types:
-        after_map[order_type] = ''
-    _keep_loop_alive = True
-    while _keep_loop_alive:
-        try:
-            for order_type in order_types:
-                if after_map[order_type] is None:
-                    print(f'{after_map  = }')
-                    # Check if all the after_map values are None and break if they are
-                    if all([v is None for v in after_map.values()]):
-                        _keep_loop_alive = False
-                        break
-                    continue
-                response = tradeAPI.order_algos_list(
-                    ordType=order_type, after=after_map[order_type], limit=limit,
-                    instId=instId)
-                algo_orders = await get_request_data(response, Algo_Order)
-                print(f'{algo_orders = }')
-                if not algo_orders:
-                    after_map[order_type] = None
-                    continue
-                all_data.extend(algo_orders)
-                after_map[order_type] = algo_orders[-1].algoId
-                request_count += 1
-                if request_count % 20 == 0:
-                    elapsed = time.time() - start_time
-                    if elapsed < 2:
-                        await asyncio.sleep(2 - elapsed)
-                    start_time = time.time()
-        except Exception as e:
-            logger.error(f'Error fetching algo orders: {e}')
-            break
-    return all_data
-
-
-async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
-    """
-    Fetches the fill history for a specific period and instrument type.
-
-    :param start_timestamp: The starting timestamp for the fill history.
-    :type start_timestamp: int
-    :param end_timestamp: The ending timestamp for the fill history.
-    :type end_timestamp: int
-    :param instType: The type of instrument for the fill history, defaults to None.
-    :type instType: str, optional
-    :returns: A list of fill entries.
-    :raises AssertionError: If the requested period is outside the allowed range based on the instrument type.
-    """
-    """
-
-    Note:
-        If instType passed in then up to 30 days ago the data can be pulled, but if None then only up to 3 days, verify
-            Im refering to AGO!!! meaning from now
-
-    :param start_timestamp:
-    :param end_timestamp:
-    :param instType:
-    :return:
-    """
-    if instType is None:
-        assert (time.time() - start_timestamp) < 259200, f'{time.time() - start_timestamp = }'
-    else:
-        assert (time.time() - start_timestamp) < 2592000, f'{time.time() - start_timestamp = }'
-
-    limit = 100
-    after = ''
-    all_data = []
-    request_count = 0
-    start_time = time.time()
-
-    while True:
-        try:
-            fills_response = tradeAPI.get_fills_history(
-                instType=instType,
-                uly='',
-                instId='',
-                ordId='',
-                after=after,
-                before='',
-                limit=limit,
-                instFamily='',
-                begin=start_timestamp,
-                end=end_timestamp
-            )
-            if fills_response.get('code') != '0':
-                break
-
-            fills_message_data = fills_response['data']
-            if not fills_message_data:
-                break  # Break if no data is returned
-
-            all_data.extend(fills_message_data)
-
-            # Check if we have reached the start_timestamp
-            if int(fills_message_data[-1]['ts']) <= start_timestamp:
-                logger.info(f'Found the start_timestamp: {start_timestamp = }')
-                break  # Exit the loop if we have reached the start_timestamp
-
-            after = fills_message_data[-1]['billId']  # Prepare the 'after' for the next request
-            logger.info(f'{after = }')
-            # The
-            request_count += 1
-            if request_count % 10 == 0:
-                elapsed = time.time() - start_time
-                if elapsed < 2:
-                    # time.sleep(2 - elapsed)
-                    await asyncio.sleep(2 - elapsed)
-                start_time = time.time()
-
-            await asyncio.sleep(0.1)  # FIXME Here to prevent hogging the CPU remove this line
-
-
-
-        except HTTPError as http_err:
-            logger.error(f'HTTP error occurred: {http_err}')
-            break  # Optional: Decide whether to break or retry
-        except Exception as err:
-            logger.error(f'Other error occurred: {err}')
-            break  # Optional: Decide whether to break or retry
-
-    return [FillEntry(**fill) for fill in all_data]
-
-
 async def okx_premium_indicator_handler(indicator_input: Union[OKXPremiumIndicatorSignalRequestForm, dict]):
     """
     Handles incoming premium indicator signals for trading on the OKX platform. It processes the signals,
@@ -1859,6 +1859,7 @@ if __name__ == '__main__':
 
     dotenv.load_dotenv(dotenv.find_dotenv())
 
+
     # Define the test function to be used
     # TEST_FUNCTION = 'okx_premium_indicator'
     TEST_FUNCTION = 'okx_signal_handler'
@@ -1877,11 +1878,11 @@ if __name__ == '__main__':
             max_orderbook_limit_price_offset=None,
             min_orderbook_limit_price_offset=None,
             clear_prior_to_new_order=False,
-            red_button=True,
+            red_button=False,
             # Principal Order
             usd_order_size=100,
             order_side="BUY",
-            order_type="Market",
+            order_type="MARKET",
             flip_position_if_opposite_side=True,
             # Principal Order's TP/SL/Trail
             # tp_trigger_price_offset=100,

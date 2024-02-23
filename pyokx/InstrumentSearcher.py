@@ -1,5 +1,6 @@
 from typing import List, Dict, Optional
 
+
 from pyokx import publicAPI, ENFORCED_INSTRUMENT_TYPES
 from pyokx.data_structures import Instrument
 from pyokx.okx_market_maker.utils.OkxEnum import InstType

@@ -26,7 +26,7 @@ from pyokx.okx_market_maker.strategy.risk.RiskCalculator import RiskCalculator
 from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
 from pyokx.okx_market_maker.utils.OkxEnum import AccountConfigMode, TdMode, InstType, OrderSide, OrderState
 from pyokx.okx_market_maker.utils.TdModeUtil import TdModeUtil
-from redis_tools.utils import connect_to_redis, _deserialize_from_redis
+from redis_tools.utils import connect_to_redis, deserialize_from_redis
 
 
 class BaseStrategy(ABC):
@@ -262,7 +262,7 @@ class BaseStrategy(ABC):
             return OrderBook(inst_id=self.trading_instrument_id)
 
         order_book_serialized = order_book_serialized[0][1]
-        order_book_deserialized = _deserialize_from_redis(order_book_serialized)
+        order_book_deserialized = deserialize_from_redis(order_book_serialized)
         order_book: OrderBook = OrderBook(inst_id=self.trading_instrument_id).from_dict(
             order_book_dict=order_book_deserialized)
         return order_book
@@ -272,7 +272,7 @@ class BaseStrategy(ABC):
         if not account_report_serialized:
             return Account()
         account_report_serialized = account_report_serialized[0][1]
-        account_report_deserialized = _deserialize_from_redis(account_report_serialized)
+        account_report_deserialized = deserialize_from_redis(account_report_serialized)
         account: Account = Account().from_dict(account_dict=account_report_deserialized)
         return account
 
@@ -281,7 +281,7 @@ class BaseStrategy(ABC):
         if not positions_report_serialized:
             return Positions()
         positions_report_serialized = positions_report_serialized[0][1]
-        positions_report_deserialized = _deserialize_from_redis(positions_report_serialized)
+        positions_report_deserialized = deserialize_from_redis(positions_report_serialized)
         positions: Positions = Positions().from_dict(positions_dict=positions_report_deserialized)
         return positions
 
@@ -294,7 +294,7 @@ class BaseStrategy(ABC):
         if not tickers_report_serialized:
             return Tickers()
         tickers_report_serialized = tickers_report_serialized[0][1]
-        tickers_report_deserialized = _deserialize_from_redis(tickers_report_serialized)
+        tickers_report_deserialized = deserialize_from_redis(tickers_report_serialized)
         tickers: Tickers = Tickers().from_dict(tickers_dict=tickers_report_deserialized)
         return tickers
 
@@ -304,7 +304,7 @@ class BaseStrategy(ABC):
         if not orders_report_serialized:
             return Orders()
         orders_report_serialized = orders_report_serialized[0][1]
-        orders_report_deserialized = _deserialize_from_redis(orders_report_serialized)
+        orders_report_deserialized = deserialize_from_redis(orders_report_serialized)
         orders: Orders = Orders().from_dict(orders_dict=orders_report_deserialized)
         print(f'Orders-get_orders: {orders}')
         return orders
@@ -388,10 +388,10 @@ class BaseStrategy(ABC):
             raise ValueError(f"BTC-USDT or BTC-USD index ticker not ready in index-tickers cache!")
         btc_usdt_index_ticker = btc_usdt_index_ticker[0][1]
         btc_usd_index_ticker = btc_usd_index_ticker[0][1]
-        btc_usdt_index_ticker = _deserialize_from_redis(btc_usdt_index_ticker)
-        btc_usd_index_ticker = _deserialize_from_redis(btc_usd_index_ticker)
-        btc_usdt_index_ticker = _deserialize_from_redis(btc_usdt_index_ticker["data"][0]["idxPx"])
-        btc_usd_index_ticker = _deserialize_from_redis(btc_usd_index_ticker["data"][0]["idxPx"])
+        btc_usdt_index_ticker = deserialize_from_redis(btc_usdt_index_ticker)
+        btc_usd_index_ticker = deserialize_from_redis(btc_usd_index_ticker)
+        btc_usdt_index_ticker = deserialize_from_redis(btc_usdt_index_ticker["data"][0]["idxPx"])
+        btc_usd_index_ticker = deserialize_from_redis(btc_usd_index_ticker["data"][0]["idxPx"])
         usdt_to_usd_rate = btc_usd_index_ticker / btc_usdt_index_ticker
         return usdt_to_usd_rate
 

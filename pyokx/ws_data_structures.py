@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pyokx.data_structures import OKXBaseModel, Instrument, AccountBalanceData, Ask, Bid, Ticker, MaxOrderSizeData, \
-    MaxAvailSizeData, Order, Algo_Order
+
+from pyokx.data_structures import Instrument, AccountBalanceData, Ask, Bid, Ticker, Order, Algo_Order, OKXBaseModel
 
 """The data structures used to represent the data received from the OKX Websocket API.""
 The channels are split into three categories: public, business, and private. The public channels are available to all
@@ -36,7 +36,6 @@ class TickersChannel(OKXBaseModel):
 
 
 class CandleStick(OKXBaseModel):
-    _primary_key_field = 'timestamp'
     timestamp: str
     open: str
     high: str
@@ -46,7 +45,6 @@ class CandleStick(OKXBaseModel):
 
 
 class PriceLimit(OKXBaseModel):
-    _primary_key_field = 'instId'
     instId: str
     buyLmt: str
     sellLmt: str
@@ -55,7 +53,6 @@ class PriceLimit(OKXBaseModel):
 
 
 class InstrumentsChannelInputArgs(OKXBaseModel):
-    _primary_key_field = 'instType'
     channel: str
     instType: str
 
@@ -66,7 +63,6 @@ class InstrumentsChannel(OKXBaseModel):
 
 
 class PriceLimitChannelInputArgs(OKXBaseModel):
-    _primary_key_field = 'instId'
     channel: str
     instId: str
 
@@ -77,13 +73,11 @@ class PriceLimitChannel(OKXBaseModel):
 
 
 class MarkPriceChannelInputArgs(OKXBaseModel):
-    _primary_key_field = 'instId'
     channel: str
     instId: str
 
 
 class MarkPrice(OKXBaseModel):
-    _primary_key_field = 'instId'
     instType: str
     instId: str
     markPx: str
@@ -96,7 +90,6 @@ class MarkPriceChannel(OKXBaseModel):
 
 
 class MarkPriceCandleSticksChannelInputArgs(OKXBaseModel):
-    _primary_key_field = 'instId'
     channel: str
     instId: str
 
@@ -123,7 +116,6 @@ class MarkPriceCandleSticksChannel(OKXBaseModel):
 
 
 class IndexTickersChannelInputArgs(OKXBaseModel):
-    _primary_key_field = 'instId'
     channel: str
     instId: str
 
@@ -145,7 +137,6 @@ class IndexTickersChannel(OKXBaseModel):
 
 
 class IndexCandleSticksChannelInputArgs(OKXBaseModel):
-    _primary_key_field = 'instId'
     channel: str
     instId: str
 
@@ -287,16 +278,12 @@ class BalanceAndPositionsChannelReturnArgs(OKXBaseModel):
 
 
 class ws_balData_element(OKXBaseModel):
-    _primary_key_field: str = "ccy"
-
     ccy: str
     cashBal: str
     uTime: str
 
 
 class ws_posData_element(OKXBaseModel):
-    _primary_key_field: str = "posId"
-
     posId: str
     tradeId: str
     instId: str
@@ -311,8 +298,6 @@ class ws_posData_element(OKXBaseModel):
 
 
 class ws_trades_element(OKXBaseModel):
-    _primary_key_field: str = "tradeId"
-
     instId: str
     tradeId: str
 
@@ -331,10 +316,9 @@ class BalanceAndPositionsChannel(OKXBaseModel):
 
 
 class WebSocketConnectionConfig(OKXBaseModel):
-    _primary_key_field: str = 'name'
     name: str
-    channels: dict = {}
     wss_url: str
+    channels: dict = {}
 
 
 class OrdersChannelInputArgs(OKXBaseModel):
@@ -470,11 +454,13 @@ class OrderBookChannel(OKXBaseModel):
 
         return OrderBookChannel(arg=arg, data=data, action=action)
 
+
 class AlgoOrdersChannelInputArgs(OKXBaseModel):
     channel: str
     instType: str
     instFamily: Optional[str] = None
     instId: Optional[str] = None
+
 
 class AlgoOrdersChannelReturnArgs(OKXBaseModel):
     channel: str
@@ -482,6 +468,7 @@ class AlgoOrdersChannelReturnArgs(OKXBaseModel):
     instType: str
     instFamily: Optional[str] = None
     instId: Optional[str] = None
+
 
 class WSAlgoOrder(OKXBaseModel):
     instType: str
@@ -524,18 +511,20 @@ class WSAlgoOrder(OKXBaseModel):
     amendPxOnTriggerType: str
     attachAlgoOrds: list
 
+
 class AlgoOrdersChannel(OKXBaseModel):
     arg: AlgoOrdersChannelReturnArgs
     data: List[WSAlgoOrder]
 
+
 class InstrumentStatusReport(OKXBaseModel):
-    timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
     instId: str
     # max_order_size: MaxOrderSizeData
     # max_avail_size: MaxAvailSizeData
     positions: List[WSPosition]
     orders: List[Order]
     algo_orders: List[Algo_Order]
+    timestamp: str = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
 
 OKX_WEBSOCKET_URLS = dict(

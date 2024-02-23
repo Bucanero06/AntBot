@@ -29,6 +29,7 @@ class OKX_Fill_Report_StreamWidget:
             latest_fill_metrics_report: FillHistoricalMetrics = self.fill_metrics_report_stream[-1]
         else:
             latest_fill_metrics_report = []
+        print(f'latest_fill_metrics_report = {latest_fill_metrics_report}')
         items = []
         for timeframe, fill_metrics in latest_fill_metrics_report:
             print(f'{timeframe = }')

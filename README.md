@@ -2,15 +2,15 @@
 
 ## Overview
 
-This project synopsis document presents a guide for the AntBot codebase. The AntBot is a high-performance trading application tailored for the OKX exchange. It emphasizes real-time data processing, efficient resource management, and
+This project synopsis presents a guide for the AntBot Python codebase. The AntBot is a high-performance trading application tailored for the OKX exchange. It emphasizes real-time data processing, efficient resource management, and a
 robust technological stack.
 
 ### Document Details
 
-- **Document Title:** AntBot Project Synopsis Documentation
+- **Document Title:** AntBot Project Synopsis
 - **Visual Reference:**
 
-[Screencast from 02-19-2024 07:16:27 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/177c7bd3-46c8-4cd1-9a02-ff0e9ced38e8)
+[Screencast from 02-22-2024 10:43:25 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/5a576883-f79c-4882-8896-b4d1f99645ec)
 
 ## Deployment Guidelines
 
@@ -50,7 +50,7 @@ robust technological stack.
 
 3. **Docker-Compose Specification:**
     - Utilization of docker-compose version 2.2 is strategic for optimal resource management within a VM environment,
-      despite version 3.x offering the latest features.
+      despite version 3.x offering the latest features it is mainly targeted for clusters or for e.g. Kubernetes
 
 ## Technology Stack Summary 
 
@@ -60,8 +60,8 @@ performance and versatility:
 1. **FastAPI & Uvicorn:**
     - Implements a modern, high-performance framework with Uvicorn serving for high concurrency and reliability.
 
-2. **MsgS & Redis:**
-    - Employs MsgSpec for robust data structuring and Redis for fast, scalable data processing.
+2. **Pydantic & Redis:**
+    - Employs Pydantic for robust data structuring and Redis for fast, scalable data processing between services.
 
 3. **Supplementary Technologies:**
     - Nginx, Asyncio, Wave, Poetry, VectorBT(PRO), Nautilus Trader, and TradingView enrich the stack with capabilities ranging
@@ -80,7 +80,6 @@ dashboard
 ```yaml
 port 10101 or behind a reverse proxy (e.g. Nginx) on port 80
 ```
-[Screencast from 02-07-2024 01:06:45 AM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/d47830d0-bd6c-4718-bb3e-ecce9da40ffe)
 
 okx_signal_handler:
 ```yaml

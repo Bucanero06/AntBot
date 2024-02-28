@@ -54,7 +54,7 @@ def parse_configuration_file(config_file_path=None):
     return config
 
 
-def write_example_configuration_file(file_name: str, DEFAULT_CONFIG_CONTENT=None):
+def write_example_configuration_file(file_name: str):
     """
     Writes an example configuration file.
 

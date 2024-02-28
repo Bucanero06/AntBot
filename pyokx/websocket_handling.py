@@ -24,7 +24,7 @@ from pyokx.ws_data_structures import PriceLimitChannel, InstrumentsChannel, \
     TickersChannel, IndexTickersChannelInputArgs, OrderBookInputArgs, MarkPriceChannelInputArgs, \
     TickersChannelInputArgs, OrdersChannelInputArgs, OKX_WEBSOCKET_URLS, public_channels_available, \
     business_channels_available, private_channels_available, available_channel_models
-from redis_tools.utils import serialize_for_redis, init_async_redis
+from redis_tools.utils import serialize_for_redis, get_async_redis
 from shared.logging import setup_logger
 
 logger = setup_logger(__name__)
@@ -141,7 +141,7 @@ async def okx_websockets_main_run(input_channel_models: list,
     if redis_store:
         global async_redis
         global _redis_store
-        async_redis = await init_async_redis()
+        async_redis = await get_async_redis()
         _redis_store = redis_store
     else:
         async_redis = None

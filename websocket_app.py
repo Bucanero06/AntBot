@@ -9,7 +9,7 @@ from pyokx.rest_messages_service import okx_rest_messages_services
 from pyokx.websocket_handling import okx_websockets_main_run
 from pyokx.ws_data_structures import AccountChannelInputArgs, PositionsChannelInputArgs, \
     BalanceAndPositionsChannelInputArgs, OrdersChannelInputArgs
-from redis_tools.utils import init_async_redis, stop_async_redis
+from redis_tools.utils import get_async_redis, stop_async_redis
 from shared.logging import setup_logger
 
 
@@ -49,7 +49,7 @@ async def startup_event():
     global rest_task
     global websocket_instrument_task
 
-    async_redis = await init_async_redis()
+    async_redis = await get_async_redis()
     assert async_redis, "async_redis is None, check the connection to the Redis server"
 
     websocket_task = asyncio.create_task(okx_websockets_main_run(input_channel_models=[

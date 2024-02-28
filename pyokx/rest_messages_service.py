@@ -9,7 +9,7 @@ from pyokx.low_rest_api.exceptions import OkxAPIException, OkxParamsException, O
 from pyokx.okx_market_maker.utils.OkxEnum import InstType
 from pyokx.rest_handling import fetch_fill_history, InstrumentSearcher, fetch_incomplete_algo_orders, \
     fetch_incomplete_orders
-from redis_tools.utils import init_async_redis, serialize_for_redis
+from redis_tools.utils import get_async_redis, serialize_for_redis
 from shared import logging
 from shared.tmp_shared import get_timestamp_from_days_ago
 
@@ -166,7 +166,7 @@ async def okx_rest_messages_services(slow_reload_interval: int = 30):
     """
     print("Starting okx_rest_messages_services")
     global async_redis
-    async_redis = await init_async_redis()
+    async_redis = await get_async_redis()
 
     assert async_redis, "async_redis is None, check the connection to the Redis server"
     slow_polling_task = asyncio.create_task(slow_polling_service(slow_reload_interval))

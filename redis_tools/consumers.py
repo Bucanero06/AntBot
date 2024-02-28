@@ -19,7 +19,7 @@ from typing import List
 from fastapi import HTTPException
 
 from pyokx.ws_data_structures import available_channel_models
-from redis_tools.utils import init_async_redis, deserialize_from_redis
+from redis_tools.utils import get_async_redis, deserialize_from_redis
 
 callbacks = {}
 
@@ -109,7 +109,7 @@ async def consumer(stream_name, shutdown_event, last_ids=None):
     '''
     if last_ids is None:
         last_ids = {}
-    async_redis = await init_async_redis()
+    async_redis = await get_async_redis()
 
     # Wait for initialization or other setup if necessary.
     await asyncio.sleep(3)

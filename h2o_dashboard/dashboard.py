@@ -6,7 +6,7 @@ import dotenv
 from h2o_wave import main, Q, app, ui, on, data, run_on  # noqa F401
 
 from h2o_dashboard.wave_auth import initialize_client, serve_security
-from redis_tools.utils import stop_async_redis, init_async_redis
+from redis_tools.utils import stop_async_redis, get_async_redis
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 
@@ -20,7 +20,7 @@ async def on_global_notification_bar_dismissed(q: Q):
 
 async def on_startup():
     print("Startup event triggered")
-    await init_async_redis()
+    await get_async_redis()
 
 
 async def on_shutdown():
@@ -78,10 +78,10 @@ async def serve(q: Q):
         q.client.documentation_page_running_event.clear()
 
         if not q.app.initialized:  # TODO this could be instantiated each client? and shut down after each use?
-            await init_async_redis()
+            await get_async_redis()
             q.app.initialized = True
 
-        q.client.async_redis = await init_async_redis()  # When already initializd it returns the connection
+        q.client.async_redis = await get_async_redis()  # When already initializd it returns the connection
 
     if not (os.getenv('BYPASS_SECURITY') == 'True' and os.getenv('DEVELOPMENT_GOD_MODE') == 'True'):
         bypass_security = False

@@ -25,7 +25,7 @@ from pyokx.okx_market_maker.utils.OkxEnum import InstType
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis, get_stream_okx_incomplete_algo_orders, \
     get_stream_okx_incomplete_orders, get_stream_okx_position_messages
 from pyokx.ws_data_structures import PositionsChannel, WSPosition, InstrumentStatusReport
-from redis_tools.utils import init_async_redis
+from redis_tools.utils import get_async_redis
 from shared import logging
 from shared.tmp_shared import calculate_tp_stop_prices_usd, calculate_sl_stop_prices_usd, ccy_usd_to_contracts
 
@@ -177,7 +177,7 @@ async def get_orders(instType: str = None, instId: str = None, ordType: str = No
         params['state'] = state
     if instFamily is not None:
         params['instFamily'] = instFamily
-    all_orders_stream = await get_stream_okx_incomplete_orders(async_redis=await init_async_redis())
+    all_orders_stream = await get_stream_okx_incomplete_orders(async_redis=await get_async_redis())
     if not all_orders_stream:
         return []
     all_orders: List[Order] = all_orders_stream[-1]
@@ -213,7 +213,7 @@ async def cancel_all_orders(orders_list: List[Order] = None, instType: InstType 
         if instId is not None:
             params['instId'] = instId
         # orders_list = await fetch_incomplete_orders(**params)
-        all_orders_stream = await get_stream_okx_incomplete_orders(async_redis=await init_async_redis())
+        all_orders_stream = await get_stream_okx_incomplete_orders(async_redis=await get_async_redis())
         if not all_orders_stream:
             return []
         all_orders: List[Order] = all_orders_stream[-1]
@@ -305,7 +305,7 @@ async def get_positions(instType: InstType = None, instId: str = None) -> List[W
     if instId is not None:
         params['instId'] = instId
     all_positions_stream: List[PositionsChannel] = await get_stream_okx_position_messages(
-        async_redis=await init_async_redis(), count=1)
+        async_redis=await get_async_redis(), count=1)
     if not all_positions_stream:
         return []
     all_positions: List[WSPosition] = all_positions_stream[-1].data
@@ -405,7 +405,7 @@ async def get_ticker(instId):
 
 
 async def get_algo_orders(instId=None, ordType=None) -> List[Algo_Order]:
-    all_algo_orders_stream = await get_stream_okx_incomplete_algo_orders(async_redis=await init_async_redis())
+    all_algo_orders_stream = await get_stream_okx_incomplete_algo_orders(async_redis=await get_async_redis())
     if not all_algo_orders_stream:
         return []
     all_algo_orders: List[Algo_Order] = all_algo_orders_stream[-1]
@@ -427,7 +427,7 @@ async def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] 
         if ordType is not None:
             params['ordType'] = ordType
         all_algo_orders_stream: List[List[Algo_Order]] = await (
-            get_stream_okx_incomplete_algo_orders(async_redis=await init_async_redis()))
+            get_stream_okx_incomplete_algo_orders(async_redis=await get_async_redis()))
         if not all_algo_orders_stream:
             return []
         all_algo_orders: List[Algo_Order] = all_algo_orders_stream[-1]
@@ -840,7 +840,7 @@ async def _validate_instID_and_return_ticker_info(instID):
     # Clean Input Data
     instID = instID.upper()
     okx_instrument_searcher: InstrumentSearcher = await get_instruments_searcher_from_redis(
-        await init_async_redis())
+        await get_async_redis())
 
     instrument = okx_instrument_searcher.find_by_instId(instID)
     assert instrument, f'Instrument not found. {instID = }'

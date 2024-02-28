@@ -7,7 +7,7 @@ from fastapi import FastAPI, HTTPException, Depends
 
 from firebase_tools.authenticate import check_token_validity
 from redis_tools.consumers import start_listening, get_listener_task, remove_listener_task, get_all_listener_tasks
-from redis_tools.utils import init_async_redis, stop_async_redis
+from redis_tools.utils import get_async_redis, stop_async_redis
 from routers.api_keys import api_key_router
 from routers.login import login_router
 from routers.okx import okx_router
@@ -66,7 +66,7 @@ def health_check():
 @app.on_event("startup")
 async def startup_event():
     logger.info("Startup event triggered")
-    await init_async_redis()
+    await get_async_redis()
 
 
 @app.on_event("shutdown")

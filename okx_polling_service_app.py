@@ -5,7 +5,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from pyokx.rest_messages_service import okx_rest_messages_services
-from redis_tools.utils import init_async_redis, stop_async_redis
+from redis_tools.utils import get_async_redis, stop_async_redis
 from shared.logging import setup_logger
 
 logger = setup_logger(__name__)
@@ -39,7 +39,7 @@ async def startup_event():
     global rest_task
     global websocket_instrument_task
 
-    async_redis = await init_async_redis()
+    async_redis = await get_async_redis()
     assert async_redis, "async_redis is None, check the connection to the Redis server"
 
     rest_task = asyncio.create_task(okx_rest_messages_services(slow_reload_interval=30))

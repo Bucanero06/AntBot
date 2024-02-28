@@ -9,7 +9,7 @@ from firebase_tools.authenticate import check_token_validity
 from pyokx.data_structures import  InstIdSignalRequestForm, OKXPremiumIndicatorSignalRequestForm
 from pyokx.rest_handling import okx_premium_indicator_handler
 from pyokx.ws_data_structures import InstrumentStatusReport
-from redis_tools.utils import serialize_for_redis, init_async_redis
+from redis_tools.utils import serialize_for_redis, get_async_redis
 from routers.okx_authentication import check_token_against_instrument
 
 okx_router = APIRouter(tags=["OKX"])
@@ -46,7 +46,7 @@ async def okx_antbot_webhook(signal_input: InstIdSignalRequestForm):
     from pyokx.rest_handling import okx_signal_handler
     try:
         assert signal_input.OKXSignalInput, "OKXSignalInput is None"
-        async_redis = await init_async_redis()
+        async_redis = await get_async_redis()
         instrument_id = signal_input.OKXSignalInput.instID
         await async_redis.xadd(f'okx:webhook@okx_antbot_webhook@input@{instrument_id}',
                                {'data': serialize_for_redis(signal_input)},
@@ -99,7 +99,7 @@ async def okx_premium_indicator_webhook(indicator_input: OKXPremiumIndicatorSign
         print(f"Exception in okx_antbot_webhook: {e}")
         return {"detail": "okx signal received but there was an exception, check the logs", "exception": str(e)}
 
-    async_redis = await init_async_redis()
+    async_redis = await get_async_redis()
     instrument_id = indicator_input.OKXSignalInput.instID
     await async_redis.xadd(f'okx:webhook@okx_premium_indicator@input@{instrument_id}',
                            {'data': serialize_for_redis(indicator_input)},

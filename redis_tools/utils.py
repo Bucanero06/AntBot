@@ -91,7 +91,7 @@ async def connect_to_aioredis():
     return None
 
 
-async def init_async_redis():
+async def get_async_redis():
     from redis_tools import async_redis
 
     if isinstance(async_redis, aioredis.Redis):

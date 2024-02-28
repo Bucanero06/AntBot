@@ -65,7 +65,8 @@ class OKX_Account_StreamWidget:
                 # color: str,
                 # aux_value: str | None = None
                 label=account_balance_detail.ccy,
-                value=percentage_string,
+                # value=percentage_string,
+                value='',
                 fraction=fraction,
                 color=color,
                 aux_value=f'${account_balance_detail.eqUsd} ({percentage_string})'
@@ -90,7 +91,7 @@ class OKX_Account_StreamWidget:
             fraction = float(v) / float(last_account_stream_data.totalEq)
             percentage_string = str(round(fraction * 100, 2)) + '%'
             pie.label = k
-            pie.value = percentage_string
+            # pie.value = percentage_string
             pie.fraction = fraction
             pie.aux_value = f'${round(float(v), 2)} ({percentage_string})'
 

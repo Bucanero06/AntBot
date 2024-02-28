@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -180,7 +178,7 @@
 
 <span class="k">def</span> <span class="nf">_serialize_for_redis</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">name</span>  <span class="c1"># or data.value if you want to store the value</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># or data.value if you want to store the value</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_serialize_for_redis</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -194,7 +192,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">data</span>
 
-
 <div class="viewcode-block" id="serialize_for_redis">
 <a class="viewcode-back" href="../../redis_tools.utils.html#redis_tools.utils.serialize_for_redis">[docs]</a>
 <span class="k">def</span> <span class="nf">serialize_for_redis</span><span class="p">(</span><span class="n">model_dict</span><span class="p">):</span>
@@ -202,8 +199,9 @@
     <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">serialized_data</span><span class="p">)</span></div>
 
 
-
-<span class="k">def</span> <span class="nf">_deserialize_from_redis</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<div class="viewcode-block" id="deserialize_from_redis">
+<a class="viewcode-back" href="../../redis_tools.utils.html#redis_tools.utils.deserialize_from_redis">[docs]</a>
+<span class="k">def</span> <span class="nf">deserialize_from_redis</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Attempt to deserialize JSON</span>
@@ -212,17 +210,18 @@
             <span class="c1"># If not a valid JSON, assume it&#39;s a simple string</span>
             <span class="k">return</span> <span class="n">data</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">_deserialize_from_redis</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">deserialize_from_redis</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">_deserialize_from_redis</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">deserialize_from_redis</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_deserialize_from_redis</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">deserialize_from_redis</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
         <span class="c1"># Handle Enum deserialization</span>
         <span class="c1"># Assuming Enums are stored as strings</span>
         <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
 
 
 <span class="kn">import</span> <span class="nn">aioredis</span>
@@ -263,9 +262,9 @@
 
 
 
-<div class="viewcode-block" id="init_async_redis">
-<a class="viewcode-back" href="../../redis_tools.utils.html#redis_tools.utils.init_async_redis">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">init_async_redis</span><span class="p">():</span>
+<div class="viewcode-block" id="get_async_redis">
+<a class="viewcode-back" href="../../redis_tools.utils.html#redis_tools.utils.get_async_redis">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_async_redis</span><span class="p">():</span>
     <span class="kn">from</span> <span class="nn">redis_tools</span> <span class="kn">import</span> <span class="n">async_redis</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">async_redis</span><span class="p">,</span> <span class="n">aioredis</span><span class="o">.</span><span class="n">Redis</span><span class="p">):</span>

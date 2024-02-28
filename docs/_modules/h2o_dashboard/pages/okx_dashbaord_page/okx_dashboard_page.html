@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -163,9 +161,11 @@
              
   <h1>Source code for h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">h2o_wave</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">run_on</span><span class="p">,</span> <span class="n">AsyncSite</span>  <span class="c1"># noqa F401</span>
 
+<span class="kn">from</span> <span class="nn">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</span> <span class="kn">import</span> <span class="n">OKX_Account_StreamWidget</span>
 <span class="c1"># from h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget import OKX_AlgoOrders_StreamWidget</span>
 <span class="kn">from</span> <span class="nn">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</span> <span class="kn">import</span> \
     <span class="n">OKX_Premium_Indicator_Handler_Widget</span>
@@ -176,7 +176,7 @@
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">AsyncSite</span><span class="p">()</span>
 
-
+<span class="n">REDIS_STREAM_MAX_LEN</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;REDIS_STREAM_MAX_LEN&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
 <div class="viewcode-block" id="okx_dashboard_page">
 <a class="viewcode-back" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html#h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.okx_dashboard_page">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">okx_dashboard_page</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span> <span class="n">update_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
@@ -199,21 +199,12 @@
 
     <span class="c1"># Add the the</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Init Widgets&#39;&#39;&#39;</span>
-    <span class="c1"># await add_card(q, &#39;linktest&#39;,</span>
-    <span class="c1">#                ui.form_card(box=&#39;grid_1&#39;, items=[</span>
-    <span class="c1">#                       ui.link(label=&quot;OKX Market&#39;s Data Page&quot;, name=&#39;okx_website_stats&#39;, path=&#39;https://www.okx.com/markets/data/contracts&#39;, target=&#39;&#39;),</span>
-    <span class="c1">#                       ui.link(label=&quot;OKX API Docs&quot;, name=&#39;okx_website_stats&#39;, path=&#39;https://www.okx.com/docs-v5/en/&#39;, target=&#39;&#39;),</span>
-    <span class="c1">#                  ]))</span>
-
-    <span class="c1"># account_stream_widget = OKX_Account_StreamWidget(q=q, card_name=&#39;OKXDEBUG_Account_Stream&#39;, box=&#39;grid_1&#39;,</span>
-    <span class="c1">#                                                  history_count=900)</span>
+    <span class="n">account_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Account_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Account_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_1&#39;</span><span class="p">,</span>
+                                                     <span class="n">history_count</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span>
     <span class="n">positions_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Live_Positions_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Positions_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">)</span>
     <span class="n">fill_report_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Fill_Report_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Fill_Report_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_2&#39;</span><span class="p">)</span>
 
-    <span class="n">orders_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Orders_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Orders_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;footer&#39;</span><span class="p">,</span>
-                                                   <span class="n">history_count</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-    <span class="c1"># algo_orders_stream_widget = OKX_AlgoOrders_StreamWidget(q=q, card_name=&#39;OKXDEBUG_Algo_Orders_Stream&#39;, box=&#39;grid_4&#39;,</span>
-    <span class="c1">#                                                         history_count=20)</span>
+    <span class="n">orders_stream_widget</span> <span class="o">=</span> <span class="n">OKX_Orders_StreamWidget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Orders_Stream&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="s1">&#39;footer&#39;</span><span class="p">)</span>
     <span class="n">okx_premium_indicator_handler_widget</span> <span class="o">=</span> <span class="n">OKX_Premium_Indicator_Handler_Widget</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span>
                                                                                 <span class="n">card_name</span><span class="o">=</span><span class="s1">&#39;OKXDEBUG_Premium_Manual_Controls&#39;</span><span class="p">,</span>
                                                                                 <span class="n">box</span><span class="o">=</span><span class="s1">&#39;grid_5&#39;</span><span class="p">)</span>
@@ -221,12 +212,11 @@
 
 
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Init RealTime Page Cards&#39;&#39;&#39;</span>
-    <span class="c1"># await account_stream_widget.add_cards()</span>
+    <span class="k">await</span> <span class="n">account_stream_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
     <span class="k">await</span> <span class="n">positions_stream_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
     <span class="k">await</span> <span class="n">fill_report_stream_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
     <span class="k">await</span> <span class="n">okx_premium_indicator_handler_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
     <span class="k">await</span> <span class="n">orders_stream_widget</span><span class="o">.</span><span class="n">add_cards</span><span class="p">()</span>
-    <span class="c1"># await algo_orders_stream_widget.add_cards()</span>
 
     <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
@@ -237,12 +227,11 @@
                 <span class="k">break</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">update_seconds</span><span class="p">)</span>
             <span class="c1">#</span>
-            <span class="c1"># await account_stream_widget.update_cards()</span>
+            <span class="k">await</span> <span class="n">account_stream_widget</span><span class="o">.</span><span class="n">update_cards</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">positions_stream_widget</span><span class="o">.</span><span class="n">update_cards</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">fill_report_stream_widget</span><span class="o">.</span><span class="n">update_cards</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">okx_premium_indicator_handler_widget</span><span class="o">.</span><span class="n">update_cards</span><span class="p">()</span>
             <span class="k">await</span> <span class="n">orders_stream_widget</span><span class="o">.</span><span class="n">update_cards</span><span class="p">()</span>
-            <span class="c1"># await algo_orders_stream_widget.update_cards()</span>
 
             <span class="k">await</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>

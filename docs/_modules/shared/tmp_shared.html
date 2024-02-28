@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -163,6 +161,10 @@
              
   <h1>Source code for shared.tmp_shared</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">Request</span><span class="p">,</span> <span class="n">status</span>
+
 
 
 <div class="viewcode-block" id="ccy_contracts_to_usd">
@@ -418,6 +420,8 @@
 
     <span class="n">past_time</span> <span class="o">=</span> <span class="n">reference_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">days_ago</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="n">hours_ago</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">minutes_ago</span><span class="p">,</span> <span class="n">seconds</span><span class="o">=</span><span class="n">seconds_ago</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">past_time</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span></div>
+
+
 
 </pre></div>
 

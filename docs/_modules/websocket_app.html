@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -173,7 +171,7 @@
 <span class="kn">from</span> <span class="nn">pyokx.websocket_handling</span> <span class="kn">import</span> <span class="n">okx_websockets_main_run</span>
 <span class="kn">from</span> <span class="nn">pyokx.ws_data_structures</span> <span class="kn">import</span> <span class="n">AccountChannelInputArgs</span><span class="p">,</span> <span class="n">PositionsChannelInputArgs</span><span class="p">,</span> \
     <span class="n">BalanceAndPositionsChannelInputArgs</span><span class="p">,</span> <span class="n">OrdersChannelInputArgs</span>
-<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">init_async_redis</span><span class="p">,</span> <span class="n">stop_async_redis</span>
+<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">get_async_redis</span><span class="p">,</span> <span class="n">stop_async_redis</span>
 <span class="kn">from</span> <span class="nn">shared.logging</span> <span class="kn">import</span> <span class="n">setup_logger</span>
 
 
@@ -218,7 +216,7 @@
     <span class="k">global</span> <span class="n">rest_task</span>
     <span class="k">global</span> <span class="n">websocket_instrument_task</span>
 
-    <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>
+    <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">async_redis</span><span class="p">,</span> <span class="s2">&quot;async_redis is None, check the connection to the Redis server&quot;</span>
 
     <span class="n">websocket_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">okx_websockets_main_run</span><span class="p">(</span><span class="n">input_channel_models</span><span class="o">=</span><span class="p">[</span>

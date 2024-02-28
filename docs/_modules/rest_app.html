@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -171,7 +169,7 @@
 
 <span class="kn">from</span> <span class="nn">firebase_tools.authenticate</span> <span class="kn">import</span> <span class="n">check_token_validity</span>
 <span class="kn">from</span> <span class="nn">redis_tools.consumers</span> <span class="kn">import</span> <span class="n">start_listening</span><span class="p">,</span> <span class="n">get_listener_task</span><span class="p">,</span> <span class="n">remove_listener_task</span><span class="p">,</span> <span class="n">get_all_listener_tasks</span>
-<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">init_async_redis</span><span class="p">,</span> <span class="n">stop_async_redis</span>
+<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">get_async_redis</span><span class="p">,</span> <span class="n">stop_async_redis</span>
 <span class="kn">from</span> <span class="nn">routers.api_keys</span> <span class="kn">import</span> <span class="n">api_key_router</span>
 <span class="kn">from</span> <span class="nn">routers.login</span> <span class="kn">import</span> <span class="n">login_router</span>
 <span class="kn">from</span> <span class="nn">routers.okx</span> <span class="kn">import</span> <span class="n">okx_router</span>
@@ -241,7 +239,7 @@
 <span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;startup&quot;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">startup_event</span><span class="p">():</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Startup event triggered&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span></div>
+    <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()</span></div>
 
 
 

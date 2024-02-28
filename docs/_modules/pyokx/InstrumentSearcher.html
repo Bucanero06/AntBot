@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -164,6 +162,7 @@
   <h1>Source code for pyokx.InstrumentSearcher</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
+
 <span class="kn">from</span> <span class="nn">pyokx</span> <span class="kn">import</span> <span class="n">publicAPI</span><span class="p">,</span> <span class="n">ENFORCED_INSTRUMENT_TYPES</span>
 <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">Instrument</span>
 <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
@@ -193,11 +192,11 @@
 
 <span class="sd">        Usage:</span>
 <span class="sd">        ```</span>
-<span class="sd">        okx_futures_instrument_searcher = InstrumentSearcher(all_futures_instruments)</span>
-<span class="sd">        print(f&#39;{okx_futures_instrument_searcher.find_by_instId(&quot;BTC-USDT-240329&quot;) = }&#39;)</span>
-<span class="sd">        print(f&#39;{okx_futures_instrument_searcher.find_by_type(InstType.FUTURES) = }&#39;)</span>
-<span class="sd">        print(f&#39;{okx_futures_instrument_searcher.find_by_underlying(&quot;BTC-USDT&quot;) = }&#39;)</span>
-<span class="sd">        print(f&#39;{&quot;BTC-USDT-240329&quot; in okx_futures_instrument_searcher._instrument_map = }&#39;)</span>
+<span class="sd">        okx_instrument_searcher = InstrumentSearcher(all_futures_instruments)</span>
+<span class="sd">        print(f&#39;{okx_instrument_searcher.find_by_instId(&quot;BTC-USDT-240329&quot;) = }&#39;)</span>
+<span class="sd">        print(f&#39;{okx_instrument_searcher.find_by_type(InstType.FUTURES) = }&#39;)</span>
+<span class="sd">        print(f&#39;{okx_instrument_searcher.find_by_underlying(&quot;BTC-USDT&quot;) = }&#39;)</span>
+<span class="sd">        print(f&#39;{&quot;BTC-USDT-240329&quot; in okx_instrument_searcher._instrument_map = }&#39;)</span>
 <span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">instTypes</span> <span class="o">=</span> <span class="n">instTypes</span>

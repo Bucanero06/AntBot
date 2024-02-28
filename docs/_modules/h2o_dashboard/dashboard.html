@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -170,7 +168,7 @@
 <span class="kn">from</span> <span class="nn">h2o_wave</span> <span class="kn">import</span> <span class="n">main</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">run_on</span>  <span class="c1"># noqa F401</span>
 
 <span class="kn">from</span> <span class="nn">h2o_dashboard.wave_auth</span> <span class="kn">import</span> <span class="n">initialize_client</span><span class="p">,</span> <span class="n">serve_security</span>
-<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">stop_async_redis</span><span class="p">,</span> <span class="n">init_async_redis</span>
+<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">stop_async_redis</span><span class="p">,</span> <span class="n">get_async_redis</span>
 
 <span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
 
@@ -189,7 +187,7 @@
 <a class="viewcode-back" href="../../h2o_dashboard.dashboard.html#h2o_dashboard.dashboard.on_startup">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_startup</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Startup event triggered&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span></div>
+    <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()</span></div>
 
 
 
@@ -206,6 +204,16 @@
 <span class="nd">@on</span><span class="p">(</span><span class="s1">&#39;@system.client_disconnect&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">on_client_disconnect</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Client disconnected&#39;</span><span class="p">)</span>
+    <span class="c1"># Rest token</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">async_redis</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">expires_in</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="c1"># Pages Tasks and Events # Todo automate the handling of these to reduce developer error</span>
     <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">overview_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
     <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -246,10 +254,10 @@
         <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">documentation_page_running_event</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">initialized</span><span class="p">:</span>  <span class="c1"># TODO this could be instantiated each client? and shut down after each use?</span>
-            <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>
+            <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()</span>
             <span class="n">q</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>  <span class="c1"># When already initializd it returns the connection</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()</span>  <span class="c1"># When already initializd it returns the connection</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;BYPASS_SECURITY&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DEVELOPMENT_GOD_MODE&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">):</span>
         <span class="n">bypass_security</span> <span class="o">=</span> <span class="kc">False</span>

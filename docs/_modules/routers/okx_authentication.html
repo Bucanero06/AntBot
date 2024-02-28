@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -252,14 +250,8 @@
 
     <span class="c1"># Check whether the instID is valid</span>
     <span class="n">instID</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">instID</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-    <span class="n">splitted</span> <span class="o">=</span> <span class="n">instID</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitted</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;The Futures instrument ID must be in the format of &quot;BTC-USDT-210326&quot;. </span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
     <span class="n">instrument_ticker</span> <span class="o">=</span> <span class="k">await</span> <span class="n">_validate_instID_and_return_ticker_info</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">instrument_ticker</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> not found in instrument_searcher&#39;</span>
-    <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">InstType</span>
-    <span class="k">assert</span> <span class="n">instrument_ticker</span><span class="o">.</span><span class="n">instType</span> <span class="o">==</span> <span class="s1">&#39;FUTURES&#39;</span><span class="p">,</span> \
-        <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Instrument </span><span class="si">{</span><span class="n">instID</span><span class="si">}</span><span class="s1"> is not a Futures instrument, type </span><span class="si">{</span><span class="n">instrument_ticker</span><span class="o">.</span><span class="n">instType</span><span class="si">}</span><span class="s1">&#39;</span>
-         <span class="sa">f</span><span class="s1">&#39; rather than </span><span class="si">{</span><span class="n">InstType</span><span class="o">.</span><span class="n">FUTURES</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">token</span> <span class="o">=</span> <span class="n">create_access_token</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sub&quot;</span><span class="p">:</span> <span class="n">good_response</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
                                       <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">good_response</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span>

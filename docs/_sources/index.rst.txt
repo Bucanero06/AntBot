@@ -1,5 +1,5 @@
 .. AntBot documentation master file, created by
-   sphinx-quickstart on Wed Feb 21 15:39:59 2024.
+   sphinx-quickstart on Wed Feb 28 13:41:52 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -17,7 +17,6 @@ Welcome to AntBot's documentation!
    h2o_dashboard.dashboard
    h2o_dashboard.pages.documentation_page
    h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget
-   h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget
    h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler
    h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page
    h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget
@@ -51,7 +50,6 @@ Welcome to AntBot's documentation!
    pyokx.low_rest_api.consts
    pyokx.low_rest_api.exceptions
    pyokx.low_rest_api.utils
-   pyokx.redis_structured_reports
    pyokx.redis_structured_streams
    pyokx.rest_handling
    pyokx.rest_messages_service

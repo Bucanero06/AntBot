@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -190,6 +188,22 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_is_initialized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_metrics_report_stream</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
+    <span class="k">def</span> <span class="nf">_get_fills_ui_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;timeframe&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Timeframe&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">searchable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;instrument_id&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Instrument ID&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">searchable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;volume_traded&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Volume Traded&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;average_fill_price&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Average Fill Price&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;profit_loss&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Profit Loss&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;fees_paid&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fees Paid&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;profitable_trades&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Profitable Trades&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;loss_making_trades&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Loss Making Trades&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;best_trade&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Best Trade&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;worst_trade&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Worst Trade&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table_column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;avg_fill_pnl&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Avg Fill PnL&#39;</span><span class="p">,</span> <span class="n">sortable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filterable</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">]</span>
+
 <div class="viewcode-block" id="OKX_Fill_Report_StreamWidget.get_ui_fill_metrics_report">
 <a class="viewcode-back" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html#h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.OKX_Fill_Report_StreamWidget.get_ui_fill_metrics_report">[docs]</a>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_ui_fill_metrics_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -197,21 +211,56 @@
             <span class="n">latest_fill_metrics_report</span><span class="p">:</span> <span class="n">FillHistoricalMetrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_metrics_report_stream</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">latest_fill_metrics_report</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">timeframe</span><span class="p">,</span> <span class="n">fill_metrics</span> <span class="ow">in</span> <span class="n">latest_fill_metrics_report</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">timeframe</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">fill_metrics</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">stat_table_item</span><span class="p">(</span>
-                <span class="n">label</span><span class="o">=</span><span class="n">timeframe</span><span class="p">,</span>
-                <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">fill_metrics</span><span class="o">.</span><span class="n">avg_fill_pnl</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fill_metrics</span><span class="o">.</span><span class="n">total_fill_pnl</span><span class="p">),</span>
-                        <span class="nb">str</span><span class="p">(</span><span class="n">fill_metrics</span><span class="o">.</span><span class="n">total_fill_fee</span><span class="p">)]</span>
-            <span class="p">))</span>
-        <span class="k">return</span> <span class="n">ui</span><span class="o">.</span><span class="n">stat_table_card</span><span class="p">(</span>
-            <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
-            <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Fill Metrics Report - okx:reports@fill_metrics&#39;</span><span class="p">,</span>
-            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Timeframe&#39;</span><span class="p">,</span> <span class="s1">&#39;Avg Fill PnL&#39;</span><span class="p">,</span> <span class="s1">&#39;Total Fill PnL&#39;</span><span class="p">,</span> <span class="s1">&#39;Total Fill Fee&#39;</span><span class="p">],</span>
-            <span class="n">items</span><span class="o">=</span><span class="n">items</span>
-        <span class="p">)</span></div>
+            <span class="n">fill_metrics</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">instrument_metrics</span> <span class="ow">in</span> <span class="n">fill_metrics</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">instrument_metrics</span><span class="o">.</span><span class="n">volume_traded</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">instrument_metrics</span><span class="o">.</span><span class="n">profit_loss</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">timeframe</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">),</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">instrument_id</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">volume_traded</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">average_fill_price</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">profit_loss</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">fees_paid</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">profitable_trades</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">loss_making_trades</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">best_trade</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">worst_trade</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">avg_fill_pnl</span><span class="p">,</span>
+                <span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">ui</span><span class="o">.</span><span class="n">table_row</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">timeframe</span> <span class="o">+</span> <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">instrument_id</span><span class="p">,</span>
+                        <span class="n">cells</span><span class="o">=</span><span class="n">values</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ui</span><span class="o">.</span><span class="n">form_card</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">text_xl</span><span class="p">(</span><span class="s1">&#39;Fill Metrics Report&#39;</span><span class="p">),</span>
+            <span class="n">ui</span><span class="o">.</span><span class="n">table</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fill_metrics_report&#39;</span><span class="p">,</span>
+                <span class="n">columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_fills_ui_columns</span><span class="p">(),</span>
+                <span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span>
+                <span class="n">groupable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">downloadable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">resettable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">height</span><span class="o">=</span><span class="s1">&#39;600px&#39;</span>
+            <span class="p">)</span>
+        <span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="OKX_Fill_Report_StreamWidget.add_cards">
@@ -231,21 +280,59 @@
             <span class="n">latest_fill_metrics_report</span><span class="p">:</span> <span class="n">FillHistoricalMetrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill_metrics_report_stream</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">latest_fill_metrics_report</span> <span class="o">=</span> <span class="n">FillHistoricalMetrics</span><span class="p">(</span>
-                <span class="n">ONE_DAY</span><span class="o">=</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">(</span><span class="n">avg_fill_pnl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_fill_pnl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_fill_fee</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-                <span class="n">ONE_WEEK</span><span class="o">=</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">(</span><span class="n">avg_fill_pnl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_fill_pnl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_fill_fee</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-                <span class="n">ONE_MONTH</span><span class="o">=</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">(</span><span class="n">avg_fill_pnl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_fill_pnl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_fill_fee</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-                <span class="n">THREE_MONTHS</span><span class="o">=</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">(</span><span class="n">avg_fill_pnl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_fill_pnl</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_fill_fee</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">ONE_DAY</span><span class="o">=</span><span class="p">[</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">(</span>
+                    <span class="n">instrument_id</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                    <span class="n">volume_traded</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">average_fill_price</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">profit_loss</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">fees_paid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">profitable_trades</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">loss_making_trades</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">best_trade</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">worst_trade</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">avg_fill_pnl</span><span class="o">=</span><span class="mi">0</span>
+                <span class="p">)]</span>
             <span class="p">)</span>
 
         <span class="n">fill_metrics_report_card</span><span class="p">:</span> <span class="n">ui</span><span class="o">.</span><span class="n">stat_table_card</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">card_name</span> <span class="o">+</span> <span class="s1">&#39;_fill_metrics_report&#39;</span><span class="p">]</span>
-        <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">timeframe</span><span class="p">,</span> <span class="n">fill_metrics</span> <span class="ow">in</span> <span class="n">latest_fill_metrics_report</span><span class="p">:</span>
-            <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ui</span><span class="o">.</span><span class="n">stat_table_item</span><span class="p">(</span>
-                <span class="n">label</span><span class="o">=</span><span class="n">timeframe</span><span class="p">,</span>
-                <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">fill_metrics</span><span class="o">.</span><span class="n">avg_fill_pnl</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fill_metrics</span><span class="o">.</span><span class="n">total_fill_pnl</span><span class="p">),</span>
-                        <span class="nb">str</span><span class="p">(</span><span class="n">fill_metrics</span><span class="o">.</span><span class="n">total_fill_fee</span><span class="p">)]</span>
-            <span class="p">))</span>
-        <span class="n">fill_metrics_report_card</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="n">items</span>
+            <span class="n">fill_metrics</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">instrument_metrics</span> <span class="ow">in</span> <span class="n">fill_metrics</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">instrument_metrics</span><span class="o">.</span><span class="n">volume_traded</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">instrument_metrics</span><span class="o">.</span><span class="n">profit_loss</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">timeframe</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">),</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">instrument_id</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">volume_traded</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">average_fill_price</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">profit_loss</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">fees_paid</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">profitable_trades</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">loss_making_trades</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">best_trade</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">worst_trade</span><span class="p">,</span>
+                    <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">avg_fill_pnl</span><span class="p">,</span>
+                <span class="p">]</span>
+
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;N/A&#39;</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">ui</span><span class="o">.</span><span class="n">table_row</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">timeframe</span> <span class="o">+</span> <span class="n">instrument_metrics</span><span class="o">.</span><span class="n">instrument_id</span><span class="p">,</span>
+                        <span class="n">cells</span><span class="o">=</span><span class="n">values</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="n">fill_metrics_report_card</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="n">rows</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 </div>
 

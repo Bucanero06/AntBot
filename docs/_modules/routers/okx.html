@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -173,7 +171,7 @@
 <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span>  <span class="n">InstIdSignalRequestForm</span><span class="p">,</span> <span class="n">OKXPremiumIndicatorSignalRequestForm</span>
 <span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">okx_premium_indicator_handler</span>
 <span class="kn">from</span> <span class="nn">pyokx.ws_data_structures</span> <span class="kn">import</span> <span class="n">InstrumentStatusReport</span>
-<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">serialize_for_redis</span><span class="p">,</span> <span class="n">init_async_redis</span>
+<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">serialize_for_redis</span><span class="p">,</span> <span class="n">get_async_redis</span>
 <span class="kn">from</span> <span class="nn">routers.okx_authentication</span> <span class="kn">import</span> <span class="n">check_token_against_instrument</span>
 
 <span class="n">okx_router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;OKX&quot;</span><span class="p">])</span>
@@ -212,7 +210,7 @@
     <span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">okx_signal_handler</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">signal_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="p">,</span> <span class="s2">&quot;OKXSignalInput is None&quot;</span>
-        <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>
+        <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()</span>
         <span class="n">instrument_id</span> <span class="o">=</span> <span class="n">signal_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">instID</span>
         <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@okx_antbot_webhook@input@</span><span class="si">{</span><span class="n">instrument_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                                <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">signal_input</span><span class="p">)},</span>
@@ -231,19 +229,6 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx signal received but there was an exception, check the logs&quot;</span><span class="p">,</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
 
     <span class="k">if</span> <span class="n">instrument_status_report</span><span class="p">:</span>
-        <span class="c1"># instrument_status_model = InstrumentStatusReportModel(</span>
-        <span class="c1">#     timestamp=instrument_status_report.timestamp,</span>
-        <span class="c1">#     instID=instrument_status_report.instID,</span>
-        <span class="c1">#     # orders=instrument_status_report.orders,</span>
-        <span class="c1">#     # positions=instrument_status_report.positions,</span>
-        <span class="c1">#     # algo_orders=instrument_status_report.algo_orders</span>
-        <span class="c1">#     orders=[OrderModel(**order) for order in instrument_status_report.orders],</span>
-        <span class="c1">#     positions=[PositionModel(**position) for position in instrument_status_report.positions],</span>
-        <span class="c1">#     algo_orders=[AlgoOrderModel(**algo_order) for algo_order in instrument_status_report.algo_orders]</span>
-        <span class="c1"># )</span>
-        <span class="c1"># db.add(instrument_status_model)</span>
-        <span class="c1"># db.commit()</span>
-        <span class="c1"># db.refresh(instrument_status_model)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx signal and report received&quot;</span><span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx signal received but no report returned&quot;</span><span class="p">}</span></div>
@@ -281,7 +266,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception in okx_antbot_webhook: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;okx signal received but there was an exception, check the logs&quot;</span><span class="p">,</span> <span class="s2">&quot;exception&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
 
-    <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>
+    <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()</span>
     <span class="n">instrument_id</span> <span class="o">=</span> <span class="n">indicator_input</span><span class="o">.</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">instID</span>
     <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:webhook@okx_premium_indicator@input@</span><span class="si">{</span><span class="n">instrument_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                            <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">)},</span>

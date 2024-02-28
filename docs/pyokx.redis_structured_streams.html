@@ -23,7 +23,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pyokx.rest_handling" href="pyokx.rest_handling.html" />
-    <link rel="prev" title="pyokx.redis_structured_reports" href="pyokx.redis_structured_reports.html" /> 
+    <link rel="prev" title="pyokx.low_rest_api.utils" href="pyokx.low_rest_api.utils.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,7 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -91,9 +90,9 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pyokx.redis_structured_streams</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_instruments_searcher_from_redis"><code class="docutils literal notranslate"><span class="pre">get_instruments_searcher_from_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_okx_fills_history"><code class="docutils literal notranslate"><span class="pre">get_okx_fills_history()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_okx_account_messages"><code class="docutils literal notranslate"><span class="pre">get_stream_okx_account_messages()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_okx_all_messages"><code class="docutils literal notranslate"><span class="pre">get_stream_okx_all_messages()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pyokx.redis_structured_streams.get_stream_okx_fill_metrics_report"><code class="docutils literal notranslate"><span class="pre">get_stream_okx_fill_metrics_report()</span></code></a></li>
@@ -182,6 +181,11 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pyokx.redis_structured_streams.get_okx_fills_history">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.redis_structured_streams.</span></span><span class="sig-name descname"><span class="pre">get_okx_fills_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">redis_client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.FillEntry" title="pyokx.data_structures.FillEntry"><span class="pre">FillEntry</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/redis_structured_streams.html#get_okx_fills_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.redis_structured_streams.get_okx_fills_history" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pyokx.redis_structured_streams.get_stream_okx_account_messages">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.redis_structured_streams.</span></span><span class="sig-name descname"><span class="pre">get_stream_okx_account_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_redis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Redis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.AccountChannel" title="pyokx.ws_data_structures.AccountChannel"><span class="pre">AccountChannel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/redis_structured_streams.html#get_stream_okx_account_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.redis_structured_streams.get_stream_okx_account_messages" title="Link to this definition"></a></dt>
 <dd><p>Uses xrevrange to get the latest COUNT account messages from redis and return all COUNT messages
@@ -224,7 +228,7 @@ in a list from oldest to newest</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pyokx.redis_structured_reports.html" class="btn btn-neutral float-left" title="pyokx.redis_structured_reports" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyokx.low_rest_api.utils.html" class="btn btn-neutral float-left" title="pyokx.low_rest_api.utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pyokx.rest_handling.html" class="btn btn-neutral float-right" title="pyokx.rest_handling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

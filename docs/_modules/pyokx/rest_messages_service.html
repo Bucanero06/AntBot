@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -167,13 +165,15 @@
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="kn">from</span> <span class="nn">pyokx</span> <span class="kn">import</span> <span class="n">ENFORCED_INSTRUMENT_TYPES</span>
 <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">FillEntry</span><span class="p">,</span> <span class="n">FillHistoricalMetricsEntry</span><span class="p">,</span> <span class="n">FillHistoricalMetrics</span>
 <span class="kn">from</span> <span class="nn">pyokx.low_rest_api.exceptions</span> <span class="kn">import</span> <span class="n">OkxAPIException</span><span class="p">,</span> <span class="n">OkxParamsException</span><span class="p">,</span> <span class="n">OkxRequestException</span>
 <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
 <span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">fetch_fill_history</span><span class="p">,</span> <span class="n">InstrumentSearcher</span><span class="p">,</span> <span class="n">fetch_incomplete_algo_orders</span><span class="p">,</span> \
     <span class="n">fetch_incomplete_orders</span>
-<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">init_async_redis</span><span class="p">,</span> <span class="n">serialize_for_redis</span>
+<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">get_async_redis</span><span class="p">,</span> <span class="n">serialize_for_redis</span>
 <span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">shared.tmp_shared</span> <span class="kn">import</span> <span class="n">get_timestamp_from_days_ago</span>
 
@@ -204,6 +204,32 @@
     <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">fill_history</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="s1">&#39;okx:rest@fill@3months&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
+    <span class="n">fill_history_</span> <span class="o">=</span> <span class="p">[</span><span class="n">fill</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span> <span class="k">for</span> <span class="n">fill</span> <span class="ow">in</span> <span class="n">fill_history</span><span class="p">]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">fill_history_</span><span class="p">)</span>
+
+    <span class="c1"># Fix types for all columns</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;side&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;side&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fillSz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fillSz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fillPx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fillPx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fee&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fee&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fillPnl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fillPnl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ordId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ordId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;instType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;instType&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;instId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;instId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;clOrdId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;clOrdId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;posSide&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;posSide&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;billId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;billId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fillTime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;fillTime&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;execType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;execType&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;tradeId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;tradeId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;feeCcy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;feeCcy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+    <span class="c1"># Drop the other columns for now</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;fillPxVol&#39;</span><span class="p">,</span> <span class="s1">&#39;fillFwdPx&#39;</span><span class="p">,</span> <span class="s1">&#39;fillPxUsd&#39;</span><span class="p">,</span> <span class="s1">&#39;fillMarkVol&#39;</span><span class="p">,</span> <span class="s1">&#39;tag&#39;</span><span class="p">,</span> <span class="s1">&#39;fillIdxPx&#39;</span><span class="p">,</span> <span class="s1">&#39;fillMarkPx&#39;</span><span class="p">],</span>
+            <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Lets do it per instrument that we have and break it down into timeframes of 1 day, 1 week, 1 month, 3 months</span>
     <span class="n">timeframes</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;ONE_DAY&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="s2">&quot;ONE_WEEK&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
@@ -211,44 +237,47 @@
         <span class="s2">&quot;THREE_MONTHS&quot;</span><span class="p">:</span> <span class="mi">90</span>
     <span class="p">}</span>
 
-    <span class="n">_fill_metrics</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">unique_instruments</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;instId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">returning_fill_historical_metrics_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
     <span class="k">for</span> <span class="n">timeframe</span> <span class="ow">in</span> <span class="n">timeframes</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;timeframe:&quot;</span><span class="p">,</span> <span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">returning_fill_historical_metrics_dict</span><span class="p">[</span><span class="n">timeframe</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">start_query_timestamp</span> <span class="o">=</span> <span class="n">get_timestamp_from_days_ago</span><span class="p">(</span><span class="n">days_ago</span><span class="o">=</span><span class="n">timeframes</span><span class="p">[</span><span class="n">timeframe</span><span class="p">])</span>
         <span class="n">end_query_timestamp</span> <span class="o">=</span> <span class="n">get_timestamp_from_days_ago</span><span class="p">()</span>
 
-        <span class="c1"># Initialize variables</span>
-        <span class="n">total_fill_sz</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">total_fill_pnl</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">total_fill_fee</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Count the number of entries in the desired time range</span>
+        <span class="k">for</span> <span class="n">instrument</span> <span class="ow">in</span> <span class="n">unique_instruments</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analyzing instrument: </span><span class="si">{</span><span class="n">instrument</span><span class="si">}</span><span class="s2"> for timeframe: </span><span class="si">{</span><span class="n">timeframe</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">instrument_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;instId&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">instrument</span><span class="p">]</span>
 
-        <span class="k">for</span> <span class="n">fill</span> <span class="ow">in</span> <span class="n">fill_history</span><span class="p">:</span>
-            <span class="n">fill_time</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fill</span><span class="o">.</span><span class="n">fillTime</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">start_query_timestamp</span> <span class="o">&lt;=</span> <span class="n">fill_time</span> <span class="o">&lt;=</span> <span class="n">end_query_timestamp</span><span class="p">:</span>
-                <span class="n">total_fill_sz</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fill</span><span class="o">.</span><span class="n">fillSz</span><span class="p">)</span>
-                <span class="n">total_fill_pnl</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fill</span><span class="o">.</span><span class="n">fillPnl</span><span class="p">)</span>
-                <span class="n">total_fill_fee</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">fill</span><span class="o">.</span><span class="n">fee</span><span class="p">)</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># Filter by time</span>
+            <span class="n">instrument_df</span> <span class="o">=</span> <span class="n">instrument_df</span><span class="p">[(</span><span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillTime&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">start_query_timestamp</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+                        <span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillTime&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">end_query_timestamp</span><span class="p">)]</span>
 
-        <span class="c1"># Calculate averages and total</span>
-        <span class="n">avg_fill_pnl</span> <span class="o">=</span> <span class="n">total_fill_pnl</span> <span class="o">/</span> <span class="n">count</span> <span class="k">if</span> <span class="n">count</span> <span class="k">else</span> <span class="mi">0</span>
-        <span class="n">total_fill_pnl</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">total_fill_pnl</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">total_fill_fee</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">total_fill_fee</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">volume_traded</span> <span class="o">=</span> <span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillSz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">average_fill_price</span> <span class="o">=</span> <span class="p">(</span><span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillPx&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillSz&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">volume_traded</span>
+            <span class="n">profit_loss</span> <span class="o">=</span> <span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillPnl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">fees_paid</span> <span class="o">=</span> <span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fee&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">profitable_trades</span> <span class="o">=</span> <span class="n">instrument_df</span><span class="p">[</span><span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillPnl&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">loss_making_trades</span> <span class="o">=</span> <span class="n">instrument_df</span><span class="p">[</span><span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillPnl&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">best_trade</span> <span class="o">=</span> <span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillPnl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">worst_trade</span> <span class="o">=</span> <span class="n">instrument_df</span><span class="p">[</span><span class="s1">&#39;fillPnl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">avg_fill_pnl</span> <span class="o">=</span> <span class="n">profit_loss</span> <span class="o">/</span> <span class="p">(</span><span class="n">profitable_trades</span> <span class="o">+</span> <span class="n">loss_making_trades</span><span class="p">)</span>
 
-        <span class="c1"># Print the results</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;avg_fill_pnl:&quot;</span><span class="p">,</span> <span class="n">avg_fill_pnl</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total_fill_pnl:&quot;</span><span class="p">,</span> <span class="n">total_fill_pnl</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total_fill_fee:&quot;</span><span class="p">,</span> <span class="n">total_fill_fee</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;count:&quot;</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span>
+            <span class="n">returning_fill_historical_metrics_dict</span><span class="p">[</span><span class="n">timeframe</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;instrument_id&quot;</span><span class="p">:</span> <span class="n">instrument</span><span class="p">,</span>
+                <span class="s2">&quot;volume_traded&quot;</span><span class="p">:</span> <span class="n">volume_traded</span><span class="p">,</span>
+                <span class="s2">&quot;average_fill_price&quot;</span><span class="p">:</span> <span class="n">average_fill_price</span><span class="p">,</span>
+                <span class="s2">&quot;profit_loss&quot;</span><span class="p">:</span> <span class="n">profit_loss</span><span class="p">,</span>
+                <span class="s2">&quot;fees_paid&quot;</span><span class="p">:</span> <span class="n">fees_paid</span><span class="p">,</span>
+                <span class="s2">&quot;profitable_trades&quot;</span><span class="p">:</span> <span class="n">profitable_trades</span><span class="p">,</span>
+                <span class="s2">&quot;loss_making_trades&quot;</span><span class="p">:</span> <span class="n">loss_making_trades</span><span class="p">,</span>
+                <span class="s2">&quot;best_trade&quot;</span><span class="p">:</span> <span class="n">best_trade</span><span class="p">,</span>
+                <span class="s2">&quot;worst_trade&quot;</span><span class="p">:</span> <span class="n">worst_trade</span><span class="p">,</span>
+                <span class="s2">&quot;avg_fill_pnl&quot;</span><span class="p">:</span> <span class="n">avg_fill_pnl</span><span class="p">,</span>
+            <span class="p">})</span>
 
-        <span class="n">_fill_metrics</span><span class="p">[</span><span class="n">timeframe</span><span class="p">]</span> <span class="o">=</span> <span class="n">FillHistoricalMetricsEntry</span><span class="p">(</span>
-            <span class="n">avg_fill_pnl</span><span class="o">=</span><span class="n">avg_fill_pnl</span><span class="p">,</span>
-            <span class="n">total_fill_pnl</span><span class="o">=</span><span class="n">total_fill_pnl</span><span class="p">,</span>
-            <span class="n">total_fill_fee</span><span class="o">=</span><span class="n">total_fill_fee</span>
-        <span class="p">)</span>
-
-    <span class="n">fill_metrics</span> <span class="o">=</span> <span class="n">FillHistoricalMetrics</span><span class="p">(</span><span class="o">**</span><span class="n">_fill_metrics</span><span class="p">)</span>
+    <span class="c1"># Validate results</span>
+    <span class="n">fill_metrics</span> <span class="o">=</span> <span class="n">FillHistoricalMetrics</span><span class="p">(</span><span class="o">**</span><span class="n">returning_fill_historical_metrics_dict</span><span class="p">)</span>
     <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">fill_metrics</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="s1">&#39;okx:reports@fill_metrics&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
@@ -256,8 +285,8 @@
 
 <div class="viewcode-block" id="update_instruments">
 <a class="viewcode-back" href="../../pyokx.rest_messages_service.html#pyokx.rest_messages_service.update_instruments">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">update_instruments</span><span class="p">(</span><span class="n">okx_futures_instrument_searcher</span><span class="p">:</span> <span class="n">InstrumentSearcher</span><span class="p">):</span>
-    <span class="n">instrument_map</span> <span class="o">=</span> <span class="k">await</span> <span class="n">okx_futures_instrument_searcher</span><span class="o">.</span><span class="n">update_instruments</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">update_instruments</span><span class="p">(</span><span class="n">okx_instrument_searcher</span><span class="p">:</span> <span class="n">InstrumentSearcher</span><span class="p">):</span>
+    <span class="n">instrument_map</span> <span class="o">=</span> <span class="k">await</span> <span class="n">okx_instrument_searcher</span><span class="o">.</span><span class="n">update_instruments</span><span class="p">()</span>
     <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">instrument_map</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:rest@instruments&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span>
                            <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span></div>
@@ -267,13 +296,13 @@
 <div class="viewcode-block" id="slow_polling_service">
 <a class="viewcode-back" href="../../pyokx.rest_messages_service.html#pyokx.rest_messages_service.slow_polling_service">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">slow_polling_service</span><span class="p">(</span><span class="n">reload_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
-    <span class="n">okx_futures_instrument_searcher</span> <span class="o">=</span> <span class="n">InstrumentSearcher</span><span class="p">(</span><span class="n">ENFORCED_INSTRUMENT_TYPES</span><span class="p">)</span>
+    <span class="n">okx_instrument_searcher</span> <span class="o">=</span> <span class="n">InstrumentSearcher</span><span class="p">(</span><span class="n">ENFORCED_INSTRUMENT_TYPES</span><span class="p">)</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
                 <span class="c1"># by default, analyze and store the last 90 days for futures</span>
                 <span class="n">analyze_transaction_history</span><span class="p">(</span><span class="n">ENFORCED_INSTRUMENT_TYPES</span><span class="p">),</span>
-                <span class="n">update_instruments</span><span class="p">(</span><span class="n">okx_futures_instrument_searcher</span><span class="p">)</span>
+                <span class="n">update_instruments</span><span class="p">(</span><span class="n">okx_instrument_searcher</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="k">break</span>
@@ -347,14 +376,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting okx_rest_messages_services&quot;</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">async_redis</span>
-    <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()</span>
+    <span class="n">async_redis</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()</span>
 
     <span class="k">assert</span> <span class="n">async_redis</span><span class="p">,</span> <span class="s2">&quot;async_redis is None, check the connection to the Redis server&quot;</span>
     <span class="n">slow_polling_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">slow_polling_service</span><span class="p">(</span><span class="n">slow_reload_interval</span><span class="p">))</span>
     <span class="n">loop_fetch_incomplete_algo_orders_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">loop_fetch_incomplete_algo_orders</span><span class="p">())</span>
     <span class="n">loop_fetch_incomplete_orders_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">loop_fetch_incomplete_orders</span><span class="p">())</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">slow_polling_task</span><span class="p">,</span> <span class="n">loop_fetch_incomplete_algo_orders_task</span><span class="p">,</span> <span class="n">loop_fetch_incomplete_orders_task</span><span class="p">)</span></div>
-
 
 
 

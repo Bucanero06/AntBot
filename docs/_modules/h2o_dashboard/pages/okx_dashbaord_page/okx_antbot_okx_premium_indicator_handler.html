@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -162,8 +160,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">pprint</span>
+<span></span><span class="kn">import</span> <span class="nn">pprint</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 
 <span class="kn">from</span> <span class="nn">h2o_wave</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">run_on</span><span class="p">,</span> <span class="n">AsyncSite</span><span class="p">,</span> <span class="n">pack</span><span class="p">,</span> <span class="n">copy_expando</span>  <span class="c1"># noqa F401</span>
@@ -171,9 +168,8 @@
 
 <span class="kn">from</span> <span class="nn">firebase_tools.authenticate</span> <span class="kn">import</span> <span class="n">check_str_token_validity</span>
 <span class="kn">from</span> <span class="nn">h2o_dashboard.util</span> <span class="kn">import</span> <span class="n">add_card</span>
-<span class="kn">from</span> <span class="nn">pyokx</span> <span class="kn">import</span> <span class="n">ENFORCED_INSTRUMENT_TYPES</span>
 <span class="kn">from</span> <span class="nn">pyokx.InstrumentSearcher</span> <span class="kn">import</span> <span class="n">InstrumentSearcher</span>
-<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">OKXSignalInput</span><span class="p">,</span>  <span class="n">PremiumIndicatorSignals</span><span class="p">,</span> \
+<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">OKXSignalInput</span><span class="p">,</span> <span class="n">PremiumIndicatorSignals</span><span class="p">,</span> \
     <span class="n">OKXPremiumIndicatorSignalRequestForm</span>
 <span class="kn">from</span> <span class="nn">pyokx.redis_structured_streams</span> <span class="kn">import</span> <span class="n">get_instruments_searcher_from_redis</span>
 <span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">okx_signal_handler</span><span class="p">,</span> <span class="n">validate_okx_signal_params</span><span class="p">,</span> <span class="n">okx_premium_indicator_handler</span>
@@ -194,7 +190,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">box</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">okx_futures_instruments_searcher</span><span class="p">:</span> <span class="n">InstrumentSearcher</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">okx_instruments_searcher</span><span class="p">:</span> <span class="n">InstrumentSearcher</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_update_time</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_minimum_update_delay</span> <span class="o">=</span> <span class="n">minimum_update_delay</span>
@@ -205,18 +201,18 @@
             <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_update_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_update_time</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_minimum_update_delay</span><span class="p">):</span>
                 <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_update_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">okx_futures_instruments_searcher</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_instruments_searcher_from_redis</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">okx_instruments_searcher</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_instruments_searcher_from_redis</span><span class="p">(</span>
             <span class="n">async_redis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">async_redis</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_is_initialized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">okx_futures_instruments_searcher</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">okx_instruments_searcher</span>
 
 <div class="viewcode-block" id="OKX_Premium_Indicator_Handler_Widget.add_cards">
 <a class="viewcode-back" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html#h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.OKX_Premium_Indicator_Handler_Widget.add_cards">[docs]</a>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">add_cards</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_stream</span><span class="p">()</span>
         <span class="n">instrument_id_choices</span> <span class="o">=</span> <span class="p">[</span><span class="n">ui</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">instID</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">instID</span><span class="p">)</span> <span class="k">for</span> <span class="n">instID</span> <span class="ow">in</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">okx_futures_instruments_searcher</span><span class="o">.</span><span class="n">get_instrument_ids</span><span class="p">()]</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">okx_instruments_searcher</span><span class="o">.</span><span class="n">get_instrument_ids</span><span class="p">()]</span>
         <span class="n">bot_okx_signal_inputs</span> <span class="o">=</span> <span class="n">ui</span><span class="o">.</span><span class="n">form_card</span><span class="p">(</span>
             <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
             <span class="n">items</span><span class="o">=</span><span class="p">[</span>
@@ -388,17 +384,17 @@
                                     <span class="p">]),</span>
                                 <span class="n">ui</span><span class="o">.</span><span class="n">expander</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;okx_dashboard_page_okx_premium_indicator_dca_expander&#39;</span><span class="p">,</span>
                                             <span class="n">label</span><span class="o">=</span><span class="s1">&#39;SINGLE DCA PARAMS (UI-Form not enabled)&#39;</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span>
-                                            <span class="c1"># DCAInputParameters(</span>
-                                            <span class="c1">#         usd_amount=100,</span>
-                                            <span class="c1">#         order_type=&quot;LIMIT&quot;,</span>
-                                            <span class="c1">#         order_side=&quot;BUY&quot;,</span>
-                                            <span class="c1">#         trigger_price_offset=100,</span>
-                                            <span class="c1">#         execution_price_offset=90,</span>
-                                            <span class="c1">#         tp_trigger_price_offset=100,</span>
-                                            <span class="c1">#         tp_execution_price_offset=90,</span>
-                                            <span class="c1">#         sl_trigger_price_offset=100,</span>
-                                            <span class="c1">#         sl_execution_price_offset=90</span>
-                                            <span class="c1">#     ),</span>
+                                        <span class="c1"># DCAInputParameters(</span>
+                                        <span class="c1">#         usd_amount=100,</span>
+                                        <span class="c1">#         order_type=&quot;LIMIT&quot;,</span>
+                                        <span class="c1">#         order_side=&quot;BUY&quot;,</span>
+                                        <span class="c1">#         trigger_price_offset=100,</span>
+                                        <span class="c1">#         execution_price_offset=90,</span>
+                                        <span class="c1">#         tp_trigger_price_offset=100,</span>
+                                        <span class="c1">#         tp_execution_price_offset=90,</span>
+                                        <span class="c1">#         sl_trigger_price_offset=100,</span>
+                                        <span class="c1">#         sl_execution_price_offset=90</span>
+                                        <span class="c1">#     ),</span>
                                         <span class="n">ui</span><span class="o">.</span><span class="n">textbox</span><span class="p">(</span>
                                             <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;okx_dashboard_page_okx_premium_indicator_</span><span class="si">{</span><span class="n">OKXSignalInput</span><span class="o">.</span><span class="n">trailing_stop_callback_offset</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                                             <span class="n">label</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;DCAInputParameters(</span>
@@ -417,9 +413,6 @@
                                     <span class="p">]),</span>
                             <span class="p">]),</span>
             <span class="p">])</span>
-
-
-
 
         <span class="n">output_value</span> <span class="o">=</span> <span class="s2">&quot;When ready or in doubt, </span><span class="se">\n</span><span class="s2">  press the `Validate Input Model` button&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_okx_signal_input</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_okx_signal_input</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
         <span class="n">output_value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">output_value</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">output_value</span><span class="p">,</span>
@@ -703,7 +696,6 @@
 
         <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
             <span class="n">auth_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">check_str_token_validity</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">auth_response</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">auth_response</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Token is invalid, please reload the page and log in again&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">okx_dashboard_page_okx_premium_indicator_instID</span><span class="p">:</span>
@@ -721,7 +713,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">instrument_api_key_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;access_token&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to create instrument API key&quot;</span><span class="p">)</span>
 
-        <span class="n">request_model</span> <span class="o">=</span> <span class="k">await</span> <span class="n">on_premium_indicator_signal_selection</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">only_return_request_model</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">request_model</span> <span class="o">=</span> <span class="k">await</span> <span class="n">on_premium_indicator_signal_selection</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">return_request_model_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">request_model</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">request_model</span><span class="p">:</span>
             <span class="k">return</span>
@@ -752,15 +744,18 @@
 <span class="nd">@on</span><span class="p">(</span><span class="s1">&#39;okx_dashboard_page_okx_premium_indicator_Bearish_plus&#39;</span><span class="p">)</span>
 <span class="nd">@on</span><span class="p">(</span><span class="s1">&#39;okx_dashboard_page_okx_premium_indicator_Bullish_Exit&#39;</span><span class="p">)</span>
 <span class="nd">@on</span><span class="p">(</span><span class="s1">&#39;okx_dashboard_page_okx_premium_indicator_Bearish_Exit&#39;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">on_premium_indicator_signal_selection</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span> <span class="n">only_return_request_model</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">on_premium_indicator_signal_selection</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Q</span><span class="p">,</span><span class="n">dummy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">return_request_model_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;WARNING, it is unknown why the second arg in on_premium_indicator_signal_selection &#39;</span>
+          <span class="sa">f</span><span class="s1">&#39;no matter what is always True </span><span class="si">{</span><span class="n">dummy</span><span class="w"> </span><span class="si">= }</span><span class="se">\n</span><span class="s1">  it is not being called anywhere or passed any value and it&#39;</span>
+          <span class="sa">f</span><span class="s1">&#39; ramains True even if False is passed in. Perhaps is due to the on() decorator, using a dummy arguement &#39;</span>
+          <span class="sa">f</span><span class="s1">&#39;works&#39;</span><span class="p">)</span>
     <span class="n">output_response_card</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">OKX_Manual_ControlsWidget_card_name</span> <span class="o">+</span> <span class="s1">&#39;_okx_signal_output_response_card&#39;</span><span class="p">]</span>
     <span class="n">okx_signal_txt_header</span> <span class="o">=</span> <span class="s1">&#39;OKX Premium Indicator Signal Response:</span><span class="se">\n\n</span><span class="s1">&#39;</span>
 
     <span class="n">premium_indicator_signal_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">att</span><span class="p">:</span> <span class="n">q</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;okx_dashboard_page_okx_premium_indicator_</span><span class="si">{</span><span class="n">att</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span>
                                        <span class="n">OKX_PREMIUM_INDICATOR_SIGNAL_INPUT_KEYS</span><span class="p">}</span>
     <span class="n">cleaned_indicator_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">premium_indicator_signal_params</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cleaned_indicator_params</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">only_return_request_model</span> <span class="ow">and</span> <span class="nb">sum</span><span class="p">(</span><span class="n">cleaned_indicator_params</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">return_request_model_only</span> <span class="ow">and</span> <span class="nb">sum</span><span class="p">(</span><span class="n">cleaned_indicator_params</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only one of the premium indicator signals should be True&quot;</span><span class="p">)</span>
 
     <span class="c1"># Now lets Validate the inputs for the OKX signal</span>
@@ -817,11 +812,12 @@
             <span class="n">PremiumIndicatorSignals</span><span class="o">=</span><span class="n">okx_premium_indicator_signals</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">only_return_request_model</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">return_request_model_only</span><span class="p">:</span>
+
             <span class="k">return</span> <span class="n">request_model</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sfdsfefew</span><span class="si">{</span><span class="n">request_model</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="n">signal_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">okx_premium_indicator_handler</span><span class="p">(</span><span class="n">indicator_input</span><span class="o">=</span><span class="n">request_model</span><span class="p">)</span>
-
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">signal_response</span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">signal_response</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">signal_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">signal_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;red_button&#39;</span><span class="p">)):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Is instance of dict&#39;</span><span class="p">)</span>

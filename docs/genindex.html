@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -322,10 +320,10 @@
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport.all_algo_orders">all_algo_orders (pyokx.data_structures.AccountStatusReport attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport.all_orders">all_orders (pyokx.data_structures.AccountStatusReport attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport.all_positions">all_positions (pyokx.data_structures.AccountStatusReport attribute)</a>
 </li>
       <li><a href="pyokx.low_rest_api.Trade.html#pyokx.low_rest_api.Trade.TradeAPI.amend_algo_order">amend_algo_order() (pyokx.low_rest_api.Trade.TradeAPI method)</a>
@@ -445,6 +443,8 @@
       </ul></li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.MaxAvailSizeData.availSell">availSell (pyokx.data_structures.MaxAvailSizeData attribute)</a>
 </li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.average_fill_price">average_fill_price (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.avg_fill_pnl">avg_fill_pnl (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Order.avgPx">avgPx (pyokx.data_structures.Order attribute)</a>
@@ -507,6 +507,8 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.bePx">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.best_trade">best_trade (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Bid">Bid (class in pyokx.data_structures)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Ticker.bidPx">bidPx (pyokx.data_structures.Ticker attribute)</a>
@@ -957,6 +959,8 @@
       </ul></li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Orderbook_Snapshot.depth">depth (pyokx.data_structures.Orderbook_Snapshot attribute)</a>
 </li>
+      <li><a href="redis_tools.utils.html#redis_tools.utils.deserialize_from_redis">deserialize_from_redis() (in module redis_tools.utils)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceData.details">details (pyokx.data_structures.AccountBalanceData attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.PositionHistory.direction">direction (pyokx.data_structures.PositionHistory attribute)</a>
@@ -1071,6 +1075,8 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSOrder.feeCcy">(pyokx.ws_data_structures.WSOrder attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.fees_paid">fees_paid (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
+</li>
       <li><a href="pyokx.rest_handling.html#pyokx.rest_handling.fetch_fill_history">fetch_fill_history() (in module pyokx.rest_handling)</a>
 </li>
       <li><a href="pyokx.rest_handling.html#pyokx.rest_handling.fetch_incomplete_algo_orders">fetch_incomplete_algo_orders() (in module pyokx.rest_handling)</a>
@@ -1281,8 +1287,6 @@
 </li>
       <li><a href="pyokx.low_rest_api.Account.html#pyokx.low_rest_api.Account.AccountAPI.get_account_position_tiers">get_account_position_tiers() (pyokx.low_rest_api.Account.AccountAPI method)</a>
 </li>
-      <li><a href="pyokx.redis_structured_reports.html#pyokx.redis_structured_reports.get_account_report">get_account_report() (in module pyokx.redis_structured_reports)</a>
-</li>
       <li><a href="pyokx.low_rest_api.SpreadTrading.html#pyokx.low_rest_api.SpreadTrading.SpreadTradingAPI.get_active_orders">get_active_orders() (pyokx.low_rest_api.SpreadTrading.SpreadTradingAPI method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.Earning.html#pyokx.low_rest_api.Earning.EarningAPI.get_activity_orders">get_activity_orders() (pyokx.low_rest_api.Earning.EarningAPI method)</a>
@@ -1303,9 +1307,9 @@
 </li>
       <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.get_asset_valuation">get_asset_valuation() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
 </li>
-      <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.get_balances">get_balances() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
+      <li><a href="redis_tools.utils.html#redis_tools.utils.get_async_redis">get_async_redis() (in module redis_tools.utils)</a>
 </li>
-      <li><a href="pyokx.redis_structured_reports.html#pyokx.redis_structured_reports.get_balances_and_positions_report">get_balances_and_positions_report() (in module pyokx.redis_structured_reports)</a>
+      <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.get_balances">get_balances() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.get_bills">get_bills() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
 </li>
@@ -1469,16 +1473,18 @@
 </li>
       <li><a href="pyokx.low_rest_api.Earning.html#pyokx.low_rest_api.Earning.EarningAPI.get_offers">get_offers() (pyokx.low_rest_api.Earning.EarningAPI method)</a>
 </li>
+      <li><a href="pyokx.redis_structured_streams.html#pyokx.redis_structured_streams.get_okx_fills_history">get_okx_fills_history() (in module pyokx.redis_structured_streams)</a>
+</li>
       <li><a href="pyokx.low_rest_api.Trade.html#pyokx.low_rest_api.Trade.TradeAPI.get_oneclick_repay_list">get_oneclick_repay_list() (pyokx.low_rest_api.Trade.TradeAPI method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.low_rest_api.PublicData.html#pyokx.low_rest_api.PublicData.PublicAPI.get_open_interest">get_open_interest() (pyokx.low_rest_api.PublicData.PublicAPI method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.PublicData.html#pyokx.low_rest_api.PublicData.PublicAPI.get_opt_summary">get_opt_summary() (pyokx.low_rest_api.PublicData.PublicAPI method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.PublicData.html#pyokx.low_rest_api.PublicData.PublicAPI.get_option_tickBands">get_option_tickBands() (pyokx.low_rest_api.PublicData.PublicAPI method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.low_rest_api.MarketData.html#pyokx.low_rest_api.MarketData.MarketAPI.get_option_trades">get_option_trades() (pyokx.low_rest_api.MarketData.MarketAPI method)</a>
 
       <ul>
@@ -1519,8 +1525,6 @@
       </ul></li>
       <li><a href="pyokx.low_rest_api.Trade.html#pyokx.low_rest_api.Trade.TradeAPI.get_orders_history_archive">get_orders_history_archive() (pyokx.low_rest_api.Trade.TradeAPI method)</a>
 </li>
-      <li><a href="pyokx.redis_structured_reports.html#pyokx.redis_structured_reports.get_orders_report">get_orders_report() (in module pyokx.redis_structured_reports)</a>
-</li>
       <li><a href="pyokx.low_rest_api.Account.html#pyokx.low_rest_api.Account.AccountAPI.get_position_risk">get_position_risk() (pyokx.low_rest_api.Account.AccountAPI method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.PublicData.html#pyokx.low_rest_api.PublicData.PublicAPI.get_position_tiers">get_position_tiers() (pyokx.low_rest_api.PublicData.PublicAPI method)</a>
@@ -1532,8 +1536,6 @@
 </li>
       </ul></li>
       <li><a href="pyokx.low_rest_api.Account.html#pyokx.low_rest_api.Account.AccountAPI.get_positions_history">get_positions_history() (pyokx.low_rest_api.Account.AccountAPI method)</a>
-</li>
-      <li><a href="pyokx.redis_structured_reports.html#pyokx.redis_structured_reports.get_positions_report">get_positions_report() (in module pyokx.redis_structured_reports)</a>
 </li>
       <li><a href="pyokx.low_rest_api.PublicData.html#pyokx.low_rest_api.PublicData.PublicAPI.get_price_limit">get_price_limit() (pyokx.low_rest_api.PublicData.PublicAPI method)</a>
 </li>
@@ -1585,8 +1587,6 @@
 </li>
       <li><a href="pyokx.low_rest_api.SpreadTrading.html#pyokx.low_rest_api.SpreadTrading.SpreadTradingAPI.get_spreads">get_spreads() (pyokx.low_rest_api.SpreadTrading.SpreadTradingAPI method)</a>
 </li>
-      <li><a href="pyokx.redis_structured_reports.html#pyokx.redis_structured_reports.get_stream_account_report">get_stream_account_report() (in module pyokx.redis_structured_reports)</a>
-</li>
       <li><a href="pyokx.redis_structured_streams.html#pyokx.redis_structured_streams.get_stream_okx_account_messages">get_stream_okx_account_messages() (in module pyokx.redis_structured_streams)</a>
 </li>
       <li><a href="pyokx.redis_structured_streams.html#pyokx.redis_structured_streams.get_stream_okx_all_messages">get_stream_okx_all_messages() (in module pyokx.redis_structured_streams)</a>
@@ -1600,8 +1600,6 @@
       <li><a href="pyokx.redis_structured_streams.html#pyokx.redis_structured_streams.get_stream_okx_order_messages">get_stream_okx_order_messages() (in module pyokx.redis_structured_streams)</a>
 </li>
       <li><a href="pyokx.redis_structured_streams.html#pyokx.redis_structured_streams.get_stream_okx_position_messages">get_stream_okx_position_messages() (in module pyokx.redis_structured_streams)</a>
-</li>
-      <li><a href="pyokx.redis_structured_reports.html#pyokx.redis_structured_reports.get_stream_positions_report">get_stream_positions_report() (in module pyokx.redis_structured_reports)</a>
 </li>
       <li><a href="pyokx.low_rest_api.SubAccount.html#pyokx.low_rest_api.SubAccount.SubAccountAPI.get_sub_account_borrow_interest_and_limit">get_sub_account_borrow_interest_and_limit() (pyokx.low_rest_api.SubAccount.SubAccountAPI method)</a>
 </li>
@@ -1637,8 +1635,6 @@
 </li>
       <li><a href="pyokx.low_rest_api.MarketData.html#pyokx.low_rest_api.MarketData.MarketAPI.get_tickers">get_tickers() (pyokx.low_rest_api.MarketData.MarketAPI method)</a>
 </li>
-      <li><a href="pyokx.redis_structured_reports.html#pyokx.redis_structured_reports.get_tickers_report">get_tickers_report() (in module pyokx.redis_structured_reports)</a>
-</li>
       <li><a href="pyokx.low_rest_api.MarketData.html#pyokx.low_rest_api.MarketData.MarketAPI.get_tier">get_tier() (pyokx.low_rest_api.MarketData.MarketAPI method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.utils.html#pyokx.low_rest_api.utils.get_timestamp">get_timestamp() (in module pyokx.low_rest_api.utils)</a>
@@ -1657,11 +1653,11 @@
       </ul></li>
       <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html#h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.OKX_Account_StreamWidget.get_ui_account_breakdown_box_as_pie_stat">get_ui_account_breakdown_box_as_pie_stat() (h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.OKX_Account_StreamWidget method)</a>
 </li>
+      <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget.html#h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget.OKX_Orders_StreamWidget.get_ui_algo_orders_table">get_ui_algo_orders_table() (h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget.OKX_Orders_StreamWidget method)</a>
+</li>
       <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html#h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.OKX_Fill_Report_StreamWidget.get_ui_fill_metrics_report">get_ui_fill_metrics_report() (h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.OKX_Fill_Report_StreamWidget method)</a>
 </li>
       <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_positions_widget.html#h2o_dashboard.pages.okx_dashbaord_page.okx_positions_widget.OKX_Live_Positions_StreamWidget.get_ui_live_positions_table">get_ui_live_positions_table() (h2o_dashboard.pages.okx_dashbaord_page.okx_positions_widget.OKX_Live_Positions_StreamWidget method)</a>
-</li>
-      <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget.html#h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget.OKX_Orders_StreamWidget.get_ui_orders_table">get_ui_orders_table() (h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget.OKX_Orders_StreamWidget method)</a>
 </li>
       <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html#h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.OKX_Account_StreamWidget.get_ui_total_equity_box_as_small_stat">get_ui_total_equity_box_as_small_stat() (h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.OKX_Account_StreamWidget method)</a>
 </li>
@@ -1744,13 +1740,6 @@
 
       <ul>
         <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html#module-h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget">module</a>
-</li>
-      </ul></li>
-      <li>
-    h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget
-
-      <ul>
-        <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html#module-h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget">module</a>
 </li>
       </ul></li>
       <li>
@@ -1876,8 +1865,6 @@
 </li>
       <li><a href="h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.init">init() (in module h2o_dashboard.wave_auth)</a>
 </li>
-      <li><a href="redis_tools.utils.html#redis_tools.utils.init_async_redis">init_async_redis() (in module redis_tools.utils)</a>
-</li>
       <li><a href="h2o_dashboard.wave_auth.html#h2o_dashboard.wave_auth.initialize_client">initialize_client() (in module h2o_dashboard.wave_auth)</a>
 </li>
       <li><a href="autodocumentation_python.html#autodocumentation_python.initialize_sphinx">initialize_sphinx() (in module autodocumentation_python)</a>
@@ -1995,6 +1982,8 @@
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.InstIdSignalRequestForm">InstIdSignalRequestForm (class in pyokx.data_structures)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Instrument">Instrument (class in pyokx.data_structures)</a>
+</li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.instrument_id">instrument_id (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.InstrumentsChannel">InstrumentsChannel (class in pyokx.ws_data_structures)</a>
 </li>
@@ -2142,14 +2131,14 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.liab">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.liabCcy">liabCcy (pyokx.data_structures.Position attribute)</a>
 
       <ul>
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.liabCcy">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.liqPenalty">liqPenalty (pyokx.data_structures.Position attribute)</a>
 
       <ul>
@@ -2189,6 +2178,8 @@
       <li><a href="pyokx.rest_messages_service.html#pyokx.rest_messages_service.loop_fetch_incomplete_algo_orders">loop_fetch_incomplete_algo_orders() (in module pyokx.rest_messages_service)</a>
 </li>
       <li><a href="pyokx.rest_messages_service.html#pyokx.rest_messages_service.loop_fetch_incomplete_orders">loop_fetch_incomplete_orders() (in module pyokx.rest_messages_service)</a>
+</li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.loss_making_trades">loss_making_trades (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Instrument.lotSz">lotSz (pyokx.data_structures.Instrument attribute)</a>
 </li>
@@ -2660,34 +2651,6 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.CandleStick.model_post_init">model_post_init() (pyokx.ws_data_structures.CandleStick method)</a>
-
-      <ul>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexCandleSticksChannelInputArgs.model_post_init">(pyokx.ws_data_structures.IndexCandleSticksChannelInputArgs method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexTickersChannelInputArgs.model_post_init">(pyokx.ws_data_structures.IndexTickersChannelInputArgs method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.InstrumentsChannelInputArgs.model_post_init">(pyokx.ws_data_structures.InstrumentsChannelInputArgs method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.MarkPrice.model_post_init">(pyokx.ws_data_structures.MarkPrice method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.MarkPriceCandleSticksChannelInputArgs.model_post_init">(pyokx.ws_data_structures.MarkPriceCandleSticksChannelInputArgs method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.MarkPriceChannelInputArgs.model_post_init">(pyokx.ws_data_structures.MarkPriceChannelInputArgs method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.PriceLimit.model_post_init">(pyokx.ws_data_structures.PriceLimit method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.PriceLimitChannelInputArgs.model_post_init">(pyokx.ws_data_structures.PriceLimitChannelInputArgs method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WebSocketConnectionConfig.model_post_init">(pyokx.ws_data_structures.WebSocketConnectionConfig method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.ws_balData_element.model_post_init">(pyokx.ws_data_structures.ws_balData_element method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.ws_posData_element.model_post_init">(pyokx.ws_data_structures.ws_posData_element method)</a>
-</li>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.ws_trades_element.model_post_init">(pyokx.ws_data_structures.ws_trades_element method)</a>
-</li>
-      </ul></li>
       <li>
     module
 
@@ -2703,8 +2666,6 @@
         <li><a href="h2o_dashboard.pages.documentation_page.html#module-h2o_dashboard.pages.documentation_page">h2o_dashboard.pages.documentation_page</a>
 </li>
         <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html#module-h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a>
-</li>
-        <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html#module-h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a>
 </li>
         <li><a href="h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html#module-h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a>
 </li>
@@ -2771,8 +2732,6 @@
         <li><a href="pyokx.low_rest_api.TradingData.html#module-pyokx.low_rest_api.TradingData">pyokx.low_rest_api.TradingData</a>
 </li>
         <li><a href="pyokx.low_rest_api.utils.html#module-pyokx.low_rest_api.utils">pyokx.low_rest_api.utils</a>
-</li>
-        <li><a href="pyokx.redis_structured_reports.html#module-pyokx.redis_structured_reports">pyokx.redis_structured_reports</a>
 </li>
         <li><a href="pyokx.redis_structured_streams.html#module-pyokx.redis_structured_streams">pyokx.redis_structured_streams</a>
 </li>
@@ -3256,6 +3215,10 @@
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.PriceLimitChannelInputArgs">PriceLimitChannelInputArgs (class in pyokx.ws_data_structures)</a>
 </li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.profit_loss">profit_loss (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
+</li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.profitable_trades">profitable_trades (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
+</li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.BalanceAndPositionData.pTime">pTime (pyokx.ws_data_structures.BalanceAndPositionData attribute)</a>
 
       <ul>
@@ -3325,6 +3288,8 @@
         <li><a href="pyokx.InstrumentSearcher.html#module-pyokx.InstrumentSearcher">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pyokx.low_rest_api.Account
 
@@ -3332,8 +3297,6 @@
         <li><a href="pyokx.low_rest_api.Account.html#module-pyokx.low_rest_api.Account">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pyokx.low_rest_api.BlockTrading
 
@@ -3465,13 +3428,6 @@
 
       <ul>
         <li><a href="pyokx.low_rest_api.utils.html#module-pyokx.low_rest_api.utils">module</a>
-</li>
-      </ul></li>
-      <li>
-    pyokx.redis_structured_reports
-
-      <ul>
-        <li><a href="pyokx.redis_structured_reports.html#module-pyokx.redis_structured_reports">module</a>
 </li>
       </ul></li>
       <li>
@@ -4372,10 +4328,6 @@
 </li>
       <li><a href="firebase_tools.BaseClasses.html#firebase_tools.BaseClasses.FirebaseAuthGoodResponse.token">token (firebase_tools.BaseClasses.FirebaseAuthGoodResponse attribute)</a>
 </li>
-      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.total_fill_fee">total_fill_fee (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
-</li>
-      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.total_fill_pnl">total_fill_pnl (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
-</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceData.totalEq">totalEq (pyokx.data_structures.AccountBalanceData attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.DCAInputParameters.tp_execution_price_offset">tp_execution_price_offset (pyokx.data_structures.DCAInputParameters attribute)</a>
@@ -4695,6 +4647,8 @@
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Ticker.volCcy24h">volCcy24h (pyokx.data_structures.Ticker attribute)</a>
 </li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.volume_traded">volume_traded (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -4715,6 +4669,8 @@
       <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.withdrawal">withdrawal() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.withdrawal_lightning">withdrawal_lightning() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
+</li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry.worst_trade">worst_trade (pyokx.data_structures.FillHistoricalMetricsEntry attribute)</a>
 </li>
       <li><a href="shared.configuration_parser.html#shared.configuration_parser.write_example_configuration_file">write_example_configuration_file() (in module shared.configuration_parser)</a>
 </li>

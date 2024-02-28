@@ -57,7 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -97,7 +96,6 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -176,6 +174,7 @@
 <dt class="sig sig-object py" id="pyokx.Futures_Exchange_Client.OKX_Futures_Exchange_Client">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.Futures_Exchange_Client.</span></span><span class="sig-name descname"><span class="pre">OKX_Futures_Exchange_Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_secret</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">passphrase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sandbox_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/Futures_Exchange_Client.html#OKX_Futures_Exchange_Client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.Futures_Exchange_Client.OKX_Futures_Exchange_Client" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>NOTE/Warning!!! Currently does not support the OKX Spot API, only the Futures API e.g. expiring contracts and swaps</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyokx.Futures_Exchange_Client.OKX_Futures_Exchange_Client.pprint">
 <span class="sig-name descname"><span class="pre">pprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/Futures_Exchange_Client.html#OKX_Futures_Exchange_Client.pprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.Futures_Exchange_Client.OKX_Futures_Exchange_Client.pprint" title="Link to this definition"></a></dt>
@@ -183,9 +182,9 @@
 
 </dd></dl>
 
-<div class="graphviz"><img src="_images/inheritance-0d2f60174480bf505f8f15b193abcecc356d5511.png" alt="Inheritance diagram of pyokx.Futures_Exchange_Client" usemap="#inheritance2a1a9f4756" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-1da87ffd161698d4512d2f964d81fbd84fbeca5e.png" alt="Inheritance diagram of pyokx.Futures_Exchange_Client" usemap="#inheritance2a1a9f4756" class="inheritance graphviz" /></div>
 <map id="inheritance2a1a9f4756" name="inheritance2a1a9f4756">
-<area shape="rect" id="node1" href="#pyokx.Futures_Exchange_Client.OKX_Futures_Exchange_Client" target="_top" title="OKX_Futures_Exchange_Client" alt="" coords="5,5,225,31"/>
+<area shape="rect" id="node1" href="#pyokx.Futures_Exchange_Client.OKX_Futures_Exchange_Client" target="_top" title="NOTE/Warning!!! Currently does not support the OKX Spot API, only the Futures API e.g. expiring contracts and swaps" alt="" coords="5,5,225,31"/>
 </map></section>
 
 

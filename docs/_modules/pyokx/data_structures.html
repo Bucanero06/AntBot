@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -184,7 +182,6 @@
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.OKXBaseModel">[docs]</a>
 <span class="k">class</span> <span class="nc">OKXBaseModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">OKXBaseModelModelMeta</span><span class="p">):</span>
     <span class="k">pass</span></div>
-
 
 
 <div class="viewcode-block" id="Order">
@@ -648,9 +645,10 @@
     <span class="n">pnlRatio</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># P&amp;L ratio</span>
     <span class="n">lever</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># Leverage</span>
     <span class="n">direction</span><span class="p">:</span> <span class="n">PosSide</span>  <span class="c1"># Direction: long, short</span>
-    <span class="n">triggerPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Trigger mark price, value when type is 3, 4, or 5; None when type is 1 or 2</span>
     <span class="n">uly</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Underlying</span>
     <span class="n">ccy</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Currency used for margin</span>
+    <span class="n">triggerPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Trigger mark price, value when type is 3, 4, or 5; None when type is 1 or 2</span>
+
 
 <div class="viewcode-block" id="PositionHistory.handle_triggerPx">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.PositionHistory.handle_triggerPx">[docs]</a>
@@ -678,26 +676,28 @@
     <span class="n">side</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">fillSz</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">fillPx</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">fillPxVol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">fillFwdPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">fee</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">fillPnl</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">ordId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">fillPxUsd</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">clOrdId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">posSide</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">billId</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">fillMarkVol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">fillTime</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">execType</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">fillIdxPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">tradeId</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">fillMarkPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">feeCcy</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">ts</span><span class="p">:</span> <span class="nb">str</span></div>
+    <span class="n">ts</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">fillPxVol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">fillFwdPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">fillPxUsd</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">fillMarkVol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">fillIdxPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">fillMarkPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
 
 
 
@@ -747,18 +747,16 @@
 
 
 
-<span class="c1">#</span>
-
 <div class="viewcode-block" id="AccountStatusReport">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport">[docs]</a>
 <span class="k">class</span> <span class="nc">AccountStatusReport</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
-    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
     <span class="n">account_balance</span><span class="p">:</span> <span class="n">AccountBalanceData</span>
     <span class="n">account_config</span><span class="p">:</span> <span class="n">AccountConfigData</span>
     <span class="n">all_positions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Position</span><span class="p">]</span>
     <span class="n">all_orders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]</span>
     <span class="n">all_algo_orders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Algo_Order</span><span class="p">]</span>
-    <span class="n">simplified_balance</span><span class="p">:</span> <span class="n">Simplified_Balance_Details</span></div>
+    <span class="n">simplified_balance</span><span class="p">:</span> <span class="n">Simplified_Balance_Details</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span></div>
 
 
 
@@ -793,6 +791,7 @@
     <span class="n">sl_trigger_price_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">sl_trigger_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">sl_execution_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div>
+
 
 
 
@@ -879,19 +878,26 @@
 <div class="viewcode-block" id="FillHistoricalMetricsEntry">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetricsEntry">[docs]</a>
 <span class="k">class</span> <span class="nc">FillHistoricalMetricsEntry</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
-    <span class="n">avg_fill_pnl</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">total_fill_pnl</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">total_fill_fee</span><span class="p">:</span> <span class="nb">float</span></div>
+    <span class="n">instrument_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">volume_traded</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">average_fill_price</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">profit_loss</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">fees_paid</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">profitable_trades</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">loss_making_trades</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">best_trade</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">worst_trade</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">avg_fill_pnl</span><span class="p">:</span> <span class="nb">float</span></div>
 
 
 
 <div class="viewcode-block" id="FillHistoricalMetrics">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.FillHistoricalMetrics">[docs]</a>
 <span class="k">class</span> <span class="nc">FillHistoricalMetrics</span><span class="p">(</span><span class="n">OKXBaseModel</span><span class="p">):</span>
-    <span class="n">ONE_DAY</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
-    <span class="n">ONE_WEEK</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
-    <span class="n">ONE_MONTH</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span>
-    <span class="n">THREE_MONTHS</span><span class="p">:</span> <span class="n">FillHistoricalMetricsEntry</span></div>
+    <span class="n">ONE_DAY</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">]</span>
+    <span class="n">ONE_WEEK</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">]</span>
+    <span class="n">ONE_MONTH</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">]</span>
+    <span class="n">THREE_MONTHS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FillHistoricalMetricsEntry</span><span class="p">]</span></div>
 
 </pre></div>
 

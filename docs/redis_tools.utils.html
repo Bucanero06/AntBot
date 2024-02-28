@@ -57,7 +57,6 @@
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -91,7 +90,6 @@
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -123,7 +121,8 @@
 <li class="toctree-l1"><a class="reference internal" href="redis_tools.consumers.html">redis_tools.consumers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">redis_tools.utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#redis_tools.utils.connect_to_aioredis"><code class="docutils literal notranslate"><span class="pre">connect_to_aioredis()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#redis_tools.utils.init_async_redis"><code class="docutils literal notranslate"><span class="pre">init_async_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#redis_tools.utils.deserialize_from_redis"><code class="docutils literal notranslate"><span class="pre">deserialize_from_redis()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#redis_tools.utils.get_async_redis"><code class="docutils literal notranslate"><span class="pre">get_async_redis()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#redis_tools.utils.serialize_for_redis"><code class="docutils literal notranslate"><span class="pre">serialize_for_redis()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#redis_tools.utils.stop_async_redis"><code class="docutils literal notranslate"><span class="pre">stop_async_redis()</span></code></a></li>
 </ul>
@@ -178,8 +177,13 @@
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="redis_tools.utils.init_async_redis">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">redis_tools.utils.</span></span><span class="sig-name descname"><span class="pre">init_async_redis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/redis_tools/utils.html#init_async_redis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#redis_tools.utils.init_async_redis" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="redis_tools.utils.deserialize_from_redis">
+<span class="sig-prename descclassname"><span class="pre">redis_tools.utils.</span></span><span class="sig-name descname"><span class="pre">deserialize_from_redis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/redis_tools/utils.html#deserialize_from_redis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#redis_tools.utils.deserialize_from_redis" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="redis_tools.utils.get_async_redis">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">redis_tools.utils.</span></span><span class="sig-name descname"><span class="pre">get_async_redis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/redis_tools/utils.html#get_async_redis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#redis_tools.utils.get_async_redis" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">

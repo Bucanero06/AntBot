@@ -54,7 +54,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.dashboard.html">h2o_dashboard.dashboard</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.documentation_page.html">h2o_dashboard.pages.documentation_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_account_widget</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_algo_orders_widget</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler.html">h2o_dashboard.pages.okx_dashbaord_page.okx_antbot_okx_premium_indicator_handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page.html">h2o_dashboard.pages.okx_dashbaord_page.okx_dashboard_page</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget.html">h2o_dashboard.pages.okx_dashbaord_page.okx_fill_report_widget</a></li>
@@ -88,7 +87,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.consts.html">pyokx.low_rest_api.consts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.exceptions.html">pyokx.low_rest_api.exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.utils.html">pyokx.low_rest_api.utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_reports.html">pyokx.redis_structured_reports</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.redis_structured_streams.html">pyokx.redis_structured_streams</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_handling.html">pyokx.rest_handling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.rest_messages_service.html">pyokx.rest_messages_service</a></li>
@@ -184,12 +182,12 @@
                                    <span class="n">Orderbook_Snapshot</span><span class="p">,</span> <span class="n">Bid</span><span class="p">,</span> <span class="n">Ask</span><span class="p">,</span>
                                    <span class="n">Simplified_Balance_Details</span><span class="p">,</span>
                                    <span class="n">OKXPremiumIndicatorSignalRequestForm</span><span class="p">,</span> <span class="n">FillEntry</span><span class="p">,</span> <span class="n">OKXSignalInput</span><span class="p">,</span> <span class="n">DCAInputParameters</span><span class="p">,</span>
-                                   <span class="n">DCAOrderParameters</span><span class="p">)</span>
+                                   <span class="n">DCAOrderParameters</span><span class="p">,</span> <span class="n">PremiumIndicatorSignals</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
 <span class="kn">from</span> <span class="nn">pyokx.redis_structured_streams</span> <span class="kn">import</span> <span class="n">get_instruments_searcher_from_redis</span><span class="p">,</span> <span class="n">get_stream_okx_incomplete_algo_orders</span><span class="p">,</span> \
     <span class="n">get_stream_okx_incomplete_orders</span><span class="p">,</span> <span class="n">get_stream_okx_position_messages</span>
 <span class="kn">from</span> <span class="nn">pyokx.ws_data_structures</span> <span class="kn">import</span> <span class="n">PositionsChannel</span><span class="p">,</span> <span class="n">WSPosition</span><span class="p">,</span> <span class="n">InstrumentStatusReport</span>
-<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">init_async_redis</span>
+<span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">get_async_redis</span>
 <span class="kn">from</span> <span class="nn">shared</span> <span class="kn">import</span> <span class="n">logging</span>
 <span class="kn">from</span> <span class="nn">shared.tmp_shared</span> <span class="kn">import</span> <span class="n">calculate_tp_stop_prices_usd</span><span class="p">,</span> <span class="n">calculate_sl_stop_prices_usd</span><span class="p">,</span> <span class="n">ccy_usd_to_contracts</span>
 
@@ -355,7 +353,7 @@
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
     <span class="k">if</span> <span class="n">instFamily</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;instFamily&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instFamily</span>
-    <span class="n">all_orders_stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_stream_okx_incomplete_orders</span><span class="p">(</span><span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">init_async_redis</span><span class="p">())</span>
+    <span class="n">all_orders_stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_stream_okx_incomplete_orders</span><span class="p">(</span><span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">get_async_redis</span><span class="p">())</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">all_orders_stream</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
     <span class="n">all_orders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_orders_stream</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -394,7 +392,7 @@
         <span class="k">if</span> <span class="n">instId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;instId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instId</span>
         <span class="c1"># orders_list = await fetch_incomplete_orders(**params)</span>
-        <span class="n">all_orders_stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_stream_okx_incomplete_orders</span><span class="p">(</span><span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">init_async_redis</span><span class="p">())</span>
+        <span class="n">all_orders_stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_stream_okx_incomplete_orders</span><span class="p">(</span><span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">get_async_redis</span><span class="p">())</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">all_orders_stream</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="n">all_orders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Order</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_orders_stream</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -492,7 +490,7 @@
     <span class="k">if</span> <span class="n">instId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">params</span><span class="p">[</span><span class="s1">&#39;instId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">instId</span>
     <span class="n">all_positions_stream</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PositionsChannel</span><span class="p">]</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_stream_okx_position_messages</span><span class="p">(</span>
-        <span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">init_async_redis</span><span class="p">(),</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">get_async_redis</span><span class="p">(),</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">all_positions_stream</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
     <span class="n">all_positions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">WSPosition</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_positions_stream</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
@@ -601,7 +599,7 @@
 <div class="viewcode-block" id="get_algo_orders">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.get_algo_orders">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_algo_orders</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ordType</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Algo_Order</span><span class="p">]:</span>
-    <span class="n">all_algo_orders_stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_stream_okx_incomplete_algo_orders</span><span class="p">(</span><span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">init_async_redis</span><span class="p">())</span>
+    <span class="n">all_algo_orders_stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_stream_okx_incomplete_algo_orders</span><span class="p">(</span><span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">get_async_redis</span><span class="p">())</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">all_algo_orders_stream</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
     <span class="n">all_algo_orders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Algo_Order</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_algo_orders_stream</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -626,7 +624,7 @@
         <span class="k">if</span> <span class="n">ordType</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;ordType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ordType</span>
         <span class="n">all_algo_orders_stream</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Algo_Order</span><span class="p">]]</span> <span class="o">=</span> <span class="k">await</span> <span class="p">(</span>
-            <span class="n">get_stream_okx_incomplete_algo_orders</span><span class="p">(</span><span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">init_async_redis</span><span class="p">()))</span>
+            <span class="n">get_stream_okx_incomplete_algo_orders</span><span class="p">(</span><span class="n">async_redis</span><span class="o">=</span><span class="k">await</span> <span class="n">get_async_redis</span><span class="p">()))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">all_algo_orders_stream</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="n">all_algo_orders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Algo_Order</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_algo_orders_stream</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -1075,10 +1073,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Clean Input Data</span>
     <span class="n">instID</span> <span class="o">=</span> <span class="n">instID</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-    <span class="n">okx_futures_instrument_searcher</span><span class="p">:</span> <span class="n">InstrumentSearcher</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_instruments_searcher_from_redis</span><span class="p">(</span>
-        <span class="k">await</span> <span class="n">init_async_redis</span><span class="p">())</span>
+    <span class="n">okx_instrument_searcher</span><span class="p">:</span> <span class="n">InstrumentSearcher</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_instruments_searcher_from_redis</span><span class="p">(</span>
+        <span class="k">await</span> <span class="n">get_async_redis</span><span class="p">())</span>
 
-    <span class="n">instrument</span> <span class="o">=</span> <span class="n">okx_futures_instrument_searcher</span><span class="o">.</span><span class="n">find_by_instId</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
+    <span class="n">instrument</span> <span class="o">=</span> <span class="n">okx_instrument_searcher</span><span class="o">.</span><span class="n">find_by_instId</span><span class="p">(</span><span class="n">instID</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">instrument</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Instrument not found. </span><span class="si">{</span><span class="n">instID</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
     <span class="k">return</span> <span class="n">instrument</span>
 
@@ -1401,6 +1399,182 @@
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
+
+
+
+
+<div class="viewcode-block" id="fetch_incomplete_orders">
+<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_incomplete_orders">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_incomplete_orders</span><span class="p">(</span><span class="n">instId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">after</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">request_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">instId</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">instId</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">instType</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">instType</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">orders</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_request_data</span><span class="p">(</span>
+                <span class="n">tradeAPI</span><span class="o">.</span><span class="n">get_order_list</span><span class="p">(</span><span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">instType</span><span class="o">=</span><span class="n">instType</span><span class="p">),</span> <span class="n">Order</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">orders</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">all_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span>
+            <span class="n">after</span> <span class="o">=</span> <span class="n">orders</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ordId</span>
+            <span class="n">request_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">request_count</span> <span class="o">%</span> <span class="mi">60</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error fetching orders: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">all_data</span></div>
+
+
+
+<div class="viewcode-block" id="fetch_incomplete_algo_orders">
+<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_incomplete_algo_orders">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_incomplete_algo_orders</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ordType</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">after</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">request_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">instId</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">instId</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="n">order_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;trigger&#39;</span><span class="p">,</span> <span class="s1">&#39;oco&#39;</span><span class="p">,</span> <span class="s1">&#39;conditional&#39;</span><span class="p">,</span> <span class="s1">&#39;move_order_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;twap&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">ordType</span> <span class="k">else</span> <span class="p">[</span><span class="n">ordType</span><span class="p">]</span>
+
+    <span class="n">after_map</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">order_type</span> <span class="ow">in</span> <span class="n">order_types</span><span class="p">:</span>
+        <span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">_keep_loop_alive</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">while</span> <span class="n">_keep_loop_alive</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">order_type</span> <span class="ow">in</span> <span class="n">order_types</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">after_map</span><span class="w">  </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="c1"># Check if all the after_map values are None and break if they are</span>
+                    <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">after_map</span><span class="o">.</span><span class="n">values</span><span class="p">()]):</span>
+                        <span class="n">_keep_loop_alive</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">break</span>
+                    <span class="k">continue</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">order_algos_list</span><span class="p">(</span>
+                    <span class="n">ordType</span><span class="o">=</span><span class="n">order_type</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+                    <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">)</span>
+                <span class="n">algo_orders</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">Algo_Order</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">algo_orders</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">algo_orders</span><span class="p">:</span>
+                    <span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">continue</span>
+                <span class="n">all_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">algo_orders</span><span class="p">)</span>
+                <span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">algo_orders</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">algoId</span>
+                <span class="n">request_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">request_count</span> <span class="o">%</span> <span class="mi">20</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+                    <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
+                    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error fetching algo orders: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">all_data</span></div>
+
+
+
+<div class="viewcode-block" id="fetch_fill_history">
+<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_fill_history">[docs]</a>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_fill_history</span><span class="p">(</span><span class="n">start_timestamp</span><span class="p">,</span> <span class="n">end_timestamp</span><span class="p">,</span> <span class="n">instType</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches the fill history for a specific period and instrument type.</span>
+
+<span class="sd">    :param start_timestamp: The starting timestamp for the fill history.</span>
+<span class="sd">    :type start_timestamp: int</span>
+<span class="sd">    :param end_timestamp: The ending timestamp for the fill history.</span>
+<span class="sd">    :type end_timestamp: int</span>
+<span class="sd">    :param instType: The type of instrument for the fill history, defaults to </span>
+<span class="sd">    :type instType: str, optional</span>
+<span class="sd">    :returns: A list of fill entries.</span>
+<span class="sd">    :raises AssertionError: If the requested period is outside the allowed range based on the instrument type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        If instType passed in then up to 30 days ago the data can be pulled, but if None then only up to 3 days, verify</span>
+<span class="sd">            Im refering to AGO!!! meaning from now</span>
+
+<span class="sd">    :param start_timestamp:</span>
+<span class="sd">    :param end_timestamp:</span>
+<span class="sd">    :param instType:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">instType</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_timestamp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">259200</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_timestamp</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_timestamp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2592000</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_timestamp</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
+
+    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">after</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">request_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fills_response</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">get_fills_history</span><span class="p">(</span>
+                <span class="n">instType</span><span class="o">=</span><span class="n">instType</span><span class="p">,</span>
+                <span class="n">uly</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">instId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">ordId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">,</span>
+                <span class="n">before</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+                <span class="n">instFamily</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="n">begin</span><span class="o">=</span><span class="n">start_timestamp</span><span class="p">,</span>
+                <span class="n">end</span><span class="o">=</span><span class="n">end_timestamp</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">fills_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">fills_message_data</span> <span class="o">=</span> <span class="n">fills_response</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">fills_message_data</span><span class="p">:</span>
+                <span class="k">break</span>  <span class="c1"># Break if no data is returned</span>
+
+            <span class="n">all_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">fills_message_data</span><span class="p">)</span>
+
+            <span class="c1"># Check if we have reached the start_timestamp</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">fills_message_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;ts&#39;</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">start_timestamp</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found the start_timestamp: </span><span class="si">{</span><span class="n">start_timestamp</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">break</span>  <span class="c1"># Exit the loop if we have reached the start_timestamp</span>
+
+            <span class="n">after</span> <span class="o">=</span> <span class="n">fills_message_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;billId&#39;</span><span class="p">]</span>  <span class="c1"># Prepare the &#39;after&#39; for the next request</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">after</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># The</span>
+            <span class="n">request_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">request_count</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="c1"># time.sleep(2 - elapsed)</span>
+                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># FIXME Here to prevent hogging the CPU remove this line</span>
+
+
+
+        <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">http_err</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;HTTP error occurred: </span><span class="si">{</span><span class="n">http_err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">break</span>  <span class="c1"># Optional: Decide whether to break or retry</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Other error occurred: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">break</span>  <span class="c1"># Optional: Decide whether to break or retry</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="n">FillEntry</span><span class="p">(</span><span class="o">**</span><span class="n">fill</span><span class="p">)</span> <span class="k">for</span> <span class="n">fill</span> <span class="ow">in</span> <span class="n">all_data</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="okx_signal_handler">
@@ -1825,182 +1999,6 @@
     <span class="k">return</span> <span class="k">await</span> <span class="n">fetch_status_report_for_instrument</span><span class="p">(</span><span class="n">instID</span><span class="p">,</span> <span class="n">ENFORCED_TD_MODE</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="fetch_incomplete_orders">
-<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_incomplete_orders">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_incomplete_orders</span><span class="p">(</span><span class="n">instId</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">instType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">after</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">request_count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">instId</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">instId</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">instType</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">instType</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">orders</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_request_data</span><span class="p">(</span>
-                <span class="n">tradeAPI</span><span class="o">.</span><span class="n">get_order_list</span><span class="p">(</span><span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span> <span class="n">instType</span><span class="o">=</span><span class="n">instType</span><span class="p">),</span> <span class="n">Order</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">orders</span><span class="p">:</span>
-                <span class="k">break</span>
-            <span class="n">all_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">orders</span><span class="p">)</span>
-            <span class="n">after</span> <span class="o">=</span> <span class="n">orders</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ordId</span>
-            <span class="n">request_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">request_count</span> <span class="o">%</span> <span class="mi">60</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
-                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
-                <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error fetching orders: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">break</span>
-    <span class="k">return</span> <span class="n">all_data</span></div>
-
-
-
-<div class="viewcode-block" id="fetch_incomplete_algo_orders">
-<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_incomplete_algo_orders">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_incomplete_algo_orders</span><span class="p">(</span><span class="n">instId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ordType</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">after</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">request_count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">instId</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">instId</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-
-    <span class="n">order_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;trigger&#39;</span><span class="p">,</span> <span class="s1">&#39;oco&#39;</span><span class="p">,</span> <span class="s1">&#39;conditional&#39;</span><span class="p">,</span> <span class="s1">&#39;move_order_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;twap&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">ordType</span> <span class="k">else</span> <span class="p">[</span><span class="n">ordType</span><span class="p">]</span>
-
-    <span class="n">after_map</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">order_type</span> <span class="ow">in</span> <span class="n">order_types</span><span class="p">:</span>
-        <span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">_keep_loop_alive</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">while</span> <span class="n">_keep_loop_alive</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">order_type</span> <span class="ow">in</span> <span class="n">order_types</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">after_map</span><span class="w">  </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="c1"># Check if all the after_map values are None and break if they are</span>
-                    <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">after_map</span><span class="o">.</span><span class="n">values</span><span class="p">()]):</span>
-                        <span class="n">_keep_loop_alive</span> <span class="o">=</span> <span class="kc">False</span>
-                        <span class="k">break</span>
-                    <span class="k">continue</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">order_algos_list</span><span class="p">(</span>
-                    <span class="n">ordType</span><span class="o">=</span><span class="n">order_type</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">],</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
-                    <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">)</span>
-                <span class="n">algo_orders</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">Algo_Order</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">algo_orders</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">algo_orders</span><span class="p">:</span>
-                    <span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="k">continue</span>
-                <span class="n">all_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">algo_orders</span><span class="p">)</span>
-                <span class="n">after_map</span><span class="p">[</span><span class="n">order_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">algo_orders</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">algoId</span>
-                <span class="n">request_count</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">request_count</span> <span class="o">%</span> <span class="mi">20</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
-                    <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
-                    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error fetching algo orders: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">break</span>
-    <span class="k">return</span> <span class="n">all_data</span></div>
-
-
-
-<div class="viewcode-block" id="fetch_fill_history">
-<a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.fetch_fill_history">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_fill_history</span><span class="p">(</span><span class="n">start_timestamp</span><span class="p">,</span> <span class="n">end_timestamp</span><span class="p">,</span> <span class="n">instType</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Fetches the fill history for a specific period and instrument type.</span>
-
-<span class="sd">    :param start_timestamp: The starting timestamp for the fill history.</span>
-<span class="sd">    :type start_timestamp: int</span>
-<span class="sd">    :param end_timestamp: The ending timestamp for the fill history.</span>
-<span class="sd">    :type end_timestamp: int</span>
-<span class="sd">    :param instType: The type of instrument for the fill history, defaults to </span>
-<span class="sd">    :type instType: str, optional</span>
-<span class="sd">    :returns: A list of fill entries.</span>
-<span class="sd">    :raises AssertionError: If the requested period is outside the allowed range based on the instrument type.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        If instType passed in then up to 30 days ago the data can be pulled, but if None then only up to 3 days, verify</span>
-<span class="sd">            Im refering to AGO!!! meaning from now</span>
-
-<span class="sd">    :param start_timestamp:</span>
-<span class="sd">    :param end_timestamp:</span>
-<span class="sd">    :param instType:</span>
-<span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">instType</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_timestamp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">259200</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_timestamp</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_timestamp</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2592000</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_timestamp</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span>
-
-    <span class="n">limit</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">after</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-    <span class="n">all_data</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">request_count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">fills_response</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">get_fills_history</span><span class="p">(</span>
-                <span class="n">instType</span><span class="o">=</span><span class="n">instType</span><span class="p">,</span>
-                <span class="n">uly</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                <span class="n">instId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                <span class="n">ordId</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                <span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">,</span>
-                <span class="n">before</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
-                <span class="n">instFamily</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                <span class="n">begin</span><span class="o">=</span><span class="n">start_timestamp</span><span class="p">,</span>
-                <span class="n">end</span><span class="o">=</span><span class="n">end_timestamp</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="n">fills_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;0&#39;</span><span class="p">:</span>
-                <span class="k">break</span>
-
-            <span class="n">fills_message_data</span> <span class="o">=</span> <span class="n">fills_response</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">fills_message_data</span><span class="p">:</span>
-                <span class="k">break</span>  <span class="c1"># Break if no data is returned</span>
-
-            <span class="n">all_data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">fills_message_data</span><span class="p">)</span>
-
-            <span class="c1"># Check if we have reached the start_timestamp</span>
-            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">fills_message_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;ts&#39;</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">start_timestamp</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found the start_timestamp: </span><span class="si">{</span><span class="n">start_timestamp</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="k">break</span>  <span class="c1"># Exit the loop if we have reached the start_timestamp</span>
-
-            <span class="n">after</span> <span class="o">=</span> <span class="n">fills_message_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;billId&#39;</span><span class="p">]</span>  <span class="c1"># Prepare the &#39;after&#39; for the next request</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">after</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="c1"># The</span>
-            <span class="n">request_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">request_count</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
-                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="c1"># time.sleep(2 - elapsed)</span>
-                    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>
-                <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
-            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># FIXME Here to prevent hogging the CPU remove this line</span>
-
-
-
-        <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">http_err</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;HTTP error occurred: </span><span class="si">{</span><span class="n">http_err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">break</span>  <span class="c1"># Optional: Decide whether to break or retry</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Other error occurred: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">break</span>  <span class="c1"># Optional: Decide whether to break or retry</span>
-
-    <span class="k">return</span> <span class="p">[</span><span class="n">FillEntry</span><span class="p">(</span><span class="o">**</span><span class="n">fill</span><span class="p">)</span> <span class="k">for</span> <span class="n">fill</span> <span class="ow">in</span> <span class="n">all_data</span><span class="p">]</span></div>
-
-
-
 <div class="viewcode-block" id="okx_premium_indicator_handler">
 <a class="viewcode-back" href="../../pyokx.rest_handling.html#pyokx.rest_handling.okx_premium_indicator_handler">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">okx_premium_indicator_handler</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">OKXPremiumIndicatorSignalRequestForm</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]):</span>
@@ -2116,6 +2114,7 @@
 
     <span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
 
+
     <span class="c1"># Define the test function to be used</span>
     <span class="c1"># TEST_FUNCTION = &#39;okx_premium_indicator&#39;</span>
     <span class="n">TEST_FUNCTION</span> <span class="o">=</span> <span class="s1">&#39;okx_signal_handler&#39;</span>
@@ -2134,11 +2133,11 @@
             <span class="n">max_orderbook_limit_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">min_orderbook_limit_price_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">clear_prior_to_new_order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">red_button</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">red_button</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="c1"># Principal Order</span>
             <span class="n">usd_order_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-            <span class="n">order_side</span><span class="o">=</span><span class="s2">&quot;BUY&quot;</span><span class="p">,</span>
-            <span class="n">order_type</span><span class="o">=</span><span class="s2">&quot;Market&quot;</span><span class="p">,</span>
+            <span class="n">order_side</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">order_type</span><span class="o">=</span><span class="s2">&quot;MARKET&quot;</span><span class="p">,</span>
             <span class="n">flip_position_if_opposite_side</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="c1"># Principal Order&#39;s TP/SL/Trail</span>
             <span class="c1"># tp_trigger_price_offset=100,</span>
@@ -2184,18 +2183,18 @@
         <span class="n">indicator_input</span> <span class="o">=</span> <span class="n">OKXPremiumIndicatorSignalRequestForm</span><span class="p">(</span><span class="o">**</span><span class="n">webhook_payload</span><span class="p">)</span>
 
         <span class="c1"># Process the indicator input and store the result</span>
-        <span class="c1"># response = asyncio.run(okx_premium_indicator_handler(indicator_input))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">okx_premium_indicator_handler</span><span class="p">(</span><span class="n">indicator_input</span><span class="p">))</span>
 
         <span class="c1"># Optionally Use a request instead of calling the function directly</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="c1"># &#39;http://localhost:8080/tradingview/premium_indicator/&#39;, # Local</span>
-            <span class="c1"># &#39;http://localhost/api/tradingview/premium_indicator&#39;, # Docker</span>
-            <span class="s1">&#39;http://34.170.145.146/api/tradingview/premium_indicator&#39;</span><span class="p">,</span>  <span class="c1"># GCP</span>
-            <span class="c1"># &#39;http://34.170.145.146:8080/tradingview/premium_indicator/&#39;, # GCP</span>
-            <span class="n">json</span><span class="o">=</span><span class="n">indicator_input</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="c1"># response = requests.post(</span>
+        <span class="c1">#     # &#39;http://localhost:8080/tradingview/premium_indicator/&#39;, # Local</span>
+        <span class="c1">#     # &#39;http://localhost/api/tradingview/premium_indicator&#39;, # Docker</span>
+        <span class="c1">#     # &#39;http://34.170.145.146/api/tradingview/premium_indicator&#39;,  # GCP</span>
+        <span class="c1">#     # &#39;http://34.170.145.146:8080/tradingview/premium_indicator/&#39;, # GCP</span>
+        <span class="c1">#     json=indicator_input.model_dump()</span>
+        <span class="c1"># )</span>
+        <span class="c1"># logger.info(f&#39;{response.content = }&#39;)</span>
+        <span class="c1"># response = response.json()</span>
 
 
 

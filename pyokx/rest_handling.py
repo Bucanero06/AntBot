@@ -1861,8 +1861,8 @@ if __name__ == '__main__':
 
 
     # Define the test function to be used
-    TEST_FUNCTION = 'okx_premium_indicator'
-    # TEST_FUNCTION = 'okx_signal_handler'
+    # TEST_FUNCTION = 'okx_premium_indicator'
+    TEST_FUNCTION = 'okx_signal_handler'
 
     # Immediately execute the 'red button' functionality to clear all positions and orders
     # TODO: Ensure only relevant orders/positions are handled.
@@ -1881,7 +1881,7 @@ if __name__ == '__main__':
             red_button=False,
             # Principal Order
             usd_order_size=100,
-            order_side="BUY",
+            order_side="",
             order_type="MARKET",
             flip_position_if_opposite_side=True,
             # Principal Order's TP/SL/Trail

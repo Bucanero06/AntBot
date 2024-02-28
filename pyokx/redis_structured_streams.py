@@ -4,7 +4,7 @@ import aioredis
 
 from pyokx import ENFORCED_INSTRUMENT_TYPES
 from pyokx.InstrumentSearcher import InstrumentSearcher
-from pyokx.data_structures import FillHistoricalMetrics, Order, Algo_Order
+from pyokx.data_structures import FillHistoricalMetrics, Order, Algo_Order, FillEntry
 from pyokx.ws_data_structures import AccountChannel, PositionsChannel, OrdersChannel, available_channel_models
 from redis_tools.utils import deserialize_from_redis
 
@@ -122,6 +122,27 @@ async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int 
         order_message: OrdersChannel = OrdersChannel(**order_message_deserialized)
         order_messages.append(order_message)
     return order_messages
+
+async def get_okx_fills_history(redis_client, count: int = 10) -> List[List[FillEntry]]:
+    fill_history_serialized = await redis_client.xrevrange('okx:rest@fill@3months', count=count)
+    if not fill_history_serialized:
+        print(f"fills information not ready in fills cache!")
+        return []
+
+    fill_history_serialized.reverse()
+
+    fill_history_stream: List[List[FillEntry]] = []
+    for fill_metrics in fill_history_serialized:
+        redis_stream_id = fill_metrics[0]
+        fill_metrics_serialized = fill_metrics[1].get("data")
+        if not fill_metrics_serialized:
+            print(
+                f"A message in the fills stream {'okx:reports@fill_metrics'} with id {redis_stream_id} was empty, skipping")
+            continue
+        fill_history_deserialized = deserialize_from_redis(fill_metrics_serialized)
+        fill_metrics: List[FillEntry] = [FillEntry(**fill) for fill in fill_history_deserialized]
+        fill_history_stream.append(fill_metrics)
+    return fill_history_stream
 
 
 async def get_stream_okx_fill_metrics_report(async_redis: aioredis.Redis, count: int = 10) -> List[

@@ -612,13 +612,20 @@ class InstIdSignalRequestForm(OKXBaseModel):
 
 
 class FillHistoricalMetricsEntry(OKXBaseModel):
+    instrument_id: str
+    volume_traded: float
+    average_fill_price: float
+    profit_loss: float
+    fees_paid: float
+    profitable_trades: int
+    loss_making_trades: int
+    best_trade: float
+    worst_trade: float
     avg_fill_pnl: float
-    total_fill_pnl: float
-    total_fill_fee: float
 
 
 class FillHistoricalMetrics(OKXBaseModel):
-    ONE_DAY: FillHistoricalMetricsEntry
-    ONE_WEEK: FillHistoricalMetricsEntry
-    ONE_MONTH: FillHistoricalMetricsEntry
-    THREE_MONTHS: FillHistoricalMetricsEntry
+    ONE_DAY: List[FillHistoricalMetricsEntry]
+    ONE_WEEK: List[FillHistoricalMetricsEntry]
+    ONE_MONTH: List[FillHistoricalMetricsEntry]
+    THREE_MONTHS: List[FillHistoricalMetricsEntry]

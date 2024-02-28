@@ -3,6 +3,8 @@ import os
 import traceback
 from typing import List
 
+import pandas as pd
+
 from pyokx import ENFORCED_INSTRUMENT_TYPES
 from pyokx.data_structures import FillEntry, FillHistoricalMetricsEntry, FillHistoricalMetrics
 from pyokx.low_rest_api.exceptions import OkxAPIException, OkxParamsException, OkxRequestException
@@ -38,6 +40,32 @@ async def analyze_transaction_history(InstTypes: List[InstType] = ENFORCED_INSTR
     redis_ready_message = serialize_for_redis(fill_history)
     await async_redis.xadd('okx:rest@fill@3months', {'data': redis_ready_message}, maxlen=1)
 
+    fill_history_ = [fill.model_dump() for fill in fill_history]
+    df = pd.DataFrame(fill_history_)
+
+    # Fix types for all columns
+    df['side'] = df['side'].astype(str)
+    df['fillSz'] = df['fillSz'].astype(float)
+    df['fillPx'] = df['fillPx'].astype(float)
+    df['fee'] = df['fee'].astype(float)
+    df['fillPnl'] = df['fillPnl'].astype(float)
+    df['ordId'] = df['ordId'].astype(str)
+    df['instType'] = df['instType'].astype(str)
+    df['instId'] = df['instId'].astype(str)
+    df['clOrdId'] = df['clOrdId'].astype(str)
+    df['posSide'] = df['posSide'].astype(str)
+    df['billId'] = df['billId'].astype(str)
+    df['fillTime'] = df['fillTime'].astype(int)
+    df['execType'] = df['execType'].astype(str)
+    df['tradeId'] = df['tradeId'].astype(str)
+    df['feeCcy'] = df['feeCcy'].astype(str)
+    df['ts'] = df['ts'].astype(str)
+
+    # Drop the other columns for now
+    df.drop(columns=['fillPxVol', 'fillFwdPx', 'fillPxUsd', 'fillMarkVol', 'tag', 'fillIdxPx', 'fillMarkPx'],
+            inplace=True)
+
+    # Lets do it per instrument that we have and break it down into timeframes of 1 day, 1 week, 1 month, 3 months
     timeframes = {
         "ONE_DAY": 1,
         "ONE_WEEK": 7,
@@ -45,44 +73,47 @@ async def analyze_transaction_history(InstTypes: List[InstType] = ENFORCED_INSTR
         "THREE_MONTHS": 90
     }
 
-    _fill_metrics = {}
+    unique_instruments = df['instId'].unique()
+    returning_fill_historical_metrics_dict = {}
+
     for timeframe in timeframes:
-        print("timeframe:", timeframe)
+        returning_fill_historical_metrics_dict[timeframe] = []
         start_query_timestamp = get_timestamp_from_days_ago(days_ago=timeframes[timeframe])
         end_query_timestamp = get_timestamp_from_days_ago()
 
-        # Initialize variables
-        total_fill_sz = 0
-        total_fill_pnl = 0
-        total_fill_fee = 0
-        count = 0  # Count the number of entries in the desired time range
+        for instrument in unique_instruments:
+            print(f"Analyzing instrument: {instrument} for timeframe: {timeframe}")
+            instrument_df = df[df['instId'] == instrument]
 
-        for fill in fill_history:
-            fill_time = int(fill.fillTime)
-            if start_query_timestamp <= fill_time <= end_query_timestamp:
-                total_fill_sz += float(fill.fillSz)
-                total_fill_pnl += float(fill.fillPnl)
-                total_fill_fee += float(fill.fee)
-                count += 1
+            # Filter by time
+            instrument_df = instrument_df[(instrument_df['fillTime'] >= start_query_timestamp) & (
+                        instrument_df['fillTime'] <= end_query_timestamp)]
 
-        # Calculate averages and total
-        avg_fill_pnl = total_fill_pnl / count if count else 0
-        total_fill_pnl = round(total_fill_pnl, 2)
-        total_fill_fee = round(total_fill_fee, 2)
+            volume_traded = instrument_df['fillSz'].sum()
+            average_fill_price = (instrument_df['fillPx'] * instrument_df['fillSz']).sum() / volume_traded
+            profit_loss = instrument_df['fillPnl'].sum()
+            fees_paid = instrument_df['fee'].sum()
+            profitable_trades = instrument_df[instrument_df['fillPnl'] > 0].shape[0]
+            loss_making_trades = instrument_df[instrument_df['fillPnl'] < 0].shape[0]
+            best_trade = instrument_df['fillPnl'].max()
+            worst_trade = instrument_df['fillPnl'].min()
+            avg_fill_pnl = profit_loss / (profitable_trades + loss_making_trades)
 
-        # Print the results
-        print("avg_fill_pnl:", avg_fill_pnl)
-        print("total_fill_pnl:", total_fill_pnl)
-        print("total_fill_fee:", total_fill_fee)
-        print("count:", count)
+            returning_fill_historical_metrics_dict[timeframe].append({
+                "instrument_id": instrument,
+                "volume_traded": volume_traded,
+                "average_fill_price": average_fill_price,
+                "profit_loss": profit_loss,
+                "fees_paid": fees_paid,
+                "profitable_trades": profitable_trades,
+                "loss_making_trades": loss_making_trades,
+                "best_trade": best_trade,
+                "worst_trade": worst_trade,
+                "avg_fill_pnl": avg_fill_pnl,
+            })
 
-        _fill_metrics[timeframe] = FillHistoricalMetricsEntry(
-            avg_fill_pnl=avg_fill_pnl,
-            total_fill_pnl=total_fill_pnl,
-            total_fill_fee=total_fill_fee
-        )
-
-    fill_metrics = FillHistoricalMetrics(**_fill_metrics)
+    # Validate results
+    fill_metrics = FillHistoricalMetrics(**returning_fill_historical_metrics_dict)
     redis_ready_message = serialize_for_redis(fill_metrics)
     await async_redis.xadd('okx:reports@fill_metrics', {'data': redis_ready_message}, maxlen=1)
 
@@ -173,7 +204,6 @@ async def okx_rest_messages_services(slow_reload_interval: int = 30):
     loop_fetch_incomplete_algo_orders_task = asyncio.create_task(loop_fetch_incomplete_algo_orders())
     loop_fetch_incomplete_orders_task = asyncio.create_task(loop_fetch_incomplete_orders())
     await asyncio.gather(slow_polling_task, loop_fetch_incomplete_algo_orders_task, loop_fetch_incomplete_orders_task)
-
 
 
 if __name__ == "__main__":

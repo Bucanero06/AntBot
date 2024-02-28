@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite  # noqa F401
 
@@ -13,7 +14,7 @@ from h2o_dashboard.util import add_card
 
 app = AsyncSite()
 
-
+REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
 async def okx_dashboard_page(q: Q, update_seconds: int = 2):
     '''Header'''
     await add_card(q, 'OKXDEBUG_Header', ui.header_card(box='header', title='OKX Dashboard',
@@ -34,21 +35,12 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
 
     # Add the the
     '''Init Widgets'''
-    # await add_card(q, 'linktest',
-    #                ui.form_card(box='grid_1', items=[
-    #                       ui.link(label="OKX Market's Data Page", name='okx_website_stats', path='https://www.okx.com/markets/data/contracts', target=''),
-    #                       ui.link(label="OKX API Docs", name='okx_website_stats', path='https://www.okx.com/docs-v5/en/', target=''),
-    #                  ]))
-
     account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_1',
-                                                     history_count=900)
+                                                     history_count=REDIS_STREAM_MAX_LEN)
     positions_stream_widget = OKX_Live_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_2')
     fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_2')
 
-    orders_stream_widget = OKX_Orders_StreamWidget(q=q, card_name='OKXDEBUG_Orders_Stream', box='footer',
-                                                   history_count=20)
-    # algo_orders_stream_widget = OKX_AlgoOrders_StreamWidget(q=q, card_name='OKXDEBUG_Algo_Orders_Stream', box='grid_4',
-    #                                                         history_count=20)
+    orders_stream_widget = OKX_Orders_StreamWidget(q=q, card_name='OKXDEBUG_Orders_Stream', box='footer')
     okx_premium_indicator_handler_widget = OKX_Premium_Indicator_Handler_Widget(q=q,
                                                                                 card_name='OKXDEBUG_Premium_Manual_Controls',
                                                                                 box='grid_5')
@@ -60,8 +52,7 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
     await positions_stream_widget.add_cards()
     await fill_report_stream_widget.add_cards()
     await okx_premium_indicator_handler_widget.add_cards()
-    # await orders_stream_widget.add_cards()
-    # await algo_orders_stream_widget.add_cards()
+    await orders_stream_widget.add_cards()
 
     await q.page.save()
 
@@ -76,8 +67,7 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
             await positions_stream_widget.update_cards()
             await fill_report_stream_widget.update_cards()
             await okx_premium_indicator_handler_widget.update_cards()
-            # await orders_stream_widget.update_cards()
-            # await algo_orders_stream_widget.update_cards()
+            await orders_stream_widget.update_cards()
 
             await q.page.save()
     except asyncio.CancelledError:

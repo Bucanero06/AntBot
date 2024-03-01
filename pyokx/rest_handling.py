@@ -1,4 +1,5 @@
 import asyncio
+import itertools
 import json
 import os
 import pprint
@@ -9,9 +10,8 @@ import time
 from typing import List, Any, Union
 from urllib.error import HTTPError
 
-import requests
-
 from pyokx.InstrumentSearcher import InstrumentSearcher
+from pyokx.OkxEnum import InstType
 from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Return,
                                    Position, Closed_Position, Ticker,
                                    Algo_Order, Algo_Order_Placement_Return,
@@ -20,8 +20,7 @@ from pyokx.data_structures import (Order, Cancelled_Order, Order_Placement_Retur
                                    Orderbook_Snapshot, Bid, Ask,
                                    Simplified_Balance_Details,
                                    OKXPremiumIndicatorSignalRequestForm, FillEntry, OKXSignalInput, DCAInputParameters,
-                                   DCAOrderParameters, PremiumIndicatorSignals)
-from pyokx.okx_market_maker.utils.OkxEnum import InstType
+                                   DCAOrderParameters)
 from pyokx.redis_structured_streams import get_instruments_searcher_from_redis, get_stream_okx_incomplete_algo_orders, \
     get_stream_okx_incomplete_orders, get_stream_okx_position_messages
 from pyokx.ws_data_structures import PositionsChannel, WSPosition, InstrumentStatusReport
@@ -441,16 +440,29 @@ async def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] 
     if algo_orders_list is None or len(algo_orders_list) == 0:
         return []
 
-    params = [
-        {'algoId': algo_order.algoId,
-         'instId': algo_order.instId,
-         } for algo_order in algo_orders_list
-    ]
+    # params = [
+    #     {'algoId': algo_order.algoId,
+    #      'instId': algo_order.instId,
+    #      } for algo_order in algo_orders_list
+    # ]
 
+    # Split algo orders into REGULAR AND ADVANCED
+    regular_algo_order_params = []
+    advanced_algo_order_params = []  # Move_order_stop order, Trigger order, Iceberg order, TWAP order, Trailing Stop order
+    for algo_order in algo_orders_list:
+        if algo_order.ordType in ['move_order_stop', 'trigger', 'iceberg', 'twap', 'trailing']:
+            advanced_algo_order_params.append({'algoId': algo_order.algoId,
+                                               'instId': algo_order.instId,
+                                               })
+        else:
+            regular_algo_order_params.append({'algoId': algo_order.algoId,
+                                              'instId': algo_order.instId,
+                                              })
+
+    # Cancel regular algo orders
     cancelled_algo_orders = []
-    for i in range(0, len(params), 10):
-        chunk = params[i:i + 10]
-        print(f'{chunk = }')
+    for i in range(0, len(regular_algo_order_params), 10):
+        chunk = regular_algo_order_params[i:i + 10]
         result = tradeAPI.cancel_algo_order(
             params=chunk
         )
@@ -458,17 +470,22 @@ async def cancel_all_algo_orders_with_params(algo_orders_list: List[Algo_Order] 
             print("Unsuccessful cancel_all_algo_orders_with_params request，\n  error_code = ", result["code"],
                   ", \n  Error_message = ",
                   result["msg"])
-            print(f'{result = }')
-            result = tradeAPI.cancel_advance_algos(
-                params=chunk
-            )
-            if result["code"] != "0":
-                print("Unsuccessful cancel_all_algo_orders_with_params request，\n  error_code = ", result["code"],
-                      ", \n  Error_message = ",
-                      result["msg"])
-                continue
-
+            continue
         cancelled_algo_orders.extend(await get_request_data(result, Cancelled_Algo_Order))
+
+    # Cancel advanced algo orders
+    for i in range(0, len(advanced_algo_order_params), 10):
+        chunk = advanced_algo_order_params[i:i + 10]
+        result = tradeAPI.cancel_advance_algos(
+            params=chunk
+        )
+        if result["code"] != "0":
+            print("Unsuccessful cancel_all_algo_orders_with_params request，\n  error_code = ", result["code"],
+                  ", \n  Error_message = ",
+                  result["msg"])
+            continue
+        cancelled_algo_orders.extend(await get_request_data(result, Cancelled_Algo_Order))
+
     return cancelled_algo_orders
 
 
@@ -1161,8 +1178,6 @@ async def validate_okx_signal_params(
     return result
 
 
-
-
 async def fetch_incomplete_orders(instId: str = None, instType: str = None):
     limit = 100
     after = ''
@@ -1327,6 +1342,7 @@ async def fetch_fill_history(start_timestamp, end_timestamp, instType=None):
             break  # Optional: Decide whether to break or retry
 
     return [FillEntry(**fill) for fill in all_data]
+
 
 async def okx_signal_handler(
         instID: str = '',
@@ -1743,9 +1759,13 @@ async def okx_signal_handler(
         dca_orders_placement_return = await asyncio.gather(
             *[place_algo_order(**dca_order) for dca_order in dca_orders_to_call]
         )
+
+        dca_orders_placement_return = list(itertools.chain(*dca_orders_placement_return))
+
         logger.info(f'{dca_orders_placement_return = }')
-    logger.info('\n\nFINAL REPORT')
+
     return await fetch_status_report_for_instrument(instID, ENFORCED_TD_MODE)
+
 
 async def okx_premium_indicator_handler(indicator_input: Union[OKXPremiumIndicatorSignalRequestForm, dict]):
     """
@@ -1859,14 +1879,9 @@ if __name__ == '__main__':
 
     dotenv.load_dotenv(dotenv.find_dotenv())
 
-
     # Define the test function to be used
     # TEST_FUNCTION = 'okx_premium_indicator'
     TEST_FUNCTION = 'okx_signal_handler'
-
-    # Immediately execute the 'red button' functionality to clear all positions and orders
-    # TODO: Ensure only relevant orders/positions are handled.
-    # asyncio.run(okx_signal_handler(red_button=True))
 
     # Branching logic based on the test function chosen
     if TEST_FUNCTION == 'okx_signal_handler':
@@ -1892,32 +1907,31 @@ if __name__ == '__main__':
             # trailing_stop_activation_price_offset=100,
             # trailing_stop_callback_offset=10,
             # DCA Orders (are not linked to the principal order)
-            # dca_parameters=[
-            #     DCAInputParameters(
-            #         usd_amount=150,
-            #         order_type="LIMIT",
-            #         order_side="BUY",
-            #         trigger_price_offset=100,
-            #         execution_price_offset=90,
-            #         tp_trigger_price_offset=100,
-            #         tp_execution_price_offset=90,
-            #         sl_trigger_price_offset=100,
-            #         sl_execution_price_offset=90
-            #     ),
-            #     DCAInputParameters(
-            #         usd_amount=150,
-            #         order_type="LIMIT",
-            #         order_side="BUY",
-            #         trigger_price_offset=150,
-            #         execution_price_offset=149,
-            #         tp_trigger_price_offset=100,
-            #         tp_execution_price_offset=90,
-            #         sl_trigger_price_offset=100,
-            #         sl_execution_price_offset=90
-            #     )
-            # ]
+            dca_parameters=[
+                DCAInputParameters(
+                    usd_amount=150,
+                    order_type="LIMIT",
+                    order_side="BUY",
+                    trigger_price_offset=100,
+                    execution_price_offset=90,
+                    tp_trigger_price_offset=100,
+                    tp_execution_price_offset=90,
+                    sl_trigger_price_offset=100,
+                    sl_execution_price_offset=90
+                ),
+                # DCAInputParameters(
+                #     usd_amount=150,
+                #     order_type="LIMIT",
+                #     order_side="BUY",
+                #     trigger_price_offset=150,
+                #     execution_price_offset=149,
+                #     tp_trigger_price_offset=100,
+                #     tp_execution_price_offset=90,
+                #     sl_trigger_price_offset=100,
+                #     sl_execution_price_offset=90
+                # )
+            ]
         ))
-
 
     elif TEST_FUNCTION == 'okx_premium_indicator':
         # Load a payload from a file for testing the 'okx_premium_indicator'
@@ -1940,8 +1954,6 @@ if __name__ == '__main__':
         # )
         # logger.info(f'{response.content = }')
         # response = response.json()
-
-
 
     else:
         # Handle invalid test function selection

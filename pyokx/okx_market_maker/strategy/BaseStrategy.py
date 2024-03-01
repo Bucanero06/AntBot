@@ -24,7 +24,7 @@ from pyokx.okx_market_maker.strategy.model.StrategyOrder import StrategyOrder, S
 from pyokx.okx_market_maker.strategy.params.ParamsLoader import ParamsLoader
 from pyokx.okx_market_maker.strategy.risk.RiskCalculator import RiskCalculator
 from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
-from pyokx.okx_market_maker.utils.OkxEnum import AccountConfigMode, TdMode, InstType, OrderSide, OrderState
+from pyokx.OkxEnum import AccountConfigMode, TdMode, InstType, OrderSide, OrderState
 from pyokx.okx_market_maker.utils.TdModeUtil import TdModeUtil
 from redis_tools.utils import connect_to_redis, deserialize_from_redis
 

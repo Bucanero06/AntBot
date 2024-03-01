@@ -1,8 +1,7 @@
 from dataclasses import dataclass, field
-from decimal import Decimal
 from typing import Dict, List
 
-from pyokx.okx_market_maker.utils.OkxEnum import OrderCategory, OrderExecType, InstType, OrderType, PosSide, OrderSide, \
+from pyokx.OkxEnum import OrderCategory, OrderExecType, InstType, OrderType, PosSide, OrderSide, \
     OrderState
 
 

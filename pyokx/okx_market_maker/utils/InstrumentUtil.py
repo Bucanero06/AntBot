@@ -6,7 +6,7 @@ from pyokx.okx_market_maker import instruments, mark_px_container
 from pyokx.okx_market_maker.market_data_service.model.Instrument import Instrument
 from pyokx.okx_market_maker.position_management_service.model.Positions import Position
 from pyokx.okx_market_maker.settings import IS_PAPER_TRADING
-from pyokx.okx_market_maker.utils.OkxEnum import InstType, InstState, OrderSide
+from pyokx.OkxEnum import InstType, InstState, OrderSide
 
 INST_ID_SUGGESTION = "valid instId examples:\n" \
                      "SPOT: BTC-USDT, SWAP: BTC-USDT-SWAP, FUTURES: BTC_USDT-230630, " \

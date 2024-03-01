@@ -7,7 +7,7 @@ import redis
 from pyokx.okx_market_maker.market_data_service.model.Tickers import Tickers
 from pyokx.okx_market_maker.strategy.risk.RiskSnapshot import RiskSnapShot, AssetValueInst
 from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
-from pyokx.okx_market_maker.utils.OkxEnum import InstType, CtType
+from pyokx.OkxEnum import InstType, CtType
 from redis_tools.utils import connect_to_redis, deserialize_from_redis
 
 

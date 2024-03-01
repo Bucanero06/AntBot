@@ -7,7 +7,7 @@ from pyokx.okx_market_maker.position_management_service.model.Positions import P
 from pyokx.okx_market_maker.settings import RISK_FREE_CCY_LIST
 from pyokx.okx_market_maker.strategy.risk.RiskSnapshot import RiskSnapShot, AssetValueInst
 from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
-from pyokx.okx_market_maker.utils.OkxEnum import InstType, CtType
+from pyokx.OkxEnum import InstType, CtType
 
 
 class RiskCalculator:

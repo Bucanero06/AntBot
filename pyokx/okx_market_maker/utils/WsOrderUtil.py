@@ -1,6 +1,6 @@
 import shortuuid
 
-from pyokx.okx_market_maker.utils.OkxEnum import OrderOp
+from pyokx.OkxEnum import OrderOp
 from pyokx.ws_clients.WsUtils import isNotBlankStr, getParamKey, initSubscribeSet
 
 

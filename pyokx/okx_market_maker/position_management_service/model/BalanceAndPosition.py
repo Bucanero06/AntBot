@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict
 
 
-from pyokx.okx_market_maker.utils.OkxEnum import MgnMode, PosSide, InstType
+from pyokx.OkxEnum import MgnMode, PosSide, InstType
 
 
 @dataclass

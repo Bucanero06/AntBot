@@ -1,5 +1,4 @@
 import math
-import time
 from decimal import Decimal
 from typing import Tuple, List
 
@@ -10,7 +9,7 @@ from pyokx.okx_market_maker.settings import TRADING_INSTRUMENT_ID
 from pyokx.okx_market_maker.strategy.BaseStrategy import BaseStrategy
 from pyokx.okx_market_maker.strategy.model.StrategyOrder import StrategyOrder
 from pyokx.okx_market_maker.utils.InstrumentUtil import InstrumentUtil
-from pyokx.okx_market_maker.utils.OkxEnum import OrderSide, OrderType, PosSide, InstType
+from pyokx.OkxEnum import OrderSide, OrderType, PosSide, InstType
 from pyokx.okx_market_maker.utils.WsOrderUtil import get_request_uuid
 
 

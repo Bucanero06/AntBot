@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from pyokx.okx_market_maker.utils.OkxEnum import TdMode, OrderSide, OrderType, PosSide
+from pyokx.OkxEnum import TdMode, OrderSide, OrderType, PosSide
 
 
 @dataclass

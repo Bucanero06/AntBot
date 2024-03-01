@@ -745,7 +745,7 @@ async def place_algo_trailing_stop_loss(
     ... (and so on for other parameters)
     :returns: The response from the trailing stop-loss order placement request.
     """
-    return place_algo_order(
+    return await place_algo_order(
         instId=instId,
         tdMode=tdMode,
         ordType=ordType,

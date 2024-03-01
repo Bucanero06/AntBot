@@ -1977,7 +1977,7 @@ if __name__ == '__main__':
     else:
         logger.warning("No instrument status report")
         exit()
-        
+
     # Debugging print statements for the instrument report
     logger.info(f'{instrument_report = }')
     logger.info(pprint.pformat(f'{instrument_report.orders = }'))

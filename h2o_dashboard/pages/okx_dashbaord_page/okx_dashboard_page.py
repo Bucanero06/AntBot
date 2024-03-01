@@ -15,6 +15,8 @@ from h2o_dashboard.util import add_card
 app = AsyncSite()
 
 REDIS_STREAM_MAX_LEN = int(os.getenv('REDIS_STREAM_MAX_LEN', 1000))
+
+
 async def okx_dashboard_page(q: Q, update_seconds: int = 2):
     '''Header'''
     await add_card(q, 'OKXDEBUG_Header', ui.header_card(box='header', title='OKX Dashboard',
@@ -37,15 +39,13 @@ async def okx_dashboard_page(q: Q, update_seconds: int = 2):
     '''Init Widgets'''
     account_stream_widget = OKX_Account_StreamWidget(q=q, card_name='OKXDEBUG_Account_Stream', box='grid_1',
                                                      history_count=REDIS_STREAM_MAX_LEN)
-    positions_stream_widget = OKX_Live_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_2')
     fill_report_stream_widget = OKX_Fill_Report_StreamWidget(q=q, card_name='OKXDEBUG_Fill_Report_Stream', box='grid_2')
+    positions_stream_widget = OKX_Live_Positions_StreamWidget(q=q, card_name='OKXDEBUG_Positions_Stream', box='grid_3')
 
-    orders_stream_widget = OKX_Orders_StreamWidget(q=q, card_name='OKXDEBUG_Orders_Stream', box='footer')
+    orders_stream_widget = OKX_Orders_StreamWidget(q=q, card_name='OKXDEBUG_Orders_Stream', box='grid_4')
     okx_premium_indicator_handler_widget = OKX_Premium_Indicator_Handler_Widget(q=q,
                                                                                 card_name='OKXDEBUG_Premium_Manual_Controls',
                                                                                 box='grid_5')
-
-
 
     '''Init RealTime Page Cards'''
     await account_stream_widget.add_cards()

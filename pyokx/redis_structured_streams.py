@@ -123,6 +123,7 @@ async def get_stream_okx_order_messages(async_redis: aioredis.Redis, count: int 
         order_messages.append(order_message)
     return order_messages
 
+
 async def get_okx_fills_history(redis_client, count: int = 10) -> List[List[FillEntry]]:
     fill_history_serialized = await redis_client.xrevrange('okx:rest@fill@3months', count=count)
     if not fill_history_serialized:
@@ -197,7 +198,6 @@ async def get_stream_okx_incomplete_algo_orders(async_redis: aioredis.Redis, cou
         return []
 
     incomplete_algo_orders_serialized.reverse()
-
     incomplete_algo_orders = []
     for incomplete_algo_order in incomplete_algo_orders_serialized:
         redis_stream_id = incomplete_algo_order[0]

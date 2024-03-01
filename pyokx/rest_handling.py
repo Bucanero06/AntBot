@@ -1122,7 +1122,7 @@ async def validate_okx_signal_params(
             trailing_stop_callback_offset = float(okx_signal.trailing_stop_callback_offset)
             trailing_stop_callback_ratio = trailing_stop_callback_offset / ccy_last_price
 
-            # Min is 0,001 and max is 1
+            # Min is 0.001 and max is 1
             if trailing_stop_callback_ratio < 0.001:
                 trailing_stop_callback_ratio = 0.001
             if trailing_stop_callback_ratio > 1:
@@ -1977,6 +1977,7 @@ if __name__ == '__main__':
     else:
         logger.warning("No instrument status report")
         exit()
+        
     # Debugging print statements for the instrument report
     logger.info(f'{instrument_report = }')
     logger.info(pprint.pformat(f'{instrument_report.orders = }'))

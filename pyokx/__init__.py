@@ -2,7 +2,7 @@ import os
 
 import dotenv
 
-from pyokx.okx_market_maker.utils.OkxEnum import InstType, TdMode, PosSide
+from pyokx.OkxEnum import InstType, TdMode, PosSide
 
 dotenv.load_dotenv(dotenv.find_dotenv())
 from pyokx.Futures_Exchange_Client import OKX_Futures_Exchange_Client as OKXClient

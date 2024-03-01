@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../okx_polling_service_app.html">okx_polling_service_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -160,7 +161,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">h2o_wave</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">ui</span><span class="p">,</span> <span class="n">on</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">run_on</span><span class="p">,</span> <span class="n">AsyncSite</span><span class="p">,</span> <span class="n">pack</span>  <span class="c1"># noqa F401</span>
 
@@ -331,6 +333,7 @@
 <div class="viewcode-block" id="OKX_Orders_StreamWidget.update_cards">
 <a class="viewcode-back" href="../../../../h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget.html#h2o_dashboard.pages.okx_dashbaord_page.okx_orders_widget.OKX_Orders_StreamWidget.update_cards">[docs]</a>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">update_cards</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_stream</span><span class="p">()</span>
         <span class="k">if</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_initialized</span><span class="p">():</span>
             <span class="n">last_n_orders_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Algo_Order</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">algo_orders_rest_stream</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -340,6 +343,7 @@
         <span class="n">orders_table_card</span><span class="p">:</span> <span class="n">ui</span><span class="o">.</span><span class="n">stat_table_card</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="o">.</span><span class="n">page</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">card_name</span> <span class="o">+</span> <span class="s1">&#39;_orders_table&#39;</span><span class="p">]</span>
         <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">last_n_orders_data</span><span class="p">:</span>
             <span class="n">label_value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
             <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
@@ -354,6 +358,7 @@
                     <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label_value</span><span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="n">order_col</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">col_key</span><span class="p">)</span>
+                <span class="n">expected_type</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">expected_type</span> <span class="o">=</span> <span class="n">col_value</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
                     <span class="n">order_col</span> <span class="o">=</span> <span class="n">convert_to_col_type</span><span class="p">(</span><span class="n">order_col</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">)</span>

@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="okx_polling_service_app.html">okx_polling_service_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -214,6 +215,8 @@
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountConfigData">AccountConfigData (class in pyokx.data_structures)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.AccountConfigMode">AccountConfigMode (class in pyokx.OkxEnum)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport">AccountStatusReport (class in pyokx.data_structures)</a>
 </li>
       <li><a href="pyokx.test.AccountTest.html#pyokx.test.AccountTest.AccountTest">AccountTest (class in pyokx.test.AccountTest)</a>
@@ -273,6 +276,8 @@
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.adl">adl (pyokx.data_structures.Position attribute)</a>
 
       <ul>
+        <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory.adl">(pyokx.OkxEnum.OrderCategory attribute)</a>
+</li>
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.adl">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
@@ -320,11 +325,13 @@
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport.all_algo_orders">all_algo_orders (pyokx.data_structures.AccountStatusReport attribute)</a>
 </li>
-      <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport.all_orders">all_orders (pyokx.data_structures.AccountStatusReport attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport.all_orders">all_orders (pyokx.data_structures.AccountStatusReport attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport.all_positions">all_positions (pyokx.data_structures.AccountStatusReport attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderOp.AMEND">AMEND (pyokx.OkxEnum.OrderOp attribute)</a>
 </li>
       <li><a href="pyokx.low_rest_api.Trade.html#pyokx.low_rest_api.Trade.TradeAPI.amend_algo_order">amend_algo_order() (pyokx.low_rest_api.Trade.TradeAPI method)</a>
 </li>
@@ -495,6 +502,12 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.baseInterest">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderOp.BATCH_AMEND">BATCH_AMEND (pyokx.OkxEnum.OrderOp attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderOp.BATCH_CANCEL">BATCH_CANCEL (pyokx.OkxEnum.OrderOp attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderOp.BATCH_ORDER">BATCH_ORDER (pyokx.OkxEnum.OrderOp attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignals.Bearish">Bearish (pyokx.data_structures.PremiumIndicatorSignals attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignals.Bearish_Exit">Bearish_Exit (pyokx.data_structures.PremiumIndicatorSignals attribute)</a>
@@ -511,10 +524,10 @@
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Bid">Bid (class in pyokx.data_structures)</a>
 </li>
-      <li><a href="pyokx.data_structures.html#pyokx.data_structures.Ticker.bidPx">bidPx (pyokx.data_structures.Ticker attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.Ticker.bidPx">bidPx (pyokx.data_structures.Ticker attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Orderbook_Snapshot.bids">bids (pyokx.data_structures.Orderbook_Snapshot attribute)</a>
 
       <ul>
@@ -561,6 +574,8 @@
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.PremiumIndicatorSignals.Bullish_plus">Bullish_plus (pyokx.data_structures.PremiumIndicatorSignals attribute)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderSide.BUY">BUY (pyokx.OkxEnum.OrderSide attribute)</a>
+</li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.PriceLimit.buyLmt">buyLmt (pyokx.ws_data_structures.PriceLimit attribute)</a>
 </li>
   </ul></td>
@@ -579,9 +594,13 @@
 </li>
       <li><a href="shared.tmp_shared.html#shared.tmp_shared.calculate_tp_stop_prices_usd">calculate_tp_stop_prices_usd() (in module shared.tmp_shared)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OptType.CALL">CALL (pyokx.OkxEnum.OptType attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order.callbackRatio">callbackRatio (pyokx.data_structures.Algo_Order attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order.callbackSpread">callbackSpread (pyokx.data_structures.Algo_Order attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderOp.CANCEL">CANCEL (pyokx.OkxEnum.OrderOp attribute)</a>
 </li>
       <li><a href="pyokx.low_rest_api.Earning.html#pyokx.low_rest_api.Earning.EarningAPI.cancel">cancel() (pyokx.low_rest_api.Earning.EarningAPI method)</a>
 </li>
@@ -619,6 +638,8 @@
 </li>
       <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.cancel_withdrawal">cancel_withdrawal() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderState.CANCELED">CANCELED (pyokx.OkxEnum.OrderState attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Cancelled_Algo_Order">Cancelled_Algo_Order (class in pyokx.data_structures)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Cancelled_Order">Cancelled_Order (class in pyokx.data_structures)</a>
@@ -633,6 +654,12 @@
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.CandleStick">CandleStick (class in pyokx.ws_data_structures)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.AccountConfigMode.CASH">CASH (pyokx.OkxEnum.AccountConfigMode attribute)</a>
+
+      <ul>
+        <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.TdMode.CASH">(pyokx.OkxEnum.TdMode attribute)</a>
+</li>
+      </ul></li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.cashBal">cashBal (pyokx.data_structures.AccountBalanceDetails attribute)</a>
 
       <ul>
@@ -727,10 +754,10 @@
 </li>
       <li><a href="firebase_tools.authenticate.html#firebase_tools.authenticate.check_str_token_validity">check_str_token_validity() (in module firebase_tools.authenticate)</a>
 </li>
-      <li><a href="routers.okx_authentication.html#routers.okx_authentication.check_token_against_instrument">check_token_against_instrument() (in module routers.okx_authentication)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="routers.okx_authentication.html#routers.okx_authentication.check_token_against_instrument">check_token_against_instrument() (in module routers.okx_authentication)</a>
+</li>
       <li><a href="firebase_tools.authenticate.html#firebase_tools.authenticate.check_token_validity">check_token_validity() (in module firebase_tools.authenticate)</a>
 </li>
       <li><a href="pyokx.ws_clients.WsUtils.html#pyokx.ws_clients.WsUtils.checkSocketParams">checkSocketParams() (in module pyokx.ws_clients.WsUtils)</a>
@@ -857,6 +884,10 @@
 </li>
       <li><a href="pyokx.low_rest_api.NDBroker.html#pyokx.low_rest_api.NDBroker.NDBrokerAPI.create_subaccount_deposit_address">create_subaccount_deposit_address() (pyokx.low_rest_api.NDBroker.NDBrokerAPI method)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.MgnMode.cross">cross (pyokx.OkxEnum.MgnMode attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.TdMode.CROSS">CROSS (pyokx.OkxEnum.TdMode attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.crossLiab">crossLiab (pyokx.data_structures.AccountBalanceDetails attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order.cTime">cTime (pyokx.data_structures.Algo_Order attribute)</a>
@@ -878,6 +909,8 @@
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountConfigData.ctIsoMode">ctIsoMode (pyokx.data_structures.AccountConfigData attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Instrument.ctMult">ctMult (pyokx.data_structures.Instrument attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.CtType">CtType (class in pyokx.OkxEnum)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Instrument.ctType">ctType (pyokx.data_structures.Instrument attribute)</a>
 </li>
@@ -929,15 +962,19 @@
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.DCAInputParameters">DCAInputParameters (class in pyokx.data_structures)</a>
 </li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.DCAOrderParameters">DCAOrderParameters (class in pyokx.data_structures)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="pyokx.data_structures.html#pyokx.data_structures.DCAOrderParameters">DCAOrderParameters (class in pyokx.data_structures)</a>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory.ddh">ddh (pyokx.OkxEnum.OrderCategory attribute)</a>
 </li>
       <li><a href="shared.file_directory_ops.html#shared.file_directory_ops.delete_files_or_directories">delete_files_or_directories() (in module shared.file_directory_ops)</a>
 </li>
       <li><a href="pyokx.low_rest_api.NDBroker.html#pyokx.low_rest_api.NDBroker.NDBrokerAPI.delete_subaccount">delete_subaccount() (pyokx.low_rest_api.NDBroker.NDBrokerAPI method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.NDBroker.html#pyokx.low_rest_api.NDBroker.NDBrokerAPI.delete_subaccount_apikey">delete_subaccount_apikey() (pyokx.low_rest_api.NDBroker.NDBrokerAPI method)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory.delivery">delivery (pyokx.OkxEnum.OrderCategory attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.deltaBS">deltaBS (pyokx.data_structures.Position attribute)</a>
 
@@ -1091,6 +1128,8 @@
 </li>
       <li><a href="shared.file_directory_ops.html#shared.file_directory_ops.file_lenth">file_lenth() (in module shared.file_directory_ops)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderState.FILLED">FILLED (pyokx.OkxEnum.OrderState attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.FillEntry">FillEntry (class in pyokx.data_structures)</a>
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSOrder.fillFee">fillFee (pyokx.ws_data_structures.WSOrder attribute)</a>
@@ -1203,6 +1242,8 @@
 </li>
       <li><a href="shared.data_processing_utils.html#shared.data_processing_utils.float_range">float_range() (in module shared.data_processing_utils)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderType.FOK">FOK (pyokx.OkxEnum.OrderType attribute)</a>
+</li>
       <li><a href="shared.logging.html#shared.logging.ColoredLogger.format">format() (shared.logging.ColoredLogger method)</a>
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexCandleSticksChannel.from_array">from_array() (pyokx.ws_data_structures.IndexCandleSticksChannel static method)</a>
@@ -1218,6 +1259,8 @@
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Simplified_Balance_Details.Frozen_Balance">Frozen_Balance (pyokx.data_structures.Simplified_Balance_Details attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.frozenBal">frozenBal (pyokx.data_structures.AccountBalanceDetails attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory.full_liquidation">full_liquidation (pyokx.OkxEnum.OrderCategory attribute)</a>
 </li>
       <li><a href="shared.tmp_shared.html#shared.tmp_shared.FunctionCall">FunctionCall (class in shared.tmp_shared)</a>
 </li>
@@ -1236,6 +1279,8 @@
       <li><a href="pyokx.test.FundingTest.html#pyokx.test.FundingTest.FundingTest">FundingTest (class in pyokx.test.FundingTest)</a>
 </li>
       <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.funds_transfer">funds_transfer() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType.FUTURES">FUTURES (pyokx.OkxEnum.InstType attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1993,6 +2038,10 @@
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.InstrumentStatusReport">InstrumentStatusReport (class in pyokx.ws_data_structures)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstState">InstState (class in pyokx.OkxEnum)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType">InstType (class in pyokx.OkxEnum)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order.instType">instType (pyokx.data_structures.Algo_Order attribute)</a>
 
       <ul>
@@ -2041,6 +2090,10 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.interest">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.CtType.INVERSE">INVERSE (pyokx.OkxEnum.CtType attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderType.IOC">IOC (pyokx.OkxEnum.OrderType attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountConfigData.ip">ip (pyokx.data_structures.AccountConfigData attribute)</a>
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.CandleStick.is_closed">is_closed (pyokx.ws_data_structures.CandleStick attribute)</a>
@@ -2055,6 +2108,10 @@
         <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.isoEq">(pyokx.data_structures.AccountBalanceDetails attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.MgnMode.isolated">isolated (pyokx.OkxEnum.MgnMode attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.TdMode.ISOLATED">ISOLATED (pyokx.OkxEnum.TdMode attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.isoLiab">isoLiab (pyokx.data_structures.AccountBalanceDetails attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.isoUpl">isoUpl (pyokx.data_structures.AccountBalanceDetails attribute)</a>
@@ -2137,6 +2194,10 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.liabCcy">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderType.LIMIT">LIMIT (pyokx.OkxEnum.OrderType attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.CtType.LINEAR">LINEAR (pyokx.OkxEnum.CtType attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.liqPenalty">liqPenalty (pyokx.data_structures.Position attribute)</a>
@@ -2163,8 +2224,16 @@
 </li>
       <li><a href="pyokx.strategy_handling.html#pyokx.strategy_handling.listen_position_stream">listen_position_stream() (in module pyokx.strategy_handling)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.ListEnumMeta">ListEnumMeta (class in pyokx.OkxEnum)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Instrument.listTime">listTime (pyokx.data_structures.Instrument attribute)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstState.LIVE">LIVE (pyokx.OkxEnum.InstState attribute)</a>
+
+      <ul>
+        <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderState.LIVE">(pyokx.OkxEnum.OrderState attribute)</a>
+</li>
+      </ul></li>
       <li><a href="h2o_dashboard.util.html#h2o_dashboard.util.load_env_file">load_env_file() (in module h2o_dashboard.util)</a>
 </li>
       <li><a href="shared.string_dict_utils.html#shared.string_dict_utils.load_json_file">load_json_file() (in module shared.string_dict_utils)</a>
@@ -2175,6 +2244,8 @@
         <li><a href="pyokx.ws_clients.WsPprivateAsync.html#pyokx.ws_clients.WsPprivateAsync.WsPrivateAsync.login">(pyokx.ws_clients.WsPprivateAsync.WsPrivateAsync method)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.PosSide.long">long (pyokx.OkxEnum.PosSide attribute)</a>
+</li>
       <li><a href="pyokx.rest_messages_service.html#pyokx.rest_messages_service.loop_fetch_incomplete_algo_orders">loop_fetch_incomplete_algo_orders() (in module pyokx.rest_messages_service)</a>
 </li>
       <li><a href="pyokx.rest_messages_service.html#pyokx.rest_messages_service.loop_fetch_incomplete_orders">loop_fetch_incomplete_orders() (in module pyokx.rest_messages_service)</a>
@@ -2207,12 +2278,16 @@
 </li>
       <li><a href="shared.file_directory_ops.html#shared.file_directory_ops.make_directory">make_directory() (in module shared.file_directory_ops)</a>
 </li>
-      <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.margin">margin (pyokx.data_structures.Position attribute)</a>
-
-      <ul>
-        <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.margin">(pyokx.ws_data_structures.WSPosition attribute)</a>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderExecType.MAKER">MAKER (pyokx.OkxEnum.OrderExecType attribute)</a>
 </li>
-      </ul></li>
+      <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.margin">margin (pyokx.data_structures.Position attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType.MARGIN">MARGIN (pyokx.OkxEnum.InstType attribute)</a>
+</li>
+      <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.margin">margin (pyokx.ws_data_structures.WSPosition attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderType.MARKET">MARKET (pyokx.OkxEnum.OrderType attribute)</a>
+</li>
       <li><a href="pyokx.low_rest_api.MarketData.html#pyokx.low_rest_api.MarketData.MarketAPI">MarketAPI (class in pyokx.low_rest_api.MarketData)</a>
 </li>
       <li><a href="pyokx.test.MarketTest.html#pyokx.test.MarketTest.MarketAPITest">MarketAPITest (class in pyokx.test.MarketTest)</a>
@@ -2270,6 +2345,8 @@
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Instrument.maxTwapSz">maxTwapSz (pyokx.data_structures.Instrument attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountConfigData.mgnIsoMode">mgnIsoMode (pyokx.data_structures.AccountConfigData attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.MgnMode">MgnMode (class in pyokx.OkxEnum)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.mgnMode">mgnMode (pyokx.data_structures.Position attribute)</a>
 
@@ -2733,6 +2810,8 @@
 </li>
         <li><a href="pyokx.low_rest_api.utils.html#module-pyokx.low_rest_api.utils">pyokx.low_rest_api.utils</a>
 </li>
+        <li><a href="pyokx.OkxEnum.html#module-pyokx.OkxEnum">pyokx.OkxEnum</a>
+</li>
         <li><a href="pyokx.redis_structured_streams.html#module-pyokx.redis_structured_streams">pyokx.redis_structured_streams</a>
 </li>
         <li><a href="pyokx.rest_handling.html#module-pyokx.rest_handling">pyokx.rest_handling</a>
@@ -2826,6 +2905,8 @@
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSOrder.msg">msg (pyokx.ws_data_structures.WSOrder attribute)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.AccountConfigMode.MULTI_CCY_MARGIN">MULTI_CCY_MARGIN (pyokx.OkxEnum.AccountConfigMode attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -2838,8 +2919,14 @@
 </li>
       <li><a href="pyokx.low_rest_api.NDBroker.html#pyokx.low_rest_api.NDBroker.NDBrokerAPI">NDBrokerAPI (class in pyokx.low_rest_api.NDBroker)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.PosSide.net">net (pyokx.OkxEnum.PosSide attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory.normal">normal (pyokx.OkxEnum.OrderCategory attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.notionalLever">notionalLever (pyokx.data_structures.AccountBalanceDetails attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceData.notionalUsd">notionalUsd (pyokx.data_structures.AccountBalanceData attribute)</a>
 
       <ul>
@@ -2852,8 +2939,6 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.notionalUsd">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Ask.number_of_orders">number_of_orders (pyokx.data_structures.Ask attribute)</a>
 
       <ul>
@@ -2959,11 +3044,17 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.IndexTickers.open24h">(pyokx.ws_data_structures.IndexTickers attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.PositionHistory.openAvgPx">openAvgPx (pyokx.data_structures.PositionHistory attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.PositionHistory.openMaxPos">openMaxPos (pyokx.data_structures.PositionHistory attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderType.OPTIMAL_LIMIT_IOC">OPTIMAL_LIMIT_IOC (pyokx.OkxEnum.OrderType attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType.OPTION">OPTION (pyokx.OkxEnum.InstType attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OptType">OptType (class in pyokx.OkxEnum)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Instrument.optType">optType (pyokx.data_structures.Instrument attribute)</a>
 </li>
@@ -2974,6 +3065,8 @@
 </li>
       </ul></li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Order">Order (class in pyokx.data_structures)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderOp.ORDER">ORDER (pyokx.OkxEnum.OrderOp attribute)</a>
 </li>
       <li><a href="pyokx.low_rest_api.Trade.html#pyokx.low_rest_api.Trade.TradeAPI.order_algos_history">order_algos_history() (pyokx.low_rest_api.Trade.TradeAPI method)</a>
 </li>
@@ -3003,6 +3096,12 @@
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrderBookReturnArgs">OrderBookReturnArgs (class in pyokx.ws_data_structures)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory">OrderCategory (class in pyokx.OkxEnum)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderExecType">OrderExecType (class in pyokx.OkxEnum)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderOp">OrderOp (class in pyokx.OkxEnum)</a>
+</li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.InstrumentStatusReport.orders">orders (pyokx.ws_data_structures.InstrumentStatusReport attribute)</a>
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrdersChannel">OrdersChannel (class in pyokx.ws_data_structures)</a>
@@ -3010,6 +3109,12 @@
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrdersChannelInputArgs">OrdersChannelInputArgs (class in pyokx.ws_data_structures)</a>
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrdersChannelReturnArgs">OrdersChannelReturnArgs (class in pyokx.ws_data_structures)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderSide">OrderSide (class in pyokx.OkxEnum)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderState">OrderState (class in pyokx.OkxEnum)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderType">OrderType (class in pyokx.OkxEnum)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceData.ordFroz">ordFroz (pyokx.data_structures.AccountBalanceData attribute)</a>
 </li>
@@ -3069,6 +3174,10 @@
 </li>
       <li><a href="pyokx.low_rest_api.utils.html#pyokx.low_rest_api.utils.parse_params_to_str">parse_params_to_str() (in module pyokx.low_rest_api.utils)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory.partial_liquidation">partial_liquidation (pyokx.OkxEnum.OrderCategory attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderState.PARTIALLY_FILLED">PARTIALLY_FILLED (pyokx.OkxEnum.OrderState attribute)</a>
+</li>
       <li><a href="redis_tools.config.html#id3">password (redis_tools.config.RedisConfig attribute)</a>, <a href="redis_tools.config.html#redis_tools.config.RedisConfig.password">[1]</a>
 
       <ul>
@@ -3123,6 +3232,8 @@
 </li>
       <li><a href="redis_tools.config.html#id4">port (redis_tools.config.RedisConfig attribute)</a>, <a href="redis_tools.config.html#redis_tools.config.RedisConfig.port">[1]</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.AccountConfigMode.PORTFOLIO_MARGIN">PORTFOLIO_MARGIN (pyokx.OkxEnum.AccountConfigMode attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Position.pos">pos (pyokx.data_structures.Position attribute)</a>
 
       <ul>
@@ -3167,6 +3278,8 @@
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountConfigData.posMode">posMode (pyokx.data_structures.AccountConfigData attribute)</a>
 </li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.PosSide">PosSide (class in pyokx.OkxEnum)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order.posSide">posSide (pyokx.data_structures.Algo_Order attribute)</a>
 
       <ul>
@@ -3187,6 +3300,8 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSPosition.posSide">(pyokx.ws_data_structures.WSPosition attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderType.POST_ONLY">POST_ONLY (pyokx.OkxEnum.OrderType attribute)</a>
+</li>
       <li><a href="pyokx.Futures_Exchange_Client.html#pyokx.Futures_Exchange_Client.OKX_Futures_Exchange_Client.pprint">pprint() (pyokx.Futures_Exchange_Client.OKX_Futures_Exchange_Client method)</a>
 </li>
       <li><a href="pyokx.low_rest_api.utils.html#pyokx.low_rest_api.utils.pre_hash">pre_hash() (in module pyokx.low_rest_api.utils)</a>
@@ -3197,6 +3312,8 @@
         <li><a href="pyokx.data_structures.html#pyokx.data_structures.OKXPremiumIndicatorSignalRequestForm.PremiumIndicatorSignals">(pyokx.data_structures.OKXPremiumIndicatorSignalRequestForm attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstState.PREOPEN">PREOPEN (pyokx.OkxEnum.InstState attribute)</a>
+</li>
       <li><a href="pyokx.rest_handling.html#pyokx.rest_handling.prepare_dca">prepare_dca() (in module pyokx.rest_handling)</a>
 </li>
       <li><a href="pyokx.rest_handling.html#pyokx.rest_handling.prepare_limit_price">prepare_limit_price() (in module pyokx.rest_handling)</a>
@@ -3236,6 +3353,8 @@
       <li><a href="pyokx.low_rest_api.Funding.html#pyokx.low_rest_api.Funding.FundingAPI.purchase_redempt">purchase_redempt() (pyokx.low_rest_api.Funding.FundingAPI method)</a>
 </li>
       <li><a href="h2o_dashboard.util.html#h2o_dashboard.util.push_notification_bar">push_notification_bar() (in module h2o_dashboard.util)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OptType.PUT">PUT (pyokx.OkxEnum.OptType attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Order.px">px (pyokx.data_structures.Order attribute)</a>
 
@@ -3281,6 +3400,8 @@
         <li><a href="pyokx.Futures_Exchange_Client.html#module-pyokx.Futures_Exchange_Client">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pyokx.InstrumentSearcher
 
@@ -3288,8 +3409,6 @@
         <li><a href="pyokx.InstrumentSearcher.html#module-pyokx.InstrumentSearcher">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pyokx.low_rest_api.Account
 
@@ -3428,6 +3547,13 @@
 
       <ul>
         <li><a href="pyokx.low_rest_api.utils.html#module-pyokx.low_rest_api.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    pyokx.OkxEnum
+
+      <ul>
+        <li><a href="pyokx.OkxEnum.html#module-pyokx.OkxEnum">module</a>
 </li>
       </ul></li>
       <li>
@@ -3828,6 +3954,8 @@
         <li><a href="pyokx.data_structures.html#pyokx.data_structures.Order_Placement_Return.sCode">(pyokx.data_structures.Order_Placement_Return attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderSide.SELL">SELL (pyokx.OkxEnum.OrderSide attribute)</a>
+</li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.PriceLimit.sellLmt">sellLmt (pyokx.ws_data_structures.PriceLimit attribute)</a>
 </li>
       <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.OrderBookData.seqId">seqId (pyokx.ws_data_structures.OrderBookData attribute)</a>
@@ -3962,6 +4090,8 @@
         <li><a href="shared.tmp_shared.html#module-shared.tmp_shared">module</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.PosSide.short">short (pyokx.OkxEnum.PosSide attribute)</a>
+</li>
       <li><a href="okx_polling_service_app.html#okx_polling_service_app.shutdown_event">shutdown_event() (in module okx_polling_service_app)</a>
 
       <ul>
@@ -3991,6 +4121,8 @@
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountStatusReport.simplified_balance">simplified_balance (pyokx.data_structures.AccountStatusReport attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Simplified_Balance_Details">Simplified_Balance_Details (class in pyokx.data_structures)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.AccountConfigMode.SINGLE_CCY_MARGIN">SINGLE_CCY_MARGIN (pyokx.OkxEnum.AccountConfigMode attribute)</a>
 </li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.DCAOrderParameters.size">size (pyokx.data_structures.DCAOrderParameters attribute)</a>
 </li>
@@ -4080,6 +4212,8 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSOrder.source">(pyokx.ws_data_structures.WSOrder attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType.SPOT">SPOT (pyokx.OkxEnum.InstType attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.spotInUseAmt">spotInUseAmt (pyokx.data_structures.AccountBalanceDetails attribute)</a>
 
       <ul>
@@ -4200,6 +4334,10 @@
         <li><a href="pyokx.ws_clients.WsPublicAsync.html#pyokx.ws_clients.WsPublicAsync.WsPublicAsync.subscribe">(pyokx.ws_clients.WsPublicAsync.WsPublicAsync method)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstState.SUSPEND">SUSPEND (pyokx.OkxEnum.InstState attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType.SWAP">SWAP (pyokx.OkxEnum.InstType attribute)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order.sz">sz (pyokx.data_structures.Algo_Order attribute)</a>
 
       <ul>
@@ -4238,6 +4376,10 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSOrder.tag">(pyokx.ws_data_structures.WSOrder attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderExecType.TAKER">TAKER (pyokx.OkxEnum.OrderExecType attribute)</a>
+</li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.TdMode">TdMode (class in pyokx.OkxEnum)</a>
+</li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.Algo_Order.tdMode">tdMode (pyokx.data_structures.Algo_Order attribute)</a>
 
       <ul>
@@ -4248,6 +4390,8 @@
         <li><a href="pyokx.ws_data_structures.html#pyokx.ws_data_structures.WSOrder.tdMode">(pyokx.ws_data_structures.WSOrder attribute)</a>
 </li>
       </ul></li>
+      <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstState.TEST">TEST (pyokx.OkxEnum.InstState attribute)</a>
+</li>
       <li><a href="pyokx.test.BlockTradingTest.html#pyokx.test.BlockTradingTest.BlockTradingTest.test_create_rfqs">test_create_rfqs() (pyokx.test.BlockTradingTest.BlockTradingTest method)</a>
 </li>
       <li><a href="pyokx.test.FundingTest.html#pyokx.test.FundingTest.FundingTest.test_get_deposit_withdraw_status">test_get_deposit_withdraw_status() (pyokx.test.FundingTest.FundingTest method)</a>
@@ -4474,7 +4618,11 @@
 </li>
       </ul></li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.AccountBalanceDetails.twap">twap (pyokx.data_structures.AccountBalanceDetails attribute)</a>
+
+      <ul>
+        <li><a href="pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory.twap">(pyokx.OkxEnum.OrderCategory attribute)</a>
 </li>
+      </ul></li>
       <li><a href="pyokx.data_structures.html#pyokx.data_structures.DCAOrderParameters.type">type (pyokx.data_structures.DCAOrderParameters attribute)</a>
 
       <ul>

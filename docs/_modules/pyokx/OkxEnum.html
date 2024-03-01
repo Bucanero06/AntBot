@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>firebase_tools.authenticate &mdash; AntBot 0.0.1 documentation</title>
+  <title>pyokx.OkxEnum &mdash; AntBot 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=eafc0fe6" />
@@ -151,7 +151,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">firebase_tools.authenticate</li>
+      <li class="breadcrumb-item active">pyokx.OkxEnum</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -160,107 +160,153 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for firebase_tools.authenticate</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
-
-<span class="kn">import</span> <span class="nn">dotenv</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Depends</span>
-
-<span class="kn">from</span> <span class="nn">shared.config</span> <span class="kn">import</span> <span class="n">Oauth2_scheme</span>
-
-<span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
-
-<span class="n">FIREBASE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;apiKey&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FIREBASE_API_KEY&quot;</span><span class="p">),</span>
-<span class="p">}</span>
-
-<span class="k">assert</span> <span class="n">FIREBASE_CONFIG</span><span class="p">[</span><span class="s2">&quot;apiKey&quot;</span><span class="p">],</span> <span class="s2">&quot;FIREBASE_API_KEY environment variable not set!&quot;</span>
-
-
-<div class="viewcode-block" id="authenticate_with_firebase">
-<a class="viewcode-back" href="../../firebase_tools.authenticate.html#firebase_tools.authenticate.authenticate_with_firebase">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">authenticate_with_firebase</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authenticate with Firebase and return token if successful, or an error message.&quot;&quot;&quot;</span>
-    <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=</span><span class="si">{</span><span class="n">FIREBASE_CONFIG</span><span class="p">[</span><span class="s1">&#39;apiKey&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span>
-        <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">password</span><span class="p">,</span>
-        <span class="s2">&quot;returnSecureToken&quot;</span><span class="p">:</span> <span class="kc">True</span>
-    <span class="p">}</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-        <span class="n">response_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="s2">&quot;idToken&quot;</span> <span class="ow">in</span> <span class="n">response_data</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span>
-                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;idToken&#39;</span><span class="p">),</span>
-                <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;refreshToken&#39;</span><span class="p">),</span>
-                <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;localId&#39;</span><span class="p">),</span>
-                <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">),</span>
-                <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="n">response_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;expiresIn&#39;</span><span class="p">),</span>
-            <span class="p">}</span>
-
-        <span class="k">elif</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">response_data</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span>
-                <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Authentication failed: </span><span class="si">{</span><span class="n">response_data</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Unknown error.&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="p">}</span>
-    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Authentication failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;error_message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Authentication failed: Unknown error.&quot;</span><span class="p">,</span>
-        <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;refresh_token&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s1">&#39;expires_in&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">}</span></div>
+  <h1>Source code for pyokx.OkxEnum</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">EnumMeta</span>
 
 
 
-<div class="viewcode-block" id="check_token_validity">
-<a class="viewcode-back" href="../../firebase_tools.authenticate.html#firebase_tools.authenticate.check_token_validity">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">check_token_validity</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">Oauth2_scheme</span><span class="p">)):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a Firebase token is valid.&quot;&quot;&quot;</span>
-    <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=</span><span class="si">{</span><span class="n">FIREBASE_CONFIG</span><span class="p">[</span><span class="s1">&#39;apiKey&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;idToken&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="check_str_token_validity">
-<a class="viewcode-back" href="../../firebase_tools.authenticate.html#firebase_tools.authenticate.check_str_token_validity">[docs]</a>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">check_str_token_validity</span><span class="p">(</span><span class="n">idToken</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a Firebase token is valid.&quot;&quot;&quot;</span>
-    <span class="n">endpoint</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=</span><span class="si">{</span><span class="n">FIREBASE_CONFIG</span><span class="p">[</span><span class="s1">&#39;apiKey&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;idToken&quot;</span><span class="p">:</span> <span class="n">idToken</span><span class="p">}</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">)</span></div>
+<div class="viewcode-block" id="InstType">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.InstType">[docs]</a>
+<span class="k">class</span> <span class="nc">InstType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">MARGIN</span> <span class="o">=</span> <span class="s2">&quot;MARGIN&quot;</span>
+    <span class="n">SWAP</span> <span class="o">=</span> <span class="s2">&quot;SWAP&quot;</span>
+    <span class="n">FUTURES</span> <span class="o">=</span> <span class="s2">&quot;FUTURES&quot;</span>
+    <span class="n">OPTION</span> <span class="o">=</span> <span class="s2">&quot;OPTION&quot;</span>
+    <span class="n">SPOT</span> <span class="o">=</span> <span class="s2">&quot;SPOT&quot;</span></div>
 
 
+
+<div class="viewcode-block" id="MgnMode">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.MgnMode">[docs]</a>
+<span class="k">class</span> <span class="nc">MgnMode</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">cross</span> <span class="o">=</span> <span class="s2">&quot;cross&quot;</span>
+    <span class="n">isolated</span> <span class="o">=</span> <span class="s2">&quot;isolated&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="PosSide">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.PosSide">[docs]</a>
+<span class="k">class</span> <span class="nc">PosSide</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">long</span> <span class="o">=</span> <span class="s2">&quot;long&quot;</span>
+    <span class="n">short</span> <span class="o">=</span> <span class="s2">&quot;short&quot;</span>
+    <span class="n">net</span> <span class="o">=</span> <span class="s2">&quot;net&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="OptType">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.OptType">[docs]</a>
+<span class="k">class</span> <span class="nc">OptType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">CALL</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span>
+    <span class="n">PUT</span> <span class="o">=</span> <span class="s2">&quot;P&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="CtType">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.CtType">[docs]</a>
+<span class="k">class</span> <span class="nc">CtType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">LINEAR</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span>
+    <span class="n">INVERSE</span> <span class="o">=</span> <span class="s2">&quot;inverse&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="InstState">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.InstState">[docs]</a>
+<span class="k">class</span> <span class="nc">InstState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">LIVE</span> <span class="o">=</span> <span class="s2">&quot;live&quot;</span>
+    <span class="n">SUSPEND</span> <span class="o">=</span> <span class="s2">&quot;suspend&quot;</span>
+    <span class="n">PREOPEN</span> <span class="o">=</span> <span class="s2">&quot;preopen&quot;</span>
+    <span class="n">TEST</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="OrderCategory">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.OrderCategory">[docs]</a>
+<span class="k">class</span> <span class="nc">OrderCategory</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+    <span class="n">twap</span> <span class="o">=</span> <span class="s2">&quot;twap&quot;</span>
+    <span class="n">adl</span> <span class="o">=</span> <span class="s2">&quot;adl&quot;</span>
+    <span class="n">full_liquidation</span> <span class="o">=</span> <span class="s2">&quot;full_liquidation&quot;</span>
+    <span class="n">partial_liquidation</span> <span class="o">=</span> <span class="s2">&quot;partial_liquidation&quot;</span>
+    <span class="n">delivery</span> <span class="o">=</span> <span class="s2">&quot;delivery&quot;</span>
+    <span class="n">ddh</span> <span class="o">=</span> <span class="s2">&quot;ddh&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="OrderExecType">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.OrderExecType">[docs]</a>
+<span class="k">class</span> <span class="nc">OrderExecType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">TAKER</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span>
+    <span class="n">MAKER</span> <span class="o">=</span> <span class="s2">&quot;M&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="OrderType">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.OrderType">[docs]</a>
+<span class="k">class</span> <span class="nc">OrderType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">MARKET</span> <span class="o">=</span> <span class="s2">&quot;market&quot;</span>
+    <span class="n">LIMIT</span> <span class="o">=</span> <span class="s2">&quot;limit&quot;</span>
+    <span class="n">POST_ONLY</span> <span class="o">=</span> <span class="s2">&quot;post_only&quot;</span>
+    <span class="n">FOK</span> <span class="o">=</span> <span class="s2">&quot;fok&quot;</span>
+    <span class="n">IOC</span> <span class="o">=</span> <span class="s2">&quot;ioc&quot;</span>
+    <span class="n">OPTIMAL_LIMIT_IOC</span> <span class="o">=</span> <span class="s2">&quot;optimal_limit_ioc&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="OrderSide">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.OrderSide">[docs]</a>
+<span class="k">class</span> <span class="nc">OrderSide</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">BUY</span> <span class="o">=</span> <span class="s2">&quot;buy&quot;</span>
+    <span class="n">SELL</span> <span class="o">=</span> <span class="s2">&quot;sell&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="OrderState">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.OrderState">[docs]</a>
+<span class="k">class</span> <span class="nc">OrderState</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">CANCELED</span> <span class="o">=</span> <span class="s2">&quot;canceled&quot;</span>
+    <span class="n">LIVE</span> <span class="o">=</span> <span class="s2">&quot;live&quot;</span>
+    <span class="n">PARTIALLY_FILLED</span> <span class="o">=</span> <span class="s2">&quot;partially_filled&quot;</span>
+    <span class="n">FILLED</span> <span class="o">=</span> <span class="s2">&quot;filled&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="ListEnumMeta">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.ListEnumMeta">[docs]</a>
+<span class="k">class</span> <span class="nc">ListEnumMeta</span><span class="p">(</span><span class="n">EnumMeta</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__members__</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span></div>
+
+
+
+<div class="viewcode-block" id="OrderOp">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.OrderOp">[docs]</a>
+<span class="k">class</span> <span class="nc">OrderOp</span><span class="p">(</span><span class="n">Enum</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ListEnumMeta</span><span class="p">):</span>
+    <span class="n">ORDER</span> <span class="o">=</span> <span class="s2">&quot;order&quot;</span>
+    <span class="n">BATCH_ORDER</span> <span class="o">=</span> <span class="s2">&quot;batch-orders&quot;</span>
+    <span class="n">CANCEL</span> <span class="o">=</span> <span class="s2">&quot;cancel-order&quot;</span>
+    <span class="n">BATCH_CANCEL</span> <span class="o">=</span> <span class="s2">&quot;batch-cancel-orders&quot;</span>
+    <span class="n">AMEND</span> <span class="o">=</span> <span class="s2">&quot;amend-order&quot;</span>
+    <span class="n">BATCH_AMEND</span> <span class="o">=</span> <span class="s2">&quot;batch-amend-order&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="TdMode">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.TdMode">[docs]</a>
+<span class="k">class</span> <span class="nc">TdMode</span><span class="p">(</span><span class="n">Enum</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ListEnumMeta</span><span class="p">):</span>
+    <span class="n">CASH</span> <span class="o">=</span> <span class="s2">&quot;cash&quot;</span>
+    <span class="n">ISOLATED</span> <span class="o">=</span> <span class="s2">&quot;isolated&quot;</span>
+    <span class="n">CROSS</span> <span class="o">=</span> <span class="s2">&quot;cross&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="AccountConfigMode">
+<a class="viewcode-back" href="../../pyokx.OkxEnum.html#pyokx.OkxEnum.AccountConfigMode">[docs]</a>
+<span class="k">class</span> <span class="nc">AccountConfigMode</span><span class="p">(</span><span class="n">Enum</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ListEnumMeta</span><span class="p">):</span>
+    <span class="n">CASH</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">SINGLE_CCY_MARGIN</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MULTI_CCY_MARGIN</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">PORTFOLIO_MARGIN</span> <span class="o">=</span> <span class="mi">4</span></div>
 
 </pre></div>
 

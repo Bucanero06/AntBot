@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../okx_polling_service_app.html">okx_polling_service_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -162,10 +163,9 @@
   <h1>Source code for pyokx.InstrumentSearcher</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 
-
 <span class="kn">from</span> <span class="nn">pyokx</span> <span class="kn">import</span> <span class="n">publicAPI</span><span class="p">,</span> <span class="n">ENFORCED_INSTRUMENT_TYPES</span>
+<span class="kn">from</span> <span class="nn">pyokx.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
 <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">Instrument</span>
-<span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
 
 
 <div class="viewcode-block" id="InstrumentSearcher">
@@ -199,6 +199,19 @@
 <span class="sd">        print(f&#39;{&quot;BTC-USDT-240329&quot; in okx_instrument_searcher._instrument_map = }&#39;)</span>
 <span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instTypes</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">instTypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">instTypes</span><span class="p">]</span>
+
+        <span class="n">_instType</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">instType</span> <span class="ow">in</span> <span class="n">instTypes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instType</span><span class="p">,</span> <span class="n">InstType</span><span class="p">):</span>
+                <span class="n">_instType</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instType</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_instType</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">instType</span><span class="p">)</span>
+        <span class="n">instTypes</span> <span class="o">=</span> <span class="n">_instType</span>
+
+        <span class="c1"># assert all([instType in ENFORCED_INSTRUMENT_TYPES for instType in instTypes]), f&#39;Invalid instTypes: {instTypes}&#39;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">instTypes</span> <span class="o">=</span> <span class="n">instTypes</span>
         <span class="k">if</span> <span class="n">_instrument_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">instruments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_instruments</span><span class="p">()</span>
@@ -235,16 +248,19 @@
 <a class="viewcode-back" href="../../pyokx.InstrumentSearcher.html#pyokx.InstrumentSearcher.InstrumentSearcher.find_by_instId">[docs]</a>
     <span class="k">def</span> <span class="nf">find_by_instId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instId</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Instrument</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Find an instrument by its instId &quot;&quot;&quot;</span>
-        <span class="n">instrument</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_instrument_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">instId</span><span class="p">)</span>
+        <span class="n">instrument</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">instId</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">instrument</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">instrument</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instrument</span><span class="p">,</span> <span class="n">Instrument</span><span class="p">)</span> <span class="k">else</span> <span class="n">Instrument</span><span class="p">(</span><span class="o">**</span><span class="n">instrument</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
+
 <div class="viewcode-block" id="InstrumentSearcher.find_by_type">
 <a class="viewcode-back" href="../../pyokx.InstrumentSearcher.html#pyokx.InstrumentSearcher.InstrumentSearcher.find_by_type">[docs]</a>
     <span class="k">def</span> <span class="nf">find_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instType</span><span class="p">:</span> <span class="n">InstType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Instrument</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Find all instruments of a specific type &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instType</span><span class="p">,</span> <span class="n">InstType</span><span class="p">):</span>
+            <span class="n">instType</span> <span class="o">=</span> <span class="n">instType</span><span class="o">.</span><span class="n">value</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">instrument</span> <span class="k">for</span> <span class="n">instrument</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">instruments</span> <span class="k">if</span> <span class="n">instrument</span><span class="o">.</span><span class="n">instType</span> <span class="o">==</span> <span class="n">instType</span><span class="p">]</span></div>
 
 
@@ -257,8 +273,10 @@
 
 <div class="viewcode-block" id="InstrumentSearcher.get_instrument_ids">
 <a class="viewcode-back" href="../../pyokx.InstrumentSearcher.html#pyokx.InstrumentSearcher.InstrumentSearcher.get_instrument_ids">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_instrument_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">get_instrument_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instType</span><span class="p">:</span> <span class="n">InstType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Get all instrument IDs &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">instType</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">instrument</span><span class="o">.</span><span class="n">instId</span> <span class="k">for</span> <span class="n">instrument</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_by_type</span><span class="p">(</span><span class="n">instType</span><span class="p">)]</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_instrument_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
@@ -272,6 +290,22 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instrument_map</span></div>
 </div>
 
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">instTypes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">InstType</span><span class="o">.</span><span class="n">FUTURES</span><span class="p">,</span>
+        <span class="n">InstType</span><span class="o">.</span><span class="n">SWAP</span><span class="p">,</span>
+        <span class="n">InstType</span><span class="o">.</span><span class="n">SPOT</span><span class="p">,</span>
+        <span class="n">InstType</span><span class="o">.</span><span class="n">MARGIN</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">okx_instrument_searcher</span> <span class="o">=</span> <span class="n">InstrumentSearcher</span><span class="p">(</span><span class="n">instTypes</span><span class="o">=</span><span class="n">instTypes</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">instrument_type</span> <span class="ow">in</span> <span class="n">instTypes</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">okx_instrument_searcher</span><span class="o">.</span><span class="n">get_instrument_ids</span><span class="p">(</span><span class="n">instType</span><span class="o">=</span><span class="n">instrument_type</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;InstType </span><span class="si">{</span><span class="n">instrument_type</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
            </div>

@@ -1,0 +1,11 @@
+pyokx.OkxEnum
+=============
+
+.. automodule:: pyokx.OkxEnum
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. inheritance-diagram:: pyokx.OkxEnum
+    :parts: 1
+

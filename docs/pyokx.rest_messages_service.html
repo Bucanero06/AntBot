@@ -69,6 +69,7 @@
 <li class="toctree-l1"><a class="reference internal" href="okx_polling_service_app.html">okx_polling_service_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -174,13 +175,13 @@
 <span id="pyokx-rest-messages-service"></span><h1>pyokx.rest_messages_service<a class="headerlink" href="#module-pyokx.rest_messages_service" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyokx.rest_messages_service.analyze_transaction_history">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.rest_messages_service.</span></span><span class="sig-name descname"><span class="pre">analyze_transaction_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InstTypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">InstType</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['FUTURES',</span> <span class="pre">'SWAP']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_messages_service.html#analyze_transaction_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_messages_service.analyze_transaction_history" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyokx.rest_messages_service.</span></span><span class="sig-name descname"><span class="pre">analyze_transaction_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">InstTypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType" title="pyokx.OkxEnum.InstType"><span class="pre">InstType</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['FUTURES',</span> <span class="pre">'SWAP']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyokx/rest_messages_service.html#analyze_transaction_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.rest_messages_service.analyze_transaction_history" title="Link to this definition"></a></dt>
 <dd><p>Analyzes the transaction history for a given instrument type over the last 90 days.</p>
 <p>This function fetches the fill history, calculates various metrics for different timeframes,
 and stores the results in a Redis stream.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>InstTypes</strong> (<em>List</em><em>[</em><em>InstType</em><em>]</em>) – The type of instruments to analyze (e.g., ‘FUTURES’). Default is [‘FUTURES’, ‘SWAP’].</p>
+<dd class="field-odd"><p><strong>InstTypes</strong> (<em>List</em><em>[</em><a class="reference internal" href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType" title="pyokx.OkxEnum.InstType"><em>InstType</em></a><em>]</em>) – The type of instruments to analyze (e.g., ‘FUTURES’). Default is [‘FUTURES’, ‘SWAP’].</p>
 </dd>
 </dl>
 </dd></dl>

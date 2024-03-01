@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../okx_polling_service_app.html">okx_polling_service_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -161,6 +162,7 @@
              
   <h1>Source code for pyokx.rest_handling</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pprint</span>
@@ -171,9 +173,8 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">HTTPError</span>
 
-<span class="kn">import</span> <span class="nn">requests</span>
-
 <span class="kn">from</span> <span class="nn">pyokx.InstrumentSearcher</span> <span class="kn">import</span> <span class="n">InstrumentSearcher</span>
+<span class="kn">from</span> <span class="nn">pyokx.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
 <span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Order</span><span class="p">,</span> <span class="n">Cancelled_Order</span><span class="p">,</span> <span class="n">Order_Placement_Return</span><span class="p">,</span>
                                    <span class="n">Position</span><span class="p">,</span> <span class="n">Closed_Position</span><span class="p">,</span> <span class="n">Ticker</span><span class="p">,</span>
                                    <span class="n">Algo_Order</span><span class="p">,</span> <span class="n">Algo_Order_Placement_Return</span><span class="p">,</span>
@@ -182,8 +183,7 @@
                                    <span class="n">Orderbook_Snapshot</span><span class="p">,</span> <span class="n">Bid</span><span class="p">,</span> <span class="n">Ask</span><span class="p">,</span>
                                    <span class="n">Simplified_Balance_Details</span><span class="p">,</span>
                                    <span class="n">OKXPremiumIndicatorSignalRequestForm</span><span class="p">,</span> <span class="n">FillEntry</span><span class="p">,</span> <span class="n">OKXSignalInput</span><span class="p">,</span> <span class="n">DCAInputParameters</span><span class="p">,</span>
-                                   <span class="n">DCAOrderParameters</span><span class="p">,</span> <span class="n">PremiumIndicatorSignals</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
+                                   <span class="n">DCAOrderParameters</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pyokx.redis_structured_streams</span> <span class="kn">import</span> <span class="n">get_instruments_searcher_from_redis</span><span class="p">,</span> <span class="n">get_stream_okx_incomplete_algo_orders</span><span class="p">,</span> \
     <span class="n">get_stream_okx_incomplete_orders</span><span class="p">,</span> <span class="n">get_stream_okx_position_messages</span>
 <span class="kn">from</span> <span class="nn">pyokx.ws_data_structures</span> <span class="kn">import</span> <span class="n">PositionsChannel</span><span class="p">,</span> <span class="n">WSPosition</span><span class="p">,</span> <span class="n">InstrumentStatusReport</span>
@@ -638,16 +638,29 @@
     <span class="k">if</span> <span class="n">algo_orders_list</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">algo_orders_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
 
-    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s1">&#39;algoId&#39;</span><span class="p">:</span> <span class="n">algo_order</span><span class="o">.</span><span class="n">algoId</span><span class="p">,</span>
-         <span class="s1">&#39;instId&#39;</span><span class="p">:</span> <span class="n">algo_order</span><span class="o">.</span><span class="n">instId</span><span class="p">,</span>
-         <span class="p">}</span> <span class="k">for</span> <span class="n">algo_order</span> <span class="ow">in</span> <span class="n">algo_orders_list</span>
-    <span class="p">]</span>
+    <span class="c1"># params = [</span>
+    <span class="c1">#     {&#39;algoId&#39;: algo_order.algoId,</span>
+    <span class="c1">#      &#39;instId&#39;: algo_order.instId,</span>
+    <span class="c1">#      } for algo_order in algo_orders_list</span>
+    <span class="c1"># ]</span>
 
+    <span class="c1"># Split algo orders into REGULAR AND ADVANCED</span>
+    <span class="n">regular_algo_order_params</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">advanced_algo_order_params</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Move_order_stop order, Trigger order, Iceberg order, TWAP order, Trailing Stop order</span>
+    <span class="k">for</span> <span class="n">algo_order</span> <span class="ow">in</span> <span class="n">algo_orders_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">algo_order</span><span class="o">.</span><span class="n">ordType</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;move_order_stop&#39;</span><span class="p">,</span> <span class="s1">&#39;trigger&#39;</span><span class="p">,</span> <span class="s1">&#39;iceberg&#39;</span><span class="p">,</span> <span class="s1">&#39;twap&#39;</span><span class="p">,</span> <span class="s1">&#39;trailing&#39;</span><span class="p">]:</span>
+            <span class="n">advanced_algo_order_params</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;algoId&#39;</span><span class="p">:</span> <span class="n">algo_order</span><span class="o">.</span><span class="n">algoId</span><span class="p">,</span>
+                                               <span class="s1">&#39;instId&#39;</span><span class="p">:</span> <span class="n">algo_order</span><span class="o">.</span><span class="n">instId</span><span class="p">,</span>
+                                               <span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">regular_algo_order_params</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;algoId&#39;</span><span class="p">:</span> <span class="n">algo_order</span><span class="o">.</span><span class="n">algoId</span><span class="p">,</span>
+                                              <span class="s1">&#39;instId&#39;</span><span class="p">:</span> <span class="n">algo_order</span><span class="o">.</span><span class="n">instId</span><span class="p">,</span>
+                                              <span class="p">})</span>
+
+    <span class="c1"># Cancel regular algo orders</span>
     <span class="n">cancelled_algo_orders</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="mi">10</span><span class="p">):</span>
-        <span class="n">chunk</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">10</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">chunk</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">regular_algo_order_params</span><span class="p">),</span> <span class="mi">10</span><span class="p">):</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">regular_algo_order_params</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">10</span><span class="p">]</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">cancel_algo_order</span><span class="p">(</span>
             <span class="n">params</span><span class="o">=</span><span class="n">chunk</span>
         <span class="p">)</span>
@@ -655,17 +668,22 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful cancel_all_algo_orders_with_params request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
                   <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
                   <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">result</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">cancel_advance_algos</span><span class="p">(</span>
-                <span class="n">params</span><span class="o">=</span><span class="n">chunk</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful cancel_all_algo_orders_with_params request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
-                      <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
-                      <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
-                <span class="k">continue</span>
-
+            <span class="k">continue</span>
         <span class="n">cancelled_algo_orders</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="k">await</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Cancelled_Algo_Order</span><span class="p">))</span>
+
+    <span class="c1"># Cancel advanced algo orders</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">advanced_algo_order_params</span><span class="p">),</span> <span class="mi">10</span><span class="p">):</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">advanced_algo_order_params</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">10</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">tradeAPI</span><span class="o">.</span><span class="n">cancel_advance_algos</span><span class="p">(</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">chunk</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unsuccessful cancel_all_algo_orders_with_params request，</span><span class="se">\n</span><span class="s2">  error_code = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
+                  <span class="s2">&quot;, </span><span class="se">\n</span><span class="s2">  Error_message = &quot;</span><span class="p">,</span>
+                  <span class="n">result</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">])</span>
+            <span class="k">continue</span>
+        <span class="n">cancelled_algo_orders</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="k">await</span> <span class="n">get_request_data</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Cancelled_Algo_Order</span><span class="p">))</span>
+
     <span class="k">return</span> <span class="n">cancelled_algo_orders</span></div>
 
 
@@ -972,7 +990,7 @@
 <span class="sd">    ... (and so on for other parameters)</span>
 <span class="sd">    :returns: The response from the trailing stop-loss order placement request.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">place_algo_order</span><span class="p">(</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">place_algo_order</span><span class="p">(</span>
         <span class="n">instId</span><span class="o">=</span><span class="n">instId</span><span class="p">,</span>
         <span class="n">tdMode</span><span class="o">=</span><span class="n">tdMode</span><span class="p">,</span>
         <span class="n">ordType</span><span class="o">=</span><span class="n">ordType</span><span class="p">,</span>
@@ -1344,7 +1362,7 @@
             <span class="n">trailing_stop_callback_offset</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">okx_signal</span><span class="o">.</span><span class="n">trailing_stop_callback_offset</span><span class="p">)</span>
             <span class="n">trailing_stop_callback_ratio</span> <span class="o">=</span> <span class="n">trailing_stop_callback_offset</span> <span class="o">/</span> <span class="n">ccy_last_price</span>
 
-            <span class="c1"># Min is 0,001 and max is 1</span>
+            <span class="c1"># Min is 0.001 and max is 1</span>
             <span class="k">if</span> <span class="n">trailing_stop_callback_ratio</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
                 <span class="n">trailing_stop_callback_ratio</span> <span class="o">=</span> <span class="mf">0.001</span>
             <span class="k">if</span> <span class="n">trailing_stop_callback_ratio</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -1398,8 +1416,6 @@
         <span class="s1">&#39;dca_parameters&#39;</span><span class="p">:</span> <span class="n">dca_parameters</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">result</span></div>
-
-
 
 
 
@@ -1575,6 +1591,7 @@
             <span class="k">break</span>  <span class="c1"># Optional: Decide whether to break or retry</span>
 
     <span class="k">return</span> <span class="p">[</span><span class="n">FillEntry</span><span class="p">(</span><span class="o">**</span><span class="n">fill</span><span class="p">)</span> <span class="k">for</span> <span class="n">fill</span> <span class="ow">in</span> <span class="n">all_data</span><span class="p">]</span></div>
+
 
 
 <div class="viewcode-block" id="okx_signal_handler">
@@ -1994,9 +2011,13 @@
         <span class="n">dca_orders_placement_return</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
             <span class="o">*</span><span class="p">[</span><span class="n">place_algo_order</span><span class="p">(</span><span class="o">**</span><span class="n">dca_order</span><span class="p">)</span> <span class="k">for</span> <span class="n">dca_order</span> <span class="ow">in</span> <span class="n">dca_orders_to_call</span><span class="p">]</span>
         <span class="p">)</span>
+
+        <span class="n">dca_orders_placement_return</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">dca_orders_placement_return</span><span class="p">))</span>
+
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dca_orders_placement_return</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">FINAL REPORT&#39;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="k">await</span> <span class="n">fetch_status_report_for_instrument</span><span class="p">(</span><span class="n">instID</span><span class="p">,</span> <span class="n">ENFORCED_TD_MODE</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="okx_premium_indicator_handler">
@@ -2114,14 +2135,9 @@
 
     <span class="n">dotenv</span><span class="o">.</span><span class="n">load_dotenv</span><span class="p">(</span><span class="n">dotenv</span><span class="o">.</span><span class="n">find_dotenv</span><span class="p">())</span>
 
-
     <span class="c1"># Define the test function to be used</span>
     <span class="c1"># TEST_FUNCTION = &#39;okx_premium_indicator&#39;</span>
     <span class="n">TEST_FUNCTION</span> <span class="o">=</span> <span class="s1">&#39;okx_signal_handler&#39;</span>
-
-    <span class="c1"># Immediately execute the &#39;red button&#39; functionality to clear all positions and orders</span>
-    <span class="c1"># TODO: Ensure only relevant orders/positions are handled.</span>
-    <span class="c1"># asyncio.run(okx_signal_handler(red_button=True))</span>
 
     <span class="c1"># Branching logic based on the test function chosen</span>
     <span class="k">if</span> <span class="n">TEST_FUNCTION</span> <span class="o">==</span> <span class="s1">&#39;okx_signal_handler&#39;</span><span class="p">:</span>
@@ -2147,32 +2163,31 @@
             <span class="c1"># trailing_stop_activation_price_offset=100,</span>
             <span class="c1"># trailing_stop_callback_offset=10,</span>
             <span class="c1"># DCA Orders (are not linked to the principal order)</span>
-            <span class="c1"># dca_parameters=[</span>
-            <span class="c1">#     DCAInputParameters(</span>
-            <span class="c1">#         usd_amount=150,</span>
-            <span class="c1">#         order_type=&quot;LIMIT&quot;,</span>
-            <span class="c1">#         order_side=&quot;BUY&quot;,</span>
-            <span class="c1">#         trigger_price_offset=100,</span>
-            <span class="c1">#         execution_price_offset=90,</span>
-            <span class="c1">#         tp_trigger_price_offset=100,</span>
-            <span class="c1">#         tp_execution_price_offset=90,</span>
-            <span class="c1">#         sl_trigger_price_offset=100,</span>
-            <span class="c1">#         sl_execution_price_offset=90</span>
-            <span class="c1">#     ),</span>
-            <span class="c1">#     DCAInputParameters(</span>
-            <span class="c1">#         usd_amount=150,</span>
-            <span class="c1">#         order_type=&quot;LIMIT&quot;,</span>
-            <span class="c1">#         order_side=&quot;BUY&quot;,</span>
-            <span class="c1">#         trigger_price_offset=150,</span>
-            <span class="c1">#         execution_price_offset=149,</span>
-            <span class="c1">#         tp_trigger_price_offset=100,</span>
-            <span class="c1">#         tp_execution_price_offset=90,</span>
-            <span class="c1">#         sl_trigger_price_offset=100,</span>
-            <span class="c1">#         sl_execution_price_offset=90</span>
-            <span class="c1">#     )</span>
-            <span class="c1"># ]</span>
+            <span class="n">dca_parameters</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">DCAInputParameters</span><span class="p">(</span>
+                    <span class="n">usd_amount</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+                    <span class="n">order_type</span><span class="o">=</span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
+                    <span class="n">order_side</span><span class="o">=</span><span class="s2">&quot;BUY&quot;</span><span class="p">,</span>
+                    <span class="n">trigger_price_offset</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                    <span class="n">execution_price_offset</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+                    <span class="n">tp_trigger_price_offset</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                    <span class="n">tp_execution_price_offset</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+                    <span class="n">sl_trigger_price_offset</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                    <span class="n">sl_execution_price_offset</span><span class="o">=</span><span class="mi">90</span>
+                <span class="p">),</span>
+                <span class="c1"># DCAInputParameters(</span>
+                <span class="c1">#     usd_amount=150,</span>
+                <span class="c1">#     order_type=&quot;LIMIT&quot;,</span>
+                <span class="c1">#     order_side=&quot;BUY&quot;,</span>
+                <span class="c1">#     trigger_price_offset=150,</span>
+                <span class="c1">#     execution_price_offset=149,</span>
+                <span class="c1">#     tp_trigger_price_offset=100,</span>
+                <span class="c1">#     tp_execution_price_offset=90,</span>
+                <span class="c1">#     sl_trigger_price_offset=100,</span>
+                <span class="c1">#     sl_execution_price_offset=90</span>
+                <span class="c1"># )</span>
+            <span class="p">]</span>
         <span class="p">))</span>
-
 
     <span class="k">elif</span> <span class="n">TEST_FUNCTION</span> <span class="o">==</span> <span class="s1">&#39;okx_premium_indicator&#39;</span><span class="p">:</span>
         <span class="c1"># Load a payload from a file for testing the &#39;okx_premium_indicator&#39;</span>
@@ -2196,8 +2211,6 @@
         <span class="c1"># logger.info(f&#39;{response.content = }&#39;)</span>
         <span class="c1"># response = response.json()</span>
 
-
-
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Handle invalid test function selection</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid test function </span><span class="si">{</span><span class="n">TEST_FUNCTION</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -2220,6 +2233,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No instrument status report&quot;</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">()</span>
+
     <span class="c1"># Debugging print statements for the instrument report</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instrument_report</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">instrument_report</span><span class="o">.</span><span class="n">orders</span><span class="w"> </span><span class="si">= }</span><span class="s1">&#39;</span><span class="p">))</span>

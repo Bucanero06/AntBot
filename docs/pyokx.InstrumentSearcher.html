@@ -22,7 +22,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pyokx.data_structures" href="pyokx.data_structures.html" />
+    <link rel="next" title="pyokx.OkxEnum" href="pyokx.OkxEnum.html" />
     <link rel="prev" title="pyokx.Futures_Exchange_Client" href="pyokx.Futures_Exchange_Client.html" /> 
 </head>
 
@@ -83,6 +83,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -215,7 +216,7 @@ such as instrument ID, type, or underlying asset.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">find_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InstType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/InstrumentSearcher.html#InstrumentSearcher.find_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">find_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType" title="pyokx.OkxEnum.InstType"><span class="pre">InstType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pyokx.data_structures.html#pyokx.data_structures.Instrument" title="pyokx.data_structures.Instrument"><span class="pre">Instrument</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/InstrumentSearcher.html#InstrumentSearcher.find_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
 <dd><p>Find all instruments of a specific type</p>
 </dd></dl>
 
@@ -227,7 +228,7 @@ such as instrument ID, type, or underlying asset.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyokx.InstrumentSearcher.InstrumentSearcher.get_instrument_ids">
-<span class="sig-name descname"><span class="pre">get_instrument_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/InstrumentSearcher.html#InstrumentSearcher.get_instrument_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.InstrumentSearcher.InstrumentSearcher.get_instrument_ids" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_instrument_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyokx.OkxEnum.html#pyokx.OkxEnum.InstType" title="pyokx.OkxEnum.InstType"><span class="pre">InstType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyokx/InstrumentSearcher.html#InstrumentSearcher.get_instrument_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyokx.InstrumentSearcher.InstrumentSearcher.get_instrument_ids" title="Link to this definition"></a></dt>
 <dd><p>Get all instrument IDs</p>
 </dd></dl>
 
@@ -254,7 +255,7 @@ such as instrument ID, type, or underlying asset.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pyokx.Futures_Exchange_Client.html" class="btn btn-neutral float-left" title="pyokx.Futures_Exchange_Client" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pyokx.data_structures.html" class="btn btn-neutral float-right" title="pyokx.data_structures" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pyokx.OkxEnum.html" class="btn btn-neutral float-right" title="pyokx.OkxEnum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../okx_polling_service_app.html">okx_polling_service_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -300,6 +301,7 @@
     <span class="k">return</span> <span class="n">order_messages</span></div>
 
 
+
 <div class="viewcode-block" id="get_okx_fills_history">
 <a class="viewcode-back" href="../../pyokx.redis_structured_streams.html#pyokx.redis_structured_streams.get_okx_fills_history">[docs]</a>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_okx_fills_history</span><span class="p">(</span><span class="n">redis_client</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">FillEntry</span><span class="p">]]:</span>
@@ -385,7 +387,6 @@
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="n">incomplete_algo_orders_serialized</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
-
     <span class="n">incomplete_algo_orders</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">incomplete_algo_order</span> <span class="ow">in</span> <span class="n">incomplete_algo_orders_serialized</span><span class="p">:</span>
         <span class="n">redis_stream_id</span> <span class="o">=</span> <span class="n">incomplete_algo_order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>

@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../okx_polling_service_app.html">okx_polling_service_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -168,9 +169,9 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">from</span> <span class="nn">pyokx</span> <span class="kn">import</span> <span class="n">ENFORCED_INSTRUMENT_TYPES</span>
-<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">FillEntry</span><span class="p">,</span> <span class="n">FillHistoricalMetricsEntry</span><span class="p">,</span> <span class="n">FillHistoricalMetrics</span>
+<span class="kn">from</span> <span class="nn">pyokx.data_structures</span> <span class="kn">import</span> <span class="n">FillEntry</span><span class="p">,</span> <span class="n">FillHistoricalMetrics</span>
 <span class="kn">from</span> <span class="nn">pyokx.low_rest_api.exceptions</span> <span class="kn">import</span> <span class="n">OkxAPIException</span><span class="p">,</span> <span class="n">OkxParamsException</span><span class="p">,</span> <span class="n">OkxRequestException</span>
-<span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
+<span class="kn">from</span> <span class="nn">pyokx.OkxEnum</span> <span class="kn">import</span> <span class="n">InstType</span>
 <span class="kn">from</span> <span class="nn">pyokx.rest_handling</span> <span class="kn">import</span> <span class="n">fetch_fill_history</span><span class="p">,</span> <span class="n">InstrumentSearcher</span><span class="p">,</span> <span class="n">fetch_incomplete_algo_orders</span><span class="p">,</span> \
     <span class="n">fetch_incomplete_orders</span>
 <span class="kn">from</span> <span class="nn">redis_tools.utils</span> <span class="kn">import</span> <span class="n">get_async_redis</span><span class="p">,</span> <span class="n">serialize_for_redis</span>
@@ -289,7 +290,7 @@
     <span class="n">instrument_map</span> <span class="o">=</span> <span class="k">await</span> <span class="n">okx_instrument_searcher</span><span class="o">.</span><span class="n">update_instruments</span><span class="p">()</span>
     <span class="n">redis_ready_message</span> <span class="o">=</span> <span class="n">serialize_for_redis</span><span class="p">(</span><span class="n">instrument_map</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">async_redis</span><span class="o">.</span><span class="n">xadd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;okx:rest@instruments&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">redis_ready_message</span><span class="p">},</span>
-                           <span class="n">maxlen</span><span class="o">=</span><span class="n">REDIS_STREAM_MAX_LEN</span><span class="p">)</span></div>
+                           <span class="n">maxlen</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
 

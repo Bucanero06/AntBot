@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../okx_polling_service_app.html">okx_polling_service_app</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.Futures_Exchange_Client.html">pyokx.Futures_Exchange_Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.InstrumentSearcher.html">pyokx.InstrumentSearcher</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyokx.OkxEnum.html">pyokx.OkxEnum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.data_structures.html">pyokx.data_structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.Account.html">pyokx.low_rest_api.Account</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../pyokx.low_rest_api.BlockTrading.html">pyokx.low_rest_api.BlockTrading</a></li>
@@ -165,7 +166,7 @@
 
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">validator</span>
 
-<span class="kn">from</span> <span class="nn">pyokx.okx_market_maker.utils.OkxEnum</span> <span class="kn">import</span> <span class="n">MgnMode</span><span class="p">,</span> <span class="n">PosSide</span><span class="p">,</span> <span class="n">InstType</span>
+<span class="kn">from</span> <span class="nn">pyokx.OkxEnum</span> <span class="kn">import</span> <span class="n">MgnMode</span><span class="p">,</span> <span class="n">PosSide</span><span class="p">,</span> <span class="n">InstType</span>
 
 
 <div class="viewcode-block" id="OKXBaseModelModelMeta">
@@ -182,6 +183,7 @@
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.OKXBaseModel">[docs]</a>
 <span class="k">class</span> <span class="nc">OKXBaseModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">OKXBaseModelModelMeta</span><span class="p">):</span>
     <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="Order">
@@ -255,12 +257,12 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    e.g. {&#39;algoClOrdId&#39;: &#39;&#39;, &#39;algoId&#39;: &#39;661126556584251392&#39;, &#39;clOrdId&#39;: &#39;&#39;, &#39;sCode&#39;: &#39;0&#39;, &#39;sMsg&#39;: &#39;&#39;, &#39;tag&#39;: &#39;&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">algoClOrdId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">algoId</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">clOrdId</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sCode</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">sMsg</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span></div>
+    <span class="n">algoClOrdId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">clOrdId</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 
@@ -649,7 +651,6 @@
     <span class="n">ccy</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Currency used for margin</span>
     <span class="n">triggerPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Trigger mark price, value when type is 3, 4, or 5; None when type is 1 or 2</span>
 
-
 <div class="viewcode-block" id="PositionHistory.handle_triggerPx">
 <a class="viewcode-back" href="../../pyokx.data_structures.html#pyokx.data_structures.PositionHistory.handle_triggerPx">[docs]</a>
     <span class="nd">@validator</span><span class="p">(</span><span class="s1">&#39;triggerPx&#39;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -696,8 +697,6 @@
     <span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">fillIdxPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">fillMarkPx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
-
-
 
 
 
@@ -791,7 +790,6 @@
     <span class="n">sl_trigger_price_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">sl_trigger_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">sl_execution_price_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div>
-
 
 
 

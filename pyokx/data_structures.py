@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel, validator
 
-from pyokx.okx_market_maker.utils.OkxEnum import MgnMode, PosSide, InstType
+from pyokx.OkxEnum import MgnMode, PosSide, InstType
 
 
 class OKXBaseModelModelMeta(type(BaseModel)):
@@ -15,6 +15,7 @@ class OKXBaseModelModelMeta(type(BaseModel)):
 
 class OKXBaseModel(BaseModel, metaclass=OKXBaseModelModelMeta):
     pass
+
 
 class Order(OKXBaseModel):
     accFillSz: str
@@ -79,12 +80,12 @@ class Cancelled_Algo_Order(OKXBaseModel):
     """
     e.g. {'algoClOrdId': '', 'algoId': '661126556584251392', 'clOrdId': '', 'sCode': '0', 'sMsg': '', 'tag': ''}
     """
-    algoClOrdId: str
     algoId: str
-    clOrdId: str
     sCode: str
     sMsg: str
-    tag: str
+    algoClOrdId: Optional[str] = None
+    clOrdId: Optional[str] = None
+    tag: Optional[str] = None
 
 
 class Position(OKXBaseModel):
@@ -431,7 +432,6 @@ class PositionHistory(OKXBaseModel):
     ccy: str  # Currency used for margin
     triggerPx: Optional[float] = None  # Trigger mark price, value when type is 3, 4, or 5; None when type is 1 or 2
 
-
     @validator('triggerPx', pre=True)
     def handle_triggerPx(cls, value):
         if value == '':
@@ -469,8 +469,6 @@ class FillEntry(OKXBaseModel):
     tag: Optional[str] = None
     fillIdxPx: Optional[str] = None
     fillMarkPx: Optional[str] = None
-
-
 
 
 class AccountConfigData(OKXBaseModel):
@@ -546,7 +544,6 @@ class DCAOrderParameters(OKXBaseModel):
     sl_trigger_price_type: Optional[str] = ''
     sl_trigger_price_offset: Optional[float] = 0
     sl_execution_price_offset: Optional[float] = 0
-
 
 
 class OKXSignalInput(OKXBaseModel):

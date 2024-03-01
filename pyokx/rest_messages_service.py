@@ -122,7 +122,7 @@ async def update_instruments(okx_instrument_searcher: InstrumentSearcher):
     instrument_map = await okx_instrument_searcher.update_instruments()
     redis_ready_message = serialize_for_redis(instrument_map)
     await async_redis.xadd(f'okx:rest@instruments', {'data': redis_ready_message},
-                           maxlen=REDIS_STREAM_MAX_LEN)
+                           maxlen=1)
 
 
 async def slow_polling_service(reload_interval: int = 30):

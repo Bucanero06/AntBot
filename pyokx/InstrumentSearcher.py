@@ -1,9 +1,8 @@
 from typing import List, Dict, Optional
 
-
 from pyokx import publicAPI, ENFORCED_INSTRUMENT_TYPES
-from pyokx.data_structures import Instrument
 from pyokx.OkxEnum import InstType
+from pyokx.data_structures import Instrument
 
 
 class InstrumentSearcher:
@@ -35,6 +34,19 @@ class InstrumentSearcher:
         print(f'{"BTC-USDT-240329" in okx_instrument_searcher._instrument_map = }')
         ```
         """
+        if not isinstance(instTypes, list):
+            instTypes = [instTypes]
+
+        _instType = []
+        for instType in instTypes:
+            if isinstance(instType, InstType):
+                _instType.append(instType.value)
+            else:
+                _instType.append(instType)
+        instTypes = _instType
+
+        # assert all([instType in ENFORCED_INSTRUMENT_TYPES for instType in instTypes]), f'Invalid instTypes: {instTypes}'
+
         self.instTypes = instTypes
         if _instrument_map is None:
             self.instruments = self.request_instruments()
@@ -66,21 +78,26 @@ class InstrumentSearcher:
 
     def find_by_instId(self, instId: str) -> Optional[Instrument]:
         """ Find an instrument by its instId """
-        instrument=self._instrument_map.get(instId)
+        instrument = self._instrument_map.get(instId)
         if instrument:
             return instrument if isinstance(instrument, Instrument) else Instrument(**instrument)
         else:
             return None
+
     def find_by_type(self, instType: InstType) -> List[Instrument]:
         """ Find all instruments of a specific type """
+        if isinstance(instType, InstType):
+            instType = instType.value
         return [instrument for instrument in self.instruments if instrument.instType == instType]
 
     def find_by_underlying(self, underlying: str) -> List[Instrument]:
         """ Find all instruments of a specific underlying """
         return [instrument for instrument in self.instruments if instrument.uly == underlying]
 
-    def get_instrument_ids(self) -> List[str]:
+    def get_instrument_ids(self, instType: InstType = None) -> List[str]:
         """ Get all instrument IDs """
+        if instType:
+            return [instrument.instId for instrument in self.find_by_type(instType)]
         return list(self._instrument_map.keys())
 
     async def update_instruments(self):
@@ -90,7 +107,18 @@ class InstrumentSearcher:
 
         return self._instrument_map
 
+
 if __name__ == "__main__":
-    okx_instrument_searcher = InstrumentSearcher()
-    print(f'{okx_instrument_searcher.find_by_instId("BTC-USDT-SWAP") = }')
-    print(f'{okx_instrument_searcher.find_by_type(InstType.FUTURES) = }')
+
+    instTypes = [
+        InstType.FUTURES,
+        InstType.SWAP,
+        InstType.SPOT,
+        InstType.MARGIN,
+    ]
+
+    okx_instrument_searcher = InstrumentSearcher(instTypes=instTypes)
+
+    for instrument_type in instTypes:
+        result = okx_instrument_searcher.get_instrument_ids(instType=instrument_type)
+        print(f'InstType {instrument_type}: {result}')

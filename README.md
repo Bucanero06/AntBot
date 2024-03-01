@@ -4,6 +4,8 @@
 
 This project synopsis presents a guide for the AntBot Python codebase. The AntBot is a high-performance trading application tailored for the OKX exchange. It emphasizes real-time data processing, efficient resource management, and a
 robust technological stack.
+Some features/settings of the application and API's are restricted as per specifications for the project's use case,
+if there is a particular feature or setting you would like to see please reach out directly to discuss it further
 
 ### Document Details
 

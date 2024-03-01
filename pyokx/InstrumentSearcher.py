@@ -3,7 +3,7 @@ from typing import List, Dict, Optional
 
 from pyokx import publicAPI, ENFORCED_INSTRUMENT_TYPES
 from pyokx.data_structures import Instrument
-from pyokx.okx_market_maker.utils.OkxEnum import InstType
+from pyokx.OkxEnum import InstType
 
 
 class InstrumentSearcher:
@@ -89,3 +89,8 @@ class InstrumentSearcher:
         self._instrument_map = self._create_map(self.instruments)
 
         return self._instrument_map
+
+if __name__ == "__main__":
+    okx_instrument_searcher = InstrumentSearcher()
+    print(f'{okx_instrument_searcher.find_by_instId("BTC-USDT-SWAP") = }')
+    print(f'{okx_instrument_searcher.find_by_type(InstType.FUTURES) = }')

@@ -6,9 +6,9 @@ from typing import List
 import pandas as pd
 
 from pyokx import ENFORCED_INSTRUMENT_TYPES
-from pyokx.data_structures import FillEntry, FillHistoricalMetricsEntry, FillHistoricalMetrics
+from pyokx.data_structures import FillEntry, FillHistoricalMetrics
 from pyokx.low_rest_api.exceptions import OkxAPIException, OkxParamsException, OkxRequestException
-from pyokx.okx_market_maker.utils.OkxEnum import InstType
+from pyokx.OkxEnum import InstType
 from pyokx.rest_handling import fetch_fill_history, InstrumentSearcher, fetch_incomplete_algo_orders, \
     fetch_incomplete_orders
 from redis_tools.utils import get_async_redis, serialize_for_redis

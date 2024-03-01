@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from decimal import Decimal
 
-from pyokx.okx_market_maker.utils.OkxEnum import InstType, OptType, CtType, InstState
+from pyokx.OkxEnum import InstType, OptType, CtType, InstState
 
 
 @dataclass

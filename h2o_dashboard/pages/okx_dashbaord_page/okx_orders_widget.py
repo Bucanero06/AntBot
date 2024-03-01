@@ -1,3 +1,4 @@
+import time
 from typing import List
 
 from h2o_wave import Q, ui, on, data, run_on, AsyncSite, pack  # noqa F401
@@ -159,6 +160,7 @@ class OKX_Orders_StreamWidget:
         await self.q.page.save()
 
     async def update_cards(self):
+        await self._update_stream()
         if await self._is_initialized():
             last_n_orders_data: List[Algo_Order] = self.algo_orders_rest_stream[-1]
         else:
@@ -168,6 +170,7 @@ class OKX_Orders_StreamWidget:
         orders_table_card: ui.stat_table_card = self.q.page[self.card_name + '_orders_table']
         items = []
         labels = []
+
         for order in last_n_orders_data:
             label_value = ''
             values = []
@@ -182,6 +185,7 @@ class OKX_Orders_StreamWidget:
                     labels.append(label_value)
                     continue
                 order_col = getattr(order, col_key)
+                expected_type = None
                 try:
                     expected_type = col_value['type']
                     order_col = convert_to_col_type(order_col, expected_type)

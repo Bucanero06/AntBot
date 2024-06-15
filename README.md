@@ -1,4 +1,4 @@
-# AntBot Project (under active development)
+# AntBot Project (components are under active development, here for educational purpose only)
 
 ## Overview
 
@@ -9,7 +9,7 @@ if there is a particular feature or setting you would like to see please reach o
 
 ### Document Details
 
-- **Document Title:** AntBot Project Synopsis
+- **Document Title:** AntBot Project
 - **Visual Reference:**
 
 [Screencast from 02-22-2024 10:43:25 PM.webm](https://github.com/Bucanero06/AntBot/assets/60953006/5a576883-f79c-4882-8896-b4d1f99645ec)
